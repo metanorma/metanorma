@@ -13,6 +13,7 @@ OptionParser.new do |opts|
   opts.banner = "Usage: metanorma --type XXX file"
 
   opts.on('-t', '--type TYPE', 'Type of standard to generate: rfc2, rfc3, iso, gb, csd') { |v| options[:type] = v }
+  opts.on('-f', '--format FORMAT', 'Format of source file: asciidoc (current default, only format supported)') { |v| options[:format] = v }
 
 end.parse!
 
@@ -20,8 +21,14 @@ unless options[:type]
   puts "You must specify a standard type (metanorma --type XXX file)"
   exit 0
 end
+options[:format] = "asciidoc" unless options[:format]
+
 unless %w{rfc2 rfc3 iso gb csd}.include? options[:type]
   puts "#{options[:type]} is not a supported standard type"
+  exit 0
+end
+unless options[:format] == "asciidoc"
+  puts "Only source file format currently supported is asciidoc"
   exit 0
 end
 
