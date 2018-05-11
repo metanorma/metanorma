@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+require "asciidoctor/cli"
+require "asciidoctor/rfc/v2/converter"
+require "asciidoctor/rfc/v3/converter"
+require "asciidoctor/iso/converter"
+require "asciidoctor/gb/converter"
+require "asciidoctor/csd/converter"
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: metanorma --type XXX file"
+
+  opts.on('-t', '--type TYPE', 'Type of standard to generate: rfc2, rfc3, iso, gb, csd') { |v| options[:type] = v }
+
+end.parse!
+
+unless options[:type]
+  puts "You must specify a standard type (metanorma --type XXX file)"
+  exit 0
+end
+unless %w{rfc2 rfc3 iso gb csd}.include? options[:type]
+  puts "#{options[:type]} is not a supported standard type"
+  exit 0
+end
+
+asciidoc_options = Asciidoctor::Cli::Options.new backend: options[:type], header_footer: true
+exit 0 if asciidoc_options.parse!(ARGV) == 0
+
+invoker = Asciidoctor::Cli::Invoker.new asciidoc_options
+GC.start
+invoker.invoke!
+exit invoker.code
+
