@@ -10,7 +10,7 @@ require "asciidoctor/csd/converter"
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: metanorma --type XXX file"
+  opts.banner = "Usage: metanorma --type XXX --format FORMAT file"
 
   opts.on('-t', '--type TYPE', 'Type of standard to generate: rfc2, rfc3, iso, gb, csd') { |v| options[:type] = v }
   opts.on('-f', '--format FORMAT', 'Format of source file: asciidoc (current default, only format supported)') { |v| options[:format] = v }
