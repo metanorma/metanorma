@@ -1,0 +1,67 @@
+= Metanorma: the standard for standards
+
+Metanorma is dedicated to harmonizing standard documents
+produced by different standard-setting bodies in a manner that
+maintains correct semantics while allowing each standard publisher to
+define appropriate semantic extensions.
+
+Simply put, it allows standards bodies or any other organization
+to create their own standard or specification document in a best
+practices manner.
+
+Metanorma is composed of a number of specifications and software
+implementations. The Metanorma document model is based on the SecureDoc
+document model.
+
+Metanorma includes the following sub-projects:
+
+* The https://github.com/riboseinc/standoc-models[Metanorma document model (previously called StanDoc)]
+* IETF Internet-Drafts and RFCs: the https://datatracker.ietf.org/doc/draft-ribose-asciirfc/[AsciiRFC syntax], the https://github.com/riboseinc/asciidoctor-rfc/[asciidoctor-rfc RFC XML v2 and v3 implementations]
+* ISO Standards: the AsciiISO syntax, the https://github.com/riboseinc/isodoc-models/[IsoDoc Models], the https://github.com/riboseinc/asciidoctor-iso/[asciidoctor-iso IsoDoc implementation]
+* CalConnect Standard Documents (CSD): the AsciiCSD syntax, https://github.com/riboseinc/csd[CSD Models], the https://github.com/riboseinc/asciidoctor-csd/[asciidoctor-csd implementation]
+* Chinese GuoBiao (GB) Standards: the AsciiGB syntax, https://github.com/riboseinc/gbdoc[GbDoc Models], the https://github.com/riboseinc/asciidoctor-gb/[asciidoctor-gb implementation]
+//* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/riboseinc/asciidoctor-rsd[asciidoctor-rsd implementation]
+
+
+== Installation
+
+The Metanorma workflow can be utilized via the `metanorma` Ruby gem.
+
+[source,sh]
+----
+gem install metanorma
+----
+
+
+== Usage
+
+[source,sh]
+----
+metanorma --type <chosen-type> [--format input-format] iso-my-standard-document.adoc
+----
+
+Options:
+
+//, `rsd`
+`type`:: (specified via `--type` or `-t`) takes one of the following types:
+`rfc2`, `rfc3`, `iso`, `gb`, `csd`
+
+`format`:: (specified via `--format` or `-f`) only accepts `asciidoc` for now
+
+
+As the `--format` argument is (currently) optional, so:
+
+[source,sh]
+----
+metanorma --type iso iso-my-standard-document.adoc
+----
+
+
+== Origin of name
+
+*Meta-* is a prefix of Greek origin ("μετα") for "`with`" or simply
+"`of`", and *norma* is Latin for "`rule`" and "`standard`". The
+Metanorma project is for setting a standard for standard documents
+created by standards-setting organizations, and therefore is given this
+rather fitting name.
+
