@@ -2,41 +2,119 @@
 
 require "optparse"
 require "asciidoctor/cli"
-require "asciidoctor/rfc/v2/converter"
-require "asciidoctor/rfc/v3/converter"
-require "asciidoctor/iso/converter"
-require "asciidoctor/gb/converter"
-require "asciidoctor/csd/converter"
 
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: metanorma --type XXX --format FORMAT file"
+supported_backends = [
+  {
+    short: :rfc2,
+    load_path: "asciidoctor/rfc/v2/converter",
+    asciidoctor_backend: "rfc2"
+  },
 
-  opts.on('-t', '--type TYPE', 'Type of standard to generate: rfc2, rfc3, iso, gb, csd') { |v| options[:type] = v }
-  opts.on('-f', '--format FORMAT', 'Format of source file: asciidoc (current default, only format supported)') { |v| options[:format] = v }
+  {
+    short: :rfc3,
+    load_path: "asciidoctor/rfc/v3/converter",
+    asciidoctor_backend: "rfc3"
+  },
 
-end.parse!
+  {
+    short: :iso,
+    load_path: "asciidoctor/iso/converter",
+    asciidoctor_backend: "iso"
+  },
+
+  {
+    short: :gb,
+    load_path: "asciidoctor/gb/converter",
+    asciidoctor_backend: "gb"
+  },
+
+  {
+    short: :csd,
+    load_path: "asciidoctor/csd/converter",
+    asciidoctor_backend: "csd"
+  },
+
+  # {
+  #   short: :rsd,
+  #   load_path: "asciidoctor/rsd/converter",
+  #   asciidoctor_backend: "rsd"
+  # },
+]
+
+print "[metanorma] detecting backends: "
+backends_enabled, backends_disabled = supported_backends.partition do |backend|
+  begin
+    print "#{backend[:short]} "
+    require backend[:load_path]
+    true
+  rescue LoadError
+    # puts "[metanorma] backend #{backend[:short]} not present"
+    false
+  end
+end
+puts
+
+options = {
+  format: "asciidoc"
+}
+
+backend_keys = backends_enabled.map {|b| b[:short].to_s }
+
+opt_parser = OptionParser.new do |opts|
+  opts.banner += " <file>"
+  opts.on(
+    '-t',
+    '--type TYPE',
+    "Type of standard to generate: #{backend_keys.join(", ")}"
+  ) { |v| options[:type] = v }
+
+  opts.on(
+    '-f',
+    '--format FORMAT',
+    'Format of source file: asciidoc (current default, only format supported)'
+  ) { |v| options[:format] = v }
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+end
+
+opt_parser.parse!(ARGV)
+options[:filename] = ARGV.pop
 
 unless options[:type]
-  puts "You must specify a standard type (metanorma --type XXX file)"
+  puts "[metanorma] Error: Please specify a standard type."
+  puts opt_parser.help
   exit 0
 end
-options[:format] = "asciidoc" unless options[:format]
 
-unless %w{rfc2 rfc3 iso gb csd}.include? options[:type]
-  puts "#{options[:type]} is not a supported standard type"
+unless backend_keys.include? options[:type]
+  puts "[metanorma] Error: #{options[:type]} is not a supported standard type."
   exit 0
 end
+
 unless options[:format] == "asciidoc"
-  puts "Only source file format currently supported is asciidoc"
+  puts "[metanorma] Error: Only source file format currently supported is 'asciidoc'."
   exit 0
 end
 
-asciidoc_options = Asciidoctor::Cli::Options.new backend: options[:type], header_footer: true
-exit 0 if asciidoc_options.parse!(ARGV) == 0
+unless options[:filename]
+  puts "[metanorma] Error: Need to specify a file to process."
+  exit 0
+end
+
+asciidoc_options = Asciidoctor::Cli::Options.new(
+  backend: options[:type],
+  header_footer: true
+)
+if asciidoc_options.parse!([options[:filename]]) == 0
+  puts "[metanorma] Error: Backend process error."
+  exit 0
+end
 
 invoker = Asciidoctor::Cli::Invoker.new asciidoc_options
 GC.start
 invoker.invoke!
 exit invoker.code
-
