@@ -1,4 +1,12 @@
 == Changelog
 
+=== 0.1.2 [05-17-2018]
+
+* Added CSA Normal Document (CSAND) processor
+
+=== 0.1.1 [05-15-2018]
+
+* Improved usage of metanorma executable
+
 === 0.1.0 [05-12-2018]
 * Initial push

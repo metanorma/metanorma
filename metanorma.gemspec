@@ -31,5 +31,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'asciidoctor-rfc'
   spec.add_runtime_dependency 'asciidoctor-gb'
   spec.add_runtime_dependency 'asciidoctor-csd'
+  spec.add_runtime_dependency 'asciidoctor-csand'
   # spec.add_runtime_dependency 'asciidoctor-rsd'
 end

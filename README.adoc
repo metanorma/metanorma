@@ -20,6 +20,7 @@ Metanorma includes the following sub-projects:
 * ISO Standards: the AsciiISO syntax, the https://github.com/riboseinc/isodoc-models/[IsoDoc Models], the https://github.com/riboseinc/asciidoctor-iso/[asciidoctor-iso IsoDoc implementation]
 * CalConnect Standard Documents (CSD): the AsciiCSD syntax, https://github.com/riboseinc/csd[CSD Models], the https://github.com/riboseinc/asciidoctor-csd/[asciidoctor-csd implementation]
 * Chinese GuoBiao (GB) Standards: the AsciiGB syntax, https://github.com/riboseinc/gbdoc[GbDoc Models], the https://github.com/riboseinc/asciidoctor-gb/[asciidoctor-gb implementation]
+* Cloud Security Alliance Normal Documents (CSAND): the AsciiCSAND syntax, https://github.com/riboseinc/csand[CSAND Models], the https://github.com/riboseinc/asciidoctor-csand/[asciidoctor-csand implementation]
 //* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/riboseinc/asciidoctor-rsd[asciidoctor-rsd implementation]
 
 

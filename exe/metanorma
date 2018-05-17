@@ -34,6 +34,12 @@ supported_backends = [
     asciidoctor_backend: "csd"
   },
 
+  {
+    short: :csand,
+    load_path: "asciidoctor/csand/converter",
+    asciidoctor_backend: "csand"
+  },
+
   # {
   #   short: :rsd,
   #   load_path: "asciidoctor/rsd/converter",
