@@ -44,6 +44,7 @@ $ metanorma -h
 Usage: metanorma [options] <file>
     -t, --type TYPE                  Type of standard to generate: rfc2, rfc3, iso, gb, csd
     -f, --format FORMAT              Format of source file: asciidoc (current default, only format supported)
+    -r, --require LIBRARY            Require LIBRARY prior to execution
     -h, --help                       Show this message
 ----
 
@@ -58,7 +59,7 @@ Options:
 
 //, `rsd`
 `type`:: (mandatory, specified via `--type` or `-t`) takes one of the following types:
-`rfc2`, `rfc3`, `iso`, `gb`, `csd`
+`rfc2`, `rfc3`, `iso`, `gb`, `csd`, `csand`
 
 `format`:: (specified via `--format` or `-f`) only accepts `asciidoc` for now
 

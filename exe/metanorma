@@ -80,6 +80,15 @@ opt_parser = OptionParser.new do |opts|
     'Format of source file: asciidoc (current default, only format supported)'
   ) { |v| options[:format] = v }
 
+  opts.on(
+    '-r',
+    '--require LIBRARY',
+    'Require LIBRARY prior to execution'
+  ) { |v|
+    options[:require] ||= []
+    options[:require] << v
+  }
+
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
@@ -109,6 +118,12 @@ end
 unless options[:filename]
   puts "[metanorma] Error: Need to specify a file to process."
   exit 0
+end
+
+if options[:require]
+  options[:require].each do |r|
+    require r
+  end
 end
 
 asciidoc_options = Asciidoctor::Cli::Options.new(
