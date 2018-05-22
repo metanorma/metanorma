@@ -27,10 +27,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
 
-  spec.add_runtime_dependency 'asciidoctor-iso'
-  spec.add_runtime_dependency 'asciidoctor-rfc'
-  spec.add_runtime_dependency 'asciidoctor-gb'
-  spec.add_runtime_dependency 'asciidoctor-csd'
-  spec.add_runtime_dependency 'asciidoctor-csand'
+  spec.add_runtime_dependency 'asciidoctor-iso', ">= 0.7.7"
+    spec.add_runtime_dependency 'asciidoctor-rfc', ">= 0.8.5"
+  spec.add_runtime_dependency 'asciidoctor-gb', ">= 0.2.3"
+  spec.add_runtime_dependency 'asciidoctor-csd', ">= 0.2.6"
+  spec.add_runtime_dependency 'asciidoctor-csand', ">= 0.2.5"
   # spec.add_runtime_dependency 'asciidoctor-rsd'
+  spec.add_runtime_dependency 'isodoc', ">= 0.6.1"
 end
