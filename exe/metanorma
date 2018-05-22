@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require "optparse"
-require "asciidoctor/cli"
 
 def asciidoc_extract_options(file)
   header = file.sub(/\n\n.*$/m, "")
@@ -147,7 +146,7 @@ end
 case options[:format]
 when "asciidoc"
   if %w{rfc2 rfc3}.include? options[:type]
-    Asciidoctor.convert options[:filename], to_file: true, safe: :safe, backend: options[:type], header_footer: true
+    Asciidoctor.convert_file options[:filename], to_file: true, safe: :safe, backend: options[:type], header_footer: true
   else
     file = File.read(options[:filename], encoding: "utf-8")
     file = file.sub(%r{^([^\n]*\n)}, "\\1:nodoc: \n") # no isodoc output; ignored in rfc2, rfc3
