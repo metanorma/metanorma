@@ -92,6 +92,6 @@ it can give rise to many "standard" standards, but not limit the extension of an
 The motto of the project is https://en.wikipedia.org/wiki/Aequitas[_Aequitate_] _verum_,
 "Truth through equity". Dealing with all standards fairly (_aequitate_), we seek not an abstract
 virtue (_veritas_), but a practical reality on the ground (_verum_), that can be used by
-stakeholders of multiple standadrs.
+stakeholders of multiple standards.
 
 
