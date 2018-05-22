@@ -79,7 +79,7 @@ In English, it has ended up meaning "about (its own category)"; e.g.
 _meta-discussion_ (a discussion about discussion). (For the roundabout way
 it ended up with that meaning, see https://en.wikipedia.org/wiki/Meta#Etymology.)
 
-*Norma* is Latin for "`rule`" and "`standard`"; hence English "norm",
+*Norma* is Latin for "`rule`" and "`standard`"; hence English _norm_,
 but also German _Norm_ "standard".
 
 The Metanorma project is for setting a standard for standard documents
