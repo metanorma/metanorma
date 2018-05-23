@@ -149,8 +149,9 @@ when "asciidoc"
     Asciidoctor.convert_file options[:filename], to_file: true, safe: :safe, backend: options[:type], header_footer: true
   else
     file = File.read(options[:filename], encoding: "utf-8")
-    file = file.sub(%r{^([^\n]*\n)}, "\\1:nodoc: \n") # no isodoc output; ignored in rfc2, rfc3
-    xml = Asciidoctor.convert file, to_file: false, safe: :safe, backend: options[:type], header_footer: true
+    #file = file.sub(%r{^([^\n]*\n)}, "\\1:nodoc: \n") # no isodoc output; ignored in rfc2, rfc3
+    xml = Asciidoctor.convert file, to_file: false, safe: :safe, backend: options[:type], header_footer: true,
+      attributes: %w(nodoc stem xrefstyle=short)
     isodoc_options = asciidoc_extract_options(file)
     filename = options[:filename].sub(/\.[^.]+$/, "")
     case options[:type]
