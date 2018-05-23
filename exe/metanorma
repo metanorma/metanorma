@@ -164,6 +164,8 @@ when "asciidoc"
       IsoDoc::Gb::WordConvert.new(options).convert(filename, xml)
     when "csd"
       IsoDoc::Csd::Convert.new(options).convert(filename, xml)
+    when "csand"
+      IsoDoc::Csand::Convert.new(options).convert(filename, xml)
     end
   end
 end
