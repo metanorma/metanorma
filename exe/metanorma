@@ -57,6 +57,12 @@ supported_backends = [
     asciidoctor_backend: "csand"
   },
 
+  {
+    short: :m3d,
+    load_path: "asciidoctor/m3d/converter",
+    asciidoctor_backend: "m3d"
+  },
+
   # {
   #   short: :rsd,
   #   load_path: "asciidoctor/rsd/converter",
@@ -166,6 +172,8 @@ when "asciidoc"
       IsoDoc::Csd::Convert.new(options).convert(filename, xml)
     when "csand"
       IsoDoc::Csand::Convert.new(options).convert(filename, xml)
+    when "m3d"
+      IsoDoc::M3d::Convert.new(options).convert(filename, xml)
     end
   end
 end
