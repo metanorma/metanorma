@@ -174,6 +174,7 @@ when "asciidoc"
       IsoDoc::Csand::Convert.new(options).convert(filename, xml)
     when "m3d"
       IsoDoc::M3d::Convert.new(options).convert(filename, xml)
+      IsoDoc::M3d::WordConvert.new(options).convert(filename, xml)
     end
   end
 end
