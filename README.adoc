@@ -33,6 +33,13 @@ The Metanorma workflow can be utilized via the `metanorma` Ruby gem.
 gem install metanorma
 ----
 
+If you are going to generate PDFs from HTML (which applies to CSD), you will also need to install
+the node library https://github.com/GoogleChrome/puppeteer:
+
+* Install Node, with at least version 7.6.0: https://nodejs.org/en/download/,
+https://nodejs.org/en/download/package-manager/ . (For Mac, `brew install node`)
+* Install npm: https://docs.npmjs.com/getting-started/installing-node
+* Install puppeteer: `npm install -g --save --save-exact puppeteer`
 
 == Usage
 
@@ -42,7 +49,7 @@ Help command:
 ----
 $ metanorma -h
 Usage: metanorma [options] <file>
-    -t, --type TYPE                  Type of standard to generate: rfc2, rfc3, iso, gb, csd
+    -t, --type TYPE                  Type of standard to generate: rfc2, rfc3, iso, gb, csd, csand, m3d
     -f, --format FORMAT              Format of source file: asciidoc (current default, only format supported)
     -r, --require LIBRARY            Require LIBRARY prior to execution
     -h, --help                       Show this message

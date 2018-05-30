@@ -20,6 +20,14 @@ def asciidoc_extract_options(file)
   }.reject { |_, val| val.nil? }.map
 end
 
+def pdf_convert(filename)
+  url = "#{Dir.pwd}/#{filename}.html"
+  pdfjs = File.join(File.dirname(__FILE__), 'pdf.js')
+  system "export NODE_PATH=$(npm root --quiet -g);
+                node #{pdfjs} file://#{url} #{filename}.pdf"
+end
+
+
 supported_backends = [
   {
     short: :rfc2,
@@ -170,6 +178,7 @@ when "asciidoc"
       IsoDoc::Gb::WordConvert.new(options).convert(filename, xml)
     when "csd"
       IsoDoc::Csd::Convert.new(options).convert(filename, xml)
+      pdf_convert(filename)
     when "csand"
       IsoDoc::Csand::Convert.new(options).convert(filename, xml)
     when "m3d"
