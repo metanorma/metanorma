@@ -99,6 +99,13 @@ backend_keys = backends_enabled.map {|b| b[:short].to_s }
 
 opt_parser = OptionParser.new do |opts|
   opts.banner += " <file>"
+
+  opts.on(
+    '-v',
+    '--version',
+    "Print version of code",
+  ) { options[:version] = true }
+
   opts.on(
     '-t',
     '--type TYPE',
@@ -177,6 +184,24 @@ unless options[:format] == "asciidoc"
   exit 0
 end
 
+if options[:version]
+  case options[:type]
+  when "iso"
+    puts "Asciidoctor::ISO #{Asciidoctor::ISO::VERSION}/IsoDoc #{IsoDoc::VERSION}"
+  when "gb"
+    puts "Asciidoctor::Gb #{Asciidoctor::Gb::VERSION}"
+  when "csd"
+    puts "Asciidoctor::Csd #{Asciidoctor::Csd::VERSION}"
+  when "csand"
+    puts "Asciidoctor::Csand #{Asciidoctor::Csand::VERSION}"
+  when "m3d"
+    puts "Asciidoctor::M3d #{Asciidoctor::M3d::VERSION}"
+  when "rsd"
+    puts "Asciidoctor::Rsd #{Asciidoctor::Rsd::VERSION}"
+  end
+  exit
+end
+
 unless options[:filename]
   puts "[metanorma] Error: Need to specify a file to process."
   exit 0
@@ -198,9 +223,9 @@ when "asciidoc"
     xml = Asciidoctor.convert file, to_file: false, safe: :safe, backend: options[:type], header_footer: true,
       attributes: %w(nodoc stem xrefstyle=short)
 
-if options[:xml]
-  File.open(options[:xml], "w:UTF-8") { |file| file.write(xml) }
-end
+    if options[:xml]
+      File.open(options[:xml], "w:UTF-8") { |file| file.write(xml) }
+    end
 
     isodoc_options = asciidoc_extract_options(file)
     filename = options[:filename].sub(/\.[^.]+$/, "")
@@ -214,9 +239,9 @@ end
       IsoDoc::Gb::WordConvert.new(options).convert(filename, xml) unless suppress_word
     when "csd"
       IsoDoc::Csd::Convert.new(options).convert(filename, xml) unless suppress_html
-      pdf_convert(filename) unless_suppress_pdf
+      pdf_convert(filename) unless suppress_pdf
     when "csand"
-      IsoDoc::Csand::Convert.new(options).convert(filename, xml) unless_suppress_html
+      IsoDoc::Csand::Convert.new(options).convert(filename, xml) unless suppress_html
     when "m3d"
       IsoDoc::M3d::Convert.new(options).convert(filename, xml) unless supress_html
       IsoDoc::M3d::WordConvert.new(options).convert(filename, xml) unless supress_word
