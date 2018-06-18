@@ -71,11 +71,11 @@ supported_backends = [
     asciidoctor_backend: "m3d"
   },
 
-  # {
-  #   short: :rsd,
-  #   load_path: "asciidoctor/rsd/converter",
-  #   asciidoctor_backend: "rsd"
-  # },
+  {
+    short: :rsd,
+    load_path: "asciidoctor/rsd/converter",
+    asciidoctor_backend: "rsd"
+  },
 ]
 
 print "[metanorma] detecting backends: "
@@ -112,6 +112,30 @@ opt_parser = OptionParser.new do |opts|
   ) { |v| options[:format] = v }
 
   opts.on(
+    '-o',
+    '--output FILENAME',
+    'XML output file'
+  ) { |v| options[:xml] = v }
+
+  opts.on(
+    '-h',
+    '--output-html FILENAME',
+    'HTML output file'
+  ) { |v| options[:html] = v }
+
+  opts.on(
+    '-p',
+    '--output-pdf FILENAME',
+    'HTML output file'
+  ) { |v| options[:pdf] = v }
+
+  opts.on(
+    '-w',
+    '--output-word FILENAME',
+    'Word output file'
+  ) { |v| options[:word] = v }
+
+  opts.on(
     '-r',
     '--require LIBRARY',
     'Require LIBRARY prior to execution'
@@ -125,6 +149,13 @@ opt_parser = OptionParser.new do |opts|
     exit
   end
 
+end
+
+# if specify output format of HTML, Word, PDF, exclude unspecified others
+if options[:html] || options[:word] || options[:pdf]
+  suppress_html = true unless options[:html]
+  suppress_word = true unless options[:word]
+  suppress_pdf = true unless options[:pdf]
 end
 
 opt_parser.parse!(ARGV)
@@ -166,24 +197,32 @@ when "asciidoc"
     #file = file.sub(%r{^([^\n]*\n)}, "\\1:nodoc: \n") # no isodoc output; ignored in rfc2, rfc3
     xml = Asciidoctor.convert file, to_file: false, safe: :safe, backend: options[:type], header_footer: true,
       attributes: %w(nodoc stem xrefstyle=short)
+
+if options[:xml]
+  File.open(options[:xml], "w:UTF-8") { |file| file.write(xml) }
+end
+
     isodoc_options = asciidoc_extract_options(file)
     filename = options[:filename].sub(/\.[^.]+$/, "")
     case options[:type]
     when "iso"
-      IsoDoc::Iso::Convert.new(options).convert(filename, xml)
-      IsoDoc::Iso::Convert.new(options.merge(alt: true)).convert(filename + "_alt", xml)
-      IsoDoc::Iso::WordConvert.new(options).convert(filename, xml)
+      IsoDoc::Iso::Convert.new(options).convert(filename, xml) unless suppress_html
+      IsoDoc::Iso::Convert.new(options.merge(alt: true)).convert(filename + "_alt", xml) unless suppress_html
+      IsoDoc::Iso::WordConvert.new(options).convert(filename, xml) unless suppress_word
     when "gb"
-      IsoDoc::Gb::Convert.new(options).convert(filename, xml)
-      IsoDoc::Gb::WordConvert.new(options).convert(filename, xml)
+      IsoDoc::Gb::Convert.new(options).convert(filename, xml) unless suppress_html
+      IsoDoc::Gb::WordConvert.new(options).convert(filename, xml) unless suppress_word
     when "csd"
-      IsoDoc::Csd::Convert.new(options).convert(filename, xml)
-      pdf_convert(filename)
+      IsoDoc::Csd::Convert.new(options).convert(filename, xml) unless suppress_html
+      pdf_convert(filename) unless_suppress_pdf
     when "csand"
-      IsoDoc::Csand::Convert.new(options).convert(filename, xml)
+      IsoDoc::Csand::Convert.new(options).convert(filename, xml) unless_suppress_html
     when "m3d"
-      IsoDoc::M3d::Convert.new(options).convert(filename, xml)
-      IsoDoc::M3d::WordConvert.new(options).convert(filename, xml)
+      IsoDoc::M3d::Convert.new(options).convert(filename, xml) unless supress_html
+      IsoDoc::M3d::WordConvert.new(options).convert(filename, xml) unless supress_word
+    when "rsd"
+      IsoDoc::Rsd::Convert.new(options).convert(filename, xml) unless supress_html
+      IsoDoc::Rsd::WordConvert.new(options).convert(filename, xml) unless supress_word
     end
   end
 end
