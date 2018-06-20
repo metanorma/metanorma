@@ -3,7 +3,7 @@ module Metanorma
     class Pdf < Base
 
       def convert(url_path, output_path)
-        file_url = "file://#{url_path}"
+        file_url = "file://#{Dir.pwd}/#{url_path}"
         pdfjs = File.join(File.dirname(__FILE__), '../../../exe/metanorma-pdf.js')
         puts "export NODE_PATH=$(npm root --quiet -g);
                       node #{pdfjs} #{file_url} #{output_path}"
