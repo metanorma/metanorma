@@ -1,115 +1,54 @@
 #!/usr/bin/env ruby
 
 require "optparse"
+require "metanorma"
 
-def asciidoc_extract_options(file)
-  header = file.sub(/\n\n.*$/m, "")
-  /\nscript: (?<script>[^\n]+)\n/ =~ header
-  /\nbody-font: (?<bodyfont>[^\n]+)\n/ =~ header
-  /\nheader-font: (?<headerfont>[^\n]+)\n/ =~ header
-  /\nmonospace-font: (?<monospacefont>[^\n]+)\n/ =~ header
-  /\ntitle-font: (?<titlefont>[^\n]+)\n/ =~ header
-  /\ni18nyaml: (?<ni18nyaml>[^\n]+)\n/ =~ header
-  {
-    script: defined?(script) ? script : nil,
-    bodyfont: defined?(bodyfont) ? bodyfont : nil,
-    headerfont: defined?(headerfont) ? headerfont : nil,
-    monospacefont: defined?(monospacefont) ? monospacefont : nil,
-    titlefont: defined?(titlefont) ? titlefont : nil,
-    i18nyaml: defined?(i18nyaml) ? i18nyaml : nil,
-  }.reject { |_, val| val.nil? }.map
-end
+registry = Metanorma::Registry.instance
 
-def pdf_convert(filename)
-  url = "#{Dir.pwd}/#{filename}.html"
-  pdfjs = File.join(File.dirname(__FILE__), 'pdf.js')
-  system "export NODE_PATH=$(npm root --quiet -g);
-                node #{pdfjs} file://#{url} #{filename}.pdf"
-end
-
-
-supported_backends = [
-  {
-    short: :rfc2,
-    load_path: "asciidoctor/rfc/v2/converter",
-    asciidoctor_backend: "rfc2"
-  },
-
-  {
-    short: :rfc3,
-    load_path: "asciidoctor/rfc/v3/converter",
-    asciidoctor_backend: "rfc3"
-  },
-
-  {
-    short: :iso,
-    load_path: "asciidoctor/iso/converter",
-    asciidoctor_backend: "iso"
-  },
-
-  {
-    short: :gb,
-    load_path: "asciidoctor/gb/converter",
-    asciidoctor_backend: "gb"
-  },
-
-  {
-    short: :csd,
-    load_path: "asciidoctor/csd/converter",
-    asciidoctor_backend: "csd"
-  },
-
-  {
-    short: :csand,
-    load_path: "asciidoctor/csand/converter",
-    asciidoctor_backend: "csand"
-  },
-
-  {
-    short: :m3d,
-    load_path: "asciidoctor/m3d/converter",
-    asciidoctor_backend: "m3d"
-  },
-
-  # {
-  #   short: :rsd,
-  #   load_path: "asciidoctor/rsd/converter",
-  #   asciidoctor_backend: "rsd"
-  # },
+supported_gem_paths = [
+  "asciidoctor-rfc",
+  "asciidoctor-iso",
+  "asciidoctor-gb",
+  "asciidoctor-csd",
+  "asciidoctor-csand",
+  "asciidoctor-m3d",
+  "asciidoctor-rsd"
 ]
 
-print "[metanorma] detecting backends: "
-backends_enabled, backends_disabled = supported_backends.partition do |backend|
+puts "[metanorma] detecting backends:"
+supported_gem_paths.each do |backend|
   begin
-    print "#{backend[:short]} "
-    require backend[:load_path]
-    true
+    # puts backend
+    require backend
   rescue LoadError
-    # puts "[metanorma] backend #{backend[:short]} not present"
-    false
+    # puts "[metanorma] backend #{backend} not present"
   end
 end
 puts
 
 options = {
-  format: "asciidoc"
+  format: :asciidoc
 }
-
-backend_keys = backends_enabled.map {|b| b[:short].to_s }
-
 opt_parser = OptionParser.new do |opts|
   opts.banner += " <file>"
   opts.on(
     '-t',
     '--type TYPE',
-    "Type of standard to generate: #{backend_keys.join(", ")}"
-  ) { |v| options[:type] = v }
+    "Type of standard to generate: #{registry.supported_backends.join(", ")}"
+  ) { |v| options[:type] = v.to_sym }
+
+  opts.on(
+    '-x',
+    '--extensions EXT1,EXT2,...',
+    Array,
+    "Type of extension to generate per type: #{registry.output_formats}"
+  ) { |v| options[:extension_keys] = v.map(&:to_sym) }
 
   opts.on(
     '-f',
     '--format FORMAT',
     'Format of source file: asciidoc (current default, only format supported)'
-  ) { |v| options[:format] = v }
+  ) { |v| options[:format] = v.to_sym }
 
   opts.on(
     '-r',
@@ -136,12 +75,12 @@ unless options[:type]
   exit 0
 end
 
-unless backend_keys.include? options[:type]
+unless registry.supported_backends.include? options[:type]
   puts "[metanorma] Error: #{options[:type]} is not a supported standard type."
   exit 0
 end
 
-unless options[:format] == "asciidoc"
+unless options[:format] == :asciidoc
   puts "[metanorma] Error: Only source file format currently supported is 'asciidoc'."
   exit 0
 end
@@ -158,33 +97,19 @@ if options[:require]
 end
 
 case options[:format]
-when "asciidoc"
-  if %w{rfc2 rfc3}.include? options[:type]
-    Asciidoctor.convert_file options[:filename], to_file: true, safe: :safe, backend: options[:type], header_footer: true
-  else
-    file = File.read(options[:filename], encoding: "utf-8")
-    #file = file.sub(%r{^([^\n]*\n)}, "\\1:nodoc: \n") # no isodoc output; ignored in rfc2, rfc3
-    xml = Asciidoctor.convert file, to_file: false, safe: :safe, backend: options[:type], header_footer: true,
-      attributes: %w(nodoc stem xrefstyle=short)
-    isodoc_options = asciidoc_extract_options(file)
-    filename = options[:filename].sub(/\.[^.]+$/, "")
-    case options[:type]
-    when "iso"
-      IsoDoc::Iso::Convert.new(options).convert(filename, xml)
-      IsoDoc::Iso::Convert.new(options.merge(alt: true)).convert(filename + "_alt", xml)
-      IsoDoc::Iso::WordConvert.new(options).convert(filename, xml)
-    when "gb"
-      IsoDoc::Gb::Convert.new(options).convert(filename, xml)
-      IsoDoc::Gb::WordConvert.new(options).convert(filename, xml)
-    when "csd"
-      IsoDoc::Csd::Convert.new(options).convert(filename, xml)
-      pdf_convert(filename)
-    when "csand"
-      IsoDoc::Csand::Convert.new(options).convert(filename, xml)
-    when "m3d"
-      IsoDoc::M3d::Convert.new(options).convert(filename, xml)
-      IsoDoc::M3d::WordConvert.new(options).convert(filename, xml)
-    end
+when :asciidoc
+  processor = registry.find_processor(options[:type].to_sym)
+
+  file = File.read(options[:filename], encoding: "utf-8")
+  isodoc = processor.input_to_isodoc(file)
+
+  options[:extension_keys].each do |ext|
+
+    file_extension = processor.output_formats[ext]
+    outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
+    # puts "made outfilename #{outfilename}"
+    processor.output(isodoc, outfilename, ext)
+
   end
 end
 
