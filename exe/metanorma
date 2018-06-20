@@ -18,10 +18,10 @@ supported_gem_paths = [
 puts "[metanorma] detecting backends:"
 supported_gem_paths.each do |backend|
   begin
-    # puts backend
+    puts backend
     require backend
   rescue LoadError
-    # puts "[metanorma] backend #{backend} not present"
+    puts "[metanorma] backend #{backend} not present"
   end
 end
 puts
