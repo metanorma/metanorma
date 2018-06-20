@@ -1,54 +1,55 @@
 PATH
   remote: .
   specs:
-    metanorma (0.1.4)
-      asciidoctor-csand (>= 0.2.6)
-      asciidoctor-csd (>= 0.2.6)
-      asciidoctor-gb (>= 0.2.3)
-      asciidoctor-iso (>= 0.7.7)
-      asciidoctor-rfc (>= 0.8.5)
-      asciidoctor-rsd (>= 0.2.6)
-      isodoc (>= 0.6.1)
+    metanorma (0.2.0)
+      asciidoctor-csand (>= 0.3.0)
+      asciidoctor-csd (>= 0.4.0)
+      asciidoctor-gb (>= 0.3.0)
+      asciidoctor-iso (>= 0.9.0)
+      asciidoctor-rfc (>= 0.9.0)
+      asciidoctor-rsd (>= 0.3.0)
+      isodoc (>= 0.8.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    algoliasearch (1.22.0)
+    algoliasearch (1.23.2)
       httpclient (~> 2.8, >= 2.8.3)
       json (>= 1.5.1)
     asciidoctor (1.5.7.1)
-    asciidoctor-csand (0.2.8)
+    asciidoctor-csand (0.3.0)
       asciidoctor (~> 1.5.7)
-      asciidoctor-iso (>= 0.8.0)
+      asciidoctor-iso (>= 0.9.0)
       asciimath
       htmlentities (~> 4.3.4)
       image_size
-      isodoc (>= 0.7.0)
+      isodoc (>= 0.8.0)
       mime-types
       nokogiri
       ruby-jing
       ruby-xslt
       thread_safe
       uuidtools
-    asciidoctor-csd (0.3.2)
-      asciidoctor-iso (>= 0.8.0)
-      isodoc (>= 0.7.0)
-    asciidoctor-gb (0.2.5)
-      asciidoctor-iso (>= 0.7.9)
-      isodoc (>= 0.7.0)
+    asciidoctor-csd (0.4.0)
+      asciidoctor-iso (>= 0.9.0)
+      isodoc (>= 0.8.0)
+    asciidoctor-gb (0.3.0)
+      asciidoctor-iso (>= 0.9.0)
+      isodoc (>= 0.8.0)
       twitter_cldr
-    asciidoctor-iso (0.8.1)
+    asciidoctor-iso (0.9.0)
       asciidoctor (~> 1.5.7)
-      isobib (~> 0.1.4)
-      isodoc (>= 0.7.0)
+      iso-bib-item (~> 0.1.6)
+      isobib (~> 0.1.6)
+      isodoc (>= 0.8)
       ruby-jing
-    asciidoctor-rfc (0.8.5)
+    asciidoctor-rfc (0.9.0)
       asciidoctor (~> 1.5.7)
       htmlentities (~> 4.3.4)
       nokogiri
       ruby-jing
       thread_safe
-    asciidoctor-rsd (0.2.6)
+    asciidoctor-rsd (0.3.0)
       asciidoctor (~> 1.5.7)
       asciidoctor-iso (>= 0.8.0)
       asciimath
@@ -86,7 +87,7 @@ GEM
     isobib (0.1.6)
       algoliasearch
       iso-bib-item (~> 0.1.2)
-    isodoc (0.7.1)
+    isodoc (0.8)
       asciimath
       html2doc (>= 0.7.1)
       htmlentities (~> 4.3.4)
