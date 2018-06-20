@@ -1,11 +1,12 @@
 PATH
   remote: .
   specs:
-    metanorma (0.2.0)
+    metanorma (0.2.1)
       asciidoctor-csand (>= 0.3.0)
       asciidoctor-csd (>= 0.4.0)
       asciidoctor-gb (>= 0.3.0)
       asciidoctor-iso (>= 0.9.0)
+      asciidoctor-m3d (>= 0.3.1)
       asciidoctor-rfc (>= 0.9.0)
       asciidoctor-rsd (>= 0.3.0)
       isodoc (>= 0.8.0)
@@ -43,6 +44,19 @@ GEM
       isobib (~> 0.1.6)
       isodoc (>= 0.8)
       ruby-jing
+    asciidoctor-m3d (0.3.1)
+      asciidoctor (~> 1.5.7)
+      asciidoctor-iso (>= 0.9.0)
+      asciimath
+      htmlentities (~> 4.3.4)
+      image_size
+      isodoc (>= 0.8.0)
+      mime-types
+      nokogiri
+      ruby-jing
+      ruby-xslt
+      thread_safe
+      uuidtools
     asciidoctor-rfc (0.9.0)
       asciidoctor (~> 1.5.7)
       htmlentities (~> 4.3.4)
