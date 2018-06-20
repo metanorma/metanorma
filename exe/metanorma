@@ -59,6 +59,12 @@ opt_parser = OptionParser.new do |opts|
     options[:require] << v
   }
 
+  opts.on(
+    '-v',
+    '--version',
+    "Print version of code",
+  ) { options[:version] = true }
+
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
@@ -67,6 +73,26 @@ opt_parser = OptionParser.new do |opts|
 end
 
 opt_parser.parse!(ARGV)
+
+# TODO: move this to individual Processors
+if options[:version]
+  case options[:type]
+  when :iso
+    puts "Asciidoctor::ISO #{Asciidoctor::ISO::VERSION}/IsoDoc #{IsoDoc::VERSION}"
+  when :gb
+    puts "Asciidoctor::Gb #{Asciidoctor::Gb::VERSION}"
+  when :csd
+    puts "Asciidoctor::Csd #{Asciidoctor::Csd::VERSION}"
+  when :csand
+    puts "Asciidoctor::Csand #{Asciidoctor::Csand::VERSION}"
+  when :m3d
+    puts "Asciidoctor::M3d #{Asciidoctor::M3d::VERSION}"
+  when :rsd
+    puts "Asciidoctor::Rsd #{Asciidoctor::Rsd::VERSION}"
+  end
+  exit
+end
+
 options[:filename] = ARGV.pop
 
 unless options[:type]

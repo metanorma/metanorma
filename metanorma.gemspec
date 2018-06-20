@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'asciidoctor-csd', ">= 0.4.0"
   spec.add_runtime_dependency 'asciidoctor-csand', ">= 0.3.0"
   spec.add_runtime_dependency 'asciidoctor-rsd', ">= 0.3.0"
+  spec.add_runtime_dependency 'isodoc', ">= 0.8.0"
 end

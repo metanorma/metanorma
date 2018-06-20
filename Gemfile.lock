@@ -6,8 +6,9 @@ PATH
       asciidoctor-csd (>= 0.4.0)
       asciidoctor-gb (>= 0.3.0)
       asciidoctor-iso (>= 0.9.0)
-      asciidoctor-rfc (>= 0.8.5)
+      asciidoctor-rfc (>= 0.9.0)
       asciidoctor-rsd (>= 0.3.0)
+      isodoc (>= 0.8.0)
 
 GEM
   remote: https://rubygems.org/
