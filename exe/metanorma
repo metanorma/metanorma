@@ -41,7 +41,8 @@ opt_parser = OptionParser.new do |opts|
     '-x',
     '--extensions EXT1,EXT2,...',
     Array,
-    "Type of extension to generate per type: #{registry.output_formats}"
+    "Type of extension to generate per type: #{registry.output_formats}\n"\
+    "In addition, xml (outside of rfc2, rfc3) generates IsoDoc XML"
   ) { |v| options[:extension_keys] = v.map(&:to_sym) }
 
   opts.on(
@@ -126,16 +127,30 @@ case options[:format]
 when :asciidoc
   processor = registry.find_processor(options[:type].to_sym)
 
+  options[:extension_keys] ||= processor.output_formats.inject([]) do |memo, (_, v)|
+    memo << v; memo
+  end
+
+  extensions = options[:extension_keys].inject([]) do |memo, e|
+    if processor.output_formats[e] || e == :xml then memo << e
+    else
+      warn "[metanorma] Error: #{e} format is not supported for this standard"
+    end
+    memo
+  end
+  exit 0 if extensions.empty?
+
   file = File.read(options[:filename], encoding: "utf-8")
   isodoc = processor.input_to_isodoc(file)
 
-  options[:extension_keys].each do |ext|
-
-    file_extension = processor.output_formats[ext]
+  extensions.each do |ext|
+    file_extension = ext == :xml ? "xml" : processor.output_formats[ext]
     outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
-    # puts "made outfilename #{outfilename}"
-    processor.output(isodoc, outfilename, ext)
-
+    if ext == :xml
+      File.open(outfilename, "w:UTF-8") { |f| f.write(isodoc) }
+    else
+      processor.output(isodoc, outfilename, ext)
+    end
   end
 end
 

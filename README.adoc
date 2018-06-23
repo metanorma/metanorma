@@ -62,6 +62,7 @@ Usage: metanorma [options] <file>
       :m3d=>{:html=>"html", :doc=>"doc"},
       :rsd=>{:html=>"html"}
     }
+      In addition, xml (outside of rfc2, rfc3) generates IsoDoc XML
     -f, --format FORMAT              Format of source file: asciidoc (current default, only format supported)
     -r, --require LIBRARY            Require LIBRARY prior to execution
     -h, --help                       Show this message
