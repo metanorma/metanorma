@@ -75,23 +75,13 @@ end
 
 opt_parser.parse!(ARGV)
 
-# TODO: move this to individual Processors
 if options[:version]
-  case options[:type]
-  when :iso
-    puts "Asciidoctor::ISO #{Asciidoctor::ISO::VERSION}/IsoDoc #{IsoDoc::VERSION}"
-  when :gb
-    puts "Asciidoctor::Gb #{Asciidoctor::Gb::VERSION}"
-  when :csd
-    puts "Asciidoctor::Csd #{Asciidoctor::Csd::VERSION}"
-  when :csand
-    puts "Asciidoctor::Csand #{Asciidoctor::Csand::VERSION}"
-  when :m3d
-    puts "Asciidoctor::M3d #{Asciidoctor::M3d::VERSION}"
-  when :rsd
-    puts "Asciidoctor::Rsd #{Asciidoctor::Rsd::VERSION}"
+  case options[:format]
+  when :asciidoc
+    processor = registry.find_processor(options[:type].to_sym)
+    puts processor.version
+    exit
   end
-  exit
 end
 
 options[:filename] = ARGV.pop
