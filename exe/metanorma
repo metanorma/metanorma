@@ -63,7 +63,7 @@ opt_parser = OptionParser.new do |opts|
   opts.on(
     '-v',
     '--version',
-    "Print version of code",
+    "Print version of code (accompanied with -t)",
   ) { options[:version] = true }
 
   opts.on_tail("-h", "--help", "Show this message") do
@@ -117,10 +117,9 @@ case options[:format]
 when :asciidoc
   processor = registry.find_processor(options[:type].to_sym)
 
-  options[:extension_keys] ||= processor.output_formats.inject([]) do |memo, (_, v)|
-    memo << v; memo
+  options[:extension_keys] ||= processor.output_formats.inject([]) do |memo, (k, _)|
+    memo << k; memo
   end
-
   extensions = options[:extension_keys].inject([]) do |memo, e|
     if processor.output_formats[e] || e == :xml then memo << e
     else
