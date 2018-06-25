@@ -97,11 +97,11 @@ GEM
     htmlentities (4.3.4)
     httpclient (2.8.3)
     image_size (2.0.0)
-    iso-bib-item (0.1.7)
+    iso-bib-item (0.1.8)
       duplicate
       isoics (~> 0.1.6)
       nokogiri
-    isobib (0.1.6)
+    isobib (0.1.7)
       algoliasearch
       iso-bib-item (~> 0.1.2)
     isodoc (0.8)
