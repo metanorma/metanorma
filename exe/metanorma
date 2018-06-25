@@ -131,6 +131,7 @@ when :asciidoc
 
   file = File.read(options[:filename], encoding: "utf-8")
   isodoc = processor.input_to_isodoc(file)
+  isodoc_options = processor.extract_options(file)
 
   extensions.each do |ext|
     file_extension = ext == :xml ? "xml" : processor.output_formats[ext]
@@ -138,7 +139,7 @@ when :asciidoc
     if ext == :xml
       File.open(outfilename, "w:UTF-8") { |f| f.write(isodoc) }
     else
-      processor.output(isodoc, outfilename, ext)
+      processor.output(isodoc, outfilename, ext, isodoc_options)
     end
   end
 end
