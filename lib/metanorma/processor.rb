@@ -23,5 +23,8 @@ module Metanorma
       raise "This is an abstract class!"
     end
 
+    def extract_options(file)
+      Metanorma::Input::Asciidoc.new.extract_options(file)
+    end
   end
 end

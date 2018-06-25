@@ -18,12 +18,12 @@ module Metanorma
       def extract_options(file)
         header = file.sub(/\n\n.*$/m, "")
 
-        /\nscript: (?<script>[^\n]+)\n/ =~ header
-        /\nbody-font: (?<bodyfont>[^\n]+)\n/ =~ header
-        /\nheader-font: (?<headerfont>[^\n]+)\n/ =~ header
-        /\nmonospace-font: (?<monospacefont>[^\n]+)\n/ =~ header
-        /\ntitle-font: (?<titlefont>[^\n]+)\n/ =~ header
-        /\ni18nyaml: (?<ni18nyaml>[^\n]+)\n/ =~ header
+        /\n:script: (?<script>[^\n]+)\n/ =~ header
+        /\n:body-font: (?<bodyfont>[^\n]+)\n/ =~ header
+        /\n:header-font: (?<headerfont>[^\n]+)\n/ =~ header
+        /\n:monospace-font: (?<monospacefont>[^\n]+)\n/ =~ header
+        /\n:title-font: (?<titlefont>[^\n]+)\n/ =~ header
+        /\n:i18nyaml: (?<ni18nyaml>[^\n]+)\n/ =~ header
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -31,7 +31,7 @@ module Metanorma
           monospacefont: defined?(monospacefont) ? monospacefont : nil,
           titlefont: defined?(titlefont) ? titlefont : nil,
           i18nyaml: defined?(i18nyaml) ? i18nyaml : nil,
-        }.reject { |_, val| val.nil? }.map
+        }.reject { |_, val| val.nil? }
       end
 
     end
