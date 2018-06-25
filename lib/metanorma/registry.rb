@@ -3,6 +3,9 @@
 
 require 'singleton'
 
+class Error < StandardError
+end
+
 module Metanorma
   class Registry
     include Singleton

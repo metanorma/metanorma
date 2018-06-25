@@ -27,15 +27,16 @@ RSpec.describe Metanorma do
     expect(xml).to include "</iso-standard>"
   end
 
-
-
+  it "extracts isodoc options from asciidoc file" do
+    File.open("test.adoc", "w:UTF-8") { |f| f.write(ASCIIDOC_CONFIGURED_HDR) }
+    system "rm -f test.xml test.html test.alt.html test.doc"
+    system "metanorma -t iso -x html test.adoc"
+    html = File.read("test.html")
+    expect(html).to include "font-family: body-font;"
+    expect(html).to include "font-family: header-font;"
+    expect(html).to include "font-family: monospace-font;"
+  end
 end
-
-
-
-
-
-
 
 
 RSpec.describe "warns when no standard type provided" do
