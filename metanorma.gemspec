@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-command", "~> 1.0.3"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
 
-  spec.add_runtime_dependency 'asciidoctor-iso', ">= 0.9.0"
+  spec.add_runtime_dependency 'asciidoctor-iso', ">= 0.9.1"
   spec.add_runtime_dependency 'asciidoctor-rfc', ">= 0.9.0"
   spec.add_runtime_dependency 'asciidoctor-gb', ">= 0.3.0"
   spec.add_runtime_dependency 'asciidoctor-csd', ">= 0.4.0"
