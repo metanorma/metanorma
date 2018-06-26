@@ -5,7 +5,7 @@ PATH
       asciidoctor-csand (>= 0.3.0)
       asciidoctor-csd (>= 0.4.0)
       asciidoctor-gb (>= 0.3.0)
-      asciidoctor-iso (>= 0.9.0)
+      asciidoctor-iso (>= 0.9.1)
       asciidoctor-m3d (>= 0.3.1)
       asciidoctor-rfc (>= 0.9.0)
       asciidoctor-rsd (>= 0.3.0)
@@ -38,7 +38,7 @@ GEM
       asciidoctor-iso (>= 0.9.0)
       isodoc (>= 0.8.0)
       twitter_cldr
-    asciidoctor-iso (0.9.0)
+    asciidoctor-iso (0.9.1)
       asciidoctor (~> 1.5.7)
       iso-bib-item (~> 0.1.6)
       isobib (~> 0.1.6)
