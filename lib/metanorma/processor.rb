@@ -12,7 +12,9 @@ module Metanorma
     end
 
     def output_formats
-      raise "This is an abstract class!"
+      {
+        xml: "xml"
+      }
     end
 
     def input_to_isodoc(file)
@@ -20,7 +22,7 @@ module Metanorma
     end
 
     def output(isodoc_node, outname, format, options={})
-      raise "This is an abstract class!"
+      File.open(outname, "w:UTF-8") { |f| f.write(isodoc) }
     end
 
     def extract_options(file)
