@@ -22,7 +22,7 @@ module Metanorma
     end
 
     def output(isodoc_node, outname, format, options={})
-      File.open(outname, "w:UTF-8") { |f| f.write(isodoc) }
+      File.open(outname, "w:UTF-8") { |f| f.write(isodoc_node) }
     end
 
     def extract_options(file)

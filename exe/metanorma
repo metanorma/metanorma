@@ -115,22 +115,22 @@ end
 case options[:format]
 when :asciidoc
   processor = registry.find_processor(options[:type].to_sym)
-
   options[:extension_keys] ||= processor.output_formats.inject([]) do |memo, (k, _)|
     memo << k; memo
   end
   extensions = options[:extension_keys].inject([]) do |memo, e|
-    unless processor.output_formats[e]
+    if processor.output_formats[e]
+      memo << e
+    else
       warn "[metanorma] Error: #{e} format is not supported for this standard"
     end
-    memo
+    memo 
   end
   exit 0 if extensions.empty?
 
   file = File.read(options[:filename], encoding: "utf-8")
   isodoc = processor.input_to_isodoc(file)
   isodoc_options = processor.extract_options(file)
-
   extensions.each do |ext|
     file_extension = processor.output_formats[ext]
     outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
