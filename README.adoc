@@ -45,7 +45,7 @@ the https://github.com/riboseinc/asciidoctor-m3d/[asciidoctor-m3d implementation
 
 == Installation
 
-=== All-in-one install
+=== All-in-one install, MacOS
 
 macOS users can directly run the Metanorma setup script located here:
 https://github.com/riboseinc/metanorma-macos-setup
@@ -53,6 +53,33 @@ https://github.com/riboseinc/metanorma-macos-setup
 This is a one-stop installation script that setups Ruby, Node
 and all necessary parts for running Metanorma.
 
+=== Installation, https://www.ubuntu.com[Ubunto]
+
+````
+# Set up prerequisites
+apt-get update
+apt install -y git make ruby-bundler ruby-dev libxml2-dev libxslt-dev default-jre
+gem install bundler
+gem install nokogiri -v '1.8.4'
+gem install metanorma
+````
+
+(You may need to run these as `sudo`)
+
+If you want to run Ubuntu on MacOS, you should do the following beforehand:
+
+````
+# Setup docker through dinghy on MacOS:
+brew tap codekitchen/dinghy
+brew install dinghy
+brew install docker docker-machine
+dinghy create --provider virtualbox
+
+# Run the Ubuntu container:
+dinghy up
+eval $(dinghy env)
+docker run -it ubuntu:18.10 bash
+````
 
 === Installing individual components
 
