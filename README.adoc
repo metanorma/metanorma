@@ -59,20 +59,22 @@ and all necessary parts for running Metanorma.
 
 === Installation, https://www.ubuntu.com[Ubunto]
 
-````
+[source,sh]
+----
 # Set up prerequisites
 apt-get update
 apt install -y git make ruby-bundler ruby-dev libxml2-dev libxslt-dev default-jre
 gem install bundler
 gem install nokogiri -v '1.8.4'
 gem install metanorma
-````
+----
 
 (You may need to run these as `sudo`)
 
 If you want to run Ubuntu on MacOS, you should do the following beforehand:
 
-````
+[source,sh]
+----
 # Setup docker through dinghy on MacOS:
 brew tap codekitchen/dinghy
 brew install dinghy
@@ -83,7 +85,7 @@ dinghy create --provider virtualbox
 dinghy up
 eval $(dinghy env)
 docker run -it ubuntu:18.10 bash
-````
+----
 
 === Installing individual components
 
