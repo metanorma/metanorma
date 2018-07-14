@@ -2,142 +2,19 @@ PATH
   remote: .
   specs:
     metanorma (0.2.5)
-      asciidoctor-csand (>= 0.3.0)
-      asciidoctor-csd (>= 0.4.0)
-      asciidoctor-gb (>= 0.3.0)
-      asciidoctor-iso (>= 0.9.1)
-      asciidoctor-m3d (>= 0.3.1)
-      asciidoctor-rfc (>= 0.9.0)
-      asciidoctor-rsd (>= 0.3.0)
-      isodoc (>= 0.8.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    algoliasearch (1.23.2)
-      httpclient (~> 2.8, >= 2.8.3)
-      json (>= 1.5.1)
-    asciidoctor (1.5.7.1)
-    asciidoctor-csand (0.3.1)
-      asciidoctor (~> 1.5.7)
-      asciidoctor-iso (>= 0.9.0)
-      asciimath
-      htmlentities (~> 4.3.4)
-      image_size
-      isodoc (>= 0.8.0)
-      mime-types
-      nokogiri
-      ruby-jing
-      ruby-xslt
-      thread_safe
-      uuidtools
-    asciidoctor-csd (0.4.1)
-      asciidoctor-iso (>= 0.9.0)
-      isodoc (>= 0.8.0)
-    asciidoctor-gb (0.3.1)
-      asciidoctor-iso (>= 0.9.0)
-      gbbib
-      isodoc (>= 0.8.0)
-      twitter_cldr
-    asciidoctor-iso (0.9.3)
-      asciidoctor (~> 1.5.7)
-      iso-bib-item (~> 0.1.6)
-      isobib (~> 0.1.8)
-      isodoc (>= 0.8)
-      ruby-jing
-    asciidoctor-m3d (0.3.2)
-      asciidoctor (~> 1.5.7)
-      asciidoctor-iso (>= 0.9.0)
-      asciimath
-      htmlentities (~> 4.3.4)
-      image_size
-      isodoc (>= 0.8.0)
-      mime-types
-      nokogiri
-      ruby-jing
-      ruby-xslt
-      thread_safe
-      uuidtools
-    asciidoctor-rfc (0.9.0)
-      asciidoctor (~> 1.5.7)
-      htmlentities (~> 4.3.4)
-      nokogiri
-      ruby-jing
-      thread_safe
-    asciidoctor-rsd (0.3.1)
-      asciidoctor (~> 1.5.7)
-      asciidoctor-iso (>= 0.8.0)
-      asciimath
-      htmlentities (~> 4.3.4)
-      image_size
-      isodoc (>= 0.7.0)
-      mime-types
-      nokogiri
-      ruby-jing
-      ruby-xslt
-      thread_safe
-      uuidtools
-    asciimath (1.0.4)
     byebug (10.0.2)
-    camertron-eprun (1.1.1)
-    cldr-plurals-runtime-rb (1.0.1)
-    cnccs (0.1.1)
     diff-lcs (1.3)
-    duplicate (1.1.1)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
-    ffi (1.9.25)
-    gbbib (0.1.2)
-      cnccs
-      iso-bib-item
-    html2doc (0.8.0)
-      asciimath
-      htmlentities (~> 4.3.4)
-      image_size
-      mime-types
-      nokogiri
-      ruby-xslt
-      thread_safe
-      uuidtools
-    htmlentities (4.3.4)
-    httpclient (2.8.3)
-    image_size (2.0.0)
-    iso-bib-item (0.1.10)
-      duplicate
-      isoics (~> 0.1.6)
-      nokogiri
-    isobib (0.1.9)
-      algoliasearch
-      iso-bib-item (~> 0.1.10)
-    isodoc (0.8.1)
-      asciimath
-      html2doc (>= 0.7.1)
-      htmlentities (~> 4.3.4)
-      image_size
-      liquid
-      mime-types
-      nokogiri
-      roman-numerals
-      ruby-xslt
-      sass
-      thread_safe
-      uuidtools
-    isoics (0.1.6)
-    json (2.1.0)
-    liquid (4.0.0)
-    mime-types (3.1)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2016.0521)
     mini_portile2 (2.3.0)
     mixlib-shellout (2.3.2)
     nokogiri (1.8.3)
       mini_portile2 (~> 2.3.0)
-    optout (0.0.2)
     rake (10.5.0)
-    rb-fsevent (0.10.3)
-    rb-inotify (0.9.10)
-      ffi (>= 0.5.0, < 2)
-    roman-numerals (0.3.0)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -158,22 +35,6 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
-    ruby-jing (0.0.1)
-      optout (>= 0.0.2)
-    ruby-xslt (0.9.10)
-    sass (3.5.6)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    thread_safe (0.3.6)
-    twitter_cldr (4.4.3)
-      camertron-eprun
-      cldr-plurals-runtime-rb (~> 1.0)
-      tzinfo
-    tzinfo (1.2.5)
-      thread_safe (~> 0.1)
-    uuidtools (2.1.5)
 
 PLATFORMS
   ruby
