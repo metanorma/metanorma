@@ -10,16 +10,16 @@ Gem::Specification.new do |spec|
   spec.email         = ['open.source@ribose.com']
 
   spec.summary       = %q{Metanorma is the standard of standards; the metanorma gem allows you to create any standard document type supported by Metanorma.}
-  spec.description   = %q{Executable and library to process any Metanorma standard.}
+  spec.description   = %q{Library to process any Metanorma standard.}
   spec.homepage      = "https://github.com/riboseinc/metanorma"
-  spec.license       = "MIT"
+  spec.license       = "BSD-2-Clause"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
   spec.extra_rdoc_files = %w[README.adoc CHANGELOG.adoc LICENSE.txt]
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.bindir        = "bin"
+  #spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = '>= 2.4.0'
@@ -31,12 +31,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-command", "~> 1.0.3"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
 
-  spec.add_runtime_dependency 'asciidoctor-iso', ">= 0.9.1"
-  spec.add_runtime_dependency 'asciidoctor-rfc', ">= 0.9.0"
-  spec.add_runtime_dependency 'asciidoctor-gb', ">= 0.3.0"
-  spec.add_runtime_dependency 'asciidoctor-csd', ">= 0.4.0"
-  spec.add_runtime_dependency 'asciidoctor-csand', ">= 0.3.0"
-  spec.add_runtime_dependency 'asciidoctor-rsd', ">= 0.3.0"
-  spec.add_runtime_dependency 'asciidoctor-m3d', ">= 0.3.1"
-  spec.add_runtime_dependency 'isodoc', ">= 0.8.0"
 end
