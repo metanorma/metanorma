@@ -66,7 +66,7 @@ apt-get update
 apt install -y git make ruby-bundler ruby-dev libxml2-dev libxslt-dev default-jre
 gem install bundler
 gem install nokogiri -v '1.8.4'
-gem install metanorma
+gem install metanorma-cli
 ----
 
 (You may need to run these as `sudo`)
@@ -93,7 +93,7 @@ The Metanorma workflow can be utilized via the `metanorma` Ruby gem.
 
 [source,sh]
 ----
-gem install metanorma
+gem install metanorma-cli
 ----
 
 If you are going to generate PDFs from HTML (which applies to CSD), you will also need to install
