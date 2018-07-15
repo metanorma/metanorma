@@ -113,8 +113,8 @@ Help command:
 ----
 $ metanorma -h
 Usage: metanorma [options] <file>
-  -t, --type TYPE                  Type of standard to generate: rfc2, rfc3, iso, gb, csd, csand, m3d
-  -x, --extensions EXT1,EXT2,...   Type of extension to generate per type:
+  -t, --type TYPE                       Type of standard to generate: rfc2, rfc3, iso, gb, csd, csand, m3d
+  -x, --extensions EXT1,EXT2,... | all  Type of extension to generate per type:
   {
     :rfc2=>{:xmlrfc=>"v2.xml"},
     :rfc3=>{:xmlrfc=>"v3.xml"},
@@ -125,7 +125,8 @@ Usage: metanorma [options] <file>
     :m3d=>{:html=>"html", :doc=>"doc"},
     :rsd=>{:html=>"html"}
   }
-  In addition, xml (outside of rfc2, rfc3) generates IsoDoc XML
+  In addition, xml (outside of rfc2, rfc3) generates IsoDoc XML. If the argument is "all" or the option is
+  missing, all available extensions are generated.
   -f, --format FORMAT              Format of source file: asciidoc (current default, only format supported)
   -r, --require LIBRARY            Require LIBRARY prior to execution
   -h, --help                       Show this message
