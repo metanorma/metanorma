@@ -57,7 +57,7 @@ https://github.com/riboseinc/metanorma-macos-setup
 This is a one-stop installation script that setups Ruby, Node
 and all necessary parts for running Metanorma.
 
-=== Installation, https://www.ubuntu.com[Ubunto]
+=== Installation, https://www.ubuntu.com[Ubuntu]
 
 [source,sh]
 ----
