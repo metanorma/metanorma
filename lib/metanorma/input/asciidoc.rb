@@ -16,7 +16,7 @@ module Metanorma
       end
 
       def extract_options(file)
-        header = file.sub(/\n\n.*$/m, "")
+        header = file.sub(/\n\n.*$/m, "\n")
 
         /\n:script: (?<script>[^\n]+)\n/ =~ header
         /\n:body-font: (?<bodyfont>[^\n]+)\n/ =~ header
