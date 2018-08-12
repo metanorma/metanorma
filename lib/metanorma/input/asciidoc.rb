@@ -23,7 +23,16 @@ module Metanorma
         /\n:header-font: (?<headerfont>[^\n]+)\n/ =~ header
         /\n:monospace-font: (?<monospacefont>[^\n]+)\n/ =~ header
         /\n:title-font: (?<titlefont>[^\n]+)\n/ =~ header
-        /\n:i18nyaml: (?<ni18nyaml>[^\n]+)\n/ =~ header
+        /\n:i18nyaml: (?<i18nyaml>[^\n]+)\n/ =~ header
+        /\n:htmlstylesheet: (?<htmlstylesheet>[^\n]+)\n/ =~ header
+        /\n:htmlcoverpage: (?<htmlcoverpage>[^\n]+)\n/ =~ header
+        /\n:htmlintropage: (?<htmlintropage>[^\n]+)\n/ =~ header
+        /\n:scripts: (?<scripts>[^\n]+)\n/ =~ header
+        /\n:wordstylesheet: (?<wordstylesheet>[^\n]+)\n/ =~ header
+        /\n:standardstylesheet: (?<standardstylesheet>[^\n]+)\n/ =~ header
+        /\n:header: (?<header>[^\n]+)\n/ =~ header
+        /\n:wordcoverpage: (?<wordcoverpage>[^\n]+)\n/ =~ header
+        /\n:wordintropage: (?<wordintropage>[^\n]+)\n/ =~ header
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -31,6 +40,15 @@ module Metanorma
           monospacefont: defined?(monospacefont) ? monospacefont : nil,
           titlefont: defined?(titlefont) ? titlefont : nil,
           i18nyaml: defined?(i18nyaml) ? i18nyaml : nil,
+          htmlstylesheet: defined?(htmlstylesheet) ? htmlstylesheet : nil,
+          htmlcoverpage: defined?(htmlcoverpage) ? htmlcoverpage : nil,
+          htmlintropage: defined?(htmlintropage) ? htmlintropage : nil,
+          scripts: defined?(scripts) ? scripts : nil,
+          wordstylesheet: defined?(wordstylesheet) ? wordstylesheet : nil,
+          standardstylesheet: defined?(standardstylesheet) ? standardstylesheet : nil,
+          header: defined?(header) ? header : nil,
+          wordcoverpage: defined?(wordcoverpage) ? wordcoverpage : nil,
+          wordintropage: defined?(wordintropage) ? wordintropage : nil,
         }.reject { |_, val| val.nil? }
       end
 
