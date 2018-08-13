@@ -33,6 +33,8 @@ module Metanorma
         /\n:header: (?<header>[^\n]+)\n/ =~ header
         /\n:wordcoverpage: (?<wordcoverpage>[^\n]+)\n/ =~ header
         /\n:wordintropage: (?<wordintropage>[^\n]+)\n/ =~ header
+        /\n:ulstyle: (?<ulstyle>[^\n]+)\n/ =~ header
+        /\n:olstyle: (?<olstyle>[^\n]+)\n/ =~ header
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -49,6 +51,8 @@ module Metanorma
           header: defined?(header) ? header : nil,
           wordcoverpage: defined?(wordcoverpage) ? wordcoverpage : nil,
           wordintropage: defined?(wordintropage) ? wordintropage : nil,
+          ulstyle: defined?(ulstyle) ? ulstyle : nil,
+          olstyle: defined?(olstyle) ? olstyle : nil,
         }.reject { |_, val| val.nil? }
       end
 
