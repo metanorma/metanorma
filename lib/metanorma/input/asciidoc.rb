@@ -28,6 +28,7 @@ module Metanorma
         /\n:htmlcoverpage: (?<htmlcoverpage>[^\n]+)\n/ =~ header
         /\n:htmlintropage: (?<htmlintropage>[^\n]+)\n/ =~ header
         /\n:scripts: (?<scripts>[^\n]+)\n/ =~ header
+        /\n:scripts-pdf: (?<scripts_pdf>[^\n]+)\n/ =~ header
         /\n:wordstylesheet: (?<wordstylesheet>[^\n]+)\n/ =~ header
         /\n:standardstylesheet: (?<standardstylesheet>[^\n]+)\n/ =~ header
         /\n:header: (?<header>[^\n]+)\n/ =~ header
@@ -46,6 +47,7 @@ module Metanorma
           htmlcoverpage: defined?(htmlcoverpage) ? htmlcoverpage : nil,
           htmlintropage: defined?(htmlintropage) ? htmlintropage : nil,
           scripts: defined?(scripts) ? scripts : nil,
+          scripts_pdf: defined?(scripts_pdf) ? scripts_pdf : nil,
           wordstylesheet: defined?(wordstylesheet) ? wordstylesheet : nil,
           standardstylesheet: defined?(standardstylesheet) ? standardstylesheet : nil,
           header: defined?(header) ? header : nil,
