@@ -129,6 +129,7 @@ Usage: metanorma [options] <file>
   missing, all available extensions are generated.
   -f, --format FORMAT              Format of source file: asciidoc (current default, only format supported)
   -r, --require LIBRARY            Require LIBRARY prior to execution
+  -w, --wrapper                    Create wrapper folder for HTML output
   -h, --help                       Show this message
 ----
 
@@ -151,6 +152,10 @@ all possible output formats are generated. The output formats generated are cons
 what has been defined for each standard type. All standards can generate Metanorma XML (`xml`),
 and at least one of HTML (`html`), DOC (`doc`), PDF (`pdf`). Some standards generate alternative
 HTML renderings (e.g. `html_alt` for ISO).
+
+`wrapper`:: create a separate folder for each instance of HTML output generated; the folder is named
+the same as the output file, without the `.html` suffix. Used to make distribution of HTML outputs
+more straightforward.
 
 `format`:: (optional, specified via `--format` or `-f`) only accepts `asciidoc` for now,
 defaults to `asciidoc`

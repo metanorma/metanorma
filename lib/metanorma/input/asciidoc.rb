@@ -36,6 +36,7 @@ module Metanorma
         /\n:wordintropage: (?<wordintropage>[^\n]+)\n/ =~ header
         /\n:ulstyle: (?<ulstyle>[^\n]+)\n/ =~ header
         /\n:olstyle: (?<olstyle>[^\n]+)\n/ =~ header
+        /\n(?<datauriimage>:data-uri-image:[^\n]*)\n/ =~ header
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -55,6 +56,7 @@ module Metanorma
           wordintropage: defined?(wordintropage) ? wordintropage : nil,
           ulstyle: defined?(ulstyle) ? ulstyle : nil,
           olstyle: defined?(olstyle) ? olstyle : nil,
+          data_uri_image: defined?(datauriimage) ? true : nil,
         }.reject { |_, val| val.nil? }
       end
 
