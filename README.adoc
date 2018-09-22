@@ -19,58 +19,59 @@ document model.
 
 Metanorma includes the following sub-projects:
 
-* The https://github.com/riboseinc/standoc-models[Metanorma document model (previously called StanDoc)]
+* The https://github.com/riboseinc/metanorma-model-standoc[Metanorma Standard Document model]
 
 * IETF Internet-Drafts and RFCs: the https://datatracker.ietf.org/doc/draft-ribose-asciirfc/[AsciiRFC syntax],
 the https://github.com/riboseinc/asciidoctor-rfc/[asciidoctor-rfc RFC XML v2 and v3 implementations]
 
 * ISO Standards: the AsciiISO syntax,
-the https://github.com/riboseinc/isodoc-models/[IsoDoc Models],
-the https://github.com/riboseinc/asciidoctor-iso/[asciidoctor-iso IsoDoc implementation]
+the https://github.com/riboseinc/metanorma-model-iso/[Metanorma ISO model],
+the https://github.com/riboseinc/metanorma-iso/[metanorma-iso IsoDoc implementation]
 
 * CalConnect Standard Documents (CSD): the AsciiCSD syntax,
-https://github.com/riboseinc/csd[CSD Models],
-the https://github.com/riboseinc/asciidoctor-csd/[asciidoctor-csd implementation]
+https://github.com/riboseinc/metanorma-model-csd[Metanorma CSD model],
+the https://github.com/riboseinc/metanorma-csd/[metanorma-csd implementation]
 
 * Chinese GuoBiao (GB) Standards: the AsciiGB syntax,
-https://github.com/riboseinc/gbdoc[GbDoc Models],
-the https://github.com/riboseinc/asciidoctor-gb/[asciidoctor-gb implementation]
+https://github.com/riboseinc/metanorma-model-gb[Metanorma GB models, for Chinese standards],
+the https://github.com/riboseinc/metanorma-gb/[metanorma-gb implementation]
 
 * Cloud Security Alliance Normal Documents (CSAND): the AsciiCSAND syntax,
-https://github.com/riboseinc/csand[CSAND Models],
-the https://github.com/riboseinc/asciidoctor-csand/[asciidoctor-csand implementation]
+https://github.com/riboseinc/metanorma-model-csand[Metanorma CSAND model],
+the https://github.com/riboseinc/metanorma-csand/[metanorma-csand implementation]
 
 * M3AAWG Documents (M3D): the AsciiM3D syntax,
-https://github.com/riboseinc/m3d[M3D Models],
-the https://github.com/riboseinc/asciidoctor-m3d/[asciidoctor-m3d implementation]
+https://github.com/riboseinc/metanorma-model-m3d[Metanorma M3D model],
+the https://github.com/riboseinc/metanorma-m3d/[metanorma-m3d implementation]
 
-//* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/riboseinc/asciidoctor-rsd[asciidoctor-rsd implementation]
+//* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/riboseinc/metanorma-rsd[metanorma-rsd implementation]
 
 
-== Installation
+== Installation on supported platforms
 
-=== All-in-one install, MacOS
+=== MacOS
 
-macOS users can directly run the Metanorma setup script located here:
+We recommend macOS users to directly run the Metanorma setup script
+located here:
 https://github.com/riboseinc/metanorma-macos-setup
 
 This is a one-stop installation script that setups Ruby, Node
 and all necessary parts for running Metanorma.
 
-=== Installation, https://www.ubuntu.com[Ubuntu]
+Alternatively, you can also use the Metanorma Docker container (see below).
 
-[source,sh]
-----
-# Set up prerequisites
-apt-get update
-apt install -y git make ruby-bundler ruby-dev libxml2-dev libxslt-dev default-jre
-gem install bundler
-gem install nokogiri -v '1.8.4'
-gem install metanorma-cli
-----
+=== Linux
 
-(You may need to run these as `sudo`)
+Please see: https://github.com/riboseinc/metanorma-linux-setup
 
+Alternatively, you can also use the Metanorma Docker container (see below).
+
+=== Docker: Windows and other platforms
+
+Please use the Metanorma Docker container: https://github.com/riboseinc/metanorma-docker
+
+
+////
 If you want to run Ubuntu on MacOS, you should do the following beforehand:
 
 [source,sh]
@@ -86,6 +87,7 @@ dinghy up
 eval $(dinghy env)
 docker run -it ubuntu:18.10 bash
 ----
+////
 
 === Installing individual components
 
@@ -100,7 +102,7 @@ If you are going to generate PDFs from HTML (which applies to CSD), you will als
 the node library https://github.com/GoogleChrome/puppeteer:
 
 * Install Node, with at least version 7.6.0: https://nodejs.org/en/download/,
-https://nodejs.org/en/download/package-manager/ . (For Mac, `brew install node`)
+https://nodejs.org/en/download/package-manager/ . (For macOS, `brew install node`)
 * Install npm: https://docs.npmjs.com/getting-started/installing-node
 * Install puppeteer: `npm install -g --save --save-exact puppeteer`
 
@@ -143,7 +145,7 @@ $ metanorma --type <chosen-type> [--format input-format] [--extensions EXT1,EXT2
 Options:
 
 `type`:: (mandatory, specified via `--type` or `-t`) takes one of the following types:
-`rfc2`, `rfc3`, `iso`, `gb`, `csd`, `csand`, `m3d`, `rsd`. Each of these corresponds to a 
+`rfc2`, `rfc3`, `iso`, `gb`, `csd`, `csand`, `m3d`, `rsd`. Each of these corresponds to a
 standards class and a Metanorma gem; the list of standards classes supported by the script
 by default will grow (see also `require`).
 
