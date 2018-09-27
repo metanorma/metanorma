@@ -132,6 +132,8 @@ Usage: metanorma [options] <file>
   -f, --format FORMAT              Format of source file: asciidoc (current default, only format supported)
   -r, --require LIBRARY            Require LIBRARY prior to execution
   -w, --wrapper                    Create wrapper folder for HTML output
+  -d, --data-uri-image             Encode HTML output images as data URIs
+  -R, --relaton DIRECTORY          Export Relaton XML (bibdata) for this document to DIRECTORY
   -h, --help                       Show this message
 ----
 
@@ -158,6 +160,9 @@ HTML renderings (e.g. `html_alt` for ISO).
 `wrapper`:: create a separate folder for each instance of HTML output generated; the folder is named
 the same as the output file, without the `.html` suffix. Used to make distribution of HTML outputs
 more straightforward.
+
+`relaton`:: exports the bibdata Relaton XML description of the document (which is part of its Metanorma XML)
+to the nominated directory. The filename is the document identifier, if present, else the document filename.
 
 `format`:: (optional, specified via `--format` or `-f`) only accepts `asciidoc` for now,
 defaults to `asciidoc`
