@@ -133,7 +133,7 @@ Usage: metanorma [options] <file>
   -r, --require LIBRARY            Require LIBRARY prior to execution
   -w, --wrapper                    Create wrapper folder for HTML output
   -d, --data-uri-image             Encode HTML output images as data URIs
-  -R, --relaton DIRECTORY          Export Relaton XML (bibdata) for this document to DIRECTORY
+  -R, --relaton FILENAME           Export Relaton XML (bibdata) for this document to FILENAME
   -h, --help                       Show this message
 ----
 
