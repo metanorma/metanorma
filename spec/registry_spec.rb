@@ -22,7 +22,6 @@ RSpec.describe Metanorma::Registry do
 
   it "warns when registered class is not a Metanorma processor" do
     registry = Metanorma::Registry.instance
-    #expect{registry.register(Metanorma)}.to raise_error(Metanorma::Registry::Error) 
     expect{registry.register(Metanorma)}.to raise_error(Error) 
   end
 end
