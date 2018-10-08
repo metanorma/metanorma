@@ -56,7 +56,7 @@ module Metanorma
           wordintropage: defined?(wordintropage) ? wordintropage : nil,
           ulstyle: defined?(ulstyle) ? ulstyle : nil,
           olstyle: defined?(olstyle) ? olstyle : nil,
-          data_uri_image: defined?(datauriimage) ? true : nil,
+          datauriimage: defined?(datauriimage) ? true : nil,
         }.reject { |_, val| val.nil? }
       end
 
