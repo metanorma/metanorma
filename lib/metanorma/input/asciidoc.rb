@@ -4,14 +4,14 @@ module Metanorma
 
     class Asciidoc < Base
 
-      def process(file, type)
+      def process(file, filename, type)
         Asciidoctor.convert(
           file,
           to_file: false,
           safe: :safe,
           backend: type,
           header_footer: true,
-          attributes: %w(nodoc stem xrefstyle=short)
+          attributes: ["nodoc", "stem", "xrefstyle=short", "docfile=#{filename}"]
         )
       end
 

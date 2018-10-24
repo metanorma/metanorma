@@ -4,7 +4,7 @@ module Metanorma
 
     class Base
 
-      def process(file, type)
+      def process(file, filename, type)
         raise "This is an abstract class"
       end
 
