@@ -17,7 +17,7 @@ module Metanorma
       }
     end
 
-    def input_to_isodoc(file)
+    def input_to_isodoc(file, filename)
       raise "This is an abstract class!"
     end
 
