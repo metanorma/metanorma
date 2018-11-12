@@ -1,0 +1,10 @@
+# This project follows the Ribose OSS style guide.
+# https://github.com/riboseinc/oss-guides
+# All project-specific additions and overrides should be specified in this file.
+
+inherit_from:
+  - https://raw.githubusercontent.com/riboseinc/oss-guides/master/ci/rubocop.yml
+AllCops:
+  TargetRubyVersion: 2.3
+Rails:
+  Enabled: true

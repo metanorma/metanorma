@@ -1,0 +1,3 @@
+ruby:
+  Enabled: true
+  config_file: .rubocop.yml
