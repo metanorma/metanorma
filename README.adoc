@@ -44,7 +44,11 @@ the https://github.com/riboseinc/metanorma-csand/[metanorma-csand implementation
 https://github.com/riboseinc/metanorma-model-m3d[Metanorma M3D model],
 the https://github.com/riboseinc/metanorma-m3d/[metanorma-m3d implementation]
 
-//* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/riboseinc/metanorma-rsd[metanorma-rsd implementation]
+* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/riboseinc/metanorma-rsd[metanorma-rsd implementation]
+
+* Mandatory Provident Fund Schemes Authority of Hong Kong Documents (MPFD): https://github.com/riboseinc/metanorma-mpfd[metanorma-mpfd implementation] (still at proof-of-concept stage)
+
+* United Nations Economic Commision for Europe Documents (UNECE): https://github.com/riboseinc/metanorma-unece[metanorma-unece implementation]
 
 
 == Installation on supported platforms
@@ -121,11 +125,14 @@ Usage: metanorma [options] <file>
     :rfc2=>{:xmlrfc=>"v2.xml"},
     :rfc3=>{:xmlrfc=>"v3.xml"},
     :iso=>{:html=>"html", :html_alt=>"alt.html", :doc=>"doc"},
-    :gb=>{:html=>"html", :doc=>"doc"},
-    :csd=>{:html=>"html", :pdf=>"pdf"},
+    :gb=>{:html=>"html", :compliant_html => "compliant_html", :doc=>"doc"},
+    :csd=>{:html=>"html", :pdf=>"pdf", :doc => "doc"},
     :csand=>{:html=>"html"},
-    :m3d=>{:html=>"html", :doc=>"doc"},
-    :rsd=>{:html=>"html"}
+    :m3d=>{:html=>"html", :doc=>"doc", :pdf => "pdf"},
+    :rsd=>{:html=>"html", :doc=>"doc", :pdf => "pdf"}
+    :acme=>{:html=>"html", :doc=>"doc", :pdf => "pdf"}
+    :mpdf=>{:html=>"html", :doc=>"doc", :pdf => "pdf"}
+    :unece=>{:html=>"html", :doc=>"doc"}
   }
   In addition, xml (outside of rfc2, rfc3) generates IsoDoc XML. If the argument is "all" or the option is
   missing, all available extensions are generated.
