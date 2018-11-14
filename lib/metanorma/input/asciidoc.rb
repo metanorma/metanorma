@@ -16,27 +16,27 @@ module Metanorma
       end
 
       def extract_options(file)
-        header = file.sub(/\n\n.*$/m, "\n")
+        headerextract = file.sub(/\n\n.*$/m, "\n")
 
-        /\n:script: (?<script>[^\n]+)\n/ =~ header
-        /\n:body-font: (?<bodyfont>[^\n]+)\n/ =~ header
-        /\n:header-font: (?<headerfont>[^\n]+)\n/ =~ header
-        /\n:monospace-font: (?<monospacefont>[^\n]+)\n/ =~ header
-        /\n:title-font: (?<titlefont>[^\n]+)\n/ =~ header
-        /\n:i18nyaml: (?<i18nyaml>[^\n]+)\n/ =~ header
-        /\n:htmlstylesheet: (?<htmlstylesheet>[^\n]+)\n/ =~ header
-        /\n:htmlcoverpage: (?<htmlcoverpage>[^\n]+)\n/ =~ header
-        /\n:htmlintropage: (?<htmlintropage>[^\n]+)\n/ =~ header
-        /\n:scripts: (?<scripts>[^\n]+)\n/ =~ header
-        /\n:scripts-pdf: (?<scripts_pdf>[^\n]+)\n/ =~ header
-        /\n:wordstylesheet: (?<wordstylesheet>[^\n]+)\n/ =~ header
-        /\n:standardstylesheet: (?<standardstylesheet>[^\n]+)\n/ =~ header
-        /\n:header: (?<header>[^\n]+)\n/ =~ header
-        /\n:wordcoverpage: (?<wordcoverpage>[^\n]+)\n/ =~ header
-        /\n:wordintropage: (?<wordintropage>[^\n]+)\n/ =~ header
-        /\n:ulstyle: (?<ulstyle>[^\n]+)\n/ =~ header
-        /\n:olstyle: (?<olstyle>[^\n]+)\n/ =~ header
-        /\n(?<datauriimage>:data-uri-image:[^\n]*)\n/ =~ header
+        /\n:script: (?<script>[^\n]+)\n/ =~ headerextract
+        /\n:body-font: (?<bodyfont>[^\n]+)\n/ =~ headerextract
+        /\n:header-font: (?<headerfont>[^\n]+)\n/ =~ headerextract
+        /\n:monospace-font: (?<monospacefont>[^\n]+)\n/ =~ headerextract
+        /\n:title-font: (?<titlefont>[^\n]+)\n/ =~ headerextract
+        /\n:i18nyaml: (?<i18nyaml>[^\n]+)\n/ =~ headerextract
+        /\n:htmlstylesheet: (?<htmlstylesheet>[^\n]+)\n/ =~ headerextract
+        /\n:htmlcoverpage: (?<htmlcoverpage>[^\n]+)\n/ =~ headerextract
+        /\n:htmlintropage: (?<htmlintropage>[^\n]+)\n/ =~ headerextract
+        /\n:scripts: (?<scripts>[^\n]+)\n/ =~ headerextract
+        /\n:scripts-pdf: (?<scripts_pdf>[^\n]+)\n/ =~ headerextract
+        /\n:wordstylesheet: (?<wordstylesheet>[^\n]+)\n/ =~ headerextract
+        /\n:standardstylesheet: (?<standardstylesheet>[^\n]+)\n/ =~ headerextract
+        /\n:header: (?<header>[^\n]+)\n/ =~ headerextract
+        /\n:wordcoverpage: (?<wordcoverpage>[^\n]+)\n/ =~ headerextract
+        /\n:wordintropage: (?<wordintropage>[^\n]+)\n/ =~ headerextract
+        /\n:ulstyle: (?<ulstyle>[^\n]+)\n/ =~ headerextract
+        /\n:olstyle: (?<olstyle>[^\n]+)\n/ =~ headerextract
+        /\n(?<datauriimage>:data-uri-image:[^\n]*)\n/ =~ headerextract
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
