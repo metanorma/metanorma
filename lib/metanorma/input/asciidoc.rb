@@ -15,6 +15,16 @@ module Metanorma
         )
       end
 
+      def extract_metanorma_options(file)
+        headerextract = file.sub(/\n\n.*$/m, "\n")
+        /\n:mn-document-class: (?<type>[^\n]+)\n/ =~ headerextract
+        /\n:mn-output-extensions: (?<extensions>[^\n]+)\n/ =~ headerextract
+        {
+          type: defined?(type) ? type : nil,
+          extensions: defined?(extensions) ? extensions : nil,
+        }.reject { |_, val| val.nil? }
+      end
+
       def extract_options(file)
         headerextract = file.sub(/\n\n.*$/m, "\n")
 
