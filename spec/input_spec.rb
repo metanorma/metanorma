@@ -29,4 +29,17 @@ RSpec.describe Metanorma::Input::Asciidoc do
     OUTPUT
 
   end
+
+  it "extracts Asciidoctor document attributes for Metanorma" do
+    expect(Hash[Metanorma::Input::Asciidoc.new().extract_metanorma_options(<<~"INPUT").sort].to_s + "\n").to eq <<~"OUTPUT"
+      = Document title
+      Author
+      :mn-document-class: a
+      :mn-output-extensions: b
+      INPUT
+      {:extensions=>"b", :type=>"a"}
+    OUTPUT
+
+
+  end
 end
