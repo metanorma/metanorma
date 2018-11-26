@@ -27,6 +27,9 @@ module Metanorma
 
     def extract_options(file)
       Metanorma::Input::Asciidoc.new.extract_options(file)
+
+    def extract_metanorma_options(file)
+      Metanorma::Input::Asciidoc.new.extract_metanorma_options(file)
     end
   end
 end
