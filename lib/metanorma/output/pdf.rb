@@ -9,7 +9,7 @@ module Metanorma
         #pdfjs = File.join(File.dirname(__FILE__), '../../../bin/metanorma-pdf.js')
         #system "export NODE_PATH=$(npm root --quiet -g); node #{pdfjs} #{file_url} #{output_path}"
         Phantomjs.path
-        pdfjs = File.join(File.dirname(__FILE__), '../../../bin/rasterize.js')
+        pdfjs = File.join(File.dirname(__FILE__), "../../../bin/rasterize.js", "A4")
         Phantomjs.run(pdfjs, file_url, output_path)
       end
     end
