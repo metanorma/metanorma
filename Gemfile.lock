@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     metanorma (0.3.2)
+      phantomjs
 
 GEM
   remote: https://rubygems.org/
@@ -14,6 +15,7 @@ GEM
     mixlib-shellout (2.4.0)
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
+    phantomjs (2.1.1.0)
     rake (10.5.0)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
