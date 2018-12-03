@@ -1,0 +1,29 @@
+version: '{build}'
+
+environment:
+  matrix:
+    - RUBY_VERSION: 25
+    - RUBY_VERSION: 24
+    - RUBY_VERSION: 23
+    - RUBY_VERSION: _trunk
+
+matrix:
+  allow_failures:
+    - RUBY_VERSION: _trunk
+
+install:
+  - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - gem install bundler -v 1.16.1
+  - npm install -g puppeteer
+  - npm install
+  - bundle install
+
+build: off
+
+before_test:
+  - ruby -v
+  - gem -v
+  - bundle -v
+
+test_script:
+  - bundle exec rake
