@@ -1,5 +1,3 @@
-require "phantomjs"
-
 module Metanorma
   module Output
     class Pdf < Base
