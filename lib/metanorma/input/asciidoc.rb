@@ -1,11 +1,10 @@
-require "asciidoctor"
-
 module Metanorma
   module Input
 
     class Asciidoc < Base
 
       def process(file, filename, type)
+        require "asciidoctor"
         ::Asciidoctor.convert(
           file,
           to_file: false,
