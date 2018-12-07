@@ -1,3 +1,4 @@
+require "asciidoctor"
 
 module Metanorma
   module Input
@@ -5,7 +6,7 @@ module Metanorma
     class Asciidoc < Base
 
       def process(file, filename, type)
-        Asciidoctor.convert(
+        ::Asciidoctor.convert(
           file,
           to_file: false,
           safe: :safe,
