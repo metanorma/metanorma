@@ -3,7 +3,10 @@ require "metanorma/input"
 require "metanorma/output"
 require "metanorma/registry"
 require "metanorma/processor"
-require "metanorma/asciidoctor_extensions"
+
+if defined?(Asciidoctor)
+  require "metanorma/asciidoctor_extensions"
+end
 
 module Metanorma
 
