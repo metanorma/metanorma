@@ -1,12 +1,10 @@
 require "metanorma/version"
+require "asciidoctor"
 require "metanorma/input"
 require "metanorma/output"
 require "metanorma/registry"
 require "metanorma/processor"
-
-if defined?(Asciidoctor)
-  require "metanorma/asciidoctor_extensions"
-end
+require "metanorma/asciidoctor_extensions"
 
 module Metanorma
 

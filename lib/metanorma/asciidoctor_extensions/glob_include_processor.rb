@@ -1,5 +1,3 @@
-require "asciidoctor"
-
 module Metanorma::AsciidoctorExtensions
 
   class GlobIncludeProcessor < ::Asciidoctor::Extensions::IncludeProcessor
