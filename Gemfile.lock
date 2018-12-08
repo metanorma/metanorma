@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    metanorma (0.3.3)
+    metanorma (0.3.4)
       asciidoctor
 
 GEM
@@ -13,7 +13,7 @@ GEM
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     mini_portile2 (2.3.0)
-    mixlib-shellout (2.4.0)
+    mixlib-shellout (2.4.2)
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     rake (10.5.0)
