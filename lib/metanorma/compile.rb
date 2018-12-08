@@ -27,8 +27,7 @@ module Metanorma
     end
 
     def options_extract(filename, options)
-      o = @registry.find_processor(:iso).
-        extract_metanorma_options(File.read(filename, encoding: "utf-8"))
+      o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(File.read(filename, encoding: "utf-8"))
       options[:type] ||= o[:type]&.to_sym
       options[:extension_keys] ||= o[:extensions]&.split(/,[ ]*/)&.map(&:to_sym)
       options[:extension_keys] = nil if options[:extension_keys] == [:all]
@@ -46,19 +45,20 @@ module Metanorma
         puts "[metanorma] Error: Please specify a standard type: #{@registry.supported_backends}."
         return nil
       end
-      unless @registry.supported_backends.include? options[:type]
-        puts "[metanorma] Warning: #{options[:type]} is not a default standard type."
-        puts "[metanorma] Info: Attempting to load `metanorma-#{options[:type]}` gem for standard type `#{options[:type]}`."
+      stdtype = options[:type].to_sym
+      unless @registry.supported_backends.include? stdtype
+        puts "[metanorma] Warning: #{stdtype} is not a default standard type."
+        puts "[metanorma] Info: Attempting to load `metanorma-#{stdtype}` gem for standard type `#{stdtype}`."
       end
       begin
-        require "metanorma-#{options[:type]}"
-        puts "[metanorma] Info: gem `metanorma-#{options[:type]}` loaded."
+        require "metanorma-#{stdtype}"
+        puts "[metanorma] Info: gem `metanorma-#{stdtype}` loaded."
       rescue LoadError
-        puts "[metanorma] Error: loading gem `metanorma-#{options[:type]}` failed. Exiting."
+        puts "[metanorma] Error: loading gem `metanorma-#{stdtype}` failed. Exiting."
         return false
       end
-      unless @registry.supported_backends.include? options[:type]
-        puts "[metanorma] Error: The `metanorma-#{options[:type]}` gem still doesn't support `#{options[:type]}`. Exiting."
+      unless @registry.supported_backends.include? stdtype
+        puts "[metanorma] Error: The `metanorma-#{stdtype}` gem still doesn't support `#{stdtype}`. Exiting."
         return false
       end
       true
@@ -78,7 +78,7 @@ module Metanorma
       end
       extensions = options[:extension_keys].inject([]) do |memo, e|
         @processor.output_formats[e] and memo << e or
-          warn "[metanorma] Error: #{e} format is not supported for this standard."
+          puts "[metanorma] Error: #{e} format is not supported for this standard."
         memo
       end
       extensions
@@ -96,7 +96,7 @@ module Metanorma
         # document attributes in Metanorma XML
         ["", File.read(filename, encoding: "utf-8")]
       else
-        warn "[metanorma] Error: file extension #{extname} is not supported."
+        puts "[metanorma] Error: file extension #{extname} is not supported."
         nil
       end
     end
