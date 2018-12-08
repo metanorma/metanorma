@@ -11,10 +11,10 @@ module Metanorma
       options = options_extract(filename, options)
       validate(options) or return nil
       require_libraries(options)
-      @processor = registry.find_processor(options[:type].to_sym)
+      @processor = @registry.find_processor(options[:type].to_sym)
       extensions = get_extensions(options) or return nil
       (file, isodoc = process_input(filename)) or return nil
-      relaton_export(isodoc) if options[:relaton]
+      relaton_export(isodoc, options)
       process_extensions(extensions, file, isodoc, options)
     end
 
@@ -38,13 +38,13 @@ module Metanorma
     end
 
     def validate(options)
-      validate_type(options) || validate_format(options)
+      validate_type(options) && validate_format(options)
     end
 
     def validate_type(options)
       unless options[:type]
         puts "[metanorma] Error: Please specify a standard type: #{@registry.supported_backends}."
-        return false
+        return nil
       end
       unless @registry.supported_backends.include? options[:type]
         puts "[metanorma] Warning: #{options[:type]} is not a default standard type."
@@ -57,8 +57,8 @@ module Metanorma
         puts "[metanorma] Error: loading gem `metanorma-#{options[:type]}` failed. Exiting."
         return false
       end
-      unless @registry.supported_backends.include? standard_type
-        puts "[metanorma] Error: The `metanorma-#{options[:type}` gem still doesn't support `#{options[:type}`. Exiting."
+      unless @registry.supported_backends.include? options[:type]
+        puts "[metanorma] Error: The `metanorma-#{options[:type]}` gem still doesn't support `#{options[:type]}`. Exiting."
         return false
       end
       true
@@ -101,7 +101,8 @@ module Metanorma
       end
     end
 
-    def relaton_export(isodoc)
+    def relaton_export(isodoc, options)
+      return unless options[:relaton]
     xml = Nokogiri::XML(isodoc)
     bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
     #docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
@@ -115,7 +116,7 @@ module Metanorma
         isodoc_options[:datauriimage] = true if options[:datauriimage]
         file_extension = @processor.output_formats[ext]
         outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
-        processor.output(isodoc, outfilename, ext, isodoc_options)
+        @processor.output(isodoc, outfilename, ext, isodoc_options)
         if options[:wrapper] and /html$/.match file_extension
           outfilename = outfilename.sub(/\.html$/, "")
           FileUtils.mkdir_p outfilename
