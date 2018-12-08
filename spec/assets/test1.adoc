@@ -1,0 +1,15 @@
+= Document title
+Author
+:docfile: test.adoc
+:nodoc:
+:novalid:
+:no-isobib:
+:script: script.html
+:body-font: body-font
+:header-font: header-font
+:monospace-font: monospace-font
+:title-font: title-font
+:mn-document-class: iso
+:mn-output-extensions: xml,html
+
+

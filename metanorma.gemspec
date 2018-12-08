@@ -27,9 +27,11 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'asciidoctor'
 
   spec.add_development_dependency "bundler", "~> 1.16"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "byebug", "~> 10.0"
   spec.add_development_dependency "rspec-command", "~> 1.0.3"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
+  spec.add_development_dependency "metanorma-iso"
+  spec.add_development_dependency "isodoc", "0.9.11"
 end

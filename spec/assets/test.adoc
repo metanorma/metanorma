@@ -1,0 +1,14 @@
+= Document title
+Author
+:docfile: test.adoc
+:nodoc:
+:novalid:
+:no-isobib:
+:script: script.html
+:body-font: body-font
+:header-font: header-font
+:monospace-font: monospace-font
+:title-font: title-font
+
+= Scope
+image::rice_image1.png[]
