@@ -9,6 +9,7 @@ Author
 :header-font: header-font
 :monospace-font: monospace-font
 :title-font: title-font
+:data-uri-image: false
 
 = Scope
 image::rice_image1.png[]

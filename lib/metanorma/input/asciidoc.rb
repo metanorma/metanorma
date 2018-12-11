@@ -46,7 +46,7 @@ module Metanorma
         /\n:wordintropage: (?<wordintropage>[^\n]+)\n/ =~ headerextract
         /\n:ulstyle: (?<ulstyle>[^\n]+)\n/ =~ headerextract
         /\n:olstyle: (?<olstyle>[^\n]+)\n/ =~ headerextract
-        /\n(?<datauriimage>:data-uri-image:[^\n]*)\n/ =~ headerextract
+        /\n:data-uri-image: (?<datauriimage>[^\n]+)\n/ =~ headerextract
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -66,7 +66,7 @@ module Metanorma
           wordintropage: defined?(wordintropage) ? wordintropage : nil,
           ulstyle: defined?(ulstyle) ? ulstyle : nil,
           olstyle: defined?(olstyle) ? olstyle : nil,
-          datauriimage: defined?(datauriimage) ? true : nil,
+          datauriimage: defined?(datauriimage) ? datauriimage != "false" : nil,
         }.reject { |_, val| val.nil? }
       end
 

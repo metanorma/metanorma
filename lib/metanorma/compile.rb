@@ -121,7 +121,7 @@ module Metanorma
           outfilename = outfilename.sub(/\.html$/, "")
           FileUtils.mkdir_p outfilename
           FileUtils.mv "#{outfilename}.html", outfilename
-          FileUtils.mv "#{outfilename}_images", outfilename
+          FileUtils.mv "#{outfilename}_images", outfilename, force: true
         end
       end
     end

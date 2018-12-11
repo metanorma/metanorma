@@ -15,9 +15,9 @@ RSpec.describe Metanorma::Registry do
     registry = Metanorma::Registry.instance
     registry.register(NewProcessor)
     expect(registry.find_processor(:new)).to be_instance_of NewProcessor
-    expect(registry.supported_backends).to eq [:new]
+    expect(registry.supported_backends).to include :new
     expect(registry.processors[:new]).to be_instance_of NewProcessor
-    expect(registry.output_formats.to_s).to eq "{:new=>{:xyz=>\"xyz\"}}"
+    expect(registry.output_formats[:new]&.to_s).to eq '{:xyz=>"xyz"}'
   end
 
   it "warns when registered class is not a Metanorma processor" do
