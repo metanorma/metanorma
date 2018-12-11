@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    metanorma (0.3.4)
+    metanorma (0.3.5)
       asciidoctor
 
 GEM
@@ -40,7 +40,7 @@ GEM
     iecbib (0.2.2)
       addressable
       iso-bib-item (~> 0.4.2)
-    ietfbib (0.4.4)
+    ietfbib (0.4.5)
       iso-bib-item (~> 0.4.2)
     iev (0.2.0)
       nokogiri
