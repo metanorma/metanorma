@@ -13,12 +13,34 @@ matrix:
 
 install:
   - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
-  - gem install bundler -v 1.16.1
+  - gem install bundler -v 2.0.1
   - npm install -g puppeteer
   - npm install
-  - bundle install
+  # install libxml2 & libxslt
+  - ps: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+  - refreshenv
+  - cinst --x86 xsltproc
+  - set XSLT_PROC=%ChocolateyInstall%\lib\xsltproc\dist
+  # RUBY_DLL_PATH looks broken in ruby23
+  - if "%RUBY_VERSION%" == "23" (
+      XCOPY /Y %XSLT_PROC%\bin\lib*.dll C:\Ruby%RUBY_VERSION%\bin\*
+    ) else (
+      XCOPY /Y %XSLT_PROC%\bin\libxml2*.dll %XSLT_PROC%\bin\libxml2.dll* &
+      XCOPY /Y %XSLT_PROC%\bin\libxslt*.dll %XSLT_PROC%\bin\libxslt.dll* &
+      XCOPY /Y %XSLT_PROC%\bin\libexslt*.dll %XSLT_PROC%\bin\libexslt.dll*
+    )
+  - echo @ECHO OFF > %ChocolateyInstall%\bin\xml2-config.bat
+  - echo @ECHO OFF > %ChocolateyInstall%\bin\xslt-config.bat
 
-build: off
+build_script:
+  # RUBY_DLL_PATH looks broken in ruby23
+  - if NOT "%RUBY_VERSION%" == "23" setx /M RUBY_DLL_PATH "%ChocolateyInstall%\lib\xsltproc\dist\bin;%RUBY_DLL_PATH%"
+  - refreshenv
+  - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - set XSLT_PROC=%ChocolateyInstall%\lib\xsltproc\dist
+  - bundle config build.ruby-xslt --with-xml2-include=%XSLT_PROC%\include\libxml2 --with-xslt-include=%XSLT_PROC%\include --with-xml2-lib=%XSLT_PROC%\lib --with-xslt-lib=%XSLT_PROC%\lib
+  - bundle update
+  - bundle install
 
 before_test:
   - ruby -v
