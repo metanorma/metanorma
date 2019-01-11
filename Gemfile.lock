@@ -69,13 +69,13 @@ GEM
     isoics (0.1.7)
     json (2.1.0)
     liquid (4.0.1)
-    metanorma-iso (1.0.12)
+    metanorma-iso (1.0.13)
       asciidoctor (~> 1.5.7)
       iev (~> 0.2.0)
       isodoc (~> 0.9.8)
       metanorma-standoc (~> 1.0.0)
       ruby-jing
-    metanorma-standoc (1.0.13)
+    metanorma-standoc (1.0.14)
       asciidoctor (~> 1.5.7)
       concurrent-ruby
       iev (~> 0.2.0)
