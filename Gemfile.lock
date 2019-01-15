@@ -1,21 +1,7 @@
-GIT
-  remote: https://github.com/riboseinc/metanorma-standoc.git
-  revision: dd8814923dc994c820b87920cb3768822b2b9c43
-  branch: fix-dont-open-binary-files-as-utf8-encoded
-  specs:
-    metanorma-standoc (1.0.14)
-      asciidoctor (~> 1.5.7)
-      concurrent-ruby
-      iev (~> 0.2.0)
-      isodoc (~> 0.9.0)
-      relaton (~> 0.3.1)
-      ruby-jing
-      sterile (~> 1.0.14)
-
 PATH
   remote: .
   specs:
-    metanorma (0.3.5)
+    metanorma (0.3.6)
       asciidoctor
 
 GEM
@@ -83,12 +69,20 @@ GEM
     isoics (0.1.7)
     json (2.1.0)
     liquid (4.0.1)
-    metanorma-iso (1.0.13)
+    metanorma-iso (1.0.14)
       asciidoctor (~> 1.5.7)
       iev (~> 0.2.0)
       isodoc (~> 0.9.8)
-      metanorma-standoc (~> 1.0.0)
+      metanorma-standoc (~> 1.1.0)
       ruby-jing
+    metanorma-standoc (1.1.0)
+      asciidoctor (~> 1.5.7)
+      concurrent-ruby
+      iev (~> 0.2.0)
+      isodoc (~> 0.9.0)
+      relaton (~> 0.3.1)
+      ruby-jing
+      sterile (~> 1.0.14)
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
@@ -156,8 +150,8 @@ DEPENDENCIES
   equivalent-xml (~> 0.6)
   isodoc (= 0.9.13)
   metanorma!
-  metanorma-iso (~> 1.0.12)
-  metanorma-standoc!
+  metanorma-iso (~> 1.0.14)
+  metanorma-standoc (~> 1.1.0)
   rake (~> 12.0)
   rspec (~> 3.0)
   rspec-command (~> 1.0.3)
