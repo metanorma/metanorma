@@ -79,6 +79,14 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include %(<bibdata type="article">)
   end
 
+  it "exports bibdata, rxl" do
+    FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
+    FileUtils.rm_f "spec/assets/test.rxl"
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extension_keys: [:rxl] } )
+    expect(File.exist?("spec/assets/test.rxl")).to be true
+    xml = File.read("spec/assets/test.rxl", encoding: "utf-8")
+    expect(xml).to include %(<bibdata type="article">)
+  end
 
   it "warns when no standard type provided" do
     expect { Metanorma::Compile.new().compile("spec/assets/test.adoc", { relaton: "testrelaton.xml" } ) }.to output(/Please specify a standard type/).to_stdout

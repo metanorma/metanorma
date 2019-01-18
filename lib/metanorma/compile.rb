@@ -103,11 +103,11 @@ module Metanorma
 
     def relaton_export(isodoc, options)
       return unless options[:relaton]
-    xml = Nokogiri::XML(isodoc)
-    bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
-    #docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
-    #outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
-    File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
+      xml = Nokogiri::XML(isodoc)
+      bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
+      #docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
+      #outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
+      File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
     end
 
     def process_extensions(extensions, file, isodoc, options)
@@ -116,7 +116,12 @@ module Metanorma
         isodoc_options[:datauriimage] = true if options[:datauriimage]
         file_extension = @processor.output_formats[ext]
         outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
-        @processor.output(isodoc, outfilename, ext, isodoc_options)
+        if ext == :rxl
+          options[:relaton] = outfilename
+          relaton_export(isodoc, options)
+        else
+          @processor.output(isodoc, outfilename, ext, isodoc_options)
+        end
         if options[:wrapper] and /html$/.match file_extension
           outfilename = outfilename.sub(/\.html$/, "")
           FileUtils.mkdir_p outfilename
