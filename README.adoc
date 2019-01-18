@@ -198,15 +198,16 @@ $ metanorma -t mpfd mpfd-bpn.adoc
 $ metanorma -t mpfd -r metanorma-mpfd mpfd-bpn.adoc
 ----
 
-The `type` and `extension` options can be omitted if the corresponding metanorma directives
+The `type`, `extension` and `relaton` options can be omitted if the corresponding metanorma directives
 are included in the document as Metanorma directives; for Asciidoctor input, these take the form
-of document attributes `mn-document-class:` and `:mn-output-extensions:`, e.g.
+of document attributes `mn-document-class:`, `:mn-output-extensions:` and `:mn-relaton-output-file:`, e.g.
 
 [source,asciidoctor]
 ----
 = My ISO document
 :mn-document-class: iso
 :mn-output-extensions: html,xml,pdf
+:mn-relaton-output-file: test.xml
 
 .Foreword
 ----

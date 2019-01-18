@@ -3,12 +3,13 @@ require "fileutils"
 
 RSpec.describe Metanorma::Compile do
   it "processes metanorma options inside Asciidoc" do
-    FileUtils.rm_f %w(spec/assets/test1.xml spec/assets/test1.html spec/assets/test1.alt.html spec/assets/test1.doc)
+    FileUtils.rm_f %w(spec/assets/test1.xml spec/assets/test1.html spec/assets/test1.alt.html spec/assets/test1.doc spec/assets/test1.relaton.xml)
     Metanorma::Compile.new().compile("spec/assets/test1.adoc")
     expect(File.exist?("spec/assets/test1.xml")).to be true
     expect(File.exist?("spec/assets/test1.doc")).to be false
     expect(File.exist?("spec/assets/test1.html")).to be true
     expect(File.exist?("spec/assets/test1.alt.html")).to be false
+    expect(File.exist?("spec/assets/test1.relaton.xml")).to be true
     xml = File.read("spec/assets/test1.xml")
     expect(xml).to include "</iso-standard>"
   end

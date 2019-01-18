@@ -29,6 +29,8 @@ module Metanorma
     def options_extract(filename, options)
       o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(File.read(filename, encoding: "utf-8"))
       options[:type] ||= o[:type]&.to_sym
+      dir = filename.sub(%r(/[^/]+$), "/")
+      options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
       options[:extension_keys] ||= o[:extensions]&.split(/,[ ]*/)&.map(&:to_sym)
       options[:extension_keys] = nil if options[:extension_keys] == [:all]
       options[:format] ||= :asciidoc
