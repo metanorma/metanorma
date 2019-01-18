@@ -19,9 +19,11 @@ module Metanorma
         headerextract = file.sub(/\n\n.*$/m, "\n")
         /\n:mn-document-class: (?<type>[^\n]+)\n/ =~ headerextract
         /\n:mn-output-extensions: (?<extensions>[^\n]+)\n/ =~ headerextract
+        /\n:mn-relaton-output-file: (?<relaton>[^\n]+)\n/ =~ headerextract
         {
           type: defined?(type) ? type : nil,
           extensions: defined?(extensions) ? extensions : nil,
+          relaton: defined?(relaton) ? relaton : nil,
         }.reject { |_, val| val.nil? }
       end
 

@@ -11,5 +11,5 @@ Author
 :title-font: title-font
 :mn-document-class: iso
 :mn-output-extensions: xml,html
-
+:mn-relaton-output-file: test1.relaton.xml
 
