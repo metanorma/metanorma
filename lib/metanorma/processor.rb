@@ -13,7 +13,8 @@ module Metanorma
 
     def output_formats
       {
-        xml: "xml"
+        xml: "xml",
+        rxl: "rxl"
       }
     end
 
