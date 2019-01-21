@@ -1,7 +1,7 @@
 = Metanorma: the standard for standards
 
 image:https://img.shields.io/gem/v/metanorma.svg["Gem Version", link="https://rubygems.org/gems/metanorma"]
-image:https://img.shields.io/travis/riboseinc/metanorma/master.svg["Build Status", link="https://travis-ci.com/riboseinc/metanorma"]
+image:https://img.shields.io/travis/riboseinc/metanorma/master.svg["Build Status", link="https://travis-ci.org/riboseinc/metanorma"]
 image:https://codeclimate.com/github/riboseinc/metanorma/badges/gpa.svg["Code Climate", link="https://codeclimate.com/github/riboseinc/metanorma"]
 image:https://ci.appveyor.com/api/projects/status/t8irmy9iq4xf1ouy?svg=true["AppVeyor Build Status", link="https://ci.appveyor.com/project/ribose/metanorma"]
 
