@@ -141,6 +141,7 @@ Usage: metanorma [options] <file>
   -r, --require LIBRARY            Require LIBRARY prior to execution
   -w, --wrapper                    Create wrapper folder for HTML output
   -d, --data-uri-image             Encode HTML output images as data URIs
+  -a, --asciimath                  Preserve AsciiMath in Metanorma XML, instead of transforming it into MathML
   -R, --relaton FILENAME           Export Relaton XML (bibdata) for this document to FILENAME
       (Also triggered through -x rxl)
   -h, --help                       Show this message
@@ -198,13 +199,15 @@ $ metanorma -t mpfd mpfd-bpn.adoc
 $ metanorma -t mpfd -r metanorma-mpfd mpfd-bpn.adoc
 ----
 
-The `type`, `extension` and `relaton` options can be omitted if the corresponding metanorma directives
+The `asciimath`, `type`, `extension` and `relaton` options can be omitted if the corresponding metanorma directives
 are included in the document as Metanorma directives; for Asciidoctor input, these take the form
-of document attributes `mn-document-class:`, `:mn-output-extensions:` and `:mn-relaton-output-file:`, e.g.
+of document attributes `mn-keep-asciimath:`, `mn-document-class:`, `:mn-output-extensions:` 
+and `:mn-relaton-output-file:`, e.g.
 
 [source,asciidoctor]
 ----
 = My ISO document
+:mn-keep-asciimath:
 :mn-document-class: iso
 :mn-output-extensions: html,xml,pdf
 :mn-relaton-output-file: test.xml
@@ -227,7 +230,8 @@ The options hash has the same structure it does when invoked in metanorma-cli:
 `:format`:: `:asciidoc` is only value currently allowed
 `:extension_keys`:: array of symbols: `:all`, `:xml`:, `:doc` etc.
 `:wrapper`: true/false
-`:darauriimage`: true/false
+`:datauriimage`: true/false
+`:asciimath`: true/false
 `:require`: array of libraries to require
 `:relaton`: exports the bibdata Relaton XML description of the document (which is part of its Metanorma XML)
 to the nominated directory
