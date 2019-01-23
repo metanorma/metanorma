@@ -92,7 +92,7 @@ module Metanorma
         puts "[metanorma] Processing: Asciidoctor input."
         file = File.read(filename, encoding: "utf-8")
         if options[:asciimath]
-          file.sub(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
+          file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
         end
         [file, @processor.input_to_isodoc(file, filename)]
       when ".xml"
