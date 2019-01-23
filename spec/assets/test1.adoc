@@ -12,4 +12,9 @@ Author
 :mn-document-class: iso
 :mn-output-extensions: xml,html
 :mn-relaton-output-file: test1.relaton.xml
+:stem:
 
+[stem]
+++++
+1/r
+++++

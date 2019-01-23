@@ -89,6 +89,16 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include %(<bibdata type="article">)
   end
 
+  it "keeps asciimath" do
+    FileUtils.rm_f %w(spec/assets/test1.xml spec/assets/test1.html spec/assets/test1.alt.html spec/assets/test1.doc)
+    FileUtils.rm_f "spec/assets/test1.rxl"
+    Metanorma::Compile.new().compile("spec/assets/test1.adoc", { type: "iso", extension_keys: [:xml] } )
+    expect(File.exist?("spec/assets/test1.xml")).to be true
+    xml = File.read("spec/assets/test1.xml", encoding: "utf-8")
+    expect(xml).not_to include %(<stem type="MathML">)
+    expect(xml).to include %(<stem type="AsciiMath">)
+  end
+
   it "warns when no standard type provided" do
     expect { Metanorma::Compile.new().compile("spec/assets/test.adoc", { relaton: "testrelaton.xml" } ) }.to output(/Please specify a standard type/).to_stdout
   end

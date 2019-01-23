@@ -13,7 +13,7 @@ module Metanorma
       require_libraries(options)
       @processor = @registry.find_processor(options[:type].to_sym)
       extensions = get_extensions(options) or return nil
-      (file, isodoc = process_input(filename)) or return nil
+      (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
       process_extensions(extensions, file, isodoc, options)
     end
@@ -86,11 +86,14 @@ module Metanorma
       extensions
     end
 
-    def process_input(filename)
+    def process_input(filename, options)
       case extname = File.extname(filename)
       when ".adoc"
         puts "[metanorma] Processing: Asciidoctor input."
         file = File.read(filename, encoding: "utf-8")
+        if options[:asciimath]
+          file.sub(/^(=[^\n]+\n)/, "$1:mn-keep-asciimath:\n")
+        end
         [file, @processor.input_to_isodoc(file, filename)]
       when ".xml"
         puts "[metanorma] Processing: Metanorma XML input."

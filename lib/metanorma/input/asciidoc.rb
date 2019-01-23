@@ -20,10 +20,15 @@ module Metanorma
         /\n:mn-document-class: (?<type>[^\n]+)\n/ =~ headerextract
         /\n:mn-output-extensions: (?<extensions>[^\n]+)\n/ =~ headerextract
         /\n:mn-relaton-output-file: (?<relaton>[^\n]+)\n/ =~ headerextract
+        /\n(?<asciimath>:mn-keep-asciimath:[^\n]*)\n/ =~ headerextract
+        asciimath = defined?(asciimath) ?
+          (!asciimath.nil? && asciimath != ":mn-keep-asciimath: false") : nil
+        asciimath = nil if asciimath == false
         {
           type: defined?(type) ? type : nil,
           extensions: defined?(extensions) ? extensions : nil,
           relaton: defined?(relaton) ? relaton : nil,
+          asciimath: asciimath,
         }.reject { |_, val| val.nil? }
       end
 
