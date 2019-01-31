@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    metanorma (0.3.7)
+    metanorma (0.3.8)
       asciidoctor
 
 GEM
@@ -26,7 +26,7 @@ GEM
       cnccs (~> 0.1.1)
       gb-agencies (~> 0.0.1)
       iso-bib-item (~> 0.4.2)
-    html2doc (0.8.8)
+    html2doc (0.8.9)
       asciimath (~> 1.0.7)
       htmlentities (~> 4.3.4)
       image_size
@@ -69,13 +69,13 @@ GEM
     isoics (0.1.7)
     json (2.1.0)
     liquid (4.0.1)
-    metanorma-iso (1.1.0)
+    metanorma-iso (1.1.1)
       asciidoctor (~> 1.5.7)
       iev (~> 0.2.0)
       isodoc (~> 0.9.8)
       metanorma-standoc (~> 1.1.0)
       ruby-jing
-    metanorma-standoc (1.1.1)
+    metanorma-standoc (1.1.2)
       asciidoctor (~> 1.5.7)
       concurrent-ruby
       html2doc (~> 0.8.0)
