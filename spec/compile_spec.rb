@@ -99,6 +99,29 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include %(<stem type="AsciiMath">)
   end
 
+  it "exports sourceode" do
+    FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
+    FileUtils.rm_f "spec/assets/testrelaton.xml"
+    FileUtils.rm_rf "spec/assets/sourcecode"
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", sourcecode: "spec/assets/sourcecode" } )
+    expect(File.exist?("spec/assets/test.xml")).to be true
+    expect(File.exist?("spec/assets/sourcecode/0")).to be true
+    expect(File.exist?("spec/assets/sourcecode/1")).to be true
+    expect(File.exist?("spec/assets/sourcecode/2")).to be false
+    expect(File.read("spec/assets/sourcecode/0", encoding: "utf-8") + "\n").to eq <<~OUTPUT
+def ruby(x)  
+  if x < 0 && x > 1  
+    return  
+  end  
+end
+    OUTPUT
+    expect(File.read("spec/assets/sourcecode/1", encoding: "utf-8") + "\n").to eq <<~OUTPUT
+<html>  
+  <head>&amp;</head>  
+</html>
+    OUTPUT
+  end
+
   it "warns when no standard type provided" do
     expect { Metanorma::Compile.new().compile("spec/assets/test.adoc", { relaton: "testrelaton.xml" } ) }.to output(/Please specify a standard type/).to_stdout
   end

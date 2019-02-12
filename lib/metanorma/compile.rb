@@ -1,5 +1,6 @@
 require "fileutils"
 require "nokogiri"
+require "htmlentities"
 
 module Metanorma
   class Compile
@@ -15,6 +16,7 @@ module Metanorma
       extensions = get_extensions(options) or return nil
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
+      sourcecode_export(isodoc, options[:sourcecode])
       process_extensions(extensions, file, isodoc, options)
     end
 
@@ -31,6 +33,7 @@ module Metanorma
       options[:type] ||= o[:type]&.to_sym
       dir = filename.sub(%r(/[^/]+$), "/")
       options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
+      options[:sourcecode] ||= "#{dir}/#{o[:sourcecode]}" if o[:sourcecode]
       options[:extension_keys] ||= o[:extensions]&.split(/,[ ]*/)&.map(&:to_sym)
       options[:extension_keys] = nil if options[:extension_keys] == [:all]
       options[:format] ||= :asciidoc
@@ -113,6 +116,24 @@ module Metanorma
       #docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
       #outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
       File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
+    end
+
+    def clean_sourcecode(xml)
+      xml.xpath(".//callout | .//annotation | .//xmlns:callout | .//xmlns:annotation").each do |x|
+        x.remove
+      end
+      xml.xpath(".//br | .//xmlns:br").each { |x| x.replace("\n") }
+      HTMLEntities.new.decode(xml.children.to_xml)
+    end
+
+    def sourcecode_export(isodoc, dirname)
+      return unless dirname
+      xml = Nokogiri::XML(isodoc)
+      FileUtils.rm_rf dirname
+      FileUtils.mkdir_p dirname
+      xml.xpath("//sourcecode | //xmlns:sourcecode").each_with_index do |s, i|
+        File.open("#{dirname}/#{i}", "w:UTF-8") { |f| f.write clean_sourcecode(s.dup) }
+      end
     end
 
     def process_extensions(extensions, file, isodoc, options)
