@@ -13,3 +13,19 @@ Author
 
 = Scope
 image::rice_image1.png[]
+
+[source,ruby]
+----
+def ruby(x)
+  if x < 0 && x > 1
+    return
+  end
+end
+----
+
+[source,html]
+----
+<html>
+  <head>&amp;</head>
+</html>
+----

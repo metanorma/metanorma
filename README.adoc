@@ -144,6 +144,7 @@ Usage: metanorma [options] <file>
   -a, --asciimath                  Preserve AsciiMath in Metanorma XML, instead of transforming it into MathML
   -R, --relaton FILENAME           Export Relaton XML (bibdata) for this document to FILENAME
       (Also triggered through -x rxl)
+  -S, --sourcecode DIR             Export sourcecode fragments from this document to directory DIR
   -h, --help                       Show this message
 ----
 

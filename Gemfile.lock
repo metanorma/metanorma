@@ -3,13 +3,14 @@ PATH
   specs:
     metanorma (0.3.8)
       asciidoctor
+      htmlentities
 
 GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
-    algoliasearch (1.25.2)
+    algoliasearch (1.26.0)
       httpclient (~> 2.8, >= 2.8.3)
       json (>= 1.5.1)
     asciidoctor (1.5.8)
