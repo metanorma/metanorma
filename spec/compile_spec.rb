@@ -99,7 +99,7 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include %(<stem type="AsciiMath">)
   end
 
-  it "exports sourceode" do
+  it "exports sourcecode" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     FileUtils.rm_f "spec/assets/testrelaton.xml"
     FileUtils.rm_rf "spec/assets/sourcecode"
