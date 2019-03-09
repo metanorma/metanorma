@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Metanorma is the standard of standards; the metanorma gem allows you to create any standard document type supported by Metanorma.}
   spec.description   = %q{Library to process any Metanorma standard.}
-  spec.homepage      = "https://github.com/riboseinc/metanorma"
+  spec.homepage      = "https://github.com/metanorma/metanorma"
   spec.license       = "BSD-2-Clause"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|

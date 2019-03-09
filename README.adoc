@@ -1,9 +1,9 @@
 = Metanorma: the standard for standards
 
 image:https://img.shields.io/gem/v/metanorma.svg["Gem Version", link="https://rubygems.org/gems/metanorma"]
-image:https://img.shields.io/travis/riboseinc/metanorma/master.svg["Build Status", link="https://travis-ci.org/riboseinc/metanorma"]
-image:https://codeclimate.com/github/riboseinc/metanorma/badges/gpa.svg["Code Climate", link="https://codeclimate.com/github/riboseinc/metanorma"]
-image:https://ci.appveyor.com/api/projects/status/t8irmy9iq4xf1ouy?svg=true["AppVeyor Build Status", link="https://ci.appveyor.com/project/ribose/metanorma"]
+image:https://img.shields.io/travis/metanorma/metanorma/master.svg["Build Status", link="https://travis-ci.org/metanorma/metanorma"]
+image:https://codeclimate.com/github/metanorma/metanorma/badges/gpa.svg["Code Climate", link="https://codeclimate.com/github/metanorma/metanorma"]
+image:https://ci.appveyor.com/api/projects/status/t8irmy9iq4xf1ouy?svg=true["AppVeyor Build Status", link="https://ci.appveyor.com/project/metanorma/metanorma"]
 
 Metanorma is dedicated to harmonizing standard documents
 produced by different standard-setting bodies in a manner that
@@ -20,36 +20,36 @@ document model.
 
 Metanorma includes the following sub-projects:
 
-* The https://github.com/riboseinc/metanorma-model-standoc[Metanorma Standard Document model]
+* The https://github.com/metanorma/metanorma-model-standoc[Metanorma Standard Document model]
 
 * IETF Internet-Drafts and RFCs: the https://datatracker.ietf.org/doc/draft-ribose-asciirfc/[AsciiRFC syntax],
-the https://github.com/riboseinc/asciidoctor-rfc/[asciidoctor-rfc RFC XML v2 and v3 implementations]
+the https://github.com/metanorma/asciidoctor-rfc/[asciidoctor-rfc RFC XML v2 and v3 implementations]
 
 * ISO Standards: the AsciiISO syntax,
-the https://github.com/riboseinc/metanorma-model-iso/[Metanorma ISO model],
-the https://github.com/riboseinc/metanorma-iso/[metanorma-iso IsoDoc implementation]
+the https://github.com/metanorma/metanorma-model-iso/[Metanorma ISO model],
+the https://github.com/metanorma/metanorma-iso/[metanorma-iso IsoDoc implementation]
 
 * CalConnect Standard Documents (CSD): the AsciiCSD syntax,
-https://github.com/riboseinc/metanorma-model-csd[Metanorma CSD model],
-the https://github.com/riboseinc/metanorma-csd/[metanorma-csd implementation]
+https://github.com/metanorma/metanorma-model-csd[Metanorma CSD model],
+the https://github.com/metanorma/metanorma-csd/[metanorma-csd implementation]
 
 * Chinese GuoBiao (GB) Standards: the AsciiGB syntax,
-https://github.com/riboseinc/metanorma-model-gb[Metanorma GB models, for Chinese standards],
-the https://github.com/riboseinc/metanorma-gb/[metanorma-gb implementation]
+https://github.com/metanorma/metanorma-model-gb[Metanorma GB models, for Chinese standards],
+the https://github.com/metanorma/metanorma-gb/[metanorma-gb implementation]
 
 * Cloud Security Alliance Normal Documents (CSAND): the AsciiCSAND syntax,
-https://github.com/riboseinc/metanorma-model-csand[Metanorma CSAND model],
-the https://github.com/riboseinc/metanorma-csand/[metanorma-csand implementation]
+https://github.com/metanorma/metanorma-model-csand[Metanorma CSAND model],
+the https://github.com/metanorma/metanorma-csand/[metanorma-csand implementation]
 
 * M3AAWG Documents (M3D): the AsciiM3D syntax,
-https://github.com/riboseinc/metanorma-model-m3d[Metanorma M3D model],
-the https://github.com/riboseinc/metanorma-m3d/[metanorma-m3d implementation]
+https://github.com/metanorma/metanorma-model-m3d[Metanorma M3D model],
+the https://github.com/metanorma/metanorma-m3d/[metanorma-m3d implementation]
 
-* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/riboseinc/metanorma-rsd[metanorma-rsd implementation]
+* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/metanorma/metanorma-rsd[metanorma-rsd implementation]
 
-* Mandatory Provident Fund Schemes Authority of Hong Kong Documents (MPFD): https://github.com/riboseinc/metanorma-mpfd[metanorma-mpfd implementation] (still at proof-of-concept stage)
+* Mandatory Provident Fund Schemes Authority of Hong Kong Documents (MPFD): https://github.com/metanorma/metanorma-mpfd[metanorma-mpfd implementation] (still at proof-of-concept stage)
 
-* United Nations Economic Commision for Europe Documents (UNECE): https://github.com/riboseinc/metanorma-unece[metanorma-unece implementation]
+* United Nations Economic Commision for Europe Documents (UNECE): https://github.com/metanorma/metanorma-unece[metanorma-unece implementation]
 
 
 == Installation on supported platforms
@@ -58,7 +58,7 @@ the https://github.com/riboseinc/metanorma-m3d/[metanorma-m3d implementation]
 
 We recommend macOS users to directly run the Metanorma setup script
 located here:
-https://github.com/riboseinc/metanorma-macos-setup
+https://github.com/metanorma/metanorma-macos-setup
 
 This is a one-stop installation script that setups Ruby, Node
 and all necessary parts for running Metanorma.
@@ -67,13 +67,13 @@ Alternatively, you can also use the Metanorma Docker container (see below).
 
 === Linux
 
-Please see: https://github.com/riboseinc/metanorma-linux-setup
+Please see: https://github.com/metanorma/metanorma-linux-setup
 
 Alternatively, you can also use the Metanorma Docker container (see below).
 
 === Docker: Windows and other platforms
 
-Please use the Metanorma Docker container: https://github.com/riboseinc/metanorma-docker
+Please use the Metanorma Docker container: https://github.com/metanorma/metanorma-docker
 
 
 ////
