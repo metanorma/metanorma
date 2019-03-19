@@ -14,6 +14,9 @@ Author
 = Scope
 image::rice_image1.png[]
 
+[filename="img1.png"]
+image::rice_image1.png[]
+
 [source,ruby]
 ----
 def ruby(x)
@@ -23,9 +26,19 @@ def ruby(x)
 end
 ----
 
-[source,html]
+[source,html,filename="a.html"]
 ----
 <html>
   <head>&amp;</head>
 </html>
 ----
+
+[requirement]
+====
+Requirement 1
+====
+
+[permission,filename="reqt1.xml"]
+====
+Permission 2
+====

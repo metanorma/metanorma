@@ -99,27 +99,34 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include %(<stem type="AsciiMath">)
   end
 
-  it "exports sourcecode" do
+  it "exports assets" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     FileUtils.rm_f "spec/assets/testrelaton.xml"
-    FileUtils.rm_rf "spec/assets/sourcecode"
-    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", sourcecode: "spec/assets/sourcecode" } )
+    FileUtils.rm_rf "spec/assets/extract"
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extract: "spec/assets/extract", extract_type: [:sourcecode, :image, :requirement] } )
     expect(File.exist?("spec/assets/test.xml")).to be true
-    expect(File.exist?("spec/assets/sourcecode/0")).to be true
-    expect(File.exist?("spec/assets/sourcecode/1")).to be true
-    expect(File.exist?("spec/assets/sourcecode/2")).to be false
-    expect(File.read("spec/assets/sourcecode/0", encoding: "utf-8") + "\n").to eq <<~OUTPUT
-def ruby(x)  
-  if x < 0 && x > 1  
-    return  
-  end  
+    expect(File.exist?("spec/assets/extract/sourcecode/sourcecode0000.txt")).to be true
+    expect(File.exist?("spec/assets/extract/sourcecode/sourcecode0001.txt")).to be false
+    expect(File.exist?("spec/assets/extract/sourcecode/a.html")).to be true
+    expect(File.read("spec/assets/extract/sourcecode/sourcecode0000.txt", encoding: "utf-8") + "\n").to eq <<~OUTPUT
+def ruby(x)
+  if x < 0 && x > 1
+    return
+  end
 end
     OUTPUT
-    expect(File.read("spec/assets/sourcecode/1", encoding: "utf-8") + "\n").to eq <<~OUTPUT
-<html>  
-  <head>&amp;</head>  
+    expect(File.read("spec/assets/extract/sourcecode/a.html", encoding: "utf-8") + "\n").to eq <<~OUTPUT
+<html>
+  <head>&amp;</head>
 </html>
     OUTPUT
+    expect(File.exist?("spec/assets/extract/image/figure0000.png")).to be true
+    expect(File.exist?("spec/assets/extract/image/figure0001.png")).to be false
+    expect(File.exist?("spec/assets/extract/image/img1.png")).to be true
+    expect(File.exist?("spec/assets/extract/requirement/requirement0000.xml")).to be true
+    expect(File.exist?("spec/assets/extract/requirement/requirement0001.xml")).to be false
+    expect(File.exist?("spec/assets/extract/requirement/permission0001.xml")).to be false
+    expect(File.exist?("spec/assets/extract/requirement/reqt1.xml")).to be true
   end
 
   it "warns when no standard type provided" do
