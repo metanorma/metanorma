@@ -137,15 +137,15 @@ Usage: metanorma [options] <file>
   }
   In addition, xml (outside of rfc2, rfc3) generates IsoDoc XML. If the argument is "all" or the option is
   missing, all available extensions are generated.
-  -f, --format FORMAT              Format of source file: asciidoc (current default, only format supported)
-  -r, --require LIBRARY            Require LIBRARY prior to execution
-  -w, --wrapper                    Create wrapper folder for HTML output
-  -d, --data-uri-image             Encode HTML output images as data URIs
-  -a, --asciimath                  Preserve AsciiMath in Metanorma XML, instead of transforming it into MathML
-  -R, --relaton FILENAME           Export Relaton XML (bibdata) for this document to FILENAME
+  -f, --format FORMAT                   Format of source file: asciidoc (current default, only format supported)
+  -r, --require LIBRARY                 Require LIBRARY prior to execution
+  -w, --wrapper                         Create wrapper folder for HTML output
+  -d, --data-uri-image                  Encode HTML output images as data URIs
+  -a, --asciimath                       Preserve AsciiMath in Metanorma XML, instead of transforming it into MathML
+  -R, --relaton FILENAME                Export Relaton XML (bibdata) for this document to FILENAME
       (Also triggered through -x rxl)
-  -S, --sourcecode DIR             Export sourcecode fragments from this document to directory DIR
-  -h, --help                       Show this message
+  -e, --extract DIR(,ASSET1,ASSET2...)  Extract assets from this document to directory DIR. If ASSET1,ASSET2 are named, only those types of asset are extracted.
+  -h, --help                            Show this message
 ----
 
 Basically it is used like this:
@@ -176,6 +176,15 @@ more straightforward.
 
 `relaton`:: exports the bibdata Relaton XML description of the document (which is part of its Metanorma XML)
 to the nominated directory. The filename is the document identifier, if present, else the document filename.
+
+`asciimath`:: Preserve AsciiMath in Metanorma XML, instead of transforming it into MathML (which is the default).
+
+`extract`:: export assets found in the document to the nominated directory. If no other arguments are given,
+then all asset classes are exported, each to its own subdirectory. If trailing arguments are given, they
+are taken as naming which asset classes to extract from the document. Three asset classes are recognised:
+`sourcecode`, `image`, and `requirement` (which includes `recommendation` and `permission` elements).
+The assets are given autonumbered names, unless they were given a `filename` attribute in the source
+Metanorma XML, which is used instead.
 
 `format`:: (optional, specified via `--format` or `-f`) only accepts `asciidoc` for now,
 defaults to `asciidoc`
