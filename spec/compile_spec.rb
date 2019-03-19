@@ -105,10 +105,10 @@ RSpec.describe Metanorma::Compile do
     FileUtils.rm_rf "spec/assets/extract"
     Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extract: "spec/assets/extract", extract_type: [:sourcecode, :image, :requirement] } )
     expect(File.exist?("spec/assets/test.xml")).to be true
-    expect(File.exist?("spec/assets/extract/sourcecode/sourcecode0000.txt")).to be true
-    expect(File.exist?("spec/assets/extract/sourcecode/sourcecode0001.txt")).to be false
+    expect(File.exist?("spec/assets/extract/sourcecode/sourcecode-0000.txt")).to be true
+    expect(File.exist?("spec/assets/extract/sourcecode/sourcecode-0001.txt")).to be false
     expect(File.exist?("spec/assets/extract/sourcecode/a.html")).to be true
-    expect(File.read("spec/assets/extract/sourcecode/sourcecode0000.txt", encoding: "utf-8") + "\n").to eq <<~OUTPUT
+    expect(File.read("spec/assets/extract/sourcecode/sourcecode-0000.txt", encoding: "utf-8") + "\n").to eq <<~OUTPUT
 def ruby(x)
   if x < 0 && x > 1
     return
@@ -120,12 +120,12 @@ end
   <head>&amp;</head>
 </html>
     OUTPUT
-    expect(File.exist?("spec/assets/extract/image/figure0000.png")).to be true
-    expect(File.exist?("spec/assets/extract/image/figure0001.png")).to be false
+    expect(File.exist?("spec/assets/extract/image/image-0000.png")).to be true
+    expect(File.exist?("spec/assets/extract/image/image-0001.png")).to be false
     expect(File.exist?("spec/assets/extract/image/img1.png")).to be true
-    expect(File.exist?("spec/assets/extract/requirement/requirement0000.xml")).to be true
-    expect(File.exist?("spec/assets/extract/requirement/requirement0001.xml")).to be false
-    expect(File.exist?("spec/assets/extract/requirement/permission0001.xml")).to be false
+    expect(File.exist?("spec/assets/extract/requirement/requirement-0000.xml")).to be true
+    expect(File.exist?("spec/assets/extract/requirement/requirement-0001.xml")).to be false
+    expect(File.exist?("spec/assets/extract/requirement/permission-0001.xml")).to be false
     expect(File.exist?("spec/assets/extract/requirement/reqt1.xml")).to be true
   end
 
