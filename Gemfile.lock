@@ -154,8 +154,8 @@ DEPENDENCIES
   equivalent-xml (~> 0.6)
   isodoc (= 0.9.13)
   metanorma!
-  metanorma-iso (~> 1.1.0)
-  metanorma-standoc (~> 1.1.0)
+  metanorma-iso (~> 1.1.3)
+  metanorma-standoc (~> 1.1.4)
   rake (~> 12.0)
   rspec (~> 3.0)
   rspec-command (~> 1.0.3)

@@ -143,7 +143,7 @@ module Metanorma
       xml.at("//sourcecode | //xmlns:sourcecode") or return
       FileUtils.mkdir_p "#{dirname}/sourcecode"
       xml.xpath("//sourcecode | //xmlns:sourcecode").each_with_index do |s, i|
-        filename = s["filename"] || sprintf("sourcecode%04d.txt", i)
+        filename = s["filename"] || sprintf("sourcecode-%04d.txt", i)
         File.open("#{dirname}/sourcecode/#{filename}", "w:UTF-8") do |f|
           f.write clean_sourcecode(s.dup) 
         end
@@ -156,7 +156,7 @@ module Metanorma
       xml.xpath("//image | //xmlns:image").each_with_index do |s, i|
         next unless /^data:image/.match s["src"]
         %r{^data:image/(?<imgtype>[^;]+);base64,(?<imgdata>.+)$} =~ s["src"]
-        filename = s["filename"] || sprintf("figure%04d.%s", i, imgtype)
+        filename = s["filename"] || sprintf("image-%04d.%s", i, imgtype)
         File.open("#{dirname}/image/#{filename}", "wb") do |f|
           f.write(Base64.strict_decode64(imgdata))
         end
@@ -171,7 +171,7 @@ module Metanorma
       xml.at(REQUIREMENT_XPATH) or return
       FileUtils.mkdir_p "#{dirname}/requirement"
       xml.xpath(REQUIREMENT_XPATH).each_with_index do |s, i|
-        filename = s["filename"] || sprintf("%s%04d.xml", s.name, i)
+        filename = s["filename"] || sprintf("%s-%04d.xml", s.name, i)
         File.open("#{dirname}/requirement/#{filename}", "w:UTF-8") do |f|
           f.write s
         end
