@@ -24,8 +24,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :ulstyle: p
       :olstyle: q
       :data-uri-image: false
+      :htmltoclevels: r
+      :doctoclevels: s
       INPUT
-      {:bodyfont=>"b", :datauriimage=>false, :header=>"m", :headerfont=>"c", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :i18nyaml=>"e", :olstyle=>"q", :script=>"a", :scripts=>"i", :scripts_pdf=>"j", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k"}
+      {:bodyfont=>"b", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :script=>"a", :scripts=>"i", :scripts_pdf=>"j", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k"}
     OUTPUT
 
   end

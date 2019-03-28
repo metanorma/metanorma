@@ -54,6 +54,8 @@ module Metanorma
         /\n:ulstyle: (?<ulstyle>[^\n]+)\n/ =~ headerextract
         /\n:olstyle: (?<olstyle>[^\n]+)\n/ =~ headerextract
         /\n:data-uri-image: (?<datauriimage>[^\n]+)\n/ =~ headerextract
+        /\n:htmltoclevels: (?<htmltoclevels>[^\n]+)\n/ =~ headerextract
+        /\n:doctoclevels: (?<doctoclevels>[^\n]+)\n/ =~ headerextract
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -74,6 +76,8 @@ module Metanorma
           ulstyle: defined?(ulstyle) ? ulstyle : nil,
           olstyle: defined?(olstyle) ? olstyle : nil,
           datauriimage: defined?(datauriimage) ? datauriimage != "false" : nil,
+          htmltoclevels: defined?(htmltoclevels) ? htmltoclevels : nil,
+          doctoclevels: defined?(doctoclevels) ? doctoclevels : nil,
         }.reject { |_, val| val.nil? }
       end
 
