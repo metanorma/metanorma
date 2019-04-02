@@ -94,9 +94,11 @@ module Metanorma
       when ".adoc"
         puts "[metanorma] Processing: Asciidoctor input."
         file = File.read(filename, encoding: "utf-8")
-        if options[:asciimath]
+        options[:asciimath] and
           file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
-        end
+        dir = File.dirname(filename)
+        dir != '.' and
+          file.gsub!(/^include::/, "include::#{dir}/")
         [file, @processor.input_to_isodoc(file, filename)]
       when ".xml"
         puts "[metanorma] Processing: Metanorma XML input."

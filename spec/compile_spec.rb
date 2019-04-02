@@ -145,5 +145,13 @@ end
     expect { Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extension_keys: [:bogus_format] } ) }.to output(/bogus_format format is not supported for this standard/).to_stdout
   end
 
+  it "rewrites remote include paths" do
+    FileUtils.rm_f %w(spec/assets/test2.xml)
+    Metanorma::Compile.new().compile("spec/assets/test2.adoc", { type: "iso", extension_keys: [:xml] } )
+    expect(File.exist?("spec/assets/test2.xml")).to be true
+    xml = File.read("spec/assets/test2.xml", encoding: "utf-8")
+    expect(xml).to include "ABC"
+  end
+
 
 end
