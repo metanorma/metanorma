@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    metanorma (0.3.10)
+    metanorma (0.3.11)
       asciidoctor
       htmlentities
 
@@ -23,7 +23,7 @@ GEM
       nokogiri (>= 1.4.3)
     ffi (1.9.25)
     gb-agencies (0.0.5)
-    gbbib (0.4.3)
+    gbbib (0.4.4)
       cnccs (~> 0.1.1)
       gb-agencies (~> 0.0.1)
       iso-bib-item (~> 0.4.2)
@@ -43,14 +43,14 @@ GEM
       iso-bib-item (~> 0.4.2)
     ietfbib (0.4.5)
       iso-bib-item (~> 0.4.2)
-    iev (0.2.1)
+    iev (0.2.2)
       nokogiri
     image_size (2.0.0)
     iso-bib-item (0.4.4)
       isoics (~> 0.1.6)
       nokogiri (~> 1.8.4)
       ruby_deep_clone (~> 0.8.0)
-    isobib (0.4.3)
+    isobib (0.4.4)
       algoliasearch
       iecbib (~> 0.2.1)
       iso-bib-item (~> 0.4.2)
@@ -70,13 +70,13 @@ GEM
     isoics (0.1.7)
     json (2.2.0)
     liquid (4.0.3)
-    metanorma-iso (1.1.4)
+    metanorma-iso (1.1.5)
       asciidoctor (~> 1.5.7)
       iev (~> 0.2.0)
       isodoc (~> 0.9.8)
       metanorma-standoc (~> 1.1.0)
       ruby-jing
-    metanorma-standoc (1.1.5)
+    metanorma-standoc (1.1.6)
       asciidoctor (~> 1.5.7)
       concurrent-ruby
       html2doc (~> 0.8.0)
@@ -88,7 +88,7 @@ GEM
       unicode2latex (~> 0.0.1)
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2018.0812)
+    mime-types-data (3.2019.0331)
     mini_portile2 (2.3.0)
     mixlib-shellout (2.4.4)
     nokogiri (1.8.5)
@@ -99,7 +99,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
-    relaton (0.3.2)
+    relaton (0.3.3)
       algoliasearch
       gbbib (~> 0.4.0)
       iecbib (~> 0.2.0)
@@ -131,7 +131,7 @@ GEM
       optout (>= 0.0.2)
     ruby-xslt (0.9.10)
     ruby_deep_clone (0.8.0)
-    sass (3.7.3)
+    sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
