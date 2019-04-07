@@ -1,18 +1,21 @@
-dist: trusty
-sudo: false
 language: ruby
+cache: bundler
+os:
+- linux
+- osx
 rvm:
-  - 2.5
-  - 2.4
-  - 2.3
-  - ruby-head
+- 2.5
+- 2.4
+- 2.3
+- ruby-head
 node_js:
-  - "iojs"
-  - "8"
+- "iojs"
+- "8"
 before_install: 
-  - gem install bundler -v 1.16.1
-  - npm install -g puppeteer
-  - npm install
+- gem install bundler -v 2.0.1
+- bundle update
+- npm install -g puppeteer
+- npm install
 matrix:
   allow_failures:
     - rvm: ruby-head
