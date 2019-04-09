@@ -8,14 +8,12 @@ rvm:
 - 2.4
 - 2.3
 - ruby-head
-node_js:
-- "iojs"
-- "8"
 before_install: 
-- gem install bundler -v 2.0.1
-- bundle update
+- nvm install 8
 - npm install -g puppeteer
 - npm install
+- gem install bundler -v 2.0.1
+- bundle update
 matrix:
   allow_failures:
     - rvm: ruby-head
