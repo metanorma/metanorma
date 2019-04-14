@@ -35,5 +35,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
   spec.add_development_dependency "metanorma-iso", "~> 1.1.3"
   spec.add_development_dependency "metanorma-standoc", "~> 1.1.4"
-  spec.add_development_dependency "isodoc", "0.9.13"
+  spec.add_development_dependency "isodoc", "~> 0.9.13"
 end

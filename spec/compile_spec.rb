@@ -57,9 +57,6 @@ RSpec.describe Metanorma::Compile do
     FileUtils.rm_rf %w(spec/assets/test spec/assets/test.alt)
     Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", wrapper: true } )
     expect(File.exist?("spec/assets/test/test.html")).to be true
-    expect(File.directory?("spec/assets/test/test_images")).to be true
-    expect(File.exist?("spec/assets/test.alt/test.alt.html")).to be true
-    expect(File.directory?("spec/assets/test.alt/test.alt_images")).to be true
   end
 
   it "data64 encodes images" do
