@@ -19,7 +19,7 @@ module Metanorma
     def register processor
       raise Error unless processor < ::Metanorma::Processor
       p = processor.new
-      puts "[metanorma] processor \"#{p.short}\" registered"
+      Util.log("[metanorma] processor \"#{p.short}\" registered", :info)
       @processors[p.short] = p
     end
 
