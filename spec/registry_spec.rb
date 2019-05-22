@@ -20,6 +20,30 @@ RSpec.describe Metanorma::Registry do
     expect(registry.output_formats[:new]&.to_s).to eq '{:xyz=>"xyz"}'
   end
 
+    it "deals with multiple aliases" do
+    class NewProcessor < Metanorma::Processor
+      def initialize
+        @short = [:new, :new2]
+      end
+
+      def output_formats
+        { xyz: "xyz" }
+      end
+
+    end
+    registry = Metanorma::Registry.instance
+    registry.register(NewProcessor)
+    expect(registry.find_processor(:new)).to be_instance_of NewProcessor
+    expect(registry.find_processor(:new2)).to be_instance_of NewProcessor
+    expect(registry.supported_backends).to include :new
+    expect(registry.supported_backends).to include :new2
+    expect(registry.processors[:new]).to be_instance_of NewProcessor
+    expect(registry.processors[:new2]).to be_instance_of NewProcessor
+    expect(registry.output_formats[:new]&.to_s).to eq '{:xyz=>"xyz"}'
+    expect(registry.output_formats[:new2]&.to_s).to eq '{:xyz=>"xyz"}'
+  end
+
+
   it "warns when registered class is not a Metanorma processor" do
     registry = Metanorma::Registry.instance
     expect{registry.register(Metanorma)}.to raise_error(Error) 
