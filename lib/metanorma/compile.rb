@@ -47,23 +47,23 @@ module Metanorma
 
     def validate_type(options)
       unless options[:type]
-        puts "[metanorma] Error: Please specify a standard type: #{@registry.supported_backends}."
+        Util.log("[metanorma] Error: Please specify a standard type: #{@registry.supported_backends}.", :error)
         return nil
       end
       stdtype = options[:type].to_sym
       unless @registry.supported_backends.include? stdtype
-        puts "[metanorma] Warning: #{stdtype} is not a default standard type."
-        puts "[metanorma] Info: Attempting to load `metanorma-#{stdtype}` gem for standard type `#{stdtype}`."
+        Util.log("[metanorma] Warning: #{stdtype} is not a default standard type.", :warning)
+        Util.log("metanorma] Info: Attempting to load `metanorma-#{stdtype}` gem for standard type `#{stdtype}`.", :info)
       end
       begin
         require "metanorma-#{stdtype}"
-        puts "[metanorma] Info: gem `metanorma-#{stdtype}` loaded."
+        Util.log("[metanorma] Info: gem `metanorma-#{stdtype}` loaded.", :info)
       rescue LoadError
-        puts "[metanorma] Error: loading gem `metanorma-#{stdtype}` failed. Exiting."
+        Util.log("[metanorma] Error: loading gem `metanorma-#{stdtype}` failed. Exiting.", :error)
         return false
       end
       unless @registry.supported_backends.include? stdtype
-        puts "[metanorma] Error: The `metanorma-#{stdtype}` gem still doesn't support `#{stdtype}`. Exiting."
+        Util.log("[metanorma] Error: The `metanorma-#{stdtype}` gem still doesn't support `#{stdtype}`. Exiting.", :error)
         return false
       end
       true
@@ -71,7 +71,7 @@ module Metanorma
 
     def validate_format(options)
       unless options[:format] == :asciidoc
-        puts "[metanorma] Error: Only source file format currently supported is 'asciidoc'."
+        Util.log("[metanorma] Error: Only source file format currently supported is 'asciidoc'.", :error)
         return false
       end
       true
@@ -83,7 +83,7 @@ module Metanorma
       end
       extensions = options[:extension_keys].inject([]) do |memo, e|
         @processor.output_formats[e] and memo << e or
-          puts "[metanorma] Error: #{e} format is not supported for this standard."
+          Util.log("[metanorma] Error: #{e} format is not supported for this standard.", :error)
         memo
       end
       extensions
@@ -92,7 +92,7 @@ module Metanorma
     def process_input(filename, options)
       case extname = File.extname(filename)
       when ".adoc"
-        puts "[metanorma] Processing: Asciidoctor input."
+        Util.log("[metanorma] Processing: Asciidoctor input.", :info)
         file = File.read(filename, encoding: "utf-8")
         options[:asciimath] and
           file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
@@ -101,12 +101,12 @@ module Metanorma
           file.gsub!(/^include::/, "include::#{dir}/")
         [file, @processor.input_to_isodoc(file, filename)]
       when ".xml"
-        puts "[metanorma] Processing: Metanorma XML input."
+        Util.log("[metanorma] Processing: Metanorma XML input.", :info)
         # TODO NN: this is a hack -- we should provide/bridge the
         # document attributes in Metanorma XML
         ["", File.read(filename, encoding: "utf-8")]
       else
-        puts "[metanorma] Error: file extension #{extname} is not supported."
+        Util.log("[metanorma] Error: file extension #{extname} is not supported.", :error)
         nil
       end
     end
