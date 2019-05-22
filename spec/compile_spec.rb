@@ -74,7 +74,7 @@ RSpec.describe Metanorma::Compile do
     Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", relaton: "spec/assets/testrelaton.xml" } )
     expect(File.exist?("spec/assets/testrelaton.xml")).to be true
     xml = File.read("spec/assets/testrelaton.xml", encoding: "utf-8")
-    expect(xml).to include %(<bibdata type="article">)
+    expect(xml).to include %(<bibdata type="standard">)
   end
 
   it "exports bibdata, rxl" do
@@ -83,7 +83,7 @@ RSpec.describe Metanorma::Compile do
     Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extension_keys: [:rxl] } )
     expect(File.exist?("spec/assets/test.rxl")).to be true
     xml = File.read("spec/assets/test.rxl", encoding: "utf-8")
-    expect(xml).to include %(<bibdata type="article">)
+    expect(xml).to include %(<bibdata type="standard">)
   end
 
   it "keeps asciimath" do
