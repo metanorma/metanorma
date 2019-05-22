@@ -19,10 +19,10 @@ module Metanorma
     def register processor
       raise Error unless processor < ::Metanorma::Processor
       p = processor.new
-      puts "[metanorma] processor \"#{Array(p.short)[0]}\" registered"
       Array(p.short).each do |s|
         @processors[s] = p
       end
+      Util.log("[metanorma] processor \"#{Array(p.short)[0]}\" registered", :info)
     end
 
     def find_processor(short)
