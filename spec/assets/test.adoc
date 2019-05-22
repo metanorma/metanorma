@@ -11,7 +11,7 @@ Author
 :title-font: title-font
 :data-uri-image: false
 
-= Scope
+== Scope
 image::rice_image1.png[]
 
 [filename="img1.png"]
@@ -33,12 +33,12 @@ end
 </html>
 ----
 
-[requirement]
+[.requirement]
 ====
 Requirement 1
 ====
 
-[permission,filename="reqt1.xml"]
+[.permission,filename="reqt1.xml"]
 ====
 Permission 2
 ====
