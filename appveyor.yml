@@ -1,3 +1,5 @@
+# Auto-generated !!! Do not edit it manually
+# use ci-master https://github.com/metanorma/metanorma-build-scripts
 version: '{build}'
 
 cache:
@@ -7,7 +9,6 @@ environment:
   matrix:
     - RUBY_VERSION: 25
     - RUBY_VERSION: 24
-    - RUBY_VERSION: 23
     - RUBY_VERSION: _trunk
 
 matrix:
@@ -20,6 +21,7 @@ install:
 
 build_script:
   - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - set GIT_TERMINAL_PROMPT=0
   - bundle config --local path vendor/bundle
   - bundle update
   - bundle install
