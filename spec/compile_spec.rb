@@ -130,8 +130,14 @@ end
     expect { Metanorma::Compile.new().compile("spec/assets/test.adoc", { relaton: "testrelaton.xml" } ) }.to output(/Please specify a standard type/).to_stdout
   end
 
-  it "warns when bogus standard type requested" do
-    expect { Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "bogus_format" } ) }.to output(/bogus_format is not a default standard type/).to_stdout
+  it "throw an error when bogus standard type requested" do
+    expect do
+      Metanorma::Compile.new().
+        compile(
+          "spec/assets/test.adoc",
+          type: "bogus_format",
+      )
+    end.to output(/loading gem `metanorma-bogus_format` failed/).to_stdout
   end
 
   it "warns when bogus format requested" do
