@@ -52,8 +52,7 @@ module Metanorma
       end
       stdtype = options[:type].to_sym
       unless @registry.supported_backends.include? stdtype
-        Util.log("[metanorma] Warning: #{stdtype} is not a default standard type.", :warning)
-        Util.log("metanorma] Info: Attempting to load `metanorma-#{stdtype}` gem for standard type `#{stdtype}`.", :info)
+        Util.log("[metanorma] Info: Loading `metanorma-#{stdtype}` gem for standard type `#{stdtype}`.", :info)
       end
       begin
         require "metanorma-#{stdtype}"

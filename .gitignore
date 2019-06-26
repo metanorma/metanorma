@@ -7,5 +7,12 @@
 /spec/reports/
 /tmp/
 
+/.tmp.xml
+/test.*
+/a.*
+/spec/assets/test*
+/spec/assets/test/
+/spec/assets/extract/
+
 # rspec failure tracking
 .rspec_status
