@@ -5,6 +5,7 @@ const puppeteer = require('puppeteer');
 
 const createPdf = async() => {
   let browser;
+  let exitCode = 0;
   try {
     browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
@@ -14,12 +15,13 @@ const createPdf = async() => {
       format: 'A4'
     });
   } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
+      exitCode = 1
   } finally {
     if (browser) {
       browser.close();
     }
-    process.exit();
+    process.exit(exitCode);
   }
 };
 createPdf();
