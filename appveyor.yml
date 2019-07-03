@@ -22,6 +22,7 @@ install:
 build_script:
   - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
   - set GIT_TERMINAL_PROMPT=0
+  - gem install bundler -v "~> 2"
   - bundle config --local path vendor/bundle
   - bundle update
   - bundle install
