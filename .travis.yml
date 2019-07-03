@@ -13,7 +13,7 @@ before_install:
 - nvm install 8
 - npm install -g puppeteer
 - npm install
-- gem install bundler -v 2.0.1
+- gem install bundler -v "~> 2"
 - bundle update
 matrix:
   allow_failures:
