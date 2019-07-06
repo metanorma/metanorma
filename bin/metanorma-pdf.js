@@ -7,7 +7,7 @@ const createPdf = async() => {
   let browser;
   let exitCode = 0;
   try {
-    browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox', '--headless']});
     const page = await browser.newPage();
     await page.goto(process.argv[2], {waitUntil: 'networkidle2'});
     await page.pdf({
