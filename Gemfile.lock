@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    metanorma (0.3.13)
+    metanorma (0.3.14)
       asciidoctor
       htmlentities
 
@@ -23,7 +23,7 @@ GEM
       nokogiri (>= 1.4.3)
     ffi (1.11.1)
     gb-agencies (0.0.5)
-    html2doc (0.8.11)
+    html2doc (0.8.12)
       asciimath (~> 1.0.7)
       htmlentities (~> 4.3.4)
       image_size
@@ -36,7 +36,7 @@ GEM
     iev (0.2.2)
       nokogiri
     image_size (2.0.1)
-    isodoc (0.10.0)
+    isodoc (0.10.1)
       asciimath
       html2doc (~> 0.8.11)
       htmlentities (~> 4.3.4)
@@ -51,12 +51,12 @@ GEM
     isoics (0.1.7)
     json (2.2.0)
     liquid (4.0.3)
-    metanorma-iso (1.2.0)
+    metanorma-iso (1.2.1)
       asciidoctor (~> 1.5.7)
       isodoc (~> 0.10.0)
       metanorma-standoc (~> 1.2.0)
       ruby-jing
-    metanorma-standoc (1.2.0)
+    metanorma-standoc (1.2.1)
       asciidoctor (~> 1.5.7)
       concurrent-ruby
       html2doc (~> 0.8.11)
@@ -75,9 +75,9 @@ GEM
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     optout (0.0.2)
-    public_suffix (3.1.0)
+    public_suffix (3.1.1)
     rake (12.3.2)
-    relaton (0.4.0)
+    relaton (0.4.1)
       algoliasearch
       relaton-gb (~> 0.5.0)
       relaton-iec (~> 0.3.0)
@@ -86,35 +86,36 @@ GEM
       relaton-iso-bib (~> 0.2.0)
       relaton-itu (~> 0.2.0)
       relaton-nist (~> 0.2.0)
-    relaton-bib (0.2.1)
+    relaton-bib (0.2.3)
       addressable
       nokogiri (~> 1.8.4)
-    relaton-cli (0.2.0)
+    relaton-cli (0.2.1)
       liquid
       relaton (~> 0.4)
       thor
-    relaton-gb (0.5.0)
+    relaton-gb (0.5.1)
       cnccs (~> 0.1.1)
       gb-agencies (~> 0.0.1)
       relaton-iso-bib (~> 0.2.0)
-    relaton-iec (0.3.0)
+    relaton-iec (0.3.1)
       addressable
       relaton-iso-bib (~> 0.2.0)
-    relaton-ietf (0.5.0)
+    relaton-ietf (0.5.3)
       relaton-iso-bib (~> 0.2.0)
-    relaton-iso (0.5.0)
+    relaton-iso (0.5.1)
       algoliasearch
       relaton-iec (~> 0.3.0)
       relaton-iso-bib (~> 0.2.0)
-    relaton-iso-bib (0.2.2)
+    relaton-iso-bib (0.2.3)
       isoics (~> 0.1.6)
       nokogiri (~> 1.8.4)
       relaton-bib (~> 0.2.0)
       ruby_deep_clone (~> 0.8.0)
-    relaton-itu (0.2.0)
+    relaton-itu (0.2.1)
       relaton-iso-bib (~> 0.2.0)
-    relaton-nist (0.2.0)
+    relaton-nist (0.2.2)
       relaton-bib (~> 0.2.0)
+      rubyzip
     roman-numerals (0.3.0)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -124,7 +125,7 @@ GEM
       mixlib-shellout (~> 2.0)
       rspec (~> 3.2)
       rspec-its (~> 1.2)
-    rspec-core (3.8.1)
+    rspec-core (3.8.2)
       rspec-support (~> 3.8.0)
     rspec-expectations (3.8.4)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -139,6 +140,7 @@ GEM
     ruby-jing (0.0.1)
       optout (>= 0.0.2)
     ruby_deep_clone (0.8.0)
+    rubyzip (1.2.3)
     sassc (2.0.1)
       ffi (~> 1.9)
       rake
