@@ -14,12 +14,13 @@ const createPdf = async() => {
       path: process.argv[3],
       format: 'A4'
     });
+    await page.close();
   } catch (err) {
       console.error(err.message);
       exitCode = 1
   } finally {
     if (browser) {
-      browser.close();
+      await browser.close();
     }
     process.exit(exitCode);
   }
