@@ -1,3 +1,14 @@
+GIT
+  remote: https://github.com//metanorma-iso
+  revision: c76b6843b9d3a5abc908ecb7f7bb54ab80b3efcc
+  branch: test/20190919
+  specs:
+    metanorma-iso (1.3.2)
+      asciidoctor (~> 1.5.7)
+      isodoc (~> 1.0.0)
+      metanorma-standoc (~> 1.3.0)
+      ruby-jing
+
 PATH
   remote: .
   specs:
@@ -8,11 +19,8 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.6.0)
-      public_suffix (>= 2.0.2, < 4.0)
-    algoliasearch (1.26.1)
-      httpclient (~> 2.8, >= 2.8.3)
-      json (>= 1.5.1)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     asciidoctor (1.5.8)
     asciimath (1.0.8)
     byebug (10.0.2)
@@ -21,6 +29,8 @@ GEM
     diff-lcs (1.3)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
+    faraday (0.15.4)
+      multipart-post (>= 1.2, < 3)
     ffi (1.11.1)
     gb-agencies (0.0.5)
     html2doc (0.8.12)
@@ -32,31 +42,24 @@ GEM
       thread_safe
       uuidtools
     htmlentities (4.3.4)
-    httpclient (2.8.3)
     iev (0.2.2)
       nokogiri
     image_size (2.0.2)
-    isodoc (1.0.0)
+    isodoc (1.0.2)
       asciimath
       html2doc (~> 0.8.11)
       htmlentities (~> 4.3.4)
       liquid
       metanorma (~> 0.3.0)
-      nokogiri (>= 1)
+      nokogiri (>= 1.10.4)
       rake (~> 12.0)
       roman-numerals
       sassc (~> 2)
       thread_safe
       uuidtools
     isoics (0.1.7)
-    json (2.2.0)
     liquid (4.0.3)
-    metanorma-iso (1.3.0)
-      asciidoctor (~> 1.5.7)
-      isodoc (~> 1.0.0)
-      metanorma-standoc (~> 1.3.0)
-      ruby-jing
-    metanorma-standoc (1.3.0)
+    metanorma-standoc (1.3.2)
       asciidoctor (~> 1.5.7)
       concurrent-ruby
       html2doc (~> 0.8.11)
@@ -67,50 +70,54 @@ GEM
       ruby-jing
       sterile (~> 1.0.14)
       unicode2latex (~> 0.0.1)
-    mime-types (3.2.2)
+    mime-types (3.3)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2019.0331)
+    mime-types-data (3.2019.0904)
     mini_portile2 (2.4.0)
     mixlib-shellout (2.4.4)
+    multipart-post (2.1.1)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     optout (0.0.2)
-    public_suffix (3.1.1)
+    public_suffix (4.0.1)
     rake (12.3.3)
-    relaton (0.5.2)
-      algoliasearch
+    relaton (0.5.4)
       relaton-gb (~> 0.6.0)
       relaton-iec (~> 0.4.0)
       relaton-ietf (~> 0.6.0)
       relaton-iso (~> 0.6.0)
       relaton-itu (~> 0.3.0)
       relaton-nist (~> 0.3.0)
-    relaton-bib (0.3.5)
+      relaton-ogc (~> 0.1.0)
+    relaton-bib (0.3.6)
       addressable
-      nokogiri (~> 1.10)
-    relaton-gb (0.6.1)
+      nokogiri
+    relaton-gb (0.6.3)
       cnccs (~> 0.1.1)
       gb-agencies (~> 0.0.1)
       relaton-iso-bib (~> 0.3.0)
-    relaton-iec (0.4.3)
+    relaton-iec (0.4.4)
       addressable
       relaton-iso-bib (~> 0.3.0)
-    relaton-ietf (0.6.2)
+    relaton-ietf (0.6.4)
       relaton-bib (~> 0.3.0)
     relaton-iev (0.1.1)
       relaton (~> 0.5.0)
-    relaton-iso (0.6.3)
+    relaton-iso (0.6.5)
       relaton-iec (~> 0.4.0)
       relaton-iso-bib (~> 0.3.0)
-    relaton-iso-bib (0.3.4)
+    relaton-iso-bib (0.3.5)
       isoics (~> 0.1.6)
       relaton-bib (~> 0.3.0)
       ruby_deep_clone (~> 0.8.0)
-    relaton-itu (0.3.2)
+    relaton-itu (0.3.3)
       relaton-iso-bib (~> 0.3.0)
-    relaton-nist (0.3.2)
+    relaton-nist (0.3.4)
       relaton-bib (~> 0.3.0)
       rubyzip
+    relaton-ogc (0.1.0)
+      faraday
+      relaton-iso-bib (~> 0.3.0)
     roman-numerals (0.3.0)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -135,8 +142,8 @@ GEM
     ruby-jing (0.0.1)
       optout (>= 0.0.2)
     ruby_deep_clone (0.8.0)
-    rubyzip (1.2.3)
-    sassc (2.1.0)
+    rubyzip (1.2.4)
+    sassc (2.2.1)
       ffi (~> 1.9)
     sterile (1.0.14)
       nokogiri
@@ -152,7 +159,7 @@ DEPENDENCIES
   byebug (~> 10.0)
   equivalent-xml (~> 0.6)
   metanorma!
-  metanorma-iso (~> 1.3)
+  metanorma-iso!
   rake (~> 12.0)
   rspec (~> 3.0)
   rspec-command (~> 1.0)
