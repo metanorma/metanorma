@@ -46,7 +46,7 @@ RSpec.describe Metanorma::Compile do
   it "extracts isodoc options from asciidoc file" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extension_keys: [:html] } )
-    html = File.read("spec/assets/test.html")
+    html = File.read("spec/assets/test.html", encoding: "UTF-8")
     expect(html).to include "font-family: body-font;"
     expect(html).to include "font-family: header-font;"
     expect(html).to include "font-family: monospace-font;"
