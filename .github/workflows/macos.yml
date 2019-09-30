@@ -1,0 +1,34 @@
+# Auto-generated !!! Do not edit it manually
+# use ci-master https://github.com/metanorma/metanorma-build-scripts
+name: macos
+
+on: [push]
+
+jobs:
+  test-macos:
+    name: Test on Ruby ${{ matrix.ruby }} macOS
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        ruby: [ '2.6', '2.5', '2.4' ]
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          architecture: 'x64'
+      - name: Update gems
+        run: |
+          sudo gem install bundler -v "~> 2" --force
+          bundle install --jobs 4 --retry 3
+      - name: Use Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '8'
+      - name: Install Puppeteer
+        run: |
+          npm install -g puppeteer
+      - name: Run specs
+        run: |
+          bundle exec rake
