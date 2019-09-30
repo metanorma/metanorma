@@ -1,0 +1,37 @@
+# Auto-generated !!! Do not edit it manually
+# use ci-master https://github.com/metanorma/metanorma-build-scripts
+name: windows
+
+on: [push]
+
+jobs:
+  test-windows:
+    name: Test on Ruby ${{ matrix.ruby }} Windows
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        ruby: [ '2.6', '2.5', '2.4' ]
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          architecture: 'x64'
+      - name: Update gems
+        shell: pwsh
+        run: |
+          gem install bundler -v "~> 2"
+          bundle config --local path vendor/bundle
+          bundle update
+          bundle install --jobs 4 --retry 3
+      - name: Use Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '8'
+      - name: Install Puppeteer
+        run: |
+          npm install -g puppeteer
+      - name: Run specs
+        run: |
+          bundle exec rake
