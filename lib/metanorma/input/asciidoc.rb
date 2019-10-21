@@ -56,6 +56,7 @@ module Metanorma
         /\n:data-uri-image: (?<datauriimage>[^\n]+)\n/ =~ headerextract
         /\n:htmltoclevels: (?<htmltoclevels>[^\n]+)\n/ =~ headerextract
         /\n:doctoclevels: (?<doctoclevels>[^\n]+)\n/ =~ headerextract
+        /\n:hierarchical-assets: (?<hierarchical_assets>[^\n]+)\n/ =~ headerextract
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -78,6 +79,7 @@ module Metanorma
           datauriimage: defined?(datauriimage) ? datauriimage != "false" : nil,
           htmltoclevels: defined?(htmltoclevels) ? htmltoclevels : nil,
           doctoclevels: defined?(doctoclevels) ? doctoclevels : nil,
+          hierarchical_assets: defined?(hierarchical_assets) ? hierarchical_assets : nil,
         }.reject { |_, val| val.nil? }
       end
 
