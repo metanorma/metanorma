@@ -1,9 +1,11 @@
 = Metanorma: the standard for standards
 
 image:https://img.shields.io/gem/v/metanorma.svg["Gem Version", link="https://rubygems.org/gems/metanorma"]
-image:https://img.shields.io/travis/metanorma/metanorma/master.svg["Build Status", link="https://travis-ci.org/metanorma/metanorma"]
+image:https://travis-ci.com/metanorma/metanorma.svg["Build Status", link="https://travis-ci.com/metanorma/metanorma"]
+image:https://ci.appveyor.com/api/projects/status/ya3ymheq7xq5wn74?svg=true["AppVeyor Build Status", link="https://ci.appveyor.com/project/metanorma/metanorma"]
 image:https://codeclimate.com/github/metanorma/metanorma/badges/gpa.svg["Code Climate", link="https://codeclimate.com/github/metanorma/metanorma"]
-image:https://ci.appveyor.com/api/projects/status/t8irmy9iq4xf1ouy?svg=true["AppVeyor Build Status", link="https://ci.appveyor.com/project/metanorma/metanorma"]
+image:https://img.shields.io/github/issues-pr-raw/metanorma/metanorma.svg["Pull Requests", link="https://github.com/metanorma/metanorma/pulls"]
+image:https://img.shields.io/github/commits-since/metanorma/metanorma/latest.svg["Commits since latest",link="https://github.com/metanorma/metanorma/releases"]
 
 Metanorma is dedicated to harmonizing standard documents
 produced by different standard-setting bodies in a manner that
