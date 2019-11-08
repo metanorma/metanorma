@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    metanorma (0.3.16)
+    metanorma (0.3.17)
       asciidoctor
       htmlentities
 
@@ -10,7 +10,7 @@ GEM
   specs:
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    asciidoctor (1.5.8)
+    asciidoctor (2.0.10)
     asciimath (1.0.9)
     byebug (10.0.2)
     cnccs (0.1.5)
@@ -22,7 +22,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     ffi (1.11.1)
     gb-agencies (0.0.6)
-    html2doc (0.9.0)
+    html2doc (0.9.1)
       asciimath (~> 1.0.9)
       htmlentities (~> 4.3.4)
       image_size
@@ -34,7 +34,7 @@ GEM
     iev (0.2.3)
       nokogiri (>= 1.10.4)
     image_size (2.0.2)
-    isodoc (1.0.6)
+    isodoc (1.0.7)
       asciimath
       html2doc (~> 0.9.0)
       htmlentities (~> 4.3.4)
@@ -48,13 +48,12 @@ GEM
       uuidtools
     isoics (0.1.8)
     liquid (4.0.3)
-    metanorma-iso (1.3.6)
-      asciidoctor (~> 1.5.7)
+    metanorma-iso (1.3.7)
       isodoc (~> 1.0.0)
       metanorma-standoc (~> 1.3.0)
       ruby-jing
-    metanorma-standoc (1.3.6)
-      asciidoctor (~> 1.5.7)
+    metanorma-standoc (1.3.7)
+      asciidoctor (~> 2.0.0)
       concurrent-ruby
       html2doc (~> 0.9.0)
       iev (~> 0.2.1)
@@ -72,12 +71,13 @@ GEM
     mini_portile2 (2.4.0)
     mixlib-shellout (2.4.4)
     multipart-post (2.1.1)
-    nokogiri (1.10.4)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     optout (0.0.2)
     public_suffix (4.0.1)
     rake (12.3.3)
-    relaton (0.5.9)
+    relaton (0.5.11)
+      relaton-calconnect (~> 0.1.0)
       relaton-gb (~> 0.6.0)
       relaton-iec (~> 0.4.0)
       relaton-ietf (~> 0.6.0)
@@ -85,33 +85,36 @@ GEM
       relaton-itu (~> 0.3.0)
       relaton-nist (~> 0.3.0)
       relaton-ogc (~> 0.1.0)
-    relaton-bib (0.3.11)
+    relaton-bib (0.3.12)
       addressable
       nokogiri
-    relaton-gb (0.6.6)
+    relaton-calconnect (0.1.0)
+      faraday
+      relaton-iso-bib (~> 0.3.0)
+    relaton-gb (0.6.7)
       cnccs (~> 0.1.1)
       gb-agencies (~> 0.0.1)
       relaton-iso-bib (~> 0.3.0)
-    relaton-iec (0.4.9)
+    relaton-iec (0.4.10)
       addressable
       relaton-iso-bib (~> 0.3.0)
-    relaton-ietf (0.6.7)
+    relaton-ietf (0.6.9)
       relaton-bib (~> 0.3.0)
     relaton-iev (0.1.1)
       relaton (~> 0.5.0)
-    relaton-iso (0.6.8)
+    relaton-iso (0.6.9)
       relaton-iec (~> 0.4.0)
       relaton-iso-bib (~> 0.3.0)
-    relaton-iso-bib (0.3.11)
+    relaton-iso-bib (0.3.12)
       isoics (~> 0.1.6)
       relaton-bib (~> 0.3.0)
       ruby_deep_clone (~> 0.8.0)
-    relaton-itu (0.3.6)
+    relaton-itu (0.3.7)
       relaton-iso-bib (~> 0.3.0)
-    relaton-nist (0.3.7)
+    relaton-nist (0.3.8)
       relaton-bib (~> 0.3.0)
       rubyzip
-    relaton-ogc (0.1.3)
+    relaton-ogc (0.1.4)
       faraday
       relaton-iso-bib (~> 0.3.0)
     roman-numerals (0.3.0)
