@@ -21,7 +21,7 @@ jobs:
           architecture: 'x64'
       - name: Update gems
         run: |
-          gem install bundler -v "2.0.1"
+          gem install bundler 
           bundle install --jobs 4 --retry 3
       - name: Use Node
         uses: actions/setup-node@v1
