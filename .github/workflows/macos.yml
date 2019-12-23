@@ -2,13 +2,14 @@
 # use ci-master https://github.com/metanorma/metanorma-build-scripts
 name: macos
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test-macos:
     name: Test on Ruby ${{ matrix.ruby }} macOS
     runs-on: macos-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby: [ '2.6', '2.5', '2.4' ]
     steps:
@@ -20,7 +21,7 @@ jobs:
           architecture: 'x64'
       - name: Update gems
         run: |
-          sudo gem install bundler -v "~> 2" --force
+          sudo gem install bundler -v "2.0.1" --force
           bundle install --jobs 4 --retry 3
       - name: Use Node
         uses: actions/setup-node@v1
