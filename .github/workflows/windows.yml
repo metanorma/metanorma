@@ -22,7 +22,7 @@ jobs:
       - name: Update gems
         shell: pwsh
         run: |
-          gem install bundler -v "2.0.1"
+          gem install bundler 
           bundle config --local path vendor/bundle
           bundle update
           bundle install --jobs 4 --retry 3
