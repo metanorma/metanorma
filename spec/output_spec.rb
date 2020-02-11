@@ -2,7 +2,7 @@ require_relative "spec_helper"
 require "fileutils"
 
 RSpec.describe Metanorma::Output::Pdf do
-  it "generates a PDF" do
+  it "generates a PDF from HTML" do
     FileUtils.rm_f %w(a.html a.pdf)
     File.write("a.html", "<html><head/><body><h1>Hello</h1></body></html>")
     generator = Metanorma::Output::Pdf.new
@@ -29,5 +29,14 @@ RSpec.describe Metanorma::Output::Pdf do
   it "Missing input path" do
     generator = Metanorma::Output::Pdf.new
     expect { generator.convert("random.html", "random.pdf") }.to raise_error
+  end
+end
+
+RSpec.describe Metanorma::Output::XslfoPdf do
+  it "generates a PDF from HTML" do
+    FileUtils.rm_f %w(a.pdf)
+    generator = Metanorma::Output::XslfoPdf.new
+    generator.convert("spec/assets/a.xml", "a.pdf", File.join(File.dirname(__FILE__), "assets", "iso.international-standard.xsl"))
+    expect(File.exist?("a.pdf")).to be true
   end
 end
