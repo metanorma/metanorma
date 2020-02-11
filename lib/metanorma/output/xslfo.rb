@@ -1,20 +1,23 @@
 require "open3"
-require "pathname"
+require "tempfile"
+require_relative "./utils.rb"
 
 module Metanorma
   module Output
-    class Pdf < Base
+    class XslfoPdf < Base
+      def fontconfig
+        Tempfile.open(["pdf_fonts_config", ".xml"]) do |f|
+          f.write(File.read(File.join(File.dirname(__FILE__), "pdf_fonts_config.xml")).
+                  gsub(/{FONTS}/, Utils::file_path(ENV["MN_PDF_FONT_PATH"])))
+          f.path
+        end
+      end
 
-      def convert(url_path, output_path)
-        file_url = url_path
-        file_url = "file://#{url_path}" if Pathname.new(file_url).absolute?
-        file_url = "file://#{Dir.pwd}/#{url_path}" unless %r{^file://} =~ file_url
-        pdfjs = File.join(File.dirname(__FILE__), "../../../bin/metanorma-pdf.js")
-
-        node_path = ENV["NODE_PATH"] || `npm root --quiet -g`.strip
-        node_cmd = ["node", pdfjs, file_url, output_path].join(" ")
-
-        _, error_str, status = Open3.capture3({ "NODE_PATH" => node_path }, node_cmd)
+      def convert(url_path, output_path, xsl_stylesheet)
+        #file_url = Utils::file_path(url_path)
+        pdfjar = File.join(File.dirname(__FILE__), "../../../bin/mn2pdf.jar")
+        cmd = ["java", "-jar", pdfjar, fontconfig, url_path, xsl_stylesheet, output_path].join(" ")
+        _, error_str, status = Open3.capture3(cmd)
         raise error_str unless status.success?
       end
     end

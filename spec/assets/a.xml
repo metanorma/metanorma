@@ -1,5 +1,13 @@
 <iso-standard xmlns="http://riboseinc.com/isoxml">
-<bibdata type="standard">
+  <bibdata type="standard">
+   <title language="en" format="text/plain" type="main">Introduction — Main Title — Title — Title Part</title>
+   <title language="en" format="text/plain" type="title-intro">Introduction</title>
+   <title language="en" format="text/plain" type="title-main">Main Title — Title</title>
+   <title language="en" format="text/plain" type="title-part">Title Part</title>
+   <title language="fr" format="text/plain" type="main">Introduction Française — Titre Principal — Part du Titre</title>
+   <title language="fr" format="text/plain" type="title-intro">Introduction Française</title>
+   <title language="fr" format="text/plain" type="title-main">Titre Principal</title>
+   <title language="fr" format="text/plain" type="title-part">Part du Titre</title>
   <contributor>
     <role type="author"/>
     <organization>
