@@ -21,10 +21,11 @@ Gem::Specification.new do |spec|
   spec.bindir        = "bin"
   #spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  spec.required_ruby_version = '>= 2.4.0'
+  spec.required_ruby_version = ">= 2.4.0"
 
-  spec.add_runtime_dependency 'asciidoctor'
-  spec.add_runtime_dependency 'htmlentities'
+  spec.add_runtime_dependency "asciidoctor"
+  spec.add_runtime_dependency "htmlentities"
+  spec.add_runtime_dependency "nokogiri"
 
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rspec", "~> 3.0"

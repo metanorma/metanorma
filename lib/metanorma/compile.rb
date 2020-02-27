@@ -29,15 +29,18 @@ module Metanorma
     end
 
     def options_extract(filename, options)
-      o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(File.read(filename, encoding: "utf-8"))
-      options[:type] ||= o[:type]&.to_sym
       dir = filename.sub(%r(/[^/]+$), "/")
-      options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
-      options[:sourcecode] ||= "#{dir}/#{o[:sourcecode]}" if o[:sourcecode]
-      options[:extension_keys] ||= o[:extensions]&.split(/,[ ]*/)&.map(&:to_sym)
+      file_content = File.read(filename, encoding: "utf-8")
+      ascii_options = Metanorma::Input::Asciidoc.new.extract_metanorma_options(file_content)
+
+      options[:type] ||= extract_xml_type(file_content) || ascii_options[:type]&.to_sym
+      options[:relaton] ||= "#{dir}/#{ascii_options[:relaton]}" if ascii_options[:relaton]
+      options[:sourcecode] ||= "#{dir}/#{ascii_options[:sourcecode]}" if ascii_options[:sourcecode]
+      options[:extension_keys] ||= ascii_options[:extensions]&.split(/,[ ]*/)&.map(&:to_sym)
       options[:extension_keys] = nil if options[:extension_keys] == [:all]
       options[:format] ||= :asciidoc
       options[:filename] = filename
+
       options
     end
 
@@ -196,6 +199,19 @@ module Metanorma
           FileUtils.mkdir_p outfilename
           FileUtils.mv "#{outfilename}.html", outfilename
           FileUtils.mv "#{outfilename}_images", outfilename, force: true
+        end
+      end
+    end
+
+    private
+
+    def extract_xml_type(file_content)
+      if file_content
+        require "nokogiri"
+        xml_document = Nokogiri::XML(file_content)
+
+        if xml_document.root
+          xml_document.root.name.split("-").first
         end
       end
     end

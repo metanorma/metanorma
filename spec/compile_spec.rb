@@ -43,6 +43,18 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include "</iso-standard>"
   end
 
+  it "processes a Metanorma XML ISO document" do
+    FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso" } )
+    expect(File.exist?("spec/assets/test.xml")).to be true
+
+    FileUtils.rm_f %w(spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
+    expect { Metanorma::Compile.new().compile("spec/assets/test.xml") }.not_to output(/Error: Please specify a standard type/).to_stdout
+    expect(File.exist?("spec/assets/test.html")).to be true
+    html = File.read("spec/assets/test.html", encoding: "utf-8")
+    expect(html).to include "ISO copyright office"
+  end
+
   it "extracts isodoc options from asciidoc file" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extension_keys: [:html] } )
