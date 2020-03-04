@@ -6,7 +6,6 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ '**' ]
 
 jobs:
   test-linux:
@@ -37,3 +36,15 @@ jobs:
       - name: Run specs
         run: |
           bundle exec rake
+      - name: Trigger dependent repositories
+        if: github.ref == 'refs/heads/master'
+        env:
+          GH_USERNAME: ${{ secrets.PAT_USERNAME }}
+          GH_ACCESS_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          curl -LO --retry 3 https://raw.githubusercontent.com/metanorma/metanorma-build-scripts/master/trigger-gh-actions.sh
+          source .github/workflows/dependent_repos.env
+          for repo in $DEPENDENT_REPOS
+          do
+            sh trigger-gh-actions.sh $ORGANISATION $repo $GH_USERNAME $GH_ACCESS_TOKEN $GITHUB_REPOSITORY
+          done
