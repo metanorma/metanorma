@@ -44,5 +44,14 @@ module Metanorma
       end
     end
 
+    def root_tags
+      @processors.inject({}) do |acc, (k,v)|
+        if v.asciidoctor_backend
+          x = Asciidoctor.load nil, {backend: v.asciidoctor_backend}
+          acc[k] = x.converter.class::XML_ROOT_TAG
+        end
+        acc
+      end
+    end
   end
 end

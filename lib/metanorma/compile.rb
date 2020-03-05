@@ -28,8 +28,19 @@ module Metanorma
       end
     end
 
+    def xml_options_extract(file)
+      xml = Nokogiri::XML(file)
+      if xml.root
+        @registry.root_tags.each do |k, v|
+          return { type: k }  if v == xml.root.name
+        end
+      end
+      {}
+    end
+
     def options_extract(filename, options)
       o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(File.read(filename, encoding: "utf-8"))
+      o = o.merge(xml_options_extract(File.read(filename, encoding: "utf-8")))
       options[:type] ||= o[:type]&.to_sym
       dir = filename.sub(%r(/[^/]+$), "/")
       options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
