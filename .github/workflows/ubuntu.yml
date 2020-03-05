@@ -37,7 +37,7 @@ jobs:
         run: |
           bundle exec rake
       - name: Trigger dependent repositories
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' && matrix.ruby == '2.6'
         env:
           GH_USERNAME: ${{ secrets.PAT_USERNAME }}
           GH_ACCESS_TOKEN: ${{ secrets.PAT_TOKEN }}
