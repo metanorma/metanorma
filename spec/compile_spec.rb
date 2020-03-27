@@ -167,5 +167,26 @@ end
     expect(xml).to include "ABC"
   end
 
+  it "processes a Metanorma XML ISO document with CRLF line endings" do
+    doc_name = 'test_crlf'
+    FileUtils.rm_f Dir["spec/assets/#{doc_name}.*"]
 
+    # convert LF -> CRLF
+    doc = "spec/assets/#{doc_name}.adoc"
+    line_no = 0
+    eol = Gem.win_platform? ? "\n" : "\r\n"
+    File.open(doc, "w:UTF-8") do |output|
+      File.readlines("spec/assets/test.adoc", chomp: true).each do |line|
+        if line_no == 3
+          output.write(":mn-document-class: iso#{eol}")
+          output.write(":mn-output-extensions: xml,html,doc,rxl#{eol}")
+        end
+        output.write("#{line}#{eol}")
+        line_no += 1
+      end
+    end
+
+    Metanorma::Compile.new.compile(doc)
+    expect(File.exist?("spec/assets/#{doc_name}.xml")).to be true
+  end
 end
