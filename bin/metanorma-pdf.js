@@ -13,7 +13,10 @@ const createPdf = async() => {
     }
     browser = await puppeteer.launch({args});
     const page = await browser.newPage();
-    await page.goto(process.argv[2], {waitUntil: 'networkidle0'});
+    await page.goto(process.argv[2], {
+      waitUntil: 'networkidle0',
+      timeout: 120000 //ms
+    });
     await page.pdf({
       path: process.argv[3],
       format: 'A4'
