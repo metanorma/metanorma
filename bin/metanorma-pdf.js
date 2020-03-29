@@ -3,15 +3,19 @@
 
 const puppeteer = require('puppeteer');
 
+const args = () => {
+  let args = ['--no-sandbox', '--disable-setuid-sandbox', '--headless'];
+  if (!process.platform.startsWith('win')) {
+    args << '--single-process';
+  }
+  return {args};
+}
+
 const createPdf = async() => {
   let browser;
   let exitCode = 0;
   try {
-    let args = ['--no-sandbox', '--disable-setuid-sandbox', '--headless'];
-    if (!process.platform.startsWith('win')) {
-      args << '--single-process';
-    }
-    browser = await puppeteer.launch({args});
+    browser = await puppeteer.launch(args());
     const page = await browser.newPage();
     await page.goto(process.argv[2], {
       waitUntil: 'networkidle0',
