@@ -29,10 +29,10 @@ jobs:
       - name: Use Node
         uses: actions/setup-node@v1
         with:
-          node-version: '8'
+          node-version: '12'
       - name: Install Puppeteer
         run: |
-          npm install -g puppeteer
+          npm install -g puppeteer@3.0.0
       - name: Run specs
         run: |
           bundle exec rake
