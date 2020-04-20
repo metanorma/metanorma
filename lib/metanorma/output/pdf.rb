@@ -1,4 +1,5 @@
 require "open3"
+require_relative "./utils.rb"
 require "pathname"
 require "shellwords"
 
@@ -7,9 +8,7 @@ module Metanorma
     class Pdf < Base
 
       def convert(url_path, output_path)
-        file_url = url_path
-        file_url = "file://#{url_path}" if Pathname.new(file_url).absolute?
-        file_url = "file://#{Dir.pwd}/#{url_path}" unless %r{^file://} =~ file_url
+        file_url = Utils::file_path(url_path)
         pdfjs = File.join(File.dirname(__FILE__), "../../../bin/metanorma-pdf.js")
 
         node_path = ENV["NODE_PATH"] || `npm root --quiet -g`.strip

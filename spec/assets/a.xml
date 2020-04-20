@@ -1,0 +1,66 @@
+<iso-standard xmlns="http://riboseinc.com/isoxml">
+  <bibdata type="standard">
+   <title language="en" format="text/plain" type="main">Introduction — Main Title — Title — Title Part</title>
+   <title language="en" format="text/plain" type="title-intro">Introduction</title>
+   <title language="en" format="text/plain" type="title-main">Main Title — Title</title>
+   <title language="en" format="text/plain" type="title-part">Title Part</title>
+   <title language="fr" format="text/plain" type="main">Introduction Française — Titre Principal — Part du Titre</title>
+   <title language="fr" format="text/plain" type="title-intro">Introduction Française</title>
+   <title language="fr" format="text/plain" type="title-main">Titre Principal</title>
+   <title language="fr" format="text/plain" type="title-part">Part du Titre</title>
+  <contributor>
+    <role type="author"/>
+    <organization>
+      <name>International Organization for Standardization</name>
+      <abbreviation>ISO</abbreviation>
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="publisher"/>
+    <organization>
+      <name>International Organization for Standardization</name>
+      <abbreviation>ISO</abbreviation>
+    </organization>
+  </contributor>
+
+  <language>en</language>
+  <script>Latn</script>
+  <status>
+    <stage>60</stage>
+    <substage>60</substage>
+  </status>
+  <copyright>
+    <from>2019</from>
+    <owner>
+      <organization>
+        <name>International Organization for Standardization</name>
+        <abbreviation>ISO</abbreviation>
+      </organization>
+    </owner>
+  </copyright>
+  <ext>
+    <doctype>article</doctype>
+    <editorialgroup>
+      <technical-committee/>
+      <subcommittee/>
+      <workgroup/>
+    </editorialgroup>
+  </ext>
+</bibdata>
+<sections>
+  <clause id="_clause" inline-header="false" obligation="normative">
+  <title>Clause</title>
+  <example id="_714cb7d2-39a4-4f63-95c9-b3ea2c568af5"><name>Example 1 2 3</name><p id="_9ef890aa-95f3-4954-8dcc-8aa17e9c2e89">A B C</p>
+<p id="_2ba896de-f77c-4867-9d86-64629f1b0977">D E F</p>
+<ul id="_ab789804-7cff-475f-aa64-6a3303424e15">
+  <li>
+    <p id="_44bafb59-78cb-4887-a67a-b9c9fa82972b">A B</p>
+  </li>
+  <li>
+    <p id="_e0194367-2541-42cd-b20c-6a59c462c6d5">C D</p>
+  </li>
+</ul></example>
+</clause>
+</sections>
+</iso-standard>
+

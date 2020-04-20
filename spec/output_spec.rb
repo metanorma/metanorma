@@ -60,3 +60,21 @@ RSpec.describe Metanorma::Output::Pdf do
     expect(File.exist?(output)).to be true
   end
 end
+
+RSpec.describe Metanorma::Output::XslfoPdf do
+  it "generates a PDF from HTML" do
+    FileUtils.rm_f %w(a.pdf)
+    generator = Metanorma::Output::XslfoPdf.new
+    generator.convert("spec/assets/a.xml", "a.pdf", File.join(File.dirname(__FILE__), "assets", "iso.international-standard.xsl"))
+    expect(File.exist?("a.pdf")).to be true
+  end
+end
+
+RSpec.describe Metanorma::Output::XslfoPdf do
+  it "generates a PDF from HTML" do
+    FileUtils.rm_f %w(a.pdf)
+    generator = Metanorma::Output::XslfoPdf.new
+    generator.convert("spec/assets/a.xml", "a.pdf", File.join(File.dirname(__FILE__), "assets", "iso.international-standard.xsl"))
+    expect(File.exist?("a.pdf")).to be true
+  end
+end
