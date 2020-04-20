@@ -1,3 +1,5 @@
+require "nokogiri"
+
 module Metanorma
   module Input
 
@@ -57,6 +59,7 @@ module Metanorma
         /\n:htmltoclevels: (?<htmltoclevels>[^\n]+)\n/ =~ headerextract
         /\n:doctoclevels: (?<doctoclevels>[^\n]+)\n/ =~ headerextract
         /\n:hierarchical-assets: (?<hierarchical_assets>[^\n]+)\n/ =~ headerextract
+        /\n:use-xinclude: (?<use_xinclude>[^\n]+)\n/ =~ headerextract
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -80,6 +83,7 @@ module Metanorma
           htmltoclevels: defined?(htmltoclevels) ? htmltoclevels : nil,
           doctoclevels: defined?(doctoclevels) ? doctoclevels : nil,
           hierarchical_assets: defined?(hierarchical_assets) ? hierarchical_assets : nil,
+          use_xinclude: defined?(use_xinclude) ? use_xinclude : nil,
         }.reject { |_, val| val.nil? }
       end
 

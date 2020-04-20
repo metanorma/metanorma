@@ -6,6 +6,7 @@ module Metanorma
 
     attr_reader :short
     attr_reader :input_format
+    attr_reader :asciidoctor_backend
 
     def initialize
       raise "This is an abstract class!"

@@ -28,8 +28,20 @@ module Metanorma
       end
     end
 
+    def xml_options_extract(file)
+      xml = Nokogiri::XML(file)
+      if xml.root
+        @registry.root_tags.each do |k, v|
+          return { type: k }  if v == xml.root.name
+        end
+      end
+      {}
+    end
+
     def options_extract(filename, options)
-      o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(File.read(filename, encoding: "utf-8"))
+      content = read_file(filename)
+      o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(content)
+      o = o.merge(xml_options_extract(content))
       options[:type] ||= o[:type]&.to_sym
       dir = filename.sub(%r(/[^/]+$), "/")
       options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
@@ -92,7 +104,7 @@ module Metanorma
       case extname = File.extname(filename)
       when ".adoc"
         Util.log("[metanorma] Processing: Asciidoctor input.", :info)
-        file = File.read(filename, encoding: "utf-8")
+        file = read_file(filename)
         options[:asciimath] and
           file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
         dir = File.dirname(filename)
@@ -103,11 +115,15 @@ module Metanorma
         Util.log("[metanorma] Processing: Metanorma XML input.", :info)
         # TODO NN: this is a hack -- we should provide/bridge the
         # document attributes in Metanorma XML
-        ["", File.read(filename, encoding: "utf-8")]
+        ["", read_file(filename)]
       else
         Util.log("[metanorma] Error: file extension #{extname} is not supported.", :error)
         nil
       end
+    end
+
+    def read_file(filename)
+      File.read(filename, encoding: "utf-8").gsub("\r\n", "\n")
     end
 
     def relaton_export(isodoc, options)

@@ -27,8 +27,9 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :htmltoclevels: r
       :doctoclevels: s
       :hierarchical-assets: t
+      :use-xinclude: u
       INPUT
-      {:bodyfont=>"b", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :script=>"a", :scripts=>"i", :scripts_pdf=>"j", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k"}
+      {:bodyfont=>"b", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :script=>"a", :scripts=>"i", :scripts_pdf=>"j", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k"}
     OUTPUT
 
   end

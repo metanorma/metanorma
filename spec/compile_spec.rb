@@ -43,6 +43,17 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include "</iso-standard>"
   end
 
+  it "processes a Metanorma XML ISO document" do
+    FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso" } )
+    expect(File.exist?("spec/assets/test.xml")).to be true
+    FileUtils.rm_f %w(spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
+    expect { Metanorma::Compile.new().compile("spec/assets/test.xml") }.not_to output(/Error: Please specify a standard type/).to_stdout
+    expect(File.exist?("spec/assets/test.html")).to be true
+    html = File.read("spec/assets/test.html", encoding: "utf-8")
+    expect(html).to include "ISO copyright office"
+  end
+
   it "extracts isodoc options from asciidoc file" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extension_keys: [:html] } )
@@ -156,5 +167,26 @@ end
     expect(xml).to include "ABC"
   end
 
+  it "processes a Metanorma XML ISO document with CRLF line endings" do
+    doc_name = 'test_crlf'
+    FileUtils.rm_f Dir["spec/assets/#{doc_name}.*"]
 
+    # convert LF -> CRLF
+    doc = "spec/assets/#{doc_name}.adoc"
+    line_no = 0
+    eol = Gem.win_platform? ? "\n" : "\r\n"
+    File.open(doc, "w:UTF-8") do |output|
+      File.readlines("spec/assets/test.adoc", chomp: true).each do |line|
+        if line_no == 3
+          output.write(":mn-document-class: iso#{eol}")
+          output.write(":mn-output-extensions: xml,html,doc,rxl#{eol}")
+        end
+        output.write("#{line}#{eol}")
+        line_no += 1
+      end
+    end
+
+    Metanorma::Compile.new.compile(doc)
+    expect(File.exist?("spec/assets/#{doc_name}.xml")).to be true
+  end
 end
