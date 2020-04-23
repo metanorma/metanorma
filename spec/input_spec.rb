@@ -28,11 +28,23 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :doctoclevels: s
       :hierarchical-assets: t
       :use-xinclude: u
+      :break-up-urls-in-tables: v
       INPUT
-      {:bodyfont=>"b", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :script=>"a", :scripts=>"i", :scripts_pdf=>"j", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k"}
+      {:bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :script=>"a", :scripts=>"i", :scripts_pdf=>"j", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k"}
     OUTPUT
-
   end
+
+    it "extracts Asciidoctor document attributes with default values" do
+    expect(Hash[Metanorma::Input::Asciidoc.new().extract_options(<<~"INPUT").sort].to_s + "\n").to eq <<~"OUTPUT"
+    = Document title
+    Author
+    :hierarchical-assets: 
+    :use-xinclude:
+    :break-up-urls-in-tables:
+INPUT
+{:break_up_urls_in_tables=>"true", :datauriimage=>true, :hierarchical_assets=>"true", :use_xinclude=>"true"}
+OUTPUT
+    end
 
   it "extracts Asciidoctor document attributes for Metanorma" do
     expect(Hash[Metanorma::Input::Asciidoc.new().extract_metanorma_options(<<~"INPUT").sort].to_s + "\n").to eq <<~"OUTPUT"

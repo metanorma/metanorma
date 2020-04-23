@@ -34,6 +34,10 @@ module Metanorma
         }.reject { |_, val| val.nil? }
       end
 
+      def empty_attr(attr, name)
+        attr.sub(/^#{name}:\s*$/, "#{name}: true").sub(/^#{name}:\s+/, "")
+      end
+
       def extract_options(file)
         headerextract = file.sub(/\n\n.*$/m, "\n")
 
@@ -58,8 +62,16 @@ module Metanorma
         /\n:data-uri-image: (?<datauriimage>[^\n]+)\n/ =~ headerextract
         /\n:htmltoclevels: (?<htmltoclevels>[^\n]+)\n/ =~ headerextract
         /\n:doctoclevels: (?<doctoclevels>[^\n]+)\n/ =~ headerextract
-        /\n:hierarchical-assets: (?<hierarchical_assets>[^\n]+)\n/ =~ headerextract
-        /\n:use-xinclude: (?<use_xinclude>[^\n]+)\n/ =~ headerextract
+        /\n:(?<hierarchical_assets>hierarchical-assets:[^\n]*)\n/ =~ headerextract
+        /\n:(?<use_xinclude>use-xinclude:[^\n]*)\n/ =~ headerextract
+        /\n:(?<break_up_urls_in_tables>break-up-urls-in-tables:[^\n]*)\n/ =~ headerextract
+
+        defined?(hierarchical_assets) and
+          hierarchical_assets = empty_attr(hierarchical_assets, "hierarchical-assets")
+        defined?(use_xinclude) and
+          use_xinclude = empty_attr(use_xinclude, "use-xinclude")
+        defined?(break_up_urls_in_tables) and
+          break_up_urls_in_tables = empty_attr(break_up_urls_in_tables, "break-up-urls-in-tables")
         {
           script: defined?(script) ? script : nil,
           bodyfont: defined?(bodyfont) ? bodyfont : nil,
@@ -84,6 +96,7 @@ module Metanorma
           doctoclevels: defined?(doctoclevels) ? doctoclevels : nil,
           hierarchical_assets: defined?(hierarchical_assets) ? hierarchical_assets : nil,
           use_xinclude: defined?(use_xinclude) ? use_xinclude : nil,
+          break_up_urls_in_tables: defined?(break_up_urls_in_tables) ? break_up_urls_in_tables : nil,
         }.reject { |_, val| val.nil? }
       end
 
