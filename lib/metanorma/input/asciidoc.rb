@@ -35,7 +35,7 @@ module Metanorma
       end
 
       def empty_attr(attr, name)
-        attr.sub(/^#{name}:\s*$/, "#{name}: true").sub(/^#{name}:\s+/, "")
+        attr&.sub(/^#{name}:\s*$/, "#{name}: true")&.sub(/^#{name}:\s+/, "")
       end
 
       def extract_options(file)
