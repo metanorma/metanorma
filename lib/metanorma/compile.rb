@@ -32,6 +32,7 @@ module Metanorma
       xml = Nokogiri::XML(file)
       if xml.root
         @registry.root_tags.each do |k, v|
+          STDERR.puts "k(#{k}), v(#{v})"
           return { type: k }  if v == xml.root.name
         end
       end

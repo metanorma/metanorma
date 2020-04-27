@@ -48,7 +48,7 @@ module Metanorma
       @processors.inject({}) do |acc, (k,v)|
         if v.asciidoctor_backend
           x = Asciidoctor.load nil, {backend: v.asciidoctor_backend}
-          acc[k] = x.converter.class::XML_ROOT_TAG
+          acc[k] = x.converter.xml_root_tag
         end
         acc
       end
