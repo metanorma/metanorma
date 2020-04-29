@@ -34,7 +34,7 @@ jobs:
           node-version: '12'
       - name: Install Puppeteer
         run: |
-          npm install -g puppeteer@3.0.0
+          npm install -g puppeteer@3.0.1
       - name: Run specs
         run: |
           bundle exec rake
