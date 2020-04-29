@@ -205,7 +205,11 @@ module Metanorma
           options[:relaton] = outfilename
           relaton_export(isodoc, options)
         else
+          begin
           @processor.output(isodoc, outfilename, ext, isodoc_options)
+          rescue StandardError => e  
+            puts e.message
+          end
         end
         if options[:wrapper] and /html$/.match file_extension
           outfilename = outfilename.sub(/\.html$/, "")
