@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'asciidoctor'
   spec.add_runtime_dependency 'htmlentities'
   spec.add_runtime_dependency 'nokogiri'
+  spec.add_runtime_dependency 'mn2pdf', "~> 1.11"
 
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rspec", "~> 3.0"
