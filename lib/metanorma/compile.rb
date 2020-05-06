@@ -104,7 +104,7 @@ module Metanorma
     def process_input(filename, options)
       case extname = File.extname(filename)
       when ".adoc"
-        Util.log("[metanorma] Processing: Asciidoctor input.", :info)
+        Util.log("[metanorma] Processing: AsciiDoc input.", :info)
         file = read_file(filename)
         options[:asciimath] and
           file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
