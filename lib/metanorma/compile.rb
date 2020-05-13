@@ -9,9 +9,9 @@ module Metanorma
     end
 
     def compile(filename, options = {})
+      require_libraries(options)
       options = options_extract(filename, options)
       validate(options) or return nil
-      require_libraries(options)
       @processor = @registry.find_processor(options[:type].to_sym)
       extensions = get_extensions(options) or return nil
       (file, isodoc = process_input(filename, options)) or return nil
