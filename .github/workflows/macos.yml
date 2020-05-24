@@ -6,15 +6,23 @@ on:
   push:
     branches: [ master ]
   pull_request:
+    paths-ignore:
+      - .github/workflows/ubuntu.yml
+      - .github/workflows/windows.yml
 
 jobs:
   test-macos:
     name: Test on Ruby ${{ matrix.ruby }} macOS
     runs-on: macos-latest
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
         ruby: [ '2.6', '2.5', '2.4' ]
+        experimental: [false]
+        include:
+          - ruby: '2.7'
+            experimental: true
     steps:
       - uses: actions/checkout@master
       - name: Use Ruby
