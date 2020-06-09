@@ -6,22 +6,22 @@ require "metanorma-cli"
 require "nokogiri"
 
 def main
-@collection = YAML.load_file(ARGV[0])
-@docs = []
-require "metanorma-#{doctype}"
-output
+  @collection = YAML.load_file(ARGV[0])
+  @docs = []
+  require "metanorma-#{doctype}"
+  output
 end
 
 def output
-print <<~END
-<metanorma-collection>
-#{collection_bibdata}
-#{manifest(@collection["manifest"])}
-#{prefatory}
-#{doccontainer}
-#{final}
+  print <<~END
+<metanorma-collection xmlns="http://metanorma.org">
+  #{collection_bibdata}
+  #{manifest(@collection["manifest"])}
+  #{prefatory}
+  #{doccontainer}
+  #{final}
 </metanorma-collection>
-END
+  END
 end
 
 def collection_bibdata
@@ -30,7 +30,7 @@ def collection_bibdata
     f.write(YAML.dump(@collection["bibdata"])) 
     f.close
     ::Relaton::Cli::YAMLConvertor.new(f).to_xml
-  File.read(f.path.sub(/\.yml$/, ".rxl"), encoding: "utf-8")
+    File.read(f.path.sub(/\.yml$/, ".rxl"), encoding: "utf-8")
   end
 end
 
@@ -41,7 +41,7 @@ def manifest(m)
   if m["docref"].is_a? Hash
     ret += docref(m["docref"])
   elsif m["docref"].is_a? Array
-  Array(m["docref"]).each { |d| ret += docref(d) }
+    Array(m["docref"]).each { |d| ret += docref(d) }
   end
   if m["manifest"].is_a? Hash
     ret += manifest(m["manifest"])
@@ -56,9 +56,9 @@ def docref(d)
   @docs << { identifier: d["identifier"], fileref: d["fileref"], id: "doc%09d" % @docs.size }
   ret = "<docref"
   if Array(@collection["directives"]).include?("documents-inline")
-  ret += %( id="#{d['id']}")
+    ret += %( id="#{d['id']}")
   else
-  ret += %( fileref="#{d['fileref']}")
+    ret += %( fileref="#{d['fileref']}")
   end
   ret += ">"
   ret += "<identifier>#{d['identifier']}</identifier>"
@@ -92,19 +92,19 @@ def doccontainer
   ret = ""
   return unless Array(@collection["directives"]).include?("documents-inline")
   @docs.each do |d|
-ret += "<doc-container id=#{d[:id]}>\n"
-ret += File.read(d[:fileref], encoding: "utf-8")
-ret += "</doc-container>\n\n\n"
+    ret += "<doc-container id=#{d[:id]}>\n"
+    ret += File.read(d[:fileref], encoding: "utf-8")
+    ret += "</doc-container>\n\n\n"
   end
   ret
 end
 
 def doctype
- docid = @collection["bibdata"]["docid"]["type"] and
-   return docid.downcase.to_sym
- docid = @collection["bibdata"]["docid"] and
-   return docid.sub(/\s.*$/, "").lowercase.to_sym
- "standoc"
+  docid = @collection["bibdata"]["docid"]["type"] and
+    return docid.downcase
+  docid = @collection["bibdata"]["docid"] and
+    return docid.sub(/\s.*$/, "").lowercase
+  "standoc"
 end
 
 main

@@ -6,7 +6,8 @@ directives:
   # keeps them outside
 bibdata:
   title:
-    type: main
+    type: title-main
+    language: en
     content: ISO Collection 1
   type: collection
   docid:
