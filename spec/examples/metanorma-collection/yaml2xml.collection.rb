@@ -26,7 +26,7 @@ end
 
 def collection_bibdata
   return unless @collection["bibdata"] 
-  Tempfile.open(["bibdata", ".yml"]) do |f|
+  Tempfile.open(["bibdata", ".yml"], encoding: "utf-8") do |f|
     f.write(YAML.dump(@collection["bibdata"])) 
     f.close
     ::Relaton::Cli::YAMLConvertor.new(f).to_xml

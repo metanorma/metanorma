@@ -11,7 +11,7 @@ bibdata:
     content: ISO Collection 1
   type: collection
   docid:
-    type: ISO
+    type: iso
     id: ISO 12345
   edition: 1
   date:
