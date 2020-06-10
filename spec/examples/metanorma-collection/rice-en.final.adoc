@@ -1,0 +1,55 @@
+= Rice model
+:docnumber: 17301
+:tc-docnumber: 17301
+:partnumber: 1
+:edition: 2
+:revdate: 2016-05-01
+:copyright-year: 2016
+:language: en
+:title-intro-en: Cereals and pulses
+:title-main-en: Specifications and test methods
+:title-part-en: Rice (Final)
+:title-intro-fr: Céréales et légumineuses
+:title-main-fr: Spécification et méthodes d'essai
+:title-part-fr: Riz (Final)
+:doctype: international-standard
+:docstage: 60
+:docsubstage: 60
+:technical-committee-number: 34
+:secretariat: SAC
+:technical-committee: Food products
+:subcommittee-number: 4
+:subcommittee: Cereals and pulses
+:workgroup-type: WG
+:workgroup-number: 4
+:workgroup: Amylose in rice
+:docfile: rice-en.covers.final.adoc
+:library-ics: 67.060
+:mn-document-class: iso
+:mn-output-extensions: xml,html,doc,html_alt,pdf,rxl
+:local-cache-only:
+:data-uri-image:
+
+== Scope
+
+This document specifies minimum requirements and test methods for rice (_Oryza sativa L._).
+
+It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.
+
+It is not applicable to cooked rice products.
+
+This document is updated in <<RiceAmd>>. See e.g. <<RiceAmd,clause=2>>.
+
+This document is unrelated to <<Dummy,anchor="what">>.
+
+[bibliography]
+== Normative references
+
+The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.
+
+* [[[RiceAmd,repo:(current-metanorma-collection/ISO 17301-1:2016/Amd.1:2017)]]]
+
+* [[[Dummy,path:(dummy)]]]
+
+* [[[ISO712,ISO 712]]], _Cereals and cereal products -- Determination of moisture content -- Reference method_
+
