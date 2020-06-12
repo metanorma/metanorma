@@ -47,9 +47,9 @@ This document is unrelated to <<Dummy,anchor="what">>.
 
 The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.
 
-* [[[RiceAmd,repo:(current-metanorma-collection/ISO 17301-1:2016/Amd.1:2017)]]]
+* [[[RiceAmd,repo:(current-metanorma-collection/rice,ISO 17301-1:2016/Amd.1:2017)]]]
 
-* [[[Dummy,path:(dummy)]]]
+* [[[Dummy,path:(dummy,ISO 17302)]]]
 
 * [[[ISO712,ISO 712]]], _Cereals and cereal products -- Determination of moisture content -- Reference method_
 

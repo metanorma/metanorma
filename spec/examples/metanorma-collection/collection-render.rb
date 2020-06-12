@@ -15,9 +15,9 @@ require "fileutils"
 def init
   # @xml is the collection manifest
   @xml = Nokogiri::XML(File.read(ARGV[0], encoding: "utf-8"))
+  require "metanorma-#{doctype}"
   # list of files in the collection
   @files = read_files
-  require "metanorma-#{doctype}"
   @isodoc = isodoc
   # create the @meta class of isodoc, with "navigation" set to the index bar extracted from the manifest
   @isodoc.metadata_init("en", "Latn", {navigation: indexfile(@xml.at(ns("//manifest")))})
@@ -59,8 +59,12 @@ def read_files
   @xml.xpath(ns("//docref")).each do |d|
     identifier = d.at(ns("./identifier")).text
     files[identifier] = (d["fileref"] ? {type: "fileref", ref: d["fileref"]} : {type: "id", ref: d["id"]})
-    file, filename = targetfile(files[identifier])
-    files[identifier][:bibdata] = Nokogiri::XML(file).at(ns("//bibdata"))
+    file, filename = targetfile(files[identifier], true)
+    xml = Nokogiri::XML(file)
+    i = isodoc
+    i.anchor_names xml
+    files[identifier][:anchors] = i.get_anchors
+    files[identifier][:bibdata] = xml.at(ns("//bibdata"))
   end
   files
 end
@@ -107,16 +111,18 @@ def indexfile(m)
 end
 
 # return file contents + output filename for each file in the collection, given a docref entry
-def targetfile(x)
+def targetfile(x, read = false)
   if x[:type] == "fileref"
-    [File.read(x[:ref], encoding: "utf-8"), x[:ref].sub(/\.xml$/, ".html")]
+    [read ? File.read(x[:ref], encoding: "utf-8") : nil,
+     x[:ref].sub(/\.xml$/, ".html")]
   else
-    [@xml.at(ns("//doc-container[@id = '#{x[:id]}']")).to_xml, x["id"] + ".html"]
+    [read ? @xml.at(ns("//doc-container[@id = '#{x[:id]}']")).to_xml : nil,
+     x["id"] + ".html"]
   end
 end
 
-def update_bibitem(b, docid)
-  docid = repo_docid(docid)
+def update_bibitem(b, docid, identifier)
+  docid = b&.at(ns("./docidentifier"))&.text
   unless @files[docid]
     warn "Cannot find crossreference to document #{docid} in document #{identifier}!"
     abort
@@ -126,10 +132,12 @@ def update_bibitem(b, docid)
   newbib.name = "bibitem"
   newbib["id"] = id
   newbib&.at(ns("./ext"))&.remove
+  file, url = targetfile(@files[docid], false)
+  newbib.at(ns("./docidentifier")).previous = %{<uri type="citation">#{url}</uri>}
 end
 
 def repo_docid(docid)
-  docid.sub(%r{^repo:\(current-metanorma-collection/}, "").sub(/\)$/, "")
+  docid.sub(%r{^current-metanorma-collection/}, "")
 end
 
 # TODO: update crossreferences to other files in the selection
@@ -141,12 +149,12 @@ end
 def update_xrefs(file, identifier)
   docxml = Nokogiri::XML(file)
   docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
-    docid = b&.at(ns("./docidentifier"))&.text
-    next unless %r{^repo:\(current-metanorma-collection/}.match(docid)
-    update_bibitem(b, docid)
-    docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
-      e["citeas"] = repo_docid(docid) 
-    end
+    next unless docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
+    next unless %r{^current-metanorma-collection/}.match(docid)
+    update_bibitem(b, docid, identifier)
+    #docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
+    #  e["citeas"] = repo_docid(docid) 
+    #end
   end
   docxml.to_xml
 end
@@ -155,7 +163,7 @@ end
 # files are held in memory, and altered as postprocessing
 def files
   @files.each do |identifier, x|
-    file, filename = targetfile(x)
+    file, filename = targetfile(x, true)
     file = update_xrefs(file, identifier)
     Tempfile.open(["collection", ".xml"], encoding: "utf-8") do |f|
       f.write(file)

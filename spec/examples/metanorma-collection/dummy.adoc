@@ -1,0 +1,82 @@
+= Rice model
+:docnumber: 17302
+:copyright-year: 2016
+:language: en
+:title-main-en: Dummy document
+:title-main-fr: Dummy document
+:doctype: international-standard
+:docstage: 60
+:docsubstage: 60
+:technical-committee-number: 34
+:secretariat: SAC
+:technical-committee: Food products
+:subcommittee-number: 4
+:subcommittee: Cereals and pulses
+:workgroup-type: WG
+:workgroup-number: 4
+:workgroup: Amylose in rice
+:docfile: rice-en.covers.final.adoc
+:library-ics: 67.060
+:mn-document-class: iso
+:mn-output-extensions: xml,html,doc,html_alt,pdf,rxl
+:local-cache-only:
+:data-uri-image:
+
+== Scope
+
+This is a dummy document.
+
+....
+~/Documents/Arbeit/upwork/ribose/isodoc/lib/isodoc/function[master] $ ls -l
+total 240
+-rw-r--r--  1 nickn  admin  6850 31 May 01:00 blocks.rb
+-rw-r--r--  1 nickn  admin  1628  9 Mar 13:18 blocks_example.rb
+-rw-r--r--  1 nickn  admin  6185  1 Jun 22:41 cleanup.rb
+-rw-r--r--  1 nickn  admin  4286 12 Jun 21:09 i18n.rb
+-rw-r--r--  1 nickn  admin  7154 13 Jun 00:12 inline.rb
+-rw-r--r--  1 nickn  admin  1268 31 May 23:36 inline_simple.rb
+-rw-r--r--  1 nickn  admin  2384 16 Mar 01:40 lists.rb
+-rw-r--r--  1 nickn  admin  6916 31 May 23:31 references.rb
+-rw-r--r--  1 nickn  admin  3105 28 Mar 01:47 reqt.rb
+-rw-r--r--  1 nickn  admin  7415  5 Jun 00:11 section.rb
+-rw-r--r--  1 nickn  admin  3441 19 May 00:28 table.rb
+-rw-r--r--  1 nickn  admin  1862  6 Nov  2019 terms.rb
+-rw-r--r--  1 nickn  admin  7739 31 May 01:32 to_word_html.rb
+-rw-r--r--  1 nickn  admin  5965 10 Jun 22:05 utils.rb
+-rw-r--r--  1 nickn  admin  1480 26 Nov  2019 xref_anchor.rb
+-rw-r--r--  1 nickn  admin  1109 21 Jan 23:35 xref_counter.rb
+-rw-r--r--  1 nickn  admin  4855 11 May 23:19 xref_gen.rb
+-rw-r--r--  1 nickn  admin  5745 17 Mar 11:05 xref_gen_seq.rb
+-rw-r--r--  1 nickn  admin  4995 12 May 23:45 xref_sect_gen.rb
+~/Documents/Arbeit/upwork/ribose/isodoc/lib/isodoc/function[master] $ vi inline.rb i18n.rb
+....
+
+[[what]]
+== What?
+... What?
+
+....
+~/Documents/Arbeit/upwork/ribose/isodoc/lib/isodoc/function[master] $ ls -l
+total 240
+-rw-r--r--  1 nickn  admin  6850 31 May 01:00 blocks.rb
+-rw-r--r--  1 nickn  admin  1628  9 Mar 13:18 blocks_example.rb
+-rw-r--r--  1 nickn  admin  6185  1 Jun 22:41 cleanup.rb
+-rw-r--r--  1 nickn  admin  4286 12 Jun 21:09 i18n.rb
+-rw-r--r--  1 nickn  admin  7154 13 Jun 00:12 inline.rb
+-rw-r--r--  1 nickn  admin  1268 31 May 23:36 inline_simple.rb
+-rw-r--r--  1 nickn  admin  2384 16 Mar 01:40 lists.rb
+-rw-r--r--  1 nickn  admin  6916 31 May 23:31 references.rb
+-rw-r--r--  1 nickn  admin  3105 28 Mar 01:47 reqt.rb
+-rw-r--r--  1 nickn  admin  7415  5 Jun 00:11 section.rb
+-rw-r--r--  1 nickn  admin  3441 19 May 00:28 table.rb
+-rw-r--r--  1 nickn  admin  1862  6 Nov  2019 terms.rb
+-rw-r--r--  1 nickn  admin  7739 31 May 01:32 to_word_html.rb
+-rw-r--r--  1 nickn  admin  5965 10 Jun 22:05 utils.rb
+-rw-r--r--  1 nickn  admin  1480 26 Nov  2019 xref_anchor.rb
+-rw-r--r--  1 nickn  admin  1109 21 Jan 23:35 xref_counter.rb
+-rw-r--r--  1 nickn  admin  4855 11 May 23:19 xref_gen.rb
+-rw-r--r--  1 nickn  admin  5745 17 Mar 11:05 xref_gen_seq.rb
+-rw-r--r--  1 nickn  admin  4995 12 May 23:45 xref_sect_gen.rb
+~/Documents/Arbeit/upwork/ribose/isodoc/lib/isodoc/function[master] $ vi inline.rb i18n.rb
+....
+
