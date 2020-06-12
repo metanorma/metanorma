@@ -20,7 +20,8 @@ def init
   @files = read_files
   @isodoc = isodoc
   # create the @meta class of isodoc, with "navigation" set to the index bar extracted from the manifest
-  @isodoc.metadata_init("en", "Latn", {navigation: indexfile(@xml.at(ns("//manifest")))})
+  @isodoc.metadata_init("en", "Latn", 
+                        { navigation: indexfile(@xml.at(ns("//manifest"))) })
   # populate the @meta class of isodoc with the various metadata fields native to the flavour;
   # used to populate Liquid
   @isodoc.info(@xml, nil)
@@ -58,15 +59,27 @@ def read_files
   files = {}
   @xml.xpath(ns("//docref")).each do |d|
     identifier = d.at(ns("./identifier")).text
-    files[identifier] = (d["fileref"] ? {type: "fileref", ref: d["fileref"]} : {type: "id", ref: d["id"]})
+    files[identifier] = (d["fileref"] ? {type: "fileref", ref: d["fileref"]} :
+                         {type: "id", ref: d["id"]})
     file, filename = targetfile(files[identifier], true)
     xml = Nokogiri::XML(file)
-    i = isodoc
-    i.anchor_names xml
-    files[identifier][:anchors] = i.get_anchors
+    files[identifier][:anchors] = read_anchors(xml)
     files[identifier][:bibdata] = xml.at(ns("//bibdata"))
   end
   files
+end
+
+# map locality type and label (e.g. "clause" "1") to id = anchor for a document
+def read_anchors(xml)
+  ret = {}
+  i = isodoc
+  i.anchor_names xml
+  i.get_anchors.each do |k, v|
+    v[:label] && v[:type] or next
+    ret[v[:type]] ||= {}
+    ret[v[:type]][v[:label]] = k
+  end
+  ret
 end
 
 # populate liquid template of ARGV[1] with metadata extracted from collection manifest
@@ -152,11 +165,23 @@ def update_xrefs(file, identifier)
     next unless docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
     next unless %r{^current-metanorma-collection/}.match(docid)
     update_bibitem(b, docid, identifier)
-    #docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
-    #  e["citeas"] = repo_docid(docid) 
-    #end
+    update_anchors(b, docxml, docid)
   end
   docxml.to_xml
+end
+
+# if there is a crossref to another document, with no anchor, retrieve the
+# anchor given the locality, and insert it into the crossref
+def update_anchors(b, docxml, id)
+  docid = b&.at(ns("./docidentifier"))&.text
+  docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
+    e.at(ns(".//locality[@type = 'anchor']")).nil? or next
+    ins = e.at(ns("./localityStack")) or next
+    type = ins&.at(ns("./locality/@type"))&.text
+    ref = ins&.at(ns("./locality/referenceFrom"))&.text
+    anchor = @files[docid][:anchors][type][ref] and
+      ins << %(<locality type="anchor"><referenceFrom>#{anchor.sub(/^_/, '')}</referenceFrom></locality>)
+  end
 end
 
 # process each file in the collection
