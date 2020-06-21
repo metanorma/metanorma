@@ -218,6 +218,7 @@ module Metanorma
         end
     end
 
+    # isodoc is Raw Metanorma XML
     def process_extensions(extensions, file, isodoc, options)
       xml_name = options[:filename].sub(/\.[^.]+$/, ".xml")
       presentationxml_name = options[:filename].sub(/\.[^.]+$/, ".presentation.xml")
@@ -233,9 +234,10 @@ module Metanorma
           relaton_export(isodoc, options)
         else
           begin
-            @processor.output(isodoc, @processor.use_presentation_xml(ext) ? 
-                              xml_name : presentationxml_name,
-                              outfilename, ext, isodoc_options)
+            #require "byebug"; byebug
+            @processor.use_presentation_xml(ext) ?
+              @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
+              @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
           rescue StandardError => e  
             puts e.message
           end
