@@ -97,6 +97,9 @@ module Metanorma
           Util.log("[metanorma] Error: #{e} format is not supported for this standard.", :error)
         memo
       end
+      if !extensions.include?(:presentation) and extensions.any? { |e| @processor.use_presentation_xml(e) }
+        extensions << :presentation
+        end
       extensions
     end
 
@@ -195,10 +198,34 @@ module Metanorma
       end
     end
 
+    # dependency ordering
+    def sort_extensions_execution(ext)
+       case ext
+       when :xml then 0
+       when :rxl then 1
+       when :presentation then 2
+       else
+         99
+       end
+    end
+
+    def wrap_html(options, file_extension, outfilename)
+      if options[:wrapper] and /html$/.match file_extension
+          outfilename = outfilename.sub(/\.html$/, "")
+          FileUtils.mkdir_p outfilename
+          FileUtils.mv "#{outfilename}.html", outfilename
+          FileUtils.mv "#{outfilename}_images", outfilename, force: true
+        end
+    end
+
     def process_extensions(extensions, file, isodoc, options)
-      extensions.each do |ext|
-        isodoc_options = @processor.extract_options(file)
-        isodoc_options[:datauriimage] = true if options[:datauriimage]
+      xml_name = options[:filename].sub(/\.[^.]+$/, ".xml")
+      presentationxml_name = options[:filename].sub(/\.[^.]+$/, ".presentation.xml")
+      isodoc_options = @processor.extract_options(file)
+      isodoc_options[:datauriimage] = true if options[:datauriimage]
+      extensions.sort do |a, b|
+        sort_extensions_execution(a) <=> sort_extensions_execution(b)
+      end.each do |ext|
         file_extension = @processor.output_formats[ext]
         outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :rxl
@@ -206,17 +233,14 @@ module Metanorma
           relaton_export(isodoc, options)
         else
           begin
-          @processor.output(isodoc, outfilename, ext, isodoc_options)
+            @processor.output(isodoc, @processor.use_presentation_xml(ext) ? 
+                              xml_name : presentationxml_name,
+                              outfilename, ext, isodoc_options)
           rescue StandardError => e  
             puts e.message
           end
         end
-        if options[:wrapper] and /html$/.match file_extension
-          outfilename = outfilename.sub(/\.html$/, "")
-          FileUtils.mkdir_p outfilename
-          FileUtils.mv "#{outfilename}.html", outfilename
-          FileUtils.mv "#{outfilename}_images", outfilename, force: true
-        end
+        wrap_html(options, file_extension, outfilename)
       end
     end
   end
