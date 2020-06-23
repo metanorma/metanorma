@@ -16,3 +16,6 @@
 
 # rspec failure tracking
 .rspec_status
+.rubocop-https---raw-githubusercontent-com-riboseinc-oss-guides-master-ci-rubocop-yml
+Gemfile.lock
+relaton/
