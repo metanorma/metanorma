@@ -4,8 +4,12 @@ require "htmlentities"
 
 module Metanorma
   class Compile
+    # @return [Array<String>]
+    attr_reader :errors
+
     def initialize
       @registry = Metanorma::Registry.instance
+      @errors = []
     end
 
     def compile(filename, options = {})
@@ -89,13 +93,18 @@ module Metanorma
     end
 
     def get_extensions(options)
-      options[:extension_keys] ||= @processor.output_formats.inject([]) do |memo, (k, _)|
-        memo << k; memo
+      options[:extension_keys] ||= @processor.output_formats.reduce([]) do |memo, (k, _)|
+        memo << k
       end
-      extensions = options[:extension_keys].inject([]) do |memo, e|
-        @processor.output_formats[e] and memo << e or
-          Util.log("[metanorma] Error: #{e} format is not supported for this standard.", :error)
-        memo
+      extensions = options[:extension_keys].reduce([]) do |memo, e|
+        if @processor.output_formats[e]
+          memo << e
+        else
+          message = "[metanorma] Error: #{e} format is not supported for this standard."
+          @errors << message
+          Util.log(message, :error)
+          memo
+        end
       end
       if !extensions.include?(:presentation) and extensions.any? { |e| @processor.use_presentation_xml(e) }
         extensions << :presentation
