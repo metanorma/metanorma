@@ -15,6 +15,7 @@ module Metanorma
     def output_formats
       {
         xml: "xml",
+        presentation: "presentation.xml",
         rxl: "rxl"
       }
     end
@@ -23,7 +24,15 @@ module Metanorma
       raise "This is an abstract class!"
     end
 
-    def output(isodoc_node, outname, format, options={})
+    def use_presentation_xml(ext)
+      case ext
+      when :html, :doc, :pdf then true
+      else
+        false
+      end
+    end
+
+    def output(isodoc_node, inname, outname, format, options={})
       File.open(outname, "w:UTF-8") { |f| f.write(isodoc_node) }
     end
 
