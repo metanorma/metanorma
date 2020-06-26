@@ -2,7 +2,7 @@ require_relative "spec_helper"
 require "fileutils"
 
 RSpec.describe Metanorma::Output::XslfoPdf do
-  ASSETS_DIR = 'spec/assets/test'
+  ASSETS_DIR = 'spec/assets/outputtest'
   INPUT = "#{ASSETS_DIR}/a.xml"
   OUTPUT = "#{ASSETS_DIR}/a.pdf"
   DROP = [OUTPUT]
