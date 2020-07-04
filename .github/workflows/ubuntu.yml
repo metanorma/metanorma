@@ -5,6 +5,8 @@ name: ubuntu
 on:
   push:
     branches: [ master ]
+    tags:
+      - '*'
   pull_request:
     paths-ignore:
       - .github/workflows/macos.yml
@@ -29,32 +31,26 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          architecture: 'x64'
       - name: Update gems
         run: |
           gem install bundler
           bundle install --jobs 4 --retry 3
-      - name: Use Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12'
-      - name: Install Puppeteer
-        run: |
-          sudo apt-get update
-          sudo apt-get install libgbm1
-          npm install -g puppeteer@3.0.1
       - name: Run specs
         run: |
           bundle exec rake
-      - name: Trigger dependent repositories
-        if: github.ref == 'refs/heads/master' && matrix.ruby == '2.6'
+      - name: Trigger repositories
+        if: matrix.ruby == '2.6'
         env:
-          GH_USERNAME: ${{ secrets.PAT_USERNAME }}
-          GH_ACCESS_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_USERNAME: metanorma-ci
+          GH_ACCESS_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
         run: |
           curl -LO --retry 3 https://raw.githubusercontent.com/metanorma/metanorma-build-scripts/master/trigger-gh-actions.sh
           [[ -f ".github/workflows/dependent_repos.env" ]] && source .github/workflows/dependent_repos.env
-          for repo in $DEPENDENT_REPOS
+          CLIENT_PAYLOAD=$(cat <<EOF
+          "{ "ref": "${GITHUB_REF}", "repo": "${GITHUB_REPOSITORY}" }"
+          EOF
+          )
+          for repo in $REPOS
           do
-            sh trigger-gh-actions.sh $ORGANISATION $repo $GH_USERNAME $GH_ACCESS_TOKEN $GITHUB_REPOSITORY
+            sh trigger-gh-actions.sh $ORGANISATION $repo $GH_USERNAME $GH_ACCESS_TOKEN $GITHUB_REPOSITORY "$CLIENT_PAYLOAD"
           done
