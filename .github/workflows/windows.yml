@@ -29,20 +29,12 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          architecture: 'x64'
       - name: Update gems
         shell: pwsh
         run: |
           gem install bundler
           bundle config --local path vendor/bundle
           bundle install --jobs 4 --retry 3
-      - name: Use Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12'
-      - name: Install Puppeteer
-        run: |
-          npm install -g puppeteer@3.0.1
       - name: Run specs
         run: |
           bundle exec rake
