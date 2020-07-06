@@ -229,15 +229,19 @@ module Metanorma
 
     # isodoc is Raw Metanorma XML
     def process_extensions(extensions, file, isodoc, options)
-      xml_name = options[:filename].sub(/\.[^.]+$/, ".xml")
-      presentationxml_name = options[:filename].sub(/\.[^.]+$/, ".presentation.xml")
+      f = if options[:"output-dir"]
+            File.join options[:"output-dir"], File.basename(options[:filename])
+          else options[:filename]
+          end
+      xml_name = f.sub(/\.[^.]+$/, ".xml")
+      presentationxml_name = f.sub(/\.[^.]+$/, ".presentation.xml")
       isodoc_options = @processor.extract_options(file)
       isodoc_options[:datauriimage] = true if options[:datauriimage]
       extensions.sort do |a, b|
         sort_extensions_execution(a) <=> sort_extensions_execution(b)
       end.each do |ext|
         file_extension = @processor.output_formats[ext]
-        outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
+        outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :rxl
           options[:relaton] = outfilename
           relaton_export(isodoc, options)
@@ -247,7 +251,7 @@ module Metanorma
             @processor.use_presentation_xml(ext) ?
               @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
-          rescue StandardError => e  
+          rescue StandardError => e
             puts e.message
           end
         end
