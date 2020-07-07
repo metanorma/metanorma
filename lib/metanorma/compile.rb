@@ -231,19 +231,18 @@ module Metanorma
     def process_extensions(extensions, file, isodoc, options)
       xml_name = options[:filename].sub(/\.[^.]+$/, ".xml")
       presentationxml_name = options[:filename].sub(/\.[^.]+$/, ".presentation.xml")
-      isodoc_options = @processor.extract_options(file)
-      isodoc_options[:datauriimage] = true if options[:datauriimage]
       extensions.sort do |a, b|
         sort_extensions_execution(a) <=> sort_extensions_execution(b)
       end.each do |ext|
         file_extension = @processor.output_formats[ext]
         outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
+        isodoc_options = @processor.extract_options(file)
+        isodoc_options[:datauriimage] = true if options[:datauriimage]
         if ext == :rxl
           options[:relaton] = outfilename
           relaton_export(isodoc, options)
         else
           begin
-            #require "byebug"; byebug
             @processor.use_presentation_xml(ext) ?
               @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
