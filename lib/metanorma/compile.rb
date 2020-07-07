@@ -229,10 +229,7 @@ module Metanorma
 
     # isodoc is Raw Metanorma XML
     def process_extensions(extensions, file, isodoc, options)
-      f = if options[:"output-dir"]
-            File.join options[:"output-dir"], File.basename(options[:filename])
-          else options[:filename]
-          end
+      f = change_output_dir options
       xml_name = f.sub(/\.[^.]+$/, ".xml")
       presentationxml_name = f.sub(/\.[^.]+$/, ".presentation.xml")
       isodoc_options = @processor.extract_options(file)
@@ -256,6 +253,17 @@ module Metanorma
           end
         end
         wrap_html(options, file_extension, outfilename)
+      end
+    end
+
+    private
+
+    # @param options [Hash]
+    # @return [String]
+    def change_output_dir(options)
+      if options[:"output-dir"]
+        File.join options[:"output-dir"], File.basename(options[:filename])
+      else options[:filename]
       end
     end
   end
