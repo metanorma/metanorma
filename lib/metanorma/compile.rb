@@ -15,7 +15,7 @@ module Metanorma
     def compile(filename, options = {})
       require_libraries(options)
       options = options_extract(filename, options)
-      validate(options) or return nil
+      validate_type(options) && validate_format(options) || (return nil)
       @processor = @registry.find_processor(options[:type].to_sym)
       extensions = get_extensions(options) or return nil
       (file, isodoc = process_input(filename, options)) or return nil
@@ -55,10 +55,6 @@ module Metanorma
       options[:format] ||= :asciidoc
       options[:filename] = filename
       options
-    end
-
-    def validate(options)
-      validate_type(options) && validate_format(options)
     end
 
     def validate_type(options)
