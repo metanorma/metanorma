@@ -47,6 +47,7 @@ module Metanorma
       o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(content)
       o = o.merge(xml_options_extract(content))
       options[:type] ||= o[:type]&.to_sym
+      t = @registry.alias(options[:type]) and options[:type] = t
       dir = filename.sub(%r(/[^/]+$), "/")
       options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
       options[:sourcecode] ||= "#{dir}/#{o[:sourcecode]}" if o[:sourcecode]

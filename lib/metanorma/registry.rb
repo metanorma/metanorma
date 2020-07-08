@@ -14,14 +14,23 @@ module Metanorma
 
     def initialize
       @processors = {}
+      @aliases = {csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa}
+    end
+
+    def alias(x)
+      @aliases[x]
     end
 
     def register processor
       raise Error unless processor < ::Metanorma::Processor
       p = processor.new
-      Array(p.short).each do |s|
-        @processors[s] = p
+      # p.short[-1] is the canonical name
+      short = Array(p.short)
+      @processors[short[-1]] = p
+      short.each do |s|
+        @aliases[s] = short[-1]
       end
+      Array(p.short)
       Util.log("[metanorma] processor \"#{Array(p.short)[0]}\" registered", :info)
     end
 
