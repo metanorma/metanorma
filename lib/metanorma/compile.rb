@@ -118,7 +118,7 @@ module Metanorma
         dir = File.dirname(filename)
         dir != '.' and
           file.gsub!(/^include::/, "include::#{dir}/")
-        [file, @processor.input_to_isodoc(file, filename)]
+        [file, @processor.input_to_isodoc(file, filename, options)]
       when ".xml"
         Util.log("[metanorma] Processing: Metanorma XML input.", :info)
         # TODO NN: this is a hack -- we should provide/bridge the

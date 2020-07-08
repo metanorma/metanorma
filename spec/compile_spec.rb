@@ -52,10 +52,8 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("spec/assets/dummy.xml"))
     expect(File.exist?("spec/assets/dummy.alt.xml"))
     expect(File.exist?("spec/assets/dummy.presentation.xml"))
-    Dir[
-      "spec/assets/dummy.*",
-      "spec/examples/metanorma-collection/dummy.err"
-    ].each { |f| File.delete f }
+    expect(File.exist?("spec/assets/dummy.err"))
+    Dir["spec/assets/dummy.*"].each { |f| File.delete f }
   end
 
   it "processes a Metanorma XML ISO document" do

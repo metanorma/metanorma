@@ -5,7 +5,7 @@ module Metanorma
 
     class Asciidoc < Base
 
-      def process(file, filename, type)
+      def process(file, filename, type, options = {})
         require "asciidoctor"
         ::Asciidoctor.convert(
           file,
@@ -13,7 +13,10 @@ module Metanorma
           safe: :safe,
           backend: type,
           header_footer: true,
-          attributes: ["nodoc", "stem", "xrefstyle=short", "docfile=#{filename}"]
+          attributes: [
+            "nodoc", "stem", "xrefstyle=short", "docfile=#{filename}",
+            "output_dir=#{options[:"output-dir"]}"
+          ],
         )
       end
 
