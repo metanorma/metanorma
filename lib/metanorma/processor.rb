@@ -21,8 +21,12 @@ module Metanorma
     end
 
     def input_to_isodoc(file, filename)
-      raise "This is an abstract class!"
+      Metanorma::Input::Asciidoc.new.process(file, filename, @asciidoctor_backend)
     end
+
+    # def input_to_isodoc(file, filename)
+    #   raise "This is an abstract class!"
+    # end
 
     def use_presentation_xml(ext)
       case ext
