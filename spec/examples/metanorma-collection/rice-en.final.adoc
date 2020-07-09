@@ -38,7 +38,9 @@ It is applicable to husked rice, husked parboiled rice, milled rice and milled p
 
 It is not applicable to cooked rice products.
 
-This document is updated in <<RiceAmd>>. See e.g. <<RiceAmd,clause=2>>.
+This document is updated in <<RiceAmd>>. 
+
+This document is unrelated <<StarTrek>>, see e.g. <<StarTrek,clause=1>>.
 
 This document is unrelated to <<Dummy,anchor="what">>.
 
@@ -48,6 +50,8 @@ This document is unrelated to <<Dummy,anchor="what">>.
 The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.
 
 * [[[RiceAmd,repo:(current-metanorma-collection/rice,ISO 17301-1:2016/Amd.1:2017)]]]
+
+* [[[StarTrek,repo:(current-metanorma-collection/rice,ISO 1701:1974)]]]
 
 * [[[Dummy,path:(dummy,ISO 17302)]]]
 

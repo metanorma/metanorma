@@ -1,5 +1,6 @@
 require "nokogiri"
 require "metanorma-cli"
+require "metanorma"
 require "isodoc"
 require "fileutils"
 
@@ -15,16 +16,16 @@ require "fileutils"
 def init
   # @xml is the collection manifest
   @xml = Nokogiri::XML(File.read(ARGV[0], encoding: "utf-8"))
-  require "metanorma-#{doctype}"
+  @lang = @xml&.at(ns("//bibdata/language"))&.text || "en"
+  @script = @xml&.at(ns("//bibdata/script"))&.text || "Latn"
+  @doctype = doctype
+  require "metanorma-#{@doctype}"
+
+  # output processor for flavour
+  @isodoc = isodoc
+
   # list of files in the collection
   @files = read_files
-  @isodoc = isodoc
-  # create the @meta class of isodoc, with "navigation" set to the index bar extracted from the manifest
-  @isodoc.metadata_init("en", "Latn", 
-                        { navigation: indexfile(@xml.at(ns("//manifest"))) })
-  # populate the @meta class of isodoc with the various metadata fields native to the flavour;
-  # used to populate Liquid
-  @isodoc.info(@xml, nil)
   FileUtils.rm_rf ARGV[2]
   FileUtils.mkdir_p ARGV[2]
 end
@@ -36,17 +37,31 @@ end
 
 # The isodoc class for the metanorma flavour we are using
 def isodoc
-  x = Asciidoctor.load nil, {backend: doctype.to_sym}
-  x.converter.html_converter(Dummy.new)
+  x = Asciidoctor.load nil, {backend: @doctype.to_sym}
+  isodoc = x.converter.html_converter(Dummy.new)
+  # read in internationalisation
+  isodoc.i18n_init(@lang, @script)
+  # create the @meta class of isodoc, with "navigation" set to the index bar extracted from the manifest
+  isodoc.metadata_init(@lang, @script,
+                        isodoc.labels.merge(navigation: indexfile(@xml.at(ns("//manifest")))))
+  # populate the @meta class of isodoc with the various metadata fields native to the flavour;
+  # used to populate Liquid
+  isodoc.info(@xml, nil)
+isodoc
 end
 
 # infer the flavour from the first document identifier; relaton does that
 def doctype
-  docid = @xml&.at(ns("//bibdata/docidentifier/@type"))&.text and
-    return docid.downcase
-  docid = @xml&.at(ns("//bibdata/docidentifier"))&.text and
-    return docid.sub(/\s.*$/, "").lowercase
-  "standoc"
+  if docid = @xml&.at(ns("//bibdata/docidentifier/@type"))&.text
+    doctype = docid.downcase
+  elsif docid = @xml&.at(ns("//bibdata/docidentifier"))&.text 
+    doctype =  docid.sub(/\s.*$/, "").lowercase
+  else
+    return "standoc"
+  end
+  @registry = Metanorma::Registry.instance
+  t = @registry.alias(doctype.to_sym) and return t.to_s
+  doctype
 end
 
 def ns(xpath)
@@ -72,9 +87,9 @@ end
 # map locality type and label (e.g. "clause" "1") to id = anchor for a document
 def read_anchors(xml)
   ret = {}
-  i = isodoc
-  i.anchor_names xml
-  i.get_anchors.each do |k, v|
+  xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.labels, {})
+  xrefs.parse xml
+  xrefs.get.each do |k, v|
     v[:label] && v[:type] or next
     ret[v[:type]] ||= {}
     ret[v[:type]][v[:label]] = k

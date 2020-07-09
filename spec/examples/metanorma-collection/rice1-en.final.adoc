@@ -1,0 +1,39 @@
+= Rice model
+:docnumber: 1701
+:edition: 1
+:revdate: 2016-05-01
+:copyright-year: 1974
+:language: en
+:title-main-en: Test conditions for milling machines with table of variable height, with horizontal or vertical spindle
+:title-main-fr: Conditions d'essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale
+:doctype: international-standard
+:docstage: 60
+:docsubstage: 60
+:technical-committee-number: 34
+:secretariat: SAC
+:technical-committee: Food products
+:subcommittee-number: 4
+:subcommittee: Cereals and pulses
+:workgroup-type: WG
+:workgroup-number: 4
+:workgroup: Amylose in rice
+:docfile: rice-en.covers.final.adoc
+:library-ics: 67.060
+:mn-document-class: iso
+:mn-output-extensions: xml,html,doc,html_alt,pdf,rxl
+:local-cache-only:
+:data-uri-image:
+
+== Scope
+
+This document specifies minimum requirements and test methods for rice (_Oryza sativa L._).
+
+It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.
+
+It is not applicable to cooked rice products.
+
+This document is updated in <<RiceAmd>>. See e.g. <<RiceAmd,clause=2>>.
+
+This document is unrelated to <<Dummy,anchor="what">>.
+
+
