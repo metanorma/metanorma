@@ -43,6 +43,19 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include "</iso-standard>"
   end
 
+  it "write documents to specified output dir" do
+    Metanorma::Compile.new.compile "spec/examples/metanorma-collection/dummy.adoc", "output-dir": "spec/assets"
+    expect(File.exist?("spec/assets/dummy.doc"))
+    expect(File.exist?("spec/assets/dummy.html"))
+    expect(File.exist?("spec/assets/dummy.pdf"))
+    expect(File.exist?("spec/assets/dummy.rxl"))
+    expect(File.exist?("spec/assets/dummy.xml"))
+    expect(File.exist?("spec/assets/dummy.alt.xml"))
+    expect(File.exist?("spec/assets/dummy.presentation.xml"))
+    expect(File.exist?("spec/assets/dummy.err"))
+    Dir["spec/assets/dummy.*"].each { |f| File.delete f }
+  end
+
   it "processes a Metanorma XML ISO document" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso" } )

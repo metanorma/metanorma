@@ -15,7 +15,7 @@ module Metanorma
     def compile(filename, options = {})
       require_libraries(options)
       options = options_extract(filename, options)
-      validate(options) or return nil
+      validate_type(options) && validate_format(options) || (return nil)
       @processor = @registry.find_processor(options[:type].to_sym)
       extensions = get_extensions(options) or return nil
       (file, isodoc = process_input(filename, options)) or return nil
@@ -56,10 +56,6 @@ module Metanorma
       options[:format] ||= :asciidoc
       options[:filename] = filename
       options
-    end
-
-    def validate(options)
-      validate_type(options) && validate_format(options)
     end
 
     def validate_type(options)
@@ -123,7 +119,7 @@ module Metanorma
         dir = File.dirname(filename)
         dir != '.' and
           file.gsub!(/^include::/, "include::#{dir}/")
-        [file, @processor.input_to_isodoc(file, filename)]
+        [file, @processor.input_to_isodoc(file, filename, options)]
       when ".xml"
         Util.log("[metanorma] Processing: Metanorma XML input.", :info)
         # TODO NN: this is a hack -- we should provide/bridge the
@@ -230,15 +226,16 @@ module Metanorma
 
     # isodoc is Raw Metanorma XML
     def process_extensions(extensions, file, isodoc, options)
-      xml_name = options[:filename].sub(/\.[^.]+$/, ".xml")
-      presentationxml_name = options[:filename].sub(/\.[^.]+$/, ".presentation.xml")
+      f = change_output_dir options
+      xml_name = f.sub(/\.[^.]+$/, ".xml")
+      presentationxml_name = f.sub(/\.[^.]+$/, ".presentation.xml")
+      isodoc_options = @processor.extract_options(file)
+      isodoc_options[:datauriimage] = true if options[:datauriimage]
       extensions.sort do |a, b|
         sort_extensions_execution(a) <=> sort_extensions_execution(b)
       end.each do |ext|
         file_extension = @processor.output_formats[ext]
-        outfilename = options[:filename].sub(/\.[^.]+$/, ".#{file_extension}")
-        isodoc_options = @processor.extract_options(file)
-        isodoc_options[:datauriimage] = true if options[:datauriimage]
+        outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :rxl
           options[:relaton] = outfilename
           relaton_export(isodoc, options)
@@ -247,11 +244,22 @@ module Metanorma
             @processor.use_presentation_xml(ext) ?
               @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
-          rescue StandardError => e  
+          rescue StandardError => e
             puts e.message
           end
         end
         wrap_html(options, file_extension, outfilename)
+      end
+    end
+
+    private
+
+    # @param options [Hash]
+    # @return [String]
+    def change_output_dir(options)
+      if options[:"output-dir"]
+        File.join options[:"output-dir"], File.basename(options[:filename])
+      else options[:filename]
       end
     end
   end
