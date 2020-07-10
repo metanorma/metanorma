@@ -229,11 +229,11 @@ module Metanorma
       f = change_output_dir options
       xml_name = f.sub(/\.[^.]+$/, ".xml")
       presentationxml_name = f.sub(/\.[^.]+$/, ".presentation.xml")
-      isodoc_options = @processor.extract_options(file)
-      isodoc_options[:datauriimage] = true if options[:datauriimage]
       extensions.sort do |a, b|
         sort_extensions_execution(a) <=> sort_extensions_execution(b)
       end.each do |ext|
+        isodoc_options = @processor.extract_options(file)
+        isodoc_options[:datauriimage] = true if options[:datauriimage]
         file_extension = @processor.output_formats[ext]
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :rxl
