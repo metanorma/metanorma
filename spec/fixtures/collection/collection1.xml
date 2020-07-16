@@ -1,0 +1,55 @@
+<metanorma-collection xmlns="http://metanorma.org">
+  <bibdata type="collection">
+  <fetched>2020-07-14</fetched>
+  <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
+  <docidentifier type="iso">ISO 12345</docidentifier>
+  <date type="created">
+    <on>2020-01-01</on>
+  </date>
+  <date type="issued">
+    <on>2020-01-01</on>
+  </date>
+  <edition>1</edition>
+  <copyright>
+    <from>2020</from>
+    <owner>
+      <organization>
+        <name>International Organization for Standardization</name>
+        <abbreviation>ISO</abbreviation>
+      </organization>
+    </owner>
+  </copyright>
+</bibdata>
+  <manifest>
+<level>collection</level>
+<title>ISO Collection</title>
+<manifest>
+<level>subcollection</level>
+<title>Standards</title>
+<docref fileref="rice-en.final.xml"><identifier>ISO 17301-1:2016</identifier></docref>
+<docref fileref="dummy.xml"><identifier>ISO 17302</identifier></docref>
+<docref fileref="rice1-en.final.xml"><identifier>ISO 1701:1974</identifier></docref>
+</manifest>
+<manifest>
+<level>subcollection</level>
+<title>Amendments</title>
+<docref fileref="rice-amd.final.xml"><identifier>ISO 17301-1:2016/Amd.1:2017</identifier></docref>
+</manifest>
+</manifest>
+
+  <prefatory-content>
+
+<clause id="_clause" inline-header="false" obligation="normative">
+<title>Clause</title>
+<p id="_3b32037c-7f5f-4743-8f64-00af1b63aa82">Welcome to our collection</p>
+</clause>
+</prefatory-content>
+  
+  <final-content>
+
+<clause id="_exordium" inline-header="false" obligation="normative">
+<title>Exordium</title>
+<p id="_de5dacbc-0ad9-4653-8085-f4e2d8eb79ba">Hic explicit</p>
+</clause>
+</final-content>
+</metanorma-collection>
