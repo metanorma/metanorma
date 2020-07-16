@@ -53,18 +53,20 @@ module Metanorma
       ret = "<manifest>\n"
       ret += "<level>#{mnf['level']}</level>\n" if mnf["level"]
       ret += "<title>#{mnf['title']}</title>\n" if mnf["title"]
+
       if mnf["docref"].is_a? Hash
         ret += docref(mnf["docref"])
       elsif mnf["docref"].is_a? Array
         Array(mnf["docref"]).each { |d| ret += docref(d) }
       end
+
       if mnf["manifest"].is_a? Hash
         ret += manifest(mnf["manifest"])
       elsif mnf["manifest"].is_a? Array
         mnf["manifest"].each { |m| ret += manifest(m) }
       end
-      ret += "</manifest>\n"
-      ret
+
+      ret + "</manifest>\n"
     end
 
     # @param drf [Hash]
@@ -94,20 +96,22 @@ module Metanorma
 
     # @return [String, nil] XML element
     def prefatory
-      return unless @collection["prefatory-content"]
-
-      c =  Asciidoctor.convert(dummy_header + @collection["prefatory-content"], backend: doctype.to_sym, header_footer: true)
-      out = Nokogiri::XML(c).at("//xmlns:sections").children.to_xml
-      "<prefatory-content>\n#{out}</prefatory-content>"
+      content "prefatory-content"
     end
 
     # @return [String, nil] XML element
     def final
-      return unless @collection["final-content"]
+      content "final-content"
+    end
 
-      c =  Asciidoctor.convert(dummy_header + @collection["final-content"], backend: doctype.to_sym, header_footer: true)
+    # @param elm [String] element name
+    # @return [String, nil] XML element
+    def content(elm)
+      return unless @collection[elm]
+
+      c =  Asciidoctor.convert(dummy_header + @collection[elm], backend: doctype.to_sym, header_footer: true)
       out = Nokogiri::XML(c).at("//xmlns:sections").children.to_xml
-      "<final-content>\n#{out}</final-content>"
+      "<#{elm}>\n#{out}</#{elm}>"
     end
 
     # @return [String, nil] XML element

@@ -171,12 +171,13 @@ module Metanorma
     # @return [Array<String, nil]
     def targetfile(data, read = false)
       if data[:type] == "fileref"
-        [read ? File.read(data[:ref], encoding: "utf-8") : nil,
-        data[:ref].sub(/\.xml$/, ".html")]
+        file = File.read(data[:ref], encoding: "utf-8") if read
+        filename = data[:ref].sub(/\.xml$/, ".html")
       else
-        [read ? @xml.at(ns("//doc-container[@id = '#{data[:id]}']")).to_xml : nil,
-        data["id"] + ".html"]
+        file = @xml.at(ns("//doc-container[@id = '#{data[:id]}']")).to_xml if read
+        filename = data["id"] + ".html"
       end
+      [file, filename]
     end
 
     def update_bibitem(b, docid, identifier)
@@ -207,8 +208,9 @@ module Metanorma
     def update_xrefs(file, identifier)
       docxml = Nokogiri::XML(file)
       docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
-        next unless docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
-        next unless %r{^current-metanorma-collection/}.match(docid)
+        docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
+        next unless docid && %r{^current-metanorma-collection/}.match(docid)
+
         update_bibitem(b, docid, identifier)
         update_anchors(b, docxml, docid)
       end
