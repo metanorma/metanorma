@@ -53,20 +53,19 @@ module Metanorma
       ret = "<manifest>\n"
       ret += "<level>#{mnf['level']}</level>\n" if mnf["level"]
       ret += "<title>#{mnf['title']}</title>\n" if mnf["title"]
-
-      if mnf["docref"].is_a? Hash
-        ret += docref(mnf["docref"])
-      elsif mnf["docref"].is_a? Array
-        Array(mnf["docref"]).each { |d| ret += docref(d) }
-      end
-
-      if mnf["manifest"].is_a? Hash
-        ret += manifest(mnf["manifest"])
-      elsif mnf["manifest"].is_a? Array
-        mnf["manifest"].each { |m| ret += manifest(m) }
-      end
-
+      ret += manifest_recursion(mnf, "docref").to_s
+      ret += manifest_recursion(mnf, "manifest").to_s
       ret + "</manifest>\n"
+    end
+
+    # @param mnf [Hash, Array]
+    # @param argname [String]
+    # @return [String]
+    def manifest_recursion(mnf, argname)
+      if mnf[argname].is_a?(Hash) then send(argname, mnf[argname])
+      elsif mnf[argname].is_a?(Array)
+        mnf[argname].map { |m| send(argname, m) }.join("")
+      end
     end
 
     # @param drf [Hash]

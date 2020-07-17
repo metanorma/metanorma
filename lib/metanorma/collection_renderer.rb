@@ -168,15 +168,28 @@ module Metanorma
     # return file contents + output filename for each file in the collection, given a docref entry
     # @param data [Hash]
     # @param read [Boolean]
-    # @return [Array<String, nil]
+    # @return [Array<String, nil>]
     def targetfile(data, read = false)
-      if data[:type] == "fileref"
-        file = File.read(data[:ref], encoding: "utf-8") if read
-        filename = data[:ref].sub(/\.xml$/, ".html")
-      else
-        file = @xml.at(ns("//doc-container[@id = '#{data[:id]}']")).to_xml if read
-        filename = data["id"] + ".html"
+      if data[:type] == "fileref" then ref_file data[:ref], read
+      else xml_file data[:id], read
       end
+    end
+
+    # @param ref [String]
+    # @param read [Boolean]
+    # @return [Array<String, nil>]
+    def ref_file(ref, read)
+      file = File.read(ref, encoding: "utf-8") if read
+      filename = ref.sub(/\.xml$/, ".html")
+      [file, filename]
+    end
+
+    # @param id [String]
+    # @param read [Boolean]
+    # @return [Array<String, nil>]
+    def xml_file(id, read)
+      file = @xml.at(ns("//doc-container[@id = '#{id}']")).to_xml if read
+      filename = id + ".html"
       [file, filename]
     end
 
