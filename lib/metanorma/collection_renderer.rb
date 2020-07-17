@@ -257,7 +257,7 @@ module Metanorma
           c = Compile.new
           c.compile f.path, format: :asciidoc, extension_keys: @format
           @format.each do |ext|
-            fn = File.basename(filename).sub /(?<=\.)[^\.]+&/, ext.to_s
+            fn = File.basename(filename).sub /(?<=\.)[^\.]+$/, ext.to_s
             FileUtils.mv f.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
           end
         end
