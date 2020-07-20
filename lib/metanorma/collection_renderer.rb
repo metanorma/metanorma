@@ -6,20 +6,25 @@ require "isodoc"
 
 module Metanorma
   class CollectionRenderer
+    FORMATS = %i[html xml doc pdf].freeze
+
     # This is only going to render the HTML collection
     # @param xml [String] input XML collection
-    # @param filename [String] input file name
+    # @param folder [String] input folder
     # @param options [Hash]
     # @option options [String] :coverpage cover page HTML (Liquid template)
-    # @option options [Array<Symbol>] :format list of formats
+    # @option options [Array<Symbol>] :format list of formats (xml, html, doc, pdf)
     # @option options [String] :ourput_folder output directory
     #
     # We presuppose that the bibdata of the document is equivalent to that of the collection,
     # and that the flavour gem can sensibly process it. We may need to enhance metadata
     # in the flavour gems isodoc/metadata.rb with collection metadata
 
-    def initialize(xml, filename:, **options)
-      if options[:format]&.include?(:html) && !options[:coverpage]
+    def initialize(xml, folder, options = {})
+      unless options[:format].is_a?(Array) && (FORMATS & options[:format]).any?
+        raise ArgumentError, "Need to specify formats (xml,html,pdf,doc)"
+      end
+      if options[:format].include?(:html) && !options[:coverpage]
         raise ArgumentError, "Need to specify a coverpage to render HTML"
       end
       # @xml is the collection manifest
@@ -37,19 +42,19 @@ module Metanorma
       @format = options[:format]
 
       # list of files in the collection
-      @files = read_files File.dirname(filename)
+      @files = read_files folder
       FileUtils.rm_rf @outdir
       FileUtils.mkdir_p @outdir
     end
 
     # @param xml [String] XML collection
-    # @param filename [String] input file name
+    # @param folder [String] input folder
     # @param options [Hash]
     # @option options [String] :coverpage cover page HTML (Liquid template)
     # @option options [Array<Synbol>] :format list of formats
     # @option options [Strong] :ourput_folder output directory
-    def self.render(xml, filename:, **options)
-      cr = new(xml, filename: filename, **options)
+    def self.render(xml, folder, options = {})
+      cr = new(xml, folder, options)
       cr.files
       cr.coverpage if options[:format]&.include?(:html)
     end

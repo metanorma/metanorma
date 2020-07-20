@@ -6,7 +6,7 @@ require "relaton-cli"
 # require "nokogiri"
 
 module Metanorma
-  class Yaml2XmlColection
+  class Yaml2XmlCollection
     # @param file [String] YAML collection file path
     def initialize(file)
       @collection = YAML.load_file(file)

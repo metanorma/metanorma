@@ -4,7 +4,9 @@ RSpec.describe Metanorma::CollectionRenderer do
     xml = File.read file, encoding: "UTF-8"
     of = "spec/fixtures/ouput"
     Metanorma::CollectionRenderer.render(
-      xml, filename: file, format: [:html, :pdf, :xml, :doc], output_folder: of,
+      xml, File.dirname(file),
+      format: [:html, :pdf, :xml, :doc],
+      output_folder: of,
       coverpage: "spec/fixtures/collection/collection_cover.html"
     )
     expect(File.exist?("spec/fixtures/ouput/index.html")).to be true
@@ -28,7 +30,15 @@ RSpec.describe Metanorma::CollectionRenderer do
     FileUtils.rm_rf of
   end
 
-  it "raise ArgumentError format is HTML & coverpage not specified" do
+  it "raise ArgumentError if format is not specified" do
+    file = "spec/fixtures/collection/collection1.xml"
+    xml = File.read file, encoding: "UTF-8"
+    expect do
+      Metanorma::CollectionRenderer.render(xml, filename: file)
+    end.to raise_error ArgumentError
+  end
+
+  it "raise ArgumentError if format is HTML & coverpage not specified" do
     file = "spec/fixtures/collection/collection1.xml"
     xml = File.read file, encoding: "UTF-8"
     of = "spec/fixtures/ouput"
