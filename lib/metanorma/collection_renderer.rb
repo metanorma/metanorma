@@ -223,9 +223,9 @@ module Metanorma
       newbib.at(ns("./docidentifier")).previous = uri_node
     end
 
-    def repo_docid(docid)
-      docid.sub(%r{^current-metanorma-collection/}, "")
-    end
+    # def repo_docid(docid)
+    #   docid.sub(%r{^current-metanorma-collection/}, "")
+    # end
 
     # TODO: update crossreferences to other files in the selection
     # repo(current-metanorma-collection/ISO 17301-1:2016)
@@ -278,7 +278,7 @@ module Metanorma
           c = Compile.new
           c.compile f.path, format: :asciidoc, extension_keys: @format
           @format.each do |ext|
-            fn = File.basename(filename).sub /(?<=\.)[^\.]+$/, ext.to_s
+            fn = File.basename(filename).sub(/(?<=\.)[^\.]+$/, ext.to_s)
             FileUtils.mv f.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
           end
         end
