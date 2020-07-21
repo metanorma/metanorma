@@ -1,8 +1,6 @@
-# require "nokogiri"
-# require "metanorma-cli"
-# require "metanorma"
+# frozen_string_literal: true
+
 require "isodoc"
-# require "fileutils"
 
 module Metanorma
   class CollectionRenderer
@@ -142,16 +140,19 @@ module Metanorma
     #
     # @param elm [Nokogiri::XML::Element]
     # @param builder [Nokogiri::XML::Builder]
-    # @return [String] XML
     def indexfile_docref(elm, builder)
       return "" unless elm.at(ns("./docref"))
 
-      builder.ul do |b|
-        elm.xpath(ns("./docref")).each do |d|
-          identifier = d.at(ns("./identifier")).text
-          link = d["fileref"] ? d["fileref"].sub(/\.xml$/, ".html") : d["id"] + ".html"
-          b.li { b.a identifier, href: link }
-        end
+      builder.ul { |b| docrefs(elm, b) }
+    end
+
+    # @param elm [Nokogiri::XML::Element]
+    # @param builder [Nokogiri::XML::Builder]
+    def docrefs(elm, builder)
+      elm.xpath(ns("./docref")).each do |d|
+        identifier = d.at(ns("./identifier")).text
+        link = d["fileref"] ? d["fileref"].sub(/\.xml$/, ".html") : d["id"] + ".html"
+        builder.li { builder.a identifier, href: link }
       end
     end
 
@@ -215,7 +216,7 @@ module Metanorma
       newbib.name = "bibitem"
       newbib["id"] = id
       newbib&.at(ns("./ext"))&.remove
-      file, url = targetfile(@files[docid], false)
+      _file, url = targetfile(@files[docid], false)
       uri_node = Nokogiri::XML::Node.new "uri", newbib
       uri_node[:type] = "citation"
       uri_node.content = url
@@ -246,15 +247,21 @@ module Metanorma
 
     # if there is a crossref to another document, with no anchor, retrieve the
     # anchor given the locality, and insert it into the crossref
-    def update_anchors(b, docxml, id)
-      docid = b&.at(ns("./docidentifier"))&.text
+    def update_anchors(bib, docxml, id)
+      docid = bib&.at(ns("./docidentifier"))&.text
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
-        e.at(ns(".//locality[@type = 'anchor']")).nil? or next
-        ins = e.at(ns("./localityStack")) or next
+        e.at(ns(".//locality[@type = 'anchor']")).nil? || next
+        ins = e.at(ns("./localityStack")) || next
         type = ins&.at(ns("./locality/@type"))&.text
         ref = ins&.at(ns("./locality/referenceFrom"))&.text
-        anchor = @files[docid][:anchors][type][ref] and
-          ins << %(<locality type="anchor"><referenceFrom>#{anchor.sub(/^_/, '')}</referenceFrom></locality>)
+        if (anchor = @files[docid][:anchors][type][ref])
+          ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
+          ref_from.content = anchor.sub(/^_/, '')
+          locality = Nokogiri::XML::Node.new "locality", bib
+          locality[:type] = "anchor"
+          locality.add_child ref_from
+          ins << locality
+        end
       end
     end
 

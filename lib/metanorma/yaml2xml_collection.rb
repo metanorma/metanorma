@@ -70,7 +70,6 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def docref(drf, builder)
       @docs << { identifier: drf["identifier"], fileref: drf["fileref"], id: "doc%09d" % @docs.size }
-      # ret = "<docref"
       dr = builder.docref { |d| d.identifier drf["identifier"] }
       if Array(@collection["directives"]).include?("documents-inline")
         dr[:id] = drf["id"]
@@ -81,11 +80,11 @@ module Metanorma
 
     # @return [String]
     def dummy_header
-      <<~END
-    = X
-    A
+      <<~DUMMY
+        = X
+        A
 
-      END
+      DUMMY
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -103,7 +102,8 @@ module Metanorma
     def content(elm, builder)
       return unless @collection[elm]
 
-      c =  Asciidoctor.convert(dummy_header + @collection[elm], backend: doctype.to_sym, header_footer: true)
+      c = Asciidoctor.convert(dummy_header + @collection[elm],
+                              backend: doctype.to_sym, header_footer: true)
       out = Nokogiri::XML(c).at("//xmlns:sections").children.to_xml
       builder.send(elm) { |b| b << out }
     end
@@ -124,11 +124,11 @@ module Metanorma
     # @return [String]
     def doctype
       @doctype ||= if (docid = @collection["bibdata"]["docid"]["type"])
-                      docid.downcase
-                    elsif (docid = @collection["bibdata"]["docid"])
-                      docid.sub(/\s.*$/, "").lowercase
-                    else "standoc"
-                    end
+                     docid.downcase
+                   elsif (docid = @collection["bibdata"]["docid"])
+                     docid.sub(/\s.*$/, "").lowercase
+                   else "standoc"
+                   end
     end
   end
 end
