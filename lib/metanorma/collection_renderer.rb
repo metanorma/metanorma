@@ -21,12 +21,7 @@ module Metanorma
     # in the flavour gems isodoc/metadata.rb with collection metadata
 
     def initialize(xml, folder, options = {})
-      unless options[:format].is_a?(Array) && (FORMATS & options[:format]).any?
-        raise ArgumentError, "Need to specify formats (xml,html,pdf,doc)"
-      end
-      if options[:format].include?(:html) && !options[:coverpage]
-        raise ArgumentError, "Need to specify a coverpage to render HTML"
-      end
+      check_options options
       # @xml is the collection manifest
       @xml = Nokogiri::XML xml
       @lang = @xml&.at(ns("//bibdata/language"))&.text || "en"
@@ -144,30 +139,38 @@ module Metanorma
 
     # uses the identifier to label documents; other attributes (title) can be looked up
     # in @files[id][:bibdata]
-    def indexfile_docref(m)
-      return "" unless m.at(ns("./docref"))
-      ret = "<ul>\n"
-      m.xpath(ns("./docref")).each do |d|
-        identifier = d.at(ns("./identifier")).text
-        link = d["fileref"] ? d["fileref"].sub(/\.xml$/, ".html") : d["id"] + ".html"
-        ret += "<li><a href='./#{link}'>#{identifier}</a></li>\n"
+    #
+    # @param elm [Nokogiri::XML::Element]
+    # @param builder [Nokogiri::XML::Builder]
+    # @return [String] XML
+    def indexfile_docref(elm, builder)
+      return "" unless elm.at(ns("./docref"))
+
+      builder.ul do |b|
+        elm.xpath(ns("./docref")).each do |d|
+          identifier = d.at(ns("./identifier")).text
+          link = d["fileref"] ? d["fileref"].sub(/\.xml$/, ".html") : d["id"] + ".html"
+          b.li { b.a identifier, href: link }
+        end
       end
-      ret += "</ul>\n"
-      ret
     end
 
     # single level navigation list, with hierarchical nesting
     # if multiple lists are needed as separate HTML fragments, multiple instances of this function will be needed,
     # and associated to different variables in the call to @isodoc.metadata_init (including possibly an array of HTML fragments)
-    def indexfile(m)
-      ret = "<ul>\n"
-      ret += "<li>#{indexfile_title(m)}</li>\n"
-      ret += indexfile_docref(m)
-      m.xpath(ns("./manifest")).each do |d|
-        ret += "#{indexfile(d)}\n"
-      end
-      ret += "</ul>\n"
-      ret
+    #
+    # @param elm [Nokogiri::XML::Element]
+    # @return [String] XML
+    def indexfile(elm)
+      Nokogiri::HTML::Builder.new do |b|
+        b.ul do
+          b.li indexfile_title(elm)
+          indexfile_docref(elm, b)
+          elm.xpath(ns("./manifest")).each do |d|
+            b << indexfile(d)
+          end
+        end
+      end.doc.root.to_html
     end
 
     # return file contents + output filename for each file in the collection, given a docref entry
@@ -198,14 +201,17 @@ module Metanorma
       [file, filename]
     end
 
-    def update_bibitem(b, docid, identifier)
-      docid = b&.at(ns("./docidentifier"))&.text
+    # @param bib [Nokogiri::XML::Element]
+    # @param docid [String]
+    # @param identifier [String]
+    def update_bibitem(bib, docid, identifier)
+      docid = bib&.at(ns("./docidentifier"))&.text
       unless @files[docid]
         warn "Cannot find crossreference to document #{docid} in document #{identifier}!"
         abort
       end
-      id = b["id"]
-      newbib = b.replace(@files[docid][:bibdata])
+      id = bib["id"]
+      newbib = bib.replace(@files[docid][:bibdata])
       newbib.name = "bibitem"
       newbib["id"] = id
       newbib&.at(ns("./ext"))&.remove
@@ -266,6 +272,19 @@ module Metanorma
             FileUtils.mv f.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
           end
         end
+      end
+    end
+
+    private
+
+    # @param options [Hash]
+    # @raise [ArgumentError]
+    def check_options(options)
+      unless options[:format].is_a?(Array) && (FORMATS & options[:format]).any?
+        raise ArgumentError, "Need to specify formats (xml,html,pdf,doc)"
+      end
+      if options[:format].include?(:html) && !options[:coverpage]
+        raise ArgumentError, "Need to specify a coverpage to render HTML"
       end
     end
   end
