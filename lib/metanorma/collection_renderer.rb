@@ -216,7 +216,10 @@ module Metanorma
       newbib["id"] = id
       newbib&.at(ns("./ext"))&.remove
       file, url = targetfile(@files[docid], false)
-      newbib.at(ns("./docidentifier")).previous = %{<uri type="citation">#{url}</uri>}
+      uri_node = Nokogiri::XML::Node.new "uri", newbib
+      uri_node[:type] = "citation"
+      uri_node.content = url
+      newbib.at(ns("./docidentifier")).previous = uri_node
     end
 
     def repo_docid(docid)
