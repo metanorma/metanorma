@@ -13,5 +13,6 @@ require 'metanorma/compile'
 require 'metanorma/yaml2xml_collection'
 require 'metanorma/collection_renderer'
 
+# Metanorma module
 module Metanorma
 end
