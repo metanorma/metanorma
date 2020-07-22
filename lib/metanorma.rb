@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'metanorma/version'
 require 'asciidoctor'
 require 'metanorma/util'
