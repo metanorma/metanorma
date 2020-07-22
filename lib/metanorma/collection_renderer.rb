@@ -57,7 +57,7 @@ module Metanorma
 
     # The isodoc class for the metanorma flavour we are using
     def isodoc # rubocop:disable Metrics/MethodLength
-      x = Asciidoctor.load nil, { backend: @doctype.to_sym }
+      x = Asciidoctor.load nil, backend: @doctype.to_sym
       isodoc = x.converter.html_converter(Dummy.new)
       isodoc.i18n_init(@lang, @script) # read in internationalisation
       # create the @meta class of isodoc, with "navigation" set to the index bar
@@ -71,16 +71,14 @@ module Metanorma
     end
 
     # infer the flavour from the first document identifier; relaton does that
-    def doctype # rubocop:disable Metrics/CyclomaticComplexity
-      if docid = @xml&.at(ns('//bibdata/docidentifier/@type'))&.text
-        doctype = docid.downcase
-      elsif docid = @xml&.at(ns('//bibdata/docidentifier'))&.text
-        doctype = docid.sub(/\s.*$/, '').lowercase
-      else return 'standoc'
-      end
+    def doctype
+      if (docid = @xml&.at(ns('//bibdata/docidentifier/@type'))&.text)
+        dt = docid.downcase
+      elsif (docid = @xml&.at(ns('//bibdata/docidentifier'))&.text)
+        dt = docid.sub(/\s.*$/, '').lowercase
+      else return 'standoc' end
       @registry = Metanorma::Registry.instance
-      t = @registry.alias(doctype.to_sym) and return t.to_s
-      doctype
+      @registry.alias(dt.to_sym)&.to_s || dt
     end
 
     def ns(xpath)
@@ -258,14 +256,13 @@ module Metanorma
         ins = e.at(ns('./localityStack')) || next
         type = ins&.at(ns('./locality/@type'))&.text
         ref = ins&.at(ns('./locality/referenceFrom'))&.text
-        if (anchor = @files[docid][:anchors][type][ref])
-          ref_from = Nokogiri::XML::Node.new 'referenceFrom', bib
-          ref_from.content = anchor.sub(/^_/, '')
-          locality = Nokogiri::XML::Node.new 'locality', bib
-          locality[:type] = 'anchor'
-          locality.add_child ref_from
-          ins << locality
-        end
+        (anchor = @files[docid][:anchors][type][ref]) || next
+        ref_from = Nokogiri::XML::Node.new 'referenceFrom', bib
+        ref_from.content = anchor.sub(/^_/, '')
+        locality = Nokogiri::XML::Node.new 'locality', bib
+        locality[:type] = 'anchor'
+        locality.add_child ref_from
+        ins << locality
       end
     end
 
@@ -297,9 +294,9 @@ module Metanorma
       unless options[:format].is_a?(Array) && (FORMATS & options[:format]).any?
         raise ArgumentError, 'Need to specify formats (xml,html,pdf,doc)'
       end
-      if options[:format].include?(:html) && !options[:coverpage]
-        raise ArgumentError, 'Need to specify a coverpage to render HTML'
-      end
+      return if !options[:format].include?(:html) || options[:coverpage]
+
+      raise ArgumentError, 'Need to specify a coverpage to render HTML'
     end
   end
 end

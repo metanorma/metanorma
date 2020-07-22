@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Metanorma::CollectionRenderer do
   it 'Render HTML & build DOC, PDF, XML files from XML collection' do
     file = 'spec/fixtures/collection/collection1.xml'
@@ -10,8 +12,8 @@ RSpec.describe Metanorma::CollectionRenderer do
       coverpage: 'spec/fixtures/collection/collection_cover.html'
     )
     expect(File.exist?('spec/fixtures/ouput/index.html')).to be true
-    expect(File.read('spec/fixtures/ouput/index.html', encoding: 'UTF-8')).
-      to include '<h1>ISO Collection 1</h1>'
+    expect(File.read('spec/fixtures/ouput/index.html', encoding: 'UTF-8'))
+      .to include '<h1>ISO Collection 1</h1>'
     expect(File.exist?('spec/fixtures/ouput/dummy.html')).to be true
     expect(File.exist?('spec/fixtures/ouput/dummy.doc')).to be true
     expect(File.exist?('spec/fixtures/ouput/dummy.pdf')).to be true
