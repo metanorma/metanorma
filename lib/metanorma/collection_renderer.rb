@@ -3,7 +3,8 @@
 require 'isodoc'
 
 module Metanorma
-  class CollectionRenderer
+  # XML collection renderer
+  class CollectionRenderer # rubocop:disable Metrics/ClassLength
     FORMATS = %i[html xml doc pdf].freeze
 
     # This is only going to render the HTML collection
@@ -51,6 +52,7 @@ module Metanorma
       cr.coverpage if options[:format]&.include?(:html)
     end
 
+    # Dummy class
     class Dummy
       def attr(_xyz); end
     end
@@ -71,12 +73,13 @@ module Metanorma
     end
 
     # infer the flavour from the first document identifier; relaton does that
-    def doctype
+    def doctype # rubocop:disable Metrics/CyclomaticComplexity
       if (docid = @xml&.at(ns('//bibdata/docidentifier/@type'))&.text)
         dt = docid.downcase
       elsif (docid = @xml&.at(ns('//bibdata/docidentifier'))&.text)
         dt = docid.sub(/\s.*$/, '').lowercase
-      else return 'standoc' end
+      else return 'standoc'
+      end
       @registry = Metanorma::Registry.instance
       @registry.alias(dt.to_sym)&.to_s || dt
     end
@@ -97,7 +100,8 @@ module Metanorma
         files[identifier] = if d['fileref']
                               { type: 'fileref',
                                 ref: File.join(path, d['fileref']) }
-                            else { type: 'id', ref: d['id'] } end
+                            else { type: 'id', ref: d['id'] }
+                            end
         file, _filename = targetfile(files[identifier], true)
         xml = Nokogiri::XML(file)
         files[identifier][:anchors] = read_anchors(xml)
@@ -113,7 +117,7 @@ module Metanorma
       xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.labels, {})
       xrefs.parse xml
       xrefs.get.each do |k, v|
-        v[:label] && v[:type] or next
+        v[:label] && v[:type] || next
         ret[v[:type]] ||= {}
         ret[v[:type]][v[:label]] = k
       end
@@ -153,7 +157,8 @@ module Metanorma
       elm.xpath(ns('./docref')).each do |d|
         identifier = d.at(ns('./identifier')).text
         link = if d['fileref'] then d['fileref'].sub(/\.xml$/, '.html')
-               else d['id'] + '.html' end
+               else d['id'] + '.html'
+               end
         builder.li { builder.a identifier, href: link }
       end
     end

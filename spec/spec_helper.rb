@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 require 'metanorma'
 require 'rspec/matchers'
@@ -18,7 +20,7 @@ RSpec.configure do |config|
   config.include RSpecCommand
 end
 
-ASCIIDOC_BLANK_HDR = <<~"HDR".freeze
+ASCIIDOC_BLANK_HDR = <<~"HDR"
   = Document title
   Author
   :docfile: test.adoc
@@ -28,7 +30,7 @@ ASCIIDOC_BLANK_HDR = <<~"HDR".freeze
 
 HDR
 
-ASCIIDOC_CONFIGURED_HDR = <<~"HDR".freeze
+ASCIIDOC_CONFIGURED_HDR = <<~"HDR"
   = Document title
   Author
   :docfile: test.adoc
@@ -44,7 +46,7 @@ ASCIIDOC_CONFIGURED_HDR = <<~"HDR".freeze
 
 HDR
 
-ISOXML_BLANK_HDR = <<~"HDR".freeze
+ISOXML_BLANK_HDR = <<~"HDR"
   <?xml version="1.0" encoding="UTF-8"?>
   <iso-standard xmlns="http://riboseinc.com/isoxml">
   <bibdata type="article">

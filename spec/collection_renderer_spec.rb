@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Metanorma::CollectionRenderer do
-  it 'Render HTML & build DOC, PDF, XML files from XML collection' do
+  it 'Render HTML & build DOC, PDF, XML files from XML collection' do # rubocop:disable Metrics/BlockLength
     file = 'spec/fixtures/collection/collection1.xml'
     xml = File.read file, encoding: 'UTF-8'
     of = 'spec/fixtures/ouput'
