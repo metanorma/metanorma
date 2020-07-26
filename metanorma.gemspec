@@ -29,7 +29,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'mn2pdf', "~> 1"
 
   spec.add_development_dependency "rake", "~> 12.0"
-  spec.add_development_dependency "sassc", "2.4.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "byebug", "~> 10.0"
   spec.add_development_dependency "rspec-command", "~> 1.0"
