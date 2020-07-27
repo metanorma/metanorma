@@ -10,8 +10,8 @@ require 'metanorma/registry'
 require 'metanorma/processor'
 require 'metanorma/asciidoctor_extensions'
 require 'metanorma/compile'
-require 'metanorma/yaml2xml_collection'
-require 'metanorma/collection_renderer'
+require 'metanorma/collection'
+require 'metanorma/document'
 
 # Metanorma module
 module Metanorma
