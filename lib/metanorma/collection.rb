@@ -21,14 +21,6 @@ module Metanorma
       @final = args[:final]
     end
 
-    # @param doc [Metanorma::Document]
-    # @return [self]
-    # def <<(doc)
-    #   docid = doc.identifier.first.id
-    #   @documents[docid] = doc
-    #   self
-    # end
-
     # @return [String] XML
     def to_xml
       Nokogiri::XML::Builder.new do |xml|
@@ -64,10 +56,8 @@ module Metanorma
       # @return [Hash<String, Metanorma::Document>]
       def documents(mnf, mem = {})
         RelatonBib::HashConverter.array(mnf).reduce(mem) do |mm, m|
-          if m['docref']
-            RelatonBib::HashConverter.array(m['docref']).each do |dr|
-              mm[dr['identifier']] = Document.new(dr['fileref'])
-            end
+          RelatonBib::HashConverter.array(m['docref']).each do |dr|
+            mm[dr['identifier']] = Document.new(dr['fileref'])
           end
           m['manifest'] ? mem.merge(documents(m['manifest'], mm)) : mm
         end
@@ -99,22 +89,18 @@ module Metanorma
     # @param argname [String]
     # @param builder [Nokogiri::XML::Builder]
     def manifest_recursion(mnf, argname, builder)
-      if mnf[argname].is_a?(Hash)
-        send(argname + '_to_xml', mnf[argname], builder)
-      elsif mnf[argname].is_a?(Array)
-        mnf[argname].map { |m| send(argname + '_to_xml', m, builder) }
+      RelatonBib::HashConverter.array(mnf[argname]).each do |m|
+        send(argname + '_to_xml', m, builder)
       end
     end
 
     # @param drf [Hash] document reference
     # @param builder [Nokogiri::XML::Builder]
     def docref_to_xml(drf, builder)
-      # @docs << { identifier: drf['identifier'], fileref: drf['fileref'],
-      #            id: 'doc%<size>09d' % { size: @docs.size } }
       dr = builder.docref { |d| d.identifier drf['identifier'] }
       if @directives.include?('documents-inline')
-        id = @documents.find_index { |k, _| k == dr['identifier'] } # drf['id']
-        dr[:id] = 'doc%<index>09d' % { index: id }
+        id = @documents.find_index { |k, _| k == dr['identifier'] }
+        dr[:id] = formant('doc%<index>09d', index: id)
       else
         dr[:fileref] = drf['fileref']
       end
@@ -135,10 +121,15 @@ module Metanorma
       return unless (cnt = send(elm))
 
       require "metanorma-#{doctype}"
-      c = Asciidoctor.convert(dummy_header + cnt,
-                              backend: doctype.to_sym, header_footer: true)
-      out = Nokogiri::XML(c).at('//xmlns:sections').children.to_xml
+      out = sections(dummy_header + cnt)
       builder.send(elm + '-content') { |b| b << out }
+    end
+
+    # @param cnt [String] prefatory/final content
+    # @return [String] XML
+    def sections(cnt)
+      c = Asciidoctor.convert(cnt, backend: doctype.to_sym, header_footer: true)
+      Nokogiri::XML(c).at('//xmlns:sections').children.to_xml
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -146,7 +137,7 @@ module Metanorma
       return unless Array(@directives).include? 'documents-inline'
 
       @documents.each_with_index do |(_, d), i|
-        id = 'doc%<index>09d' % { index: i }
+        id = format('doc%<index>09d', index: i)
         builder.send('doc-container', id: id) { |b| d.to_xml b } # f, id: d[:id]
       end
     end
