@@ -33,5 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "byebug", "~> 10.0"
   spec.add_development_dependency "rspec-command", "~> 1.0"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
-  spec.add_development_dependency "metanorma-iso", "~> 1.4"
+  spec.add_development_dependency "metanorma-iso", "~> 1.5"
+  spec.add_development_dependency "isodoc", "~> 1.2.1"
 end
