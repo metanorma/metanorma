@@ -1,22 +1,38 @@
 # frozen_string_literal: true
 
 require 'relaton'
-require 'relaton-cli'
+require 'relaton/cli'
+require 'metanorma/collection_manifest'
 
 module Metanorma
+  # Metanorma collection of documents
   class Collection
-    # @param documents [Hash<String, Metanorma::Document>]
+    # @return [Array<String>] documents-inline to inject the XML into
+    #   the collection manifest; documents-external to keeps them outside
+    attr_reader :directives
+
+    # @return [Hash<String, Metanorma::Document>]
+    attr_reader :documents
+
+    # @param file [String] path to source file
     # @param directives [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
-    # @param bibdata [RelatonBib::BibliographicItem, nil]
-    # @param manifest [Hash]
+    # @param bibdata [RelatonBib::BibliographicItem]
+    # @param manifest [Metanorma::CollectionManifest]
+    # @param documents [Hash<String, Metanorma::Document>]
     # @param prefatory [String]
     # @param final [String]
-    def initialize(**args)
-      @documents = args[:documents] || {}
+    def initialize(**args) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      @file = args[:file]
       @directives = args[:directives] || []
       @bibdata = args[:bibdata]
-      @manifest = args[:manifest] || {}
+      @manifest = args[:manifest]
+      @manifest.collection = self
+      @documents = args[:documents] || {}
+      if @documents.any? && !@directives.include?('documents-inline')
+        @directives << 'documents-inline'
+      end
+      @documents.merge! @manifest.documents(File.dirname(@file))
       @prefatory = args[:prefatory]
       @final = args[:final]
     end
@@ -27,7 +43,7 @@ module Metanorma
         xml.send('metanorma-collection',
                  'xmlns' => 'http://metanorma.org') do |mc|
           @bibdata.to_xml mc, bibdata: true, date_format: :full
-          manifest_to_xml(@manifest, mc)
+          @manifest.to_xml mc
           content_to_xml 'prefatory', mc
           doccontainer mc
           content_to_xml 'final', mc
@@ -40,27 +56,64 @@ module Metanorma
       # @return [RelatonBib::BibliographicItem,
       #   RelatonIso::IsoBibliographicItem]
       def parse(file)
-        yaml = YAML.load_file file
-        if yaml['bibdata']
-          bd = Relaton::Cli::YAMLConvertor.convert_single_file yaml['bibdata']
+        case file
+        when /\.xml$/ then parse_xml(file)
+        when /.ya?ml$/ then parse_yaml(file)
         end
-        mnf = yaml['manifest'] || []
-        new(documents: documents(mnf), directives: yaml['directives'],
-            bibdata: bd, manifest: mnf, final: yaml['final-content'],
-            prefatory: yaml['prefatory-content'])
       end
 
       private
 
-      # @param mnf [Hash]
-      # @return [Hash<String, Metanorma::Document>]
-      def documents(mnf, mem = {})
-        RelatonBib::HashConverter.array(mnf).reduce(mem) do |mm, m|
-          RelatonBib::HashConverter.array(m['docref']).each do |dr|
-            mm[dr['identifier']] = Document.new(dr['fileref'])
-          end
-          m['manifest'] ? mem.merge(documents(m['manifest'], mm)) : mm
+      def parse_xml(file)
+        xml = Nokogiri::XML File.read(file, encoding: 'UTF-8')
+        if (b = xml.at('/xmlns:metanorma-collection/xmlns:bibdata'))
+          bd = Relaton::Cli.parse_xml b
         end
+        mnf_xml = xml.at('/xmlns:metanorma-collection/xmlns:manifest')
+        mnf = CollectionManifest.from_xml mnf_xml
+        pref = pref_final_content xml.at('//xmlns:prefatory-content')
+        fnl = pref_final_content xml.at('//xmlns:final-content')
+        new(file: file, bibdata: bd, manifest: mnf,
+            documents: docs_from_xml(xml, mnf), prefatory: pref, final: fnl)
+      end
+
+      def parse_yaml(file)
+        yaml = YAML.load_file file
+        if yaml['bibdata']
+          bd = Relaton::Cli::YAMLConvertor.convert_single_file yaml['bibdata']
+        end
+        mnf = CollectionManifest.from_yaml yaml['manifest']
+        dirs = yaml['directives']
+        pref = yaml['prefatory-content']
+        fnl = yaml['final-content']
+        new(file: file, directives: dirs, bibdata: bd, manifest: mnf,
+            prefatory: pref, final: fnl)
+      end
+
+      # @param xml [Nokogiri::XML::Document]
+      # @parma mnf [Metanorma::CollectionManifest]
+      # @return [Hash{String=>Metanorma::Document}]
+      def docs_from_xml(xml, mnf) # rubocop:disable Metrics/AbcSize
+        drfs = mnf.docrefs
+        xml.xpath('//xmlns:doc-container/*/xmlns:bibdata').reduce({}) do |m, b|
+          bd = Relaton::Cli.parse_xml b
+          did = drfs.detect { |k| k == bd.docidentifier.first.id }
+          did ||= drfs.detect { |k| %r{^#{k}} =~ bd.docidentifier.first.id }
+          m[did] = Document.new bd
+          m
+        end
+      end
+
+      # @param xml [Nokogiri::XML::Element, nil]
+      # @return [String, nil]
+      def pref_final_content(xml)
+        return unless xml
+
+        <<~CONT
+
+          == #{xml.at('title')&.text}
+          #{xml.at('p')&.text}
+        CONT
       end
     end
 
@@ -68,43 +121,6 @@ module Metanorma
 
     # @return [String, nil]
     attr_reader :prefatory, :final
-
-    # @param builder [Nokogiri::XML::Builder]
-    def collection_bibdata(builder)
-      @documents.each { |doc| doc.to_xml(builder) }
-    end
-
-    # @param mnf [Hash] manifest
-    # @param builder [Nokogiri::XML::Builder]
-    def manifest_to_xml(mnf, builder)
-      builder.manifest do |m|
-        m.level mnf['level'] if mnf['level']
-        m.title mnf['title'] if mnf['title']
-        manifest_recursion mnf, 'docref', m
-        manifest_recursion mnf, 'manifest', m
-      end
-    end
-
-    # @param mnf [Hash, Array] manifest
-    # @param argname [String]
-    # @param builder [Nokogiri::XML::Builder]
-    def manifest_recursion(mnf, argname, builder)
-      RelatonBib::HashConverter.array(mnf[argname]).each do |m|
-        send(argname + '_to_xml', m, builder)
-      end
-    end
-
-    # @param drf [Hash] document reference
-    # @param builder [Nokogiri::XML::Builder]
-    def docref_to_xml(drf, builder)
-      dr = builder.docref { |d| d.identifier drf['identifier'] }
-      if @directives.include?('documents-inline')
-        id = @documents.find_index { |k, _| k == dr['identifier'] }
-        dr[:id] = formant('doc%<index>09d', index: id)
-      else
-        dr[:fileref] = drf['fileref']
-      end
-    end
 
     # @return [String]
     def dummy_header
@@ -136,7 +152,7 @@ module Metanorma
     def doccontainer(builder)
       return unless Array(@directives).include? 'documents-inline'
 
-      @documents.each_with_index do |(_, d), i|
+      documents.each_with_index do |(_, d), i|
         id = format('doc%<index>09d', index: i)
         builder.send('doc-container', id: id) { |b| d.to_xml b } # f, id: d[:id]
       end
