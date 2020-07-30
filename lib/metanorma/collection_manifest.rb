@@ -21,19 +21,19 @@ module Metanorma
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
       def from_yaml(mnf)
-        manifest = RelatonBib::HashConverter.array(mnf['manifest']).map do |m|
+        manifest = RelatonBib::HashConverter.array(mnf["manifest"]).map do |m|
           from_yaml m
         end
-        docref = RelatonBib::HashConverter.array mnf['docref']
-        new(mnf['level'], mnf['title'], docref, manifest)
+        docref = RelatonBib::HashConverter.array mnf["docref"]
+        new(mnf["level"], mnf["title"], docref, manifest)
       end
 
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
       def from_xml(mnf)
-        level = mnf.at('level').text
-        title = mnf.at('title')&.text
-        manifest = mnf.xpath('xmlns:manifest').map { |m| from_xml(m) }
+        level = mnf.at("level").text
+        title = mnf.at("title")&.text
+        manifest = mnf.xpath("xmlns:manifest").map { |m| from_xml(m) }
         new(level, title, parse_docref(mnf), manifest)
       end
 
@@ -42,9 +42,9 @@ module Metanorma
       # @param mnf [Nokogiri::XML::Element]
       # @return [Hash{String=>String}]
       def parse_docref(mnf)
-        mnf.xpath('xmlns:docref').map do |dr|
-          h = { 'identifier' => dr.at('identifier').text }
-          h['fileref'] = dr[:fileref] if dr[:fileref]
+        mnf.xpath("xmlns:docref").map do |dr|
+          h = { "identifier" => dr.at("identifier").text }
+          h["fileref"] = dr[:fileref] if dr[:fileref]
           h
         end
       end
@@ -58,11 +58,11 @@ module Metanorma
 
     # @param dir [String] path to coolection
     # @return [Hash<String, Metanorma::Document>]
-    def documents(dir = '')
+    def documents(dir = "")
       docs = @docref.each_with_object({}) do |dr, m|
-        next m unless dr['fileref']
+        next m unless dr["fileref"]
 
-        m[dr['identifier']] = Document.parse_file File.join(dir, dr['fileref'])
+        m[dr["identifier"]] = Document.parse_file File.join(dir, dr["fileref"])
         m
       end
       @manifest.reduce(docs) do |mem, mnf|
@@ -82,7 +82,7 @@ module Metanorma
 
     # @return [Array<Hash{String=>String}>]
     def docrefs
-      drfs = @docref.map { |dr| dr['identifier'] }
+      drfs = @docref.map { |dr| dr["identifier"] }
       @manifest.reduce(drfs) { |mem, mnf| mem + mnf.docrefs }
     end
 
@@ -91,12 +91,12 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def docref_to_xml(builder)
       @docref.each do |dr|
-        drf = builder.docref { |b| b.identifier dr['identifier'] }
-        if collection.directives.include?('documents-inline')
-          id = collection.documents.find_index { |k, _| k == dr['identifier'] }
-          drf[:id] = format('doc%<index>09d', index: id)
+        drf = builder.docref { |b| b.identifier dr["identifier"] }
+        if collection.directives.include?("documents-inline")
+          id = collection.documents.find_index { |k, _| k == dr["identifier"] }
+          drf[:id] = format("doc%<index>09d", index: id)
         else
-          drf[:fileref] = dr['fileref']
+          drf[:fileref] = dr["fileref"]
         end
       end
     end

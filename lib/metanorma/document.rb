@@ -23,7 +23,7 @@ module Metanorma
       # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
       # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
       def from_xml(xml)
-        Relaton::Cli.parse_xml xml.at('//xmlns:bibitem|//xmlns:bibdata')
+        Relaton::Cli.parse_xml xml.at("//xmlns:bibitem|//xmlns:bibdata")
       end
 
       # @param file [String]
@@ -41,9 +41,9 @@ module Metanorma
       def bibitem(file)
         case format(file)
         when :xml
-          from_xml Nokogiri::XML(File.read(file, encoding: 'UTF-8'))
+          from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8"))
         when :yaml
-          yaml = File.read(file, ecoding: 'UTF-8')
+          yaml = File.read(file, ecoding: "UTF-8")
           Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
         end
       end
@@ -51,7 +51,7 @@ module Metanorma
 
     # @param builder [Nokogiri::XML::Builder]
     def to_xml(builder)
-      builder.send(type + '-standard') { |b| @bibitem.to_xml b, bibdata: true }
+      builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true }
     end
 
     private
