@@ -6,7 +6,7 @@ require "metanorma/collection_manifest"
 
 module Metanorma
   # Metanorma collection of documents
-  class Collection # rubocop:disable Metrics/ClassLength
+  class Collection
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
     attr_reader :directives
