@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Metanorma::Collection do
+RSpec.describe Metanorma::Collection do # rubocop:disable Metrics/BlockLength
   it 'parse YAML collection' do
     xml_file = 'spec/fixtures/collection/collection1.xml'
     mc = Metanorma::Collection.parse 'spec/fixtures/collection/collection1.yml'

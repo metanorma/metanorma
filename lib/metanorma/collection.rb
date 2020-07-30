@@ -6,7 +6,7 @@ require 'metanorma/collection_manifest'
 
 module Metanorma
   # Metanorma collection of documents
-  class Collection
+  class Collection # rubocop:disable Metrics/ClassLength
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
     attr_reader :directives
@@ -22,7 +22,8 @@ module Metanorma
     # @param documents [Hash<String, Metanorma::Document>]
     # @param prefatory [String]
     # @param final [String]
-    def initialize(**args) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    def initialize(**args)
       @file = args[:file]
       @directives = args[:directives] || []
       @bibdata = args[:bibdata]
@@ -36,6 +37,7 @@ module Metanorma
       @prefatory = args[:prefatory]
       @final = args[:final]
     end
+    # rubocop:enable Metrics/AbcSize,Metrics/MethodLength
 
     # @return [String] XML
     def to_xml
@@ -95,10 +97,11 @@ module Metanorma
       # @return [Hash{String=>Metanorma::Document}]
       def docs_from_xml(xml, mnf) # rubocop:disable Metrics/AbcSize
         drfs = mnf.docrefs
-        xml.xpath('//xmlns:doc-container/*/xmlns:bibdata').reduce({}) do |m, b|
+        xml.xpath('//xmlns:doc-container/*/xmlns:bibdata')
+          .each_with_object({}) do |b, m|
           bd = Relaton::Cli.parse_xml b
           did = drfs.detect { |k| k == bd.docidentifier.first.id }
-          did ||= drfs.detect { |k| %r{^#{k}} =~ bd.docidentifier.first.id }
+          did ||= drfs.detect { |k| /^#{k}/ =~ bd.docidentifier.first.id }
           m[did] = Document.new bd
           m
         end
@@ -154,7 +157,7 @@ module Metanorma
 
       documents.each_with_index do |(_, d), i|
         id = format('doc%<index>09d', index: i)
-        builder.send('doc-container', id: id) { |b| d.to_xml b } # f, id: d[:id]
+        builder.send('doc-container', id: id) { |b| d.to_xml b }
       end
     end
 

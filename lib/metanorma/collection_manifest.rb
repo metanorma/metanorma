@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module Metanorma
+  # Metanorma collection's manifest
   class CollectionManifest
     # @return [Metanorma::Collection]
     attr_reader :collection
@@ -56,7 +59,7 @@ module Metanorma
     # @param dir [String] path to coolection
     # @return [Hash<String, Metanorma::Document>]
     def documents(dir = '')
-      docs = @docref.reduce({}) do |m, dr|
+      docs = @docref.each_with_object({}) do |dr, m|
         next m unless dr['fileref']
 
         m[dr['identifier']] = Document.parse_file File.join(dir, dr['fileref'])
