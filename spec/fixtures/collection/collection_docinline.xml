@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <metanorma-collection xmlns="http://metanorma.org">
   <bibdata type="collection">
-    <fetched>2020-07-28</fetched>
+    <fetched>2020-07-31</fetched>
     <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
     <docidentifier type="iso">ISO 12345</docidentifier>
     <date type="created">
@@ -27,20 +27,20 @@
     <manifest>
       <level>subcollection</level>
       <title>Standards</title>
-      <docref id="doc000000000">
+      <docref fileref="rice-en.final.xml" id="doc000000000">
         <identifier>ISO 17301-1:2016</identifier>
       </docref>
-      <docref id="doc000000001">
+      <docref fileref="dummy.xml" id="doc000000001">
         <identifier>ISO 17302</identifier>
       </docref>
-      <docref id="doc000000002">
+      <docref fileref="rice1-en.final.xml" id="doc000000002">
         <identifier>ISO 1701:1974</identifier>
       </docref>
     </manifest>
     <manifest>
       <level>subcollection</level>
       <title>Amendments</title>
-      <docref id="doc000000003">
+      <docref fileref="rice-amd.final.xml" id="doc000000003">
         <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
       </docref>
     </manifest>
@@ -48,7 +48,7 @@
   <prefatory-content>
 <clause id="_clause" inline-header="false" obligation="normative">
 <title>Clause</title>
-<p id="_3d74c951-bcff-4e2a-be2e-a2f09a5d274d">Welcome to our collection</p>
+<p id="_032cdfeb-60bd-4787-a882-31269033ca0c">Welcome to our collection</p>
 </clause>
 </prefatory-content>
   <doc-container id="doc000000000">
@@ -318,7 +318,7 @@
   <final-content>
 <clause id="_exordium" inline-header="false" obligation="normative">
 <title>Exordium</title>
-<p id="_ca5b8546-aa23-4c37-966a-b021ba05e258">Hic explicit</p>
+<p id="_e8d1f7b7-7ded-4d2b-a7cf-22d81058522b">Hic explicit</p>
 </clause>
 </final-content>
 </metanorma-collection>

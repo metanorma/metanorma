@@ -11,6 +11,7 @@ require "metanorma/processor"
 require "metanorma/asciidoctor_extensions"
 require "metanorma/compile"
 require "metanorma/collection"
+require "metanorma/collection_renderer"
 require "metanorma/document"
 
 # Metanorma module

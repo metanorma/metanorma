@@ -1,15 +1,19 @@
 module Metanorma
   class Document
+    # @return [Strin]
+    attr_reader :file
+
     # @param bibitem [RelatonBib::BibliographicItem]
-    def initialize(bibitem)
+    def initialize(bibitem, file)
       @bibitem = bibitem
+      @file = file
     end
 
     class << self
       # @param file [String] file path
       # @return [Metanorma::Document]
       def parse_file(file)
-        new bibitem(file)
+        new bibitem(file), file
       end
 
       # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
@@ -49,16 +53,30 @@ module Metanorma
       end
     end
 
-    # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
-      builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true }
+    # @param builder [Nokogiri::XML::Builder, nil]
+    # @return [Nokogiri::XML::Builder, String]
+    def to_xml(builder = nil)
+      if builder
+        render_xml builder
+      else
+        Nokogiri::XML::Builder.new do |b|
+          root = render_xml b
+          root["xmlns"] = "http://metanorma.org"
+        end.to_xml
+      end
+    end
+
+    # @return [String]
+    def type
+      @type ||= (@bibitem.docidentifier.first&.type ||
+        @bibitem.docidentifier.first&.id&.match(/^[^\s]+/)&.to_s)&.downcase ||
+        "standoc"
     end
 
     private
 
-    # @return [String]
-    def type
-      @type ||= @bibitem.docidentifier.first.type.downcase
+    def render_xml(builder)
+      builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true }
     end
   end
 end

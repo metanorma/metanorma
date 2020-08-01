@@ -7,6 +7,9 @@ require "metanorma/collection_manifest"
 module Metanorma
   # Metanorma collection of documents
   class Collection
+    # @return [String]
+    attr_reader :file
+
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
     attr_reader :directives
@@ -53,6 +56,10 @@ module Metanorma
       end.to_xml
     end
 
+    def render(opts)
+      CollectionRenderer.render self, opts
+    end
+
     class << self
       # @param file [String]
       # @return [RelatonBib::BibliographicItem,
@@ -96,13 +103,11 @@ module Metanorma
       # @parma mnf [Metanorma::CollectionManifest]
       # @return [Hash{String=>Metanorma::Document}]
       def docs_from_xml(xml, mnf) # rubocop:disable Metrics/AbcSize
-        drfs = mnf.docrefs
         xml.xpath("//xmlns:doc-container/*/xmlns:bibdata")
           .each_with_object({}) do |b, m|
           bd = Relaton::Cli.parse_xml b
-          did = drfs.detect { |k| k == bd.docidentifier.first.id }
-          did ||= drfs.detect { |k| /^#{k}/ =~ bd.docidentifier.first.id }
-          m[did] = Document.new bd
+          docref = mnf.docref_by_id bd.docidentifier.first.id
+          m[docref["identifier"]] = Document.new bd, docref["fileref"]
           m
         end
       end

@@ -82,8 +82,16 @@ module Metanorma
 
     # @return [Array<Hash{String=>String}>]
     def docrefs
-      drfs = @docref.map { |dr| dr["identifier"] }
+      return @docrefs if @docrefs
+
+      drfs = @docref.map { |dr| dr }
       @manifest.reduce(drfs) { |mem, mnf| mem + mnf.docrefs }
+    end
+
+    def docref_by_id(docid)
+      refs = docrefs
+      dref = refs.detect { |k| k["identifier"] == docid }
+      dref || docrefs.detect { |k| /^#{k["identifier"]}/ =~ docid }
     end
 
     private
@@ -92,11 +100,10 @@ module Metanorma
     def docref_to_xml(builder)
       @docref.each do |dr|
         drf = builder.docref { |b| b.identifier dr["identifier"] }
+        drf[:fileref] = dr["fileref"]
         if collection.directives.include?("documents-inline")
           id = collection.documents.find_index { |k, _| k == dr["identifier"] }
           drf[:id] = format("doc%<index>09d", index: id)
-        else
-          drf[:fileref] = dr["fileref"]
         end
       end
     end
