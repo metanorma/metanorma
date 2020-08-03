@@ -102,7 +102,7 @@ module Metanorma
       # @param xml [Nokogiri::XML::Document]
       # @parma mnf [Metanorma::CollectionManifest]
       # @return [Hash{String=>Metanorma::Document}]
-      def docs_from_xml(xml, mnf) # rubocop:disable Metrics/AbcSize
+      def docs_from_xml(xml, mnf)
         xml.xpath("//xmlns:doc-container/*/xmlns:bibdata")
           .each_with_object({}) do |b, m|
           bd = Relaton::Cli.parse_xml b

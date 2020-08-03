@@ -4,7 +4,7 @@ require "isodoc"
 
 module Metanorma
   # XML collection renderer
-  class CollectionRenderer # rubocop:disable Metrics/ClassLength
+  class CollectionRenderer
     FORMATS = %i[html xml doc pdf].freeze
 
     # This is only going to render the HTML collection
@@ -19,7 +19,7 @@ module Metanorma
     # the collection, and that the flavour gem can sensibly process it. We may
     # need to enhance metadata in the flavour gems isodoc/metadata.rb with
     # collection metadata
-    def initialize(xml, folder, options = {}) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+    def initialize(xml, folder, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       check_options options
       @xml = Nokogiri::XML xml # @xml is the collection manifest
       @lang = @xml&.at(ns("//bibdata/language"))&.text || "en"
@@ -75,7 +75,7 @@ module Metanorma
     end
 
     # infer the flavour from the first document identifier; relaton does that
-    def doctype # rubocop:disable Metrics/CyclomaticComplexity
+    def doctype
       if (docid = @xml&.at(ns("//bibdata/docidentifier/@type"))&.text)
         dt = docid.downcase
       elsif (docid = @xml&.at(ns("//bibdata/docidentifier"))&.text)
@@ -136,7 +136,7 @@ module Metanorma
 
     # @param elm [Nokogiri::XML::Element]
     # @return [String]
-    def indexfile_title(elm) # rubocop:disable Metrics/CyclomaticComplexity
+    def indexfile_title(elm)
       lvl = elm&.at(ns("./level"))&.text&.capitalize
       lbl = elm&.at(ns("./title"))&.text
       "#{lvl}#{lvl && lbl ? ': ' : ''}#{lbl}"
@@ -259,7 +259,7 @@ module Metanorma
 
     # if there is a crossref to another document, with no anchor, retrieve the
     # anchor given the locality, and insert it into the crossref
-    def update_anchors(bib, docxml, _id) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
+    def update_anchors(bib, docxml, _id) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       docid = bib&.at(ns("./docidentifier"))&.text
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
         e.at(ns(".//locality[@type = 'anchor']")).nil? || next
