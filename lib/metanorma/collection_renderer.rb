@@ -65,7 +65,9 @@ module Metanorma
       # create the @meta class of isodoc, with "navigation" set to the index bar
       # extracted from the manifest
       nav = indexfile(@xml.at(ns("//manifest")))
-      isodoc.metadata_init(@lang, @script, isodoc.labels.merge(navigation: nav))
+      i18n = isodoc.i18n
+      i18n.set(:navigation, nav)
+      isodoc.metadata_init(@lang, @script, i18n)
       # populate the @meta class of isodoc with the various metadata fields
       # native to the flavour; used to populate Liquid
       isodoc.info(@xml, nil)
@@ -114,7 +116,7 @@ module Metanorma
     # a document
     def read_anchors(xml)
       ret = {}
-      xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.labels, {})
+      xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n, {})
       xrefs.parse xml
       xrefs.get.each do |k, v|
         v[:label] && v[:type] || next
