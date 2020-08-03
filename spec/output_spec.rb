@@ -45,7 +45,6 @@ RSpec.describe Metanorma::Output::XslfoPdf do
     expect { generator.convert("random.html", "random.pdf", XSL) }.to raise_error
   end
 
-=begin
   it "Path with spaces" do
     dir = File.join(ASSETS_DIR, "dir with path")
     input = File.join(dir, "a.xml")
@@ -58,6 +57,5 @@ RSpec.describe Metanorma::Output::XslfoPdf do
 
     expect(File.exist?(output)).to be true
   end
-=end
 end
 
