@@ -1,7 +1,7 @@
 # directives are YAML-specific instructions
 directives:
   # - documents-inline
-  # to inject the XML into the collection manifest;
+  # to inject the XML into the collection manifest; 
   - documents-external 
   # keeps them outside
 bibdata:

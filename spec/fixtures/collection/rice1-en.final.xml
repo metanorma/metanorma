@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iso-standard xmlns="https://www.metanorma.org/ns/iso">
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
+<title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
+<title language="fr" format="text/plain" type="main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
+<title language="fr" format="text/plain" type="title-main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
+<docidentifier type="ISO">ISO 1701:1974</docidentifier>
+<docidentifier type="iso-with-lang">ISO 1701:1974(E)</docidentifier>
+<docidentifier type="iso-reference">ISO 1701:1974(E)</docidentifier>
+<docnumber>1701</docnumber>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</contributor>
+<edition>1</edition>
+<version>
+<revision-date>2016-05-01</revision-date>
+</version>
+<language>en</language>
+<script>Latn</script>
+<status>
+<stage abbreviation="IS">60</stage>
+<substage>60</substage>
+</status>
+<copyright>
+<from>1974</from>
+<owner>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>international-standard</doctype>
+<editorialgroup>
+<technical-committee number="34">Food products</technical-committee>
+<subcommittee number="4">Cereals and pulses</subcommittee>
+<workgroup number="4" type="WG">Amylose in rice</workgroup>
+<secretariat>SAC</secretariat>
+</editorialgroup>
+<ics>
+<code>67.060</code>
+</ics>
+<structuredidentifier>
+<project-number>ISO 1701</project-number>
+</structuredidentifier>
+<stagename>International standard</stagename>
+</ext>
+</bibdata>
+<boilerplate>
+  <copyright-statement>
+    <clause>
+    <p id="boilerplate-year">
+    © ISO 1974
+  </p>
+
+  <p id="boilerplate-message">
+    All rights
+reserved. Unless otherwise specified, no part of this publication may be
+reproduced or utilized otherwise in any form or by any means, electronic or
+mechanical, including photocopying, or posting on the internet or an intranet,
+without prior written permission. Permission can be requested from either ISO
+at the address below or ISO’s member body in the country of the requester.
+  </p>
+
+  <p id="boilerplate-address" align="left">
+    ISO copyright office<br/>
+    Ch. de Blandonnet 8 • CP 401<br/>
+    CH-1214 Vernier, Geneva, Switzerland<br/>
+    Tel.  + 41 22 749 01 11<br/>
+    Fax  + 41 22 749 09 47<br/>
+    Email: copyright@iso.org<br/>
+    Website: www.iso.org
+  </p>
+    <p id="boilerplate-place">
+    Published in Switzerland
+  </p>
+</clause>
+  </copyright-statement>
+
+  
+</boilerplate>
+<sections>
+<clause id="_scope" obligation="normative"><title>Scope</title><p id="_e2a87a71-32b0-4c28-90bb-a0c647bae842">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
+<p id="_d578e7c5-44b6-47b7-8601-ce1389902972">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
+<p id="_bbd035f6-f38c-47cf-ab38-9438f86c7103">It is not applicable to cooked rice products.</p>
+<p id="_369acd8f-7b63-4265-a8b5-97188dd01822">This document is updated in <xref target="RiceAmd"/>. See e.g. <xref target="RiceAmd">clause=2</xref>.</p>
+<p id="_20771d77-5ecf-4e64-aeb6-1cb87e080301">This document is unrelated to <xref target="Dummy">anchor=”what”</xref>.</p></clause>
+</sections>
+</iso-standard>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iso-standard xmlns="https://www.metanorma.org/ns/iso">
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Dummy document</title>
+<title language="en" format="text/plain" type="title-main">Dummy document</title>
+<title language="fr" format="text/plain" type="main">Dummy document</title>
+<title language="fr" format="text/plain" type="title-main">Dummy document</title>
+<docidentifier type="ISO">ISO 17302:2016</docidentifier>
+<docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
+<docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
+<docnumber>17302</docnumber>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script>
+<status>
+<stage abbreviation="IS">60</stage>
+<substage>60</substage>
+</status>
+<copyright>
+<from>2016</from>
+<owner>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>international-standard</doctype>
+<editorialgroup>
+<technical-committee number="34">Food products</technical-committee>
+<subcommittee number="4">Cereals and pulses</subcommittee>
+<workgroup number="4" type="WG">Amylose in rice</workgroup>
+<secretariat>SAC</secretariat>
+</editorialgroup>
+<ics>
+<code>67.060</code>
+</ics>
+<structuredidentifier>
+<project-number>ISO 17302</project-number>
+</structuredidentifier>
+<stagename>International standard</stagename>
+</ext>
+</bibdata>
+<boilerplate>
+  <copyright-statement>
+    <clause>
+    <p id="boilerplate-year">
+    © ISO 2016
+  </p>
+
+  <p id="boilerplate-message">
+    All rights
+reserved. Unless otherwise specified, no part of this publication may be
+reproduced or utilized otherwise in any form or by any means, electronic or
+mechanical, including photocopying, or posting on the internet or an intranet,
+without prior written permission. Permission can be requested from either ISO
+at the address below or ISO’s member body in the country of the requester.
+  </p>
+
+  <p id="boilerplate-address" align="left">
+    ISO copyright office<br/>
+    Ch. de Blandonnet 8 • CP 401<br/>
+    CH-1214 Vernier, Geneva, Switzerland<br/>
+    Tel.  + 41 22 749 01 11<br/>
+    Fax  + 41 22 749 09 47<br/>
+    Email: copyright@iso.org<br/>
+    Website: www.iso.org
+  </p>
+    <p id="boilerplate-place">
+    Published in Switzerland
+  </p>
+</clause>
+  </copyright-statement>
+
+  
+</boilerplate>
+<sections><clause id="_scope" obligation="normative"><title>Scope</title><p id="_9f7c3e34-6854-4fa6-bb3b-e967ff9f5bf2">This is a dummy document.</p>
+<figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1">
+<pre id="_0855e974-d21b-48ad-8627-0c53719b8dcf">
+module Metanorma
+  class Document
+    # @return [Strin]
+    attr_reader :file
+
+    # @param bibitem [RelatonBib::BibliographicItem]
+    def initialize(bibitem, file)
+      @bibitem = bibitem
+      @file = file
+    end
+
+    class &lt;&lt; self
+      # @param file [String] file path
+      # @return [Metanorma::Document]
+      def parse_file(file)
+        new bibitem(file), file
+      end
+
+      # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
+      # @return [Metanorma::Document]
+      def parse_xml(xml)
+        new from_xml(xml)
+      end
+
+      private
+
+      # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
+      # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
+      def from_xml(xml)
+        Relaton::Cli.parse_xml xml.at("//xmlns:bibitem|//xmlns:bibdata")
+      end
+
+      # @param file [String]
+      # @return [Symbol] file type
+      def format(file)
+        case file
+        when /\.xml$/ then :xml
+        when /.ya?ml$/ then :yaml
+        end
+      end
+
+      # @param file [String]
+      # @return [RelatonBib::BibliographicItem,
+      #   RelatonIso::IsoBibliographicItem]
+      def bibitem(file)
+        case format(file)
+        when :xml
+          from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8"))
+        when :yaml
+          yaml = File.read(file, ecoding: "UTF-8")
+          Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
+        end
+      end
+    end
+
+    # @param builder [Nokogiri::XML::Builder, nil]
+    # @return [Nokogiri::XML::Builder, String]
+    def to_xml(builder = nil)
+      if builder
+        render_xml builder
+      else
+        Nokogiri::XML::Builder.new do |b|
+          root = render_xml b
+          root["xmlns"] = "http://metanorma.org"
+        end.to_xml
+      end
+    end
+
+    # @return [String]
+    def type
+      @type ||= (@bibitem.docidentifier.first&amp;.type ||
+        @bibitem.docidentifier.first&amp;.id&amp;.match(/^[^\s]+/)&amp;.to_s)&amp;.downcase ||
+        "standoc"
+    end
+
+    private
+
+    def render_xml(builder)
+      builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true }
+    end
+  end
+end
+</pre>
+</figure></clause>
+<clause id="what" inline-header="false" obligation="normative"><title>What?</title><ol id="_2a3efdd5-8e78-47d9-9721-38699221dd31" type="roman">
+<li>
+<p id="_5bbe5050-8dc1-4b7b-936c-d63ca93fa72a">What?</p>
+</li>
+</ol>
+<figure id="_c70d742f-3b61-4aaa-8343-981678eeb1f4">
+<pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438">
+module Metanorma
+  # Metanorma collection's manifest
+  class CollectionManifest
+    # @return [Metanorma::Collection]
+    attr_reader :collection
+
+    # @param level [String]
+    # @param title [String, nil]
+    # @param docref [Array&lt;Hash{String=&gt;String}&gt;]
+    # @param manifest [Array&lt;Metanorma::CollectionManifest&gt;]
+    def initialize(level, title = nil, docref = [], manifest = [])
+      @level = level
+      @title = title
+      @docref = docref
+      @manifest = manifest
+    end
+
+    class &lt;&lt; self
+      # @param mnf [Nokogiri::XML::Element]
+      # @return [Metanorma::CollectionManifest]
+      def from_yaml(mnf)
+        manifest = RelatonBib::HashConverter.array(mnf["manifest"]).map do |m|
+          from_yaml m
+        end
+        docref = RelatonBib::HashConverter.array mnf["docref"]
+        new(mnf["level"], mnf["title"], docref, manifest)
+      end
+
+      # @param mnf [Nokogiri::XML::Element]
+      # @return [Metanorma::CollectionManifest]
+      def from_xml(mnf)
+        level = mnf.at("level").text
+        title = mnf.at("title")&amp;.text
+        manifest = mnf.xpath("xmlns:manifest").map { |m| from_xml(m) }
+        new(level, title, parse_docref(mnf), manifest)
+      end
+
+      private
+
+      # @param mnf [Nokogiri::XML::Element]
+      # @return [Hash{String=&gt;String}]
+      def parse_docref(mnf)
+        mnf.xpath("xmlns:docref").map do |dr|
+          h = { "identifier" =&gt; dr.at("identifier").text }
+          h["fileref"] = dr[:fileref] if dr[:fileref]
+          h
+        end
+      end
+    end
+
+    # @param col [Metanorma::Collection]
+    def collection=(col)
+      @collection = col
+      @manifest.each { |mnf| mnf.collection = col }
+    end
+
+    # @param dir [String] path to coolection
+    # @return [Hash&lt;String, Metanorma::Document&gt;]
+    def documents(dir = "")
+      docs = @docref.each_with_object({}) do |dr, m|
+        next m unless dr["fileref"]
+
+        m[dr["identifier"]] = Document.parse_file File.join(dir, dr["fileref"])
+        m
+      end
+      @manifest.reduce(docs) do |mem, mnf|
+        mem.merge mnf.documents(dir)
+      end
+    end
+
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder)
+      builder.manifest do |b|
+        b.level @level
+        b.title @title if @title
+        docref_to_xml b
+        @manifest.each { |m| m.to_xml b }
+      end
+    end
+
+    # @return [Array&lt;Hash{String=&gt;String}&gt;]
+    def docrefs
+      return @docrefs if @docrefs
+
+      drfs = @docref.map { |dr| dr }
+      @manifest.reduce(drfs) { |mem, mnf| mem + mnf.docrefs }
+    end
+
+    def docref_by_id(docid)
+      refs = docrefs
+      dref = refs.detect { |k| k["identifier"] == docid }
+      dref || docrefs.detect { |k| /^#{k["identifier"]}/ =~ docid }
+    end
+
+    private
+
+    # @param builder [Nokogiri::XML::Builder]
+    def docref_to_xml(builder)
+      @docref.each do |dr|
+        drf = builder.docref { |b| b.identifier dr["identifier"] }
+        drf[:fileref] = dr["fileref"]
+        if collection.directives.include?("documents-inline")
+          id = collection.documents.find_index { |k, _| k == dr["identifier"] }
+          drf[:id] = format("doc%&lt;index&gt;09d", index: id)
+        end
+      end
+    end
+  end
+end
+</pre>
+</figure></clause></sections>
+</iso-standard>
