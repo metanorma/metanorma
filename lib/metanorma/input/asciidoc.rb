@@ -7,8 +7,7 @@ module Metanorma
 
       def process(file, filename, type, options = {})
         require "asciidoctor"
-        ::Asciidoctor.convert(
-          file,
+        out_opts = {
           to_file: false,
           safe: :safe,
           backend: type,
@@ -16,8 +15,27 @@ module Metanorma
           attributes: [
             "nodoc", "stem", "xrefstyle=short", "docfile=#{filename}",
             "output_dir=#{options[:"output-dir"]}"
-          ],
-        )
+          ]
+        }
+        unless asciidoctor_validate(file, filename, out_opts)
+          warn "Cannot continue compiling Asciidoctor document"
+          abort
+        end
+        ::Asciidoctor.convert(file, out_opts)
+      end
+
+      def asciidoctor_validate(file, filename, options)
+        err = nil
+        begin
+          previous_stderr, $stderr = $stderr, StringIO.new
+          ::Asciidoctor.load(file, options)
+          %r{(\n|^)asciidoctor: ERROR: ['"]?#{Regexp.escape(filename)}['"]?: line \d+: include file not found: }.match($stderr.string) and
+              err = $stderr.string
+        ensure
+          $stderr = previous_stderr
+        end
+        warn err unless err.nil?
+        err.nil?
       end
 
       def extract_metanorma_options(file)
