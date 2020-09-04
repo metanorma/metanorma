@@ -29,7 +29,8 @@ module Metanorma
         begin
           previous_stderr, $stderr = $stderr, StringIO.new
           ::Asciidoctor.load(file, options)
-          %r{(\n|^)asciidoctor: ERROR: ['"]?#{Regexp.escape(filename)}['"]?: line \d+: include file not found: }.match($stderr.string) and
+          %r{(\n|^)asciidoctor: ERROR: ['"]?#{Regexp.escape(filename || 
+            "<empty>")}['"]?: line \d+: include file not found: }.match($stderr.string) and
               err = $stderr.string
         ensure
           $stderr = previous_stderr
