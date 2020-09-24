@@ -49,7 +49,22 @@ module Metanorma
       folder = File.dirname col.file
       cr = new(col.to_xml, folder, options)
       cr.files
+      cr.concatenate(col, options)
       cr.coverpage if options[:format]&.include?(:html)
+    end
+
+    def concatenate(col, options)
+      options[:format].each do |e|
+        next unless %i(presentation xml).include?(e)
+        ext = e == :presentation ? "presentation.xml" : e.to_s
+        out = col.clone
+        out.directives << "documents-inline"
+        out.documents.keys.each do |id|
+          filename = @files[id][:outputs][e]
+          out.documents[id] = Metanorma::Document.raw_file(filename)
+        end
+        File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") { |f| f.write(out.to_xml) }
+      end
     end
 
     # Dummy class
@@ -220,7 +235,7 @@ module Metanorma
       docid = bib&.at(ns("./docidentifier"))&.text
       unless @files[docid]
         warn "Cannot find crossreference to document #{docid} in document "\
-        "#{identifier}!"
+          "#{identifier}!"
         abort
       end
       id = bib["id"]
@@ -288,10 +303,12 @@ module Metanorma
           # warn "metanorma compile -x html #{f.path}"
           c = Compile.new
           c.compile f.path, format: :asciidoc, extension_keys: @format
+          @files[identifier][:outputs] = {}
           @format.each do |e|
             ext = c.processor.output_formats[e]
             fn = File.basename(filename).sub(/(?<=\.)[^\.]+$/, ext.to_s)
             FileUtils.mv f.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
+            @files[identifier][:outputs][e] = File.join(@outdir, fn)
           end
         end
       end

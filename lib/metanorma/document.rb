@@ -4,9 +4,10 @@ module Metanorma
     attr_reader :file
 
     # @param bibitem [RelatonBib::BibliographicItem]
-    def initialize(bibitem, file)
+    def initialize(bibitem, file, options = {})
       @bibitem = bibitem
       @file = file
+      @raw = options[:raw]
     end
 
     class << self
@@ -20,6 +21,12 @@ module Metanorma
       # @return [Metanorma::Document]
       def parse_xml(xml)
         new from_xml(xml)
+      end
+
+      # raw XML file, can be used to put in entire file instead of just bibitem
+      def raw_file(filename)
+        doc = Nokogiri::XML(File.read(filename, encoding: "UTF-8"))
+        new(doc, filename, raw: true)
       end
 
       private
@@ -47,7 +54,7 @@ module Metanorma
         when :xml
           from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8"))
         when :yaml
-          yaml = File.read(file, ecoding: "UTF-8")
+          yaml = File.read(file, encoding: "UTF-8")
           Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
         end
       end
@@ -68,15 +75,19 @@ module Metanorma
 
     # @return [String]
     def type
-      @type ||= (@bibitem.docidentifier.first&.type ||
-        @bibitem.docidentifier.first&.id&.match(/^[^\s]+/)&.to_s)&.downcase ||
-        "standoc"
+      @type ||= (@bibitem.docidentifier.first&.type&.downcase ||
+                 @bibitem.docidentifier.first&.id&.match(/^[^\s]+/)&.to_s)&.downcase ||
+      "standoc"
     end
 
     private
 
     def render_xml(builder)
-      builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true }
+      if @raw
+        builder << @bibitem.root.to_xml
+      else
+        builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true }
+      end
     end
   end
 end
