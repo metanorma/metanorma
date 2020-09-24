@@ -288,7 +288,8 @@ module Metanorma
           # warn "metanorma compile -x html #{f.path}"
           c = Compile.new
           c.compile f.path, format: :asciidoc, extension_keys: @format
-          @format.each do |ext|
+          @format.each do |e|
+            ext = c.processor.output_formats[e]
             fn = File.basename(filename).sub(/(?<=\.)[^\.]+$/, ext.to_s)
             FileUtils.mv f.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
           end

@@ -46,7 +46,7 @@ RSpec.describe Metanorma::Collection do
       of = "spec/fixtures/ouput"
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[html pdf xml doc],
+        format: %i[presentation html pdf xml doc],
         output_folder: of,
         coverpage: "spec/fixtures/collection/collection_cover.html"
       )
@@ -57,18 +57,22 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("spec/fixtures/ouput/dummy.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/dummy.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.html")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/rice-amd.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.html")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/rice-en.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.html")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/rice1-en.final.presentation.xml")).to be true
       FileUtils.rm_rf of
     end
 
@@ -78,7 +82,7 @@ RSpec.describe Metanorma::Collection do
       of = "spec/fixtures/ouput"
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[html pdf xml doc],
+        format: %i[presentation html pdf xml doc],
         output_folder: of,
         coverpage: "spec/fixtures/collection/collection_cover.html"
       )
@@ -89,18 +93,22 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("spec/fixtures/ouput/dummy.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/dummy.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.html")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/rice-amd.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.html")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/rice-en.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.html")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/rice1-en.final.presentation.xml")).to be true
       FileUtils.rm_rf of
     end
   end
