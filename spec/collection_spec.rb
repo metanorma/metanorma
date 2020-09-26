@@ -52,8 +52,8 @@ RSpec.describe Metanorma::Collection do
       )
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
 
-      concat_text = cleanup_id File.read("spec/fixtures/collection/collection_full.xml", encoding: "UTF-8")
-      concat_file = cleanup_id File.read("spec/fixtures/ouput/collection.xml", encoding: "UTF-8")
+      concat_text = read_and_cleanup "spec/fixtures/collection/collection_full.xml"
+      concat_file = read_and_cleanup "spec/fixtures/ouput/collection.xml"
       expect(concat_file).to be_equivalent_to concat_text
 
       expect(File.exist?("spec/fixtures/ouput/collection.presentation.xml")).to be true
