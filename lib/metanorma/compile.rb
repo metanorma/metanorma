@@ -5,7 +5,7 @@ require "htmlentities"
 module Metanorma
   class Compile
     # @return [Array<String>]
-    attr_reader :errors
+    attr_reader :errors, :processor
 
     def initialize
       @registry = Metanorma::Registry.instance

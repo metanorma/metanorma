@@ -12,10 +12,10 @@ module Metanorma
 
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
-    attr_reader :directives
+    attr_accessor :directives
 
     # @return [Hash<String, Metanorma::Document>]
-    attr_reader :documents
+    attr_accessor :documents
 
     # @param file [String] path to source file
     # @param directives [Array<String>] documents-inline to inject the XML into

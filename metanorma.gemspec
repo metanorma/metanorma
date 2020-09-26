@@ -27,13 +27,15 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'htmlentities'
   spec.add_runtime_dependency 'nokogiri'
   spec.add_runtime_dependency 'mn2pdf', "~> 1"
-  spec.add_dependency "relaton-cli", "~> 1.3.0"
+# get relaton-cli to avoic circular reference with metanorma-standoc
+  #spec.add_dependency "relaton-cli"
+  #spec.add_dependency "metanorma-standoc", "~> 1.5.3"
 
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "byebug", "~> 10.0"
   spec.add_development_dependency "rspec-command", "~> 1.0"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
-  spec.add_development_dependency "metanorma-iso", "~> 1.5"
-  spec.add_development_dependency "isodoc", "~> 1.2.1"
+  spec.add_development_dependency "metanorma-iso", "~> 1.5.8"
+  #spec.add_development_dependency "isodoc", "~> 1.2.1"
 end
