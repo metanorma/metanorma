@@ -54,7 +54,8 @@ module Metanorma
     end
 
     def concatenate(col, options)
-      options[:format].each do |e|
+      options[:format] << :presentation if options[:format].include?(:pdf)
+      options[:format].uniq.each do |e|
         next unless %i(presentation xml).include?(e)
         ext = e == :presentation ? "presentation.xml" : e.to_s
         out = col.clone
@@ -65,6 +66,13 @@ module Metanorma
         end
         File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") { |f| f.write(out.to_xml) }
       end
+      options[:format].include?(:pdf) and
+        pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))
+    end
+
+    def pdfconv
+      x = Asciidoctor.load nil, backend: @doctype.to_sym
+      x.converter.pdf_converter(Dummy.new)
     end
 
     # Dummy class

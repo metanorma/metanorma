@@ -57,6 +57,7 @@ RSpec.describe Metanorma::Collection do
       expect(concat_file).to be_equivalent_to concat_text
 
       expect(File.exist?("spec/fixtures/ouput/collection.presentation.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/collection.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/index.html")).to be true
       expect(File.read("spec/fixtures/ouput/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1</h1>"
