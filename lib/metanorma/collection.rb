@@ -47,7 +47,7 @@ module Metanorma
       Nokogiri::XML::Builder.new do |xml|
         xml.send("metanorma-collection",
                  "xmlns" => "http://metanorma.org") do |mc|
-          @bibdata.to_xml mc, bibdata: true, date_format: :full
+          mc << @bibdata.to_xml(bibdata: true, date_format: :full)
           @manifest.to_xml mc
           content_to_xml "prefatory", mc
           doccontainer mc
