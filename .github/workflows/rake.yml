@@ -5,6 +5,7 @@ name: rake
 on:
   push:
     branches: [ master ]
+    tags: [ v* ]
   pull_request:
 
 jobs:
@@ -42,3 +43,17 @@ jobs:
 
       - name: Run specs
         run: bundle exec rake
+
+  notify:
+    name: Trigger notify workflow
+    needs: rake
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger notify workflow
+        uses: Sibz/github-status-action@v1
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: 'tests-passed-successfully'
+          description: 'Tests passed successfully'
+          state: 'success'
+          sha: ${{ github.event.pull_request.head.sha || github.sha }}
