@@ -32,22 +32,19 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: Use Ruby
-        uses: actions/setup-ruby@v1
+      - uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
 
       - uses: actions/cache@v1
         with:
           path: vendor/bundle
-          key: bundle-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: bundle
+          key: bundle-${{ matrix.os }}-${{ matrix.ruby }}-${{ hashFiles('**/*.gemspec') }}
+          restore-keys: bundle-${{ matrix.os }}-${{ matrix.ruby }}
 
-      - name: Update gems
-        run: bundle install --jobs 4 --retry 3
+      - run: bundle install --jobs 4 --retry 3 --path vendor/bundle
 
-      - name: Run specs
-        run: bundle exec rake
+      - run: bundle exec rake
 
   notify:
     name: Trigger notify workflow
