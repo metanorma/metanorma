@@ -4,7 +4,7 @@ name: rake
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main  ]
     tags: [ v* ]
   pull_request:
 
@@ -33,13 +33,18 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Use Ruby
-        uses: ruby/setup-ruby@v1
+        uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
+
+      - uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: bundle-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: bundle
 
       - name: Update gems
-        run: bundle install --jobs 4 --retry 3
+        run: bundle install --jobs 4 --retry 3 --deployment
 
       - name: Run specs
         run: bundle exec rake
