@@ -1,9 +1,7 @@
 = Metanorma: the standard for standards
 
 image:https://img.shields.io/gem/v/metanorma.svg["Gem Version", link="https://rubygems.org/gems/metanorma"]
-image:https://github.com/metanorma/metanorma/workflows/ubuntu/badge.svg["Ubuntu Build Status", link="https://github.com/metanorma/metanorma/actions?query=workflow%3Aubuntu"]
-image:https://github.com/metanorma/metanorma/workflows/macos/badge.svg["OSX Build Status", link="https://github.com/metanorma/metanorma/actions?query=workflow%3Amacos"]
-image:https://github.com/metanorma/metanorma/workflows/windows/badge.svg["Windows Build Status", link="https://github.com/metanorma/metanorma/actions?query=workflow%3Awindows"]
+image:https://github.com/metanorma/metanorma/workflows/rake/badge.svg["Build Status", link="https://github.com/metanorma/metanorma/actions?workflow=rake"]
 image:https://codeclimate.com/github/metanorma/metanorma/badges/gpa.svg["Code Climate", link="https://codeclimate.com/github/metanorma/metanorma"]
 image:https://img.shields.io/github/issues-pr-raw/metanorma/metanorma.svg["Pull Requests", link="https://github.com/metanorma/metanorma/pulls"]
 image:https://img.shields.io/github/commits-since/metanorma/metanorma/latest.svg["Commits since latest",link="https://github.com/metanorma/metanorma/releases"]
