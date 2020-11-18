@@ -6,6 +6,10 @@ module Metanorma
       if log_types.include?(type.to_s)
         puts(message)
       end
+
+      if type == :fatal
+        exit(1)
+      end
     end
   end
 end
