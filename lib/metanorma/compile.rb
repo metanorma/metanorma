@@ -17,7 +17,6 @@ module Metanorma
       options = options_extract(filename, options)
       validate_type(options) && validate_format(options) || (return nil)
       @processor = @registry.find_processor(options[:type].to_sym)
-      @processor.install_fonts(options)
       extensions = get_extensions(options) or return nil
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
