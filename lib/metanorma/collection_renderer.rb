@@ -250,6 +250,7 @@ module Metanorma
       newbib = bib.replace(@files[docid][:bibdata])
       newbib.name = "bibitem"
       newbib["id"] = id
+      newbib["hidden"] = "true"
       newbib&.at(ns("./ext"))&.remove
       _file, url = targetfile(@files[docid], false)
       uri_node = Nokogiri::XML::Node.new "uri", newbib
@@ -276,6 +277,9 @@ module Metanorma
 
         update_bibitem(b, identifier)
         update_anchors(b, docxml, docid)
+      end
+      docxml.xpath(ns("//references[not(./bibitem[not(@hidden) or @hidden = 'false'])]")).each do |f|
+        f["hidden"] = "true"
       end
       docxml.to_xml
     end
