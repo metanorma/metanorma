@@ -15,7 +15,7 @@ module Metanorma
     attr_accessor :logs
 
     def initialize
-      @logs ||= [:warning, :error]
+      @logs ||= [:warning, :error, :fatal]
     end
   end
 
