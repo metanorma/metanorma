@@ -2,7 +2,9 @@
 
 RSpec.describe Metanorma::Collection do
   context "parse" do
+
     it "YAML collection" do
+    mock_pdf
       xml_file = "spec/fixtures/collection/collection1.xml"
       mc = Metanorma::Collection.parse "spec/fixtures/collection/collection1.yml"
       xml = mc.to_xml
@@ -13,6 +15,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "YAML collection with docs inline" do
+    mock_pdf
       xml_file = "spec/fixtures/collection/collection_docinline.xml"
       mc = Metanorma::Collection
         .parse("spec/fixtures/collection/collection_docinline.yml")
@@ -23,6 +26,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "XML collection" do
+    mock_pdf
       file = "spec/fixtures/collection/collection1.xml"
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
@@ -31,6 +35,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "XML collection with docs inline" do
+    mock_pdf
       file = "spec/fixtures/collection/collection_docinline.xml"
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
@@ -40,7 +45,9 @@ RSpec.describe Metanorma::Collection do
   end
 
   context "render html & build doc, pdf, xml files from" do
+
     it "YAML collection" do # rubocop:disable metrics/blocklength
+    mock_pdf
       file = "spec/fixtures/collection/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
       of = "spec/fixtures/ouput"
@@ -85,6 +92,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "YAML collection with documents inline" do # rubocop:disable metrics/blocklength
+    mock_pdf
       file = "spec/fixtures/collection/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
       of = "spec/fixtures/ouput"
@@ -135,4 +143,12 @@ RSpec.describe Metanorma::Collection do
   def cleanup_id(content)
     content.gsub(/(?<=<p id=")[^"]+/, "")
   end
+
+  private
+
+    def mock_pdf
+      allow(::Mn2pdf).to receive(:convert) do |url, output, c, d|
+        FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
+      end
+    end
 end

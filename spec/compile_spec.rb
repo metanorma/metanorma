@@ -79,14 +79,14 @@ RSpec.describe Metanorma::Compile do
   it "wraps HTML output" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     FileUtils.rm_rf %w(spec/assets/test spec/assets/test.alt)
-    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", wrapper: true } )
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", wrapper: true, extension_keys: [:html] } )
     expect(File.exist?("spec/assets/test/test.html")).to be true
   end
 
   it "data64 encodes images" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     FileUtils.rm_rf %w(spec/assets/test spec/assets/test.alt)
-    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", datauriimage: true } )
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", datauriimage: true, extension_keys: [:html] } )
     expect(File.exist?("spec/assets/test.html")).to be true
     html = File.read("spec/assets/test.html", encoding: "utf-8")
     expect(html).to include "data:image"
@@ -95,7 +95,7 @@ RSpec.describe Metanorma::Compile do
   it "exports bibdata" do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     FileUtils.rm_f "spec/assets/testrelaton.xml"
-    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", relaton: "spec/assets/testrelaton.xml" } )
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", relaton: "spec/assets/testrelaton.xml", extension_keys: [:xml] } )
     expect(File.exist?("spec/assets/testrelaton.xml")).to be true
     xml = File.read("spec/assets/testrelaton.xml", encoding: "utf-8")
     expect(xml).to include %(<bibdata type="standard">)
@@ -124,7 +124,7 @@ RSpec.describe Metanorma::Compile do
     FileUtils.rm_f %w(spec/assets/test.xml spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
     FileUtils.rm_f "spec/assets/testrelaton.xml"
     FileUtils.rm_rf "spec/assets/extract"
-    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extract: "spec/assets/extract", extract_type: [:sourcecode, :image, :requirement] } )
+    Metanorma::Compile.new().compile("spec/assets/test.adoc", { type: "iso", extract: "spec/assets/extract", extract_type: [:sourcecode, :image, :requirement], extension_keys: [:xml, :html] } )
     expect(File.exist?("spec/assets/test.xml")).to be true
     expect(File.exist?("spec/assets/extract/sourcecode/sourcecode-0000.txt")).to be true
     expect(File.exist?("spec/assets/extract/sourcecode/sourcecode-0001.txt")).to be false
