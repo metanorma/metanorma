@@ -46,6 +46,7 @@ RSpec.describe Metanorma::Collection do
 
   context "render html & build doc, pdf, xml files from" do
 
+    # TODO: specs for document anchor suffixes
     it "YAML collection" do # rubocop:disable metrics/blocklength
     mock_pdf
       file = "spec/fixtures/collection/collection1.yml"

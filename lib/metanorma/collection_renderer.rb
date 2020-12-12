@@ -6,6 +6,11 @@ module Metanorma
   # XML collection renderer
   class CollectionRenderer
     FORMATS = %i[html xml doc pdf].freeze
+    NAMECHAR = "\u0000-\u0022\u0024\u002c\u002f\u003a-\u0040\\u005b-\u005e"\
+        "\u0060\u007b-\u00b6\u00b8-\u00bf\u00d7\u00f7\u037e\u2000-\u200b"\
+        "\u200e-\u203e\u2041-\u206f\u2190-\u2bff\u2ff0-\u3000".freeze
+    NAMESTARTCHAR = "\\u002d\u002e\u0030-\u0039\u00b7\u0300-\u036f"\
+      "\u203f-\u2040".freeze
 
     # This is only going to render the HTML collection
     # @param xml [Metanorma::Collection] input XML collection
@@ -129,10 +134,33 @@ module Metanorma
                             end
         file, _filename = targetfile(files[identifier], true)
         xml = Nokogiri::XML(file)
+        add_document_suffix(identifier, xml)
         files[identifier][:anchors] = read_anchors(xml)
         files[identifier][:bibdata] = xml.at(ns("//bibdata"))
       end
       files
+    end
+
+    def add_suffix_to_attributes(doc, suffix, tag_name, attribute_name)
+      doc.xpath(ns("//#{tag_name}[@#{attribute_name}]")).each do |elem|
+        elem.attributes[attribute_name].value =
+          "#{elem.attributes[attribute_name].value}_#{suffix}"
+      end
+    end
+
+    def add_document_suffix(identifier, doc)
+      document_suffix = to_ncname(identifier)
+      [%w[* id],
+      %w[review from],
+      %w[review to],
+      %w[xref target],
+      %w[callout target],
+      %w[eref bibitemid],
+      %w[source bibitemid],
+      %w[origin bibitemid]]
+      .each do |(tag_name, attribute_name)|
+        add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
+      end
     end
 
     # map locality type and label (e.g. "clause" "1") to id = anchor for
@@ -271,6 +299,7 @@ module Metanorma
     # @return [String] XML content
     def update_xrefs(file, identifier)
       docxml = Nokogiri::XML(file)
+      add_document_suffix(identifier, docxml)
       docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
         docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
         next unless docid && %r{^current-metanorma-collection/}.match(docid)
@@ -301,6 +330,15 @@ module Metanorma
         locality.add_child ref_from
         ins << locality
       end
+    end
+
+    def to_ncname(s)
+      start = s[0]
+      ret1 = %r([#{NAMECHAR}#]).match(start) ? "_" :
+        (%r([#{NAMESTARTCHAR}#]).match(start) ? "_#{start}" : start)
+      ret2 = s[1..-1] || ""
+      ret = (ret1 || "") + ret2.gsub(%r([#{NAMECHAR}#]), "_")
+      ret
     end
 
     # process each file in the collection
