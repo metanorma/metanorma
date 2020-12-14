@@ -12,5 +12,5 @@ end
 
 gem "byebug", "~> 11.1"
 gem "metanorma-standoc",
-  git: 'git@github.com:metanorma/metanorma-standoc.git',
+  git: 'https://github.com/metanorma/metanorma-standoc.git',
   branch: 'feature/expose-to_ncname-method-publically'
