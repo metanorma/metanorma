@@ -146,13 +146,11 @@ module Metanorma
     def add_document_suffix(identifier, doc)
       document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(identifier)
       [%w[* id],
+      %w[* bibitemid],
       %w[review from],
       %w[review to],
       %w[xref target],
-      %w[callout target],
-      %w[eref bibitemid],
-      %w[source bibitemid],
-      %w[origin bibitemid]]
+      %w[callout target]]
       .each do |(tag_name, attribute_name)|
         add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
       end
