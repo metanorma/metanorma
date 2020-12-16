@@ -149,6 +149,7 @@ module Metanorma
       %w[* bibitemid],
       %w[review from],
       %w[review to],
+      %w[index to],
       %w[xref target],
       %w[callout target]]
       .each do |(tag_name, attribute_name)|
