@@ -129,10 +129,32 @@ module Metanorma
                             end
         file, _filename = targetfile(files[identifier], true)
         xml = Nokogiri::XML(file)
+        add_document_suffix(identifier, xml)
         files[identifier][:anchors] = read_anchors(xml)
         files[identifier][:bibdata] = xml.at(ns("//bibdata"))
       end
       files
+    end
+
+    def add_suffix_to_attributes(doc, suffix, tag_name, attribute_name)
+      doc.xpath(ns("//#{tag_name}[@#{attribute_name}]")).each do |elem|
+        elem.attributes[attribute_name].value =
+          "#{elem.attributes[attribute_name].value}_#{suffix}"
+      end
+    end
+
+    def add_document_suffix(identifier, doc)
+      document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(identifier)
+      [%w[* id],
+      %w[* bibitemid],
+      %w[review from],
+      %w[review to],
+      %w[index to],
+      %w[xref target],
+      %w[callout target]]
+      .each do |(tag_name, attribute_name)|
+        add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
+      end
     end
 
     # map locality type and label (e.g. "clause" "1") to id = anchor for
@@ -271,6 +293,7 @@ module Metanorma
     # @return [String] XML content
     def update_xrefs(file, identifier)
       docxml = Nokogiri::XML(file)
+      add_document_suffix(identifier, docxml)
       docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
         docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
         next unless docid && %r{^current-metanorma-collection/}.match(docid)
