@@ -45,7 +45,6 @@ RSpec.describe Metanorma::Collection do
   end
 
   context "render html & build doc, pdf, xml files from" do
-    # TODO: specs for document anchor suffixes
     it "YAML collection" do # rubocop:disable metrics/blocklength
     mock_pdf
       file = "spec/fixtures/collection/collection1.yml"
@@ -58,10 +57,9 @@ RSpec.describe Metanorma::Collection do
         coverpage: "spec/fixtures/collection/collection_cover.html"
       )
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
-
       concat_text = read_and_cleanup "spec/fixtures/collection/collection_full.xml"
       concat_file = read_and_cleanup "spec/fixtures/ouput/collection.xml"
-      expect(concat_file).to be_equivalent_to concat_text
+      expect(xmlpp(concat_file)).to be_equivalent_to xmlpp(concat_text)
       conact_file_doc_xml = Nokogiri::XML(concat_file)
 
       %w[Dummy_ISO_17301-1_2016
