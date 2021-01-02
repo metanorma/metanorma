@@ -162,12 +162,15 @@ module Metanorma
     def read_anchors(xml)
       ret = {}
       xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n, {})
-      #require "byebug"; byebug
       xrefs.parse xml
       xrefs.get.each do |k, v|
-        v[:label] && v[:type] || next
         ret[v[:type]] ||= {}
-        ret[v[:type]][v[:label]] = k
+        index = v[:container] || v[:label].nil? || v[:label].empty? ? 
+          UUIDTools::UUID.random_create.to_s : v[:label]
+        # Note: will only key clauses, which have unambiguous reference label in locality.
+        # Notes, examples etc with containers are just plunked agaisnt UUIDs, so that their
+        # IDs can at least be registered to be tracked as existing.
+        ret[v[:type]][index] = k
       end
       ret
     end
