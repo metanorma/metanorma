@@ -2,6 +2,9 @@ require "fileutils"
 require "nokogiri"
 require "htmlentities"
 
+require "fontist"
+require "fontist/manifest/install"
+
 module Metanorma
   class Compile
     # @return [Array<String>]
@@ -21,6 +24,7 @@ module Metanorma
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
+      install_fonts(options)
       process_extensions(extensions, file, isodoc, options)
     end
 
@@ -252,7 +256,53 @@ module Metanorma
       end
     end
 
+    def install_fonts(options)
+      if options[:no_install_fonts]
+        Util.log("[fontist] Skip font installation because" \
+          " --no_install_fonts argument passed", :debug)
+        return
+      end
+
+      manifest = @processor.fonts_manifest
+      if manifest.nil?
+        Util.log("[fontist] Skip font installation because font_manifest is missing", :debug)
+        return
+      end
+
+      agree_to_terms = options[:agree_to_terms] || false
+      continue_without_fonts = options[:continue_without_fonts] || false
+
+      install_fonts_safe(manifest, agree_to_terms, continue_without_fonts)
+    end
+
     private
+
+    def install_fonts_safe(manifest, agree, continue)
+      fontist_install(manifest, agree)
+    rescue Fontist::Errors::LicensingError
+      if continue
+        Util.log("[fontist] Processing will continue without fonts installed", :debug)
+      else
+        Util.log("[fontist] Aborting without proper fonts installed," \
+          " make sure that you are passed --agree_to_terms", :fatal)
+      end
+    rescue Fontist::Errors::NonSupportedFontError => e
+      font = /Font '([^']+)'/.match(e.to_s)[1]
+      Util.log("[fontist] '#{font}' font is not supported. " \
+        "Please go to github.com/metanorma/metanorma-#{@processor.short}/issues" \
+        " to report this issue.", :info)
+    rescue Fontist::Errors::FormulaIndexNotFoundError
+      Util.log("[fontist] Missing formula index. Fetching it...", :debug)
+      Fontist::Formula.update_formulas_repo
+      fontist_install(manifest, agree)
+    end
+
+    def fontist_install(manifest, agree)
+      Fontist::Manifest::Install.from_hash(
+        manifest,
+        confirmation: agree ? "yes" : "no"
+      )
+    end
 
     # @param options [Hash]
     # @return [String]

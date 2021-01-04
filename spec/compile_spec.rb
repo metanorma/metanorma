@@ -1,6 +1,8 @@
 require_relative "spec_helper"
 require "fileutils"
 
+require "fontist"
+
 RSpec.describe Metanorma::Compile do
   it "processes metanorma options inside Asciidoc" do
     FileUtils.rm_f %w(spec/assets/test1.xml spec/assets/test1.presentation.xml spec/assets/test1.html spec/assets/test1.alt.html spec/assets/test1.doc spec/assets/test1.relaton.xml)
@@ -201,5 +203,76 @@ end
 
     Metanorma::Compile.new.compile(doc)
     expect(File.exist?("spec/assets/#{doc_name}.xml")).to be true
+  end
+
+  it "fontist_install called" do
+    compile = Metanorma::Compile.new
+
+    allow(compile).to receive(:fontist_install) { }
+    expect(compile).to receive(:fontist_install).once
+
+    compile.compile("spec/assets/test1.adoc", type: "iso")
+  end
+
+  it "fontist_install called with explicit no_install_fonts=false" do
+    compile = Metanorma::Compile.new
+
+    allow(compile).to receive(:fontist_install) { }
+    expect(compile).to receive(:fontist_install).once
+
+    compile.compile("spec/assets/test1.adoc", type: "iso", agree_to_terms: true, no_install_fonts: false)
+  end
+
+  it "skip font install with no_install_fonts" do
+    compile = Metanorma::Compile.new
+
+    allow(compile).to receive(:fontist_install) { }
+    expect(compile).not_to receive(:fontist_install)
+
+    compile.compile("spec/assets/test1.adoc", type: "iso", no_install_fonts: true)
+  end
+
+  it "exit on license error" do
+    compile = Metanorma::Compile.new
+
+    allow(compile).to receive(:fontist_install).and_raise(Fontist::Errors::LicensingError)
+
+    expect do
+      compile.compile("spec/assets/test1.adoc", type: "iso")
+    end.to raise_error SystemExit
+  end
+
+  it "skip license error" do
+    compile = Metanorma::Compile.new
+
+    allow(compile).to receive(:fontist_install).and_raise(Fontist::Errors::LicensingError)
+    expect(compile).to receive(:fontist_install).once
+
+    compile.compile("spec/assets/test1.adoc", type: "iso", continue_without_fonts: true)
+  end
+
+  it "handle missing fonts" do
+    compile = Metanorma::Compile.new
+
+    allow(compile).to receive(:fontist_install).and_raise(
+      Fontist::Errors::NonSupportedFontError.new("Font 'SomeFont' not found")
+    )
+    expect(compile).to receive(:fontist_install).once
+
+    compile.compile("spec/assets/test1.adoc", type: "iso")
+  end
+
+  it "handle missing fontist index" do
+    compile = Metanorma::Compile.new
+
+    @fontist_install_called = 0
+    allow(compile).to receive(:fontist_install) do
+      @fontist_install_called += 1
+      raise Fontist::Errors::FormulaIndexNotFoundError if @fontist_install_called == 1
+    end
+    allow(Fontist::Formula).to receive(:update_formulas_repo)
+    expect(compile).to receive(:fontist_install).twice
+
+    compile.compile("spec/assets/test1.adoc", type: "iso")
   end
 end

@@ -28,6 +28,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'nokogiri'
   spec.add_runtime_dependency 'mn2pdf', "~> 1"
   spec.add_runtime_dependency 'pry'
+  spec.add_runtime_dependency 'fontist', '~> 1.8'
+
 # get relaton-cli to avoic circular reference with metanorma-standoc
   #spec.add_dependency "relaton-cli"
   #spec.add_dependency "metanorma-standoc", "~> 1.5.3"
