@@ -257,9 +257,9 @@ module Metanorma
     end
 
     def install_fonts(options)
-      if options[:no_install_fonts]
+      if options[:"no-install-fonts"]
         Util.log("[fontist] Skip font installation because" \
-          " --no_install_fonts argument passed", :debug)
+          " --no-install-fonts argument passed", :debug)
         return
       end
 
@@ -269,8 +269,8 @@ module Metanorma
         return
       end
 
-      agree_to_terms = options[:agree_to_terms] || false
-      continue_without_fonts = options[:continue_without_fonts] || false
+      agree_to_terms = options[:"agree-to-terms"] || false
+      continue_without_fonts = options[:"continue-without-fonts"] || false
 
       install_fonts_safe(manifest, agree_to_terms, continue_without_fonts)
     end
@@ -284,12 +284,12 @@ module Metanorma
         Util.log("[fontist] Processing will continue without fonts installed", :debug)
       else
         Util.log("[fontist] Aborting without proper fonts installed," \
-          " make sure that you are passed --agree_to_terms", :fatal)
+          " make sure that you have set option --agree-to-terms", :fatal)
       end
     rescue Fontist::Errors::NonSupportedFontError => e
       font = /Font '([^']+)'/.match(e.to_s)[1]
       Util.log("[fontist] '#{font}' font is not supported. " \
-        "Please go to github.com/metanorma/metanorma-#{@processor.short}/issues" \
+        "Please report this issue at github.com/metanorma/metanorma-#{@processor.short}/issues" \
         " to report this issue.", :info)
     rescue Fontist::Errors::FormulaIndexNotFoundError
       Util.log("[fontist] Missing formula index. Fetching it...", :debug)
