@@ -263,12 +263,12 @@ module Metanorma
         return
       end
 
-      manifest = @processor.fonts_manifest
-      if manifest.nil?
+      if !@processor.respond_to?(:fonts_manifest) || @processor.fonts_manifest.nil?
         Util.log("[fontist] Skip font installation because font_manifest is missing", :debug)
         return
       end
 
+      manifest = @processor.fonts_manifest
       agree_to_terms = options[:"agree-to-terms"] || false
       continue_without_fonts = options[:"continue-without-fonts"] || false
 
