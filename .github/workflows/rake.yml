@@ -58,7 +58,7 @@ jobs:
       - name: Trigger tests passed event
         uses: Sibz/github-status-action@v1
         with:
-          authToken: ${{ secrets.METANORMA_CI_PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          authToken: ${{ secrets.GITHUB_TOKEN }}
           context: 'tests-passed-successfully'
           description: 'Tests passed successfully'
           state: 'success'
