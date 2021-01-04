@@ -33,6 +33,7 @@ module Metanorma
       @outdir = options[:output_folder]
       @coverpage = options[:coverpage]
       @format = options[:format]
+      @compile_options = options[:compile] || {}
 
       # list of files in the collection
       @files = read_files folder
@@ -337,7 +338,8 @@ module Metanorma
           f.close
           # warn "metanorma compile -x html #{f.path}"
           c = Compile.new
-          c.compile f.path, format: :asciidoc, extension_keys: @format
+          options = {format: :asciidoc, extension_keys: @format}.merge @compile_options
+          c.compile f.path, options
           @files[identifier][:outputs] = {}
           @format.each do |e|
             ext = c.processor.output_formats[e]
