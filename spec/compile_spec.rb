@@ -31,7 +31,7 @@ RSpec.describe Metanorma::Compile do
     allow(compile).to receive(:fontist_install) {}
     expect(compile).to receive(:fontist_install).once
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"agree-to-terms" => true, :"no_install_fonts" => false)
+    compile.compile("spec/assets/test.adoc", type: "iso", :"agree-to-terms" => true, :"no-install-fonts" => false)
   end
 
   it "skip font install with no_install_fonts" do

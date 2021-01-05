@@ -338,7 +338,7 @@ module Metanorma
           f.close
           # warn "metanorma compile -x html #{f.path}"
           c = Compile.new
-          options = {format: :asciidoc, extension_keys: @format}.merge @compile_options
+          options = { format: :asciidoc, extension_keys: @format }.merge @compile_options
           c.compile f.path, options
           @files[identifier][:outputs] = {}
           @format.each do |e|
