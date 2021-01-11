@@ -54,7 +54,10 @@ RSpec.describe Metanorma::Collection do
       col.render(
         format: %i[presentation html pdf xml doc],
         output_folder: of,
-        coverpage: "spec/fixtures/collection/collection_cover.html"
+        coverpage: "spec/fixtures/collection/collection_cover.html",
+        compile: {
+          :"no-install-fonts" => true
+        }
       )
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
       concat_text = read_and_cleanup "spec/fixtures/collection/collection_full.xml"
@@ -107,7 +110,10 @@ RSpec.describe Metanorma::Collection do
       col.render(
         format: %i[presentation html pdf xml doc],
         output_folder: of,
-        coverpage: "spec/fixtures/collection/collection_cover.html"
+        coverpage: "spec/fixtures/collection/collection_cover.html",
+        compile: {
+          :"no-install-fonts" => true
+        }
       )
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/collection.presentation.xml")).to be true
