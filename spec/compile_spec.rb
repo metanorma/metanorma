@@ -66,7 +66,7 @@ RSpec.describe Metanorma::Compile do
     compile = Metanorma::Compile.new
 
     allow(compile).to receive(:fontist_install).and_raise(
-      Fontist::Errors::NonSupportedFontError.new("Font 'SomeFont' not found")
+      Fontist::Errors::MissingFontError.new("Font 'SomeFont' not found")
     )
     expect(compile).to receive(:fontist_install).once
 

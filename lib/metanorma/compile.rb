@@ -297,7 +297,7 @@ module Metanorma
         Util.log("[fontist] Aborting without proper fonts installed," \
           " make sure that you have set option --agree-to-terms", :fatal)
       end
-    rescue Fontist::Errors::NonSupportedFontError => e
+    rescue Fontist::Errors::MissingFontError => e
       font = /Font '([^']+)'/.match(e.to_s)[1]
       Util.log("[fontist] '#{font}' font is not supported. " \
         "Please report this issue at github.com/metanorma/metanorma-#{@processor.short}/issues" \
