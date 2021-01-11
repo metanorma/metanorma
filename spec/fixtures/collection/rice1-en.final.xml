@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iso-standard xmlns="https://www.metanorma.org/ns/iso">
+<iso-standard xmlns="https://www.metanorma.org/ns/iso" type="semantic" version="1.6.0">
 <bibdata type="standard">
 <title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
 <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
 <title language="fr" format="text/plain" type="main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
 <title language="fr" format="text/plain" type="title-main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
-<docidentifier type="ISO">ISO 1701:1974</docidentifier>
-<docidentifier type="iso-with-lang">ISO 1701:1974(E)</docidentifier>
-<docidentifier type="iso-reference">ISO 1701:1974(E)</docidentifier>
+<docidentifier type="ISO">ISO 1701:1974</docidentifier><docidentifier type="iso-with-lang">ISO 1701:1974(E)</docidentifier><docidentifier type="iso-reference">ISO 1701:1974(E)</docidentifier>
+
+
 <docnumber>1701</docnumber>
 <contributor>
 <role type="author"/>
@@ -62,6 +62,7 @@
 <boilerplate>
   <copyright-statement>
     <clause>
+      <title>COPYRIGHT PROTECTED DOCUMENT</title>
     <p id="boilerplate-year">
     © ISO 1974
   </p>
@@ -92,11 +93,30 @@ at the address below or ISO’s member body in the country of the requester.
 
   
 </boilerplate>
-<sections>
-<clause id="_scope" obligation="normative"><title>Scope</title><p id="_e2a87a71-32b0-4c28-90bb-a0c647bae842">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
-<p id="_d578e7c5-44b6-47b7-8601-ce1389902972">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
-<p id="_bbd035f6-f38c-47cf-ab38-9438f86c7103">It is not applicable to cooked rice products.</p>
-<p id="_369acd8f-7b63-4265-a8b5-97188dd01822">This document is updated in <xref target="RiceAmd"/>. See e.g. <xref target="RiceAmd">clause=2</xref>.</p>
-<p id="_20771d77-5ecf-4e64-aeb6-1cb87e080301">This document is unrelated to <xref target="Dummy">anchor=”what”</xref>.</p></clause>
-</sections>
+<sections><clause id="_scope" type="scope" inline-header="false" obligation="normative"><title>Scope</title><p id="_0f24bcbe-6ca7-400e-9fb3-34027510f8f2">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
+<p id="_7b4ddc83-6eab-4476-99ab-dee2fa285d14">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
+<p id="_2d5119f1-3fed-4faa-a457-65bb0c0449d2">It is not applicable to cooked rice products.</p>
+<p id="_3ca0ca2e-49cb-45c2-9bd5-e79bdaae0f7a">This document is updated in <eref type="inline" bibitemid="RiceAmd" citeas="ISO 17301-1:2016/Amd.1:2017"/>. It derives from <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"/>. See e.g. <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality></localityStack></eref>.</p>
+<p id="_d726ee55-0554-49a3-851e-dc8e16372c3f">This document is unrelated to <eref type="inline" bibitemid="Dummy" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p></clause>
+</sections><bibliography><references id="_bibliography" normative="false" obligation="informative">
+<title>Bibliography</title><bibitem id="StarTrek">
+<formattedref format="application/x-isodoc+xml"/>
+<docidentifier type="ISO">ISO 1701:1974</docidentifier>
+<docidentifier type="repository">current-metanorma-collection/rice</docidentifier>
+<docnumber>1701:1974</docnumber>
+</bibitem><bibitem id="RiceAmd">
+<formattedref format="application/x-isodoc+xml"/>
+<docidentifier type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier>
+<docidentifier type="repository">current-metanorma-collection/ISO 17301-1:2016/Amd.1:2017</docidentifier>
+<docnumber>17301-1:2016/Amd.1:2017</docnumber>
+</bibitem><bibitem id="Dummy">
+<formattedref format="application/x-isodoc+xml"/>
+<docidentifier type="ISO">ISO 17302</docidentifier>
+<docidentifier type="repository">current-metanorma-collection/ISO 17302</docidentifier>
+<docnumber>17302</docnumber>
+</bibitem>
+
+
+
+</references></bibliography>
 </iso-standard>

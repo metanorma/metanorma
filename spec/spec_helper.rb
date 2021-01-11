@@ -5,6 +5,7 @@ require "metanorma"
 require "rspec/matchers"
 require "equivalent-xml"
 require "rspec-command"
+require "rexml/document"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -18,6 +19,15 @@ RSpec.configure do |config|
   end
 
   config.include RSpecCommand
+end
+
+def xmlpp(x)
+  s = ""
+  f = REXML::Formatters::Pretty.new(2)
+  f.compact = true
+  s1 = +s
+  f.write(REXML::Document.new(x),s1)
+  s1
 end
 
 ASCIIDOC_BLANK_HDR = <<~"HDR"

@@ -164,9 +164,13 @@ module Metanorma
       xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n, {})
       xrefs.parse xml
       xrefs.get.each do |k, v|
-        v[:label] && v[:type] || next
         ret[v[:type]] ||= {}
-        ret[v[:type]][v[:label]] = k
+        index = v[:container] || v[:label].nil? || v[:label].empty? ? 
+          UUIDTools::UUID.random_create.to_s : v[:label]
+        # Note: will only key clauses, which have unambiguous reference label in locality.
+        # Notes, examples etc with containers are just plunked agaisnt UUIDs, so that their
+        # IDs can at least be registered to be tracked as existing.
+        ret[v[:type]][index] = k
       end
       ret
     end
@@ -297,7 +301,6 @@ module Metanorma
       docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
         docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
         next unless docid && %r{^current-metanorma-collection/}.match(docid)
-
         update_bibitem(b, identifier)
         update_anchors(b, docxml, docid)
       end
@@ -311,18 +314,25 @@ module Metanorma
     # anchor given the locality, and insert it into the crossref
     def update_anchors(bib, docxml, _id) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       docid = bib&.at(ns("./docidentifier"))&.text
+      document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(docid)
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
-        e.at(ns(".//locality[@type = 'anchor']")).nil? || next
-        ins = e.at(ns("./localityStack")) || next
-        type = ins&.at(ns("./locality/@type"))&.text
-        ref = ins&.at(ns("./locality/referenceFrom"))&.text
-        (anchor = @files[docid][:anchors][type][ref]) || next
-        ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
-        ref_from.content = anchor.sub(/^_/, "")
-        locality = Nokogiri::XML::Node.new "locality", bib
-        locality[:type] = "anchor"
-        locality.add_child ref_from
-        ins << locality
+        if loc = e.at(ns(".//locality[@type = 'anchor']"))
+          ref = loc.at(ns("./referenceFrom")) || next
+          anchor = "#{ref.text}_#{document_suffix}"
+          next unless @files[docid][:anchors].inject([]) { |m, (_, x)| m+= x.values }.include?(anchor)
+          ref.content = anchor
+        else
+          ins = e.at(ns("./localityStack")) || next
+          type = ins&.at(ns("./locality/@type"))&.text
+          ref = ins&.at(ns("./locality/referenceFrom"))&.text
+          (anchor = @files[docid][:anchors][type][ref]) || next
+          ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
+          ref_from.content = anchor.sub(/^_/, "")
+          locality = Nokogiri::XML::Node.new "locality", bib
+          locality[:type] = "anchor"
+          locality.add_child ref_from
+          ins << locality
+        end
       end
     end
 

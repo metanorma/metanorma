@@ -721,7 +721,7 @@ end
 </iso-standard>
 </doc-container>
 <doc-container id="doc000000002">
-<iso-standard xmlns="https://www.metanorma.org/ns/iso">
+<iso-standard xmlns="https://www.metanorma.org/ns/iso" type='semantic' version='1.6.0'>
 <bibdata type="standard">
 <title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
 <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
@@ -783,7 +783,8 @@ end
 </bibdata>
 <boilerplate>
 <copyright-statement>
-<clause>
+  <clause>
+    <title>COPYRIGHT PROTECTED DOCUMENT</title>
 <p id="boilerplate-year_ISO_1701_1974">
     &#xA9; ISO 1974
 </p>
@@ -815,19 +816,209 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 
 </boilerplate>
 <sections>
-<clause id="_scope_ISO_1701_1974" obligation="normative">
+  <clause id="_scope_ISO_1701_1974" obligation="normative" type="scope" inline-header='false'>
 <title>Scope</title>
 <p id="_e2a87a71-32b0-4c28-90bb-a0c647bae842_ISO_1701_1974">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).
 </p>
 <p id="_d578e7c5-44b6-47b7-8601-ce1389902972_ISO_1701_1974">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
 <p id="_bbd035f6-f38c-47cf-ab38-9438f86c7103_ISO_1701_1974">It is not applicable to cooked rice products.</p>
-<p id="_369acd8f-7b63-4265-a8b5-97188dd01822_ISO_1701_1974">This document is updated in <xref target="RiceAmd_ISO_1701_1974"/>
-. See e.g. <xref target="RiceAmd_ISO_1701_1974">clause=2</xref>.
-</p>
-<p id="_20771d77-5ecf-4e64-aeb6-1cb87e080301_ISO_1701_1974">This document is unrelated to <xref target="Dummy_ISO_1701_1974">anchor=&#x201D;what&#x201D;</xref>.
-</p>
+<p id="_369acd8f-7b63-4265-a8b5-97188dd01822_ISO_1701_1974">This document is updated in 
+                   <eref type='inline' bibitemid='RiceAmd_ISO_1701_1974' citeas='ISO 17301-1:2016/Amd.1:2017'/>
+                   . It derives from 
+                   <eref type='inline' bibitemid='StarTrek_ISO_1701_1974' citeas='ISO 1701:1974'/>
+                   . See e.g. 
+                   <eref type='inline' bibitemid='StarTrek_ISO_1701_1974' citeas='ISO 1701:1974'>
+                     <localityStack>
+                       <locality type='clause'>
+                         <referenceFrom>1</referenceFrom>
+                       </locality>
+                       <locality type='anchor'>
+                         <referenceFrom>scope_ISO_1701_1974</referenceFrom>
+                       </locality>
+                     </localityStack>
+                   </eref>.</p>
+<p id="_20771d77-5ecf-4e64-aeb6-1cb87e080301_ISO_1701_1974">This document is unrelated to <eref type='inline' bibitemid='Dummy_ISO_1701_1974' citeas='ISO 17302'>
+                     <localityStack>
+                       <locality type='anchor'>
+                         <referenceFrom>what_ISO_17302</referenceFrom>
+                       </locality>
+                     </localityStack>
+                   </eref>.</p>
 </clause>
 </sections>
+<bibliography>
+               <references id='_bibliography_ISO_1701_1974' normative='false' obligation='informative' hidden='true'>
+                 <title>Bibliography</title>
+                 <bibitem type='standard' id='StarTrek_ISO_1701_1974' hidden='true'>
+                   <title language='en' format='text/plain' type='main'>
+                     Test conditions for milling machines with table of variable
+                     height, with horizontal or vertical spindle
+                   </title>
+                   <title language='en' format='text/plain' type='title-main'>
+                     Test conditions for milling machines with table of variable
+                     height, with horizontal or vertical spindle
+                   </title>
+                   <title language='fr' format='text/plain' type='main'>
+                     Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0;
+                     table de hauteur variable, &#xE0; broche horizontale ou verticale
+                   </title>
+                   <title language='fr' format='text/plain' type='title-main'>
+                     Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0;
+                     table de hauteur variable, &#xE0; broche horizontale ou verticale
+                   </title>
+                   <uri type='citation'>spec/fixtures/collection/rice1-en.final.html</uri>
+                   <uri type='citation'>spec/fixtures/collection/rice1-en.final.html</uri>
+                   <docidentifier type='ISO'>ISO 1701:1974</docidentifier>
+                   <docidentifier type='iso-with-lang'>ISO 1701:1974(E)</docidentifier>
+                   <docidentifier type='iso-reference'>ISO 1701:1974(E)</docidentifier>
+                   <docnumber>1701</docnumber>
+                   <contributor>
+                     <role type='author'/>
+                     <organization>
+                       <name>International Organization for Standardization</name>
+                       <abbreviation>ISO</abbreviation>
+                     </organization>
+                   </contributor>
+                   <contributor>
+                     <role type='publisher'/>
+                     <organization>
+                       <name>International Organization for Standardization</name>
+                       <abbreviation>ISO</abbreviation>
+                     </organization>
+                   </contributor>
+                   <edition>1</edition>
+                   <version>
+                     <revision-date>2016-05-01</revision-date>
+                   </version>
+                   <language>en</language>
+                   <script>Latn</script>
+                   <status>
+                     <stage abbreviation='IS'>60</stage>
+                     <substage>60</substage>
+                   </status>
+                   <copyright>
+                     <from>1974</from>
+                     <owner>
+                       <organization>
+                         <name>International Organization for Standardization</name>
+                         <abbreviation>ISO</abbreviation>
+                       </organization>
+                     </owner>
+                   </copyright>
+                 </bibitem>
+                 <bibitem type='standard' id='RiceAmd_ISO_1701_1974' hidden='true'>
+                   <title language='en' format='text/plain' type='main'>
+                     Specification and test
+                     methods&#x2009;&#x2014;&#x2009;Rice&#x2009;&#x2014;&#x2009;Mass
+                     fraction of extraneous matter, milled rice (nonglutinous), sample
+                     dividers and recommendations relating to storage and transport
+                     conditions
+                   </title>
+                   <title language='en' format='text/plain' type='title-main'>Specification and test methods</title>
+                   <title language='en' format='text/plain' type='title-part'>Rice</title>
+                   <title language='en' format='text/plain' type='title-amd'>
+                     Mass fraction of extraneous matter, milled rice (nonglutinous),
+                     sample dividers and recommendations relating to storage and
+                     transport conditions
+                   </title>
+                   <title language='fr' format='text/plain' type='main'>
+                     Sp&#xE9;cification et m&#xE9;thodes
+                     d&#x2019;essai&#x2009;&#x2014;&#x2009;Riz&#x2009;&#x2014;&#x2009;Fraction massique de mati&#xE8;re &#xE9;trang&#xE8;re, riz usin&#xE9; (non gluant), diviseurs d&#x2019;&#xE9;chantillon et recommandations relatives aux conditions d&#x2019;entreposage et de transport
+                   </title>
+                   <title language='fr' format='text/plain' type='title-main'>Sp&#xE9;cification et m&#xE9;thodes d&#x2019;essai</title>
+                   <title language='fr' format='text/plain' type='title-part'>Riz</title>
+                   <title language='fr' format='text/plain' type='title-amd'>
+                     Fraction massique de mati&#xE8;re &#xE9;trang&#xE8;re, riz
+                     usin&#xE9; (non gluant), diviseurs d&#x2019;&#xE9;chantillon et
+                     recommandations relatives aux conditions d&#x2019;entreposage et
+                     de transport
+                   </title>
+                   <uri type='citation'>spec/fixtures/collection/rice-amd.final.html</uri>
+                   <uri type='citation'>spec/fixtures/collection/rice-amd.final.html</uri>
+                   <docidentifier type='ISO'>ISO 17301-1:2016/Amd.1:2017</docidentifier>
+                   <docidentifier type='iso-with-lang'>ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
+                   <docidentifier type='iso-reference'>ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
+                   <docnumber>17301</docnumber>
+                   <date type='created'>
+                     <on>2016-05-01</on>
+                   </date>
+                   <date type='updated'>
+                     <on>2017-02</on>
+                   </date>
+                   <contributor>
+                     <role type='author'/>
+                     <organization>
+                       <name>International Organization for Standardization</name>
+                       <abbreviation>ISO</abbreviation>
+                     </organization>
+                   </contributor>
+                   <contributor>
+                     <role type='publisher'/>
+                     <organization>
+                       <name>International Organization for Standardization</name>
+                       <abbreviation>ISO</abbreviation>
+                     </organization>
+                   </contributor>
+                   <edition>2</edition>
+                   <version> </version>
+                   <language>en</language>
+                   <script>Latn</script>
+                   <status>
+                     <stage abbreviation='IS'>60</stage>
+                     <substage>60</substage>
+                   </status>
+                   <copyright>
+                     <from>2017</from>
+                     <owner>
+                       <organization>
+                         <name>International Organization for Standardization</name>
+                         <abbreviation>ISO</abbreviation>
+                       </organization>
+                     </owner>
+                   </copyright>
+                 </bibitem>
+                 <bibitem type='standard' id='Dummy_ISO_1701_1974' hidden='true'>
+                   <title language='en' format='text/plain' type='main'>Dummy document</title>
+                   <title language='en' format='text/plain' type='title-main'>Dummy document</title>
+                   <title language='fr' format='text/plain' type='main'>Dummy document</title>
+                   <title language='fr' format='text/plain' type='title-main'>Dummy document</title>
+                   <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
+                   <docidentifier type='ISO'>ISO 17302:2016</docidentifier>
+                   <docidentifier type='iso-with-lang'>ISO 17302:2016(E)</docidentifier>
+                   <docidentifier type='iso-reference'>ISO 17302:2016(E)</docidentifier>
+                   <docnumber>17302</docnumber>
+                   <contributor>
+                     <role type='author'/>
+                     <organization>
+                       <name>International Organization for Standardization</name>
+                       <abbreviation>ISO</abbreviation>
+                     </organization>
+                   </contributor>
+                   <contributor>
+                     <role type='publisher'/>
+                     <organization>
+                       <name>International Organization for Standardization</name>
+                       <abbreviation>ISO</abbreviation>
+                     </organization>
+                   </contributor>
+                   <language>en</language>
+                   <script>Latn</script>
+                   <status>
+                     <stage abbreviation='IS'>60</stage>
+                     <substage>60</substage>
+                   </status>
+                   <copyright>
+                     <from>2016</from>
+                     <owner>
+                       <organization>
+                         <name>International Organization for Standardization</name>
+                         <abbreviation>ISO</abbreviation>
+                       </organization>
+                     </owner>
+                   </copyright>
+                 </bibitem>
+               </references>
+             </bibliography>
 </iso-standard>
 </doc-container>
 <doc-container id="doc000000003">

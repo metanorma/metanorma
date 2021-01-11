@@ -32,8 +32,12 @@ It is applicable to husked rice, husked parboiled rice, milled rice and milled p
 
 It is not applicable to cooked rice products.
 
-This document is updated in <<RiceAmd>>. See e.g. <<RiceAmd,clause=2>>.
+This document is updated in <<RiceAmd>>. It derives from <<StarTrek>>. See e.g. <<StarTrek,clause=1>>.
 
 This document is unrelated to <<Dummy,anchor="what">>.
 
-
+[bibliography]
+== Bibliography
+* [[[RiceAmd,repo:(current-metanorma-collection/ISO 17301-1:2016/Amd.1:2017)]]]
+* [[[Dummy,repo:(current-metanorma-collection/ISO 17302)]]]
+* [[[StarTrek,repo:(current-metanorma-collection/rice,ISO 1701:1974)]]]

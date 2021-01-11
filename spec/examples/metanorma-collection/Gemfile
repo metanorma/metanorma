@@ -1,7 +1,0 @@
-gem "relaton-cli"
-gem "metanorma-cli"
-gem "byebug"
-
-gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc"
-gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso"
-gem "isodoc", git: "https://github.com/metanorma/isodoc"
