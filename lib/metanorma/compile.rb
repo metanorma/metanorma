@@ -261,6 +261,7 @@ module Metanorma
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
           rescue StandardError => e
             puts e.message
+            puts e.backtrace.join("\n")
           end
         end
         wrap_html(options, file_extension, outfilename)
