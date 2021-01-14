@@ -181,6 +181,14 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 </p>
 <p id=''>
   This document uses schemas
+  <eref bibitemid='express-schema_E0_ISO_17301-1_2016' citeas='Missing:express-schema:E0'>
+  <locality type='anchor'>
+    <referenceFrom>E0.A0</referenceFrom>
+  </locality>
+  E0/A0** Unresolved reference to document
+  Missing:express-schema:E0, id express-schema_E0_ISO_17301-1_2016
+</eref>
+,
   <eref bibitemid='express-schema_E1_ISO_17301-1_2016' citeas='ISO 17302'>
     <locality type='anchor'>
       <referenceFrom>E1.A1</referenceFrom>
@@ -426,6 +434,10 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 </bibitem>
 </relation>
 <place>Geneva</place>
+</bibitem>
+<bibitem id='express-schema_E0_ISO_17301-1_2016' type='internal'>
+  <docidentifier type='X'>Missing:express-schema:E0</docidentifier>
+  <docidentifier type='repository'>current-metanorma-collection/Missing:express-schema:E0</docidentifier>
 </bibitem>
 <bibitem type='standard' id='express-schema_E2_ISO_17301-1_2016' hidden='true'>
   <title language='en' format='text/plain' type='main'>Dummy document</title>

@@ -5,8 +5,6 @@ require "isodoc"
 module Metanorma
   # XML collection renderer
   class CollectionRenderer
-    FORMATS = %i[html xml doc pdf].freeze
-
     # hash for each document in collection of document identifier to:
     # document reference (fileref or id), type of document reference,
     # and bibdata entry for that file
@@ -104,7 +102,7 @@ module Metanorma
       docid = bib&.at(ns("./docidentifier"))&.text
       unless @files[docid]
         warn "Cannot find crossreference to document #{docid} in document #{identifier}!"
-        abort
+        return
       end
       id = bib["id"]
       newbib = bib.replace(@files[docid][:bibdata])
@@ -168,30 +166,41 @@ module Metanorma
       end
     end
 
-    # if there is a crossref to another document, with no anchor, retrieve the
-    # anchor given the locality, and insert it into the crossref
+    # update crossrefences to other documents, to include disambiguating document suffix on id
     def update_anchors(bib, docxml, _id) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       docid = bib&.at(ns("./docidentifier"))&.text
-      document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(docid)
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
-        if loc = e.at(ns(".//locality[@type = 'anchor']"))
-          ref = loc.at(ns("./referenceFrom")) || next
-          anchor = "#{ref.text}_#{document_suffix}"
-          next unless @files[docid][:anchors].inject([]) { |m, (_, x)| m+= x.values }.include?(anchor)
-          ref.content = anchor
+        if @files[docid]
+          (loc = e.at(ns(".//locality[@type = 'anchor']"))) ?
+            update_anchor_loc(loc, docid) :
+            update_anchor_create_loc(bib, e, docid)
         else
-          ins = e.at(ns("./localityStack")) || next
-          type = ins&.at(ns("./locality/@type"))&.text
-          ref = ins&.at(ns("./locality/referenceFrom"))&.text
-          (anchor = @files[docid][:anchors][type][ref]) || next
-          ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
-          ref_from.content = anchor.sub(/^_/, "")
-          locality = Nokogiri::XML::Node.new "locality", bib
-          locality[:type] = "anchor"
-          locality.add_child ref_from
-          ins << locality
+          e << "** Unresolved reference to document #{docid}, id #{e['bibitemid']}"
         end
       end
+    end
+
+    def update_anchor_loc(loc, docid)
+      document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(docid)
+      ref = loc.at(ns("./referenceFrom")) || return
+      anchor = "#{ref.text}_#{document_suffix}"
+      return unless @files[docid][:anchors].inject([]) { |m, (_, x)| m+= x.values }.include?(anchor)
+      ref.content = anchor
+    end
+
+    # if there is a crossref to another document, with no anchor, retrieve the
+    # anchor given the locality, and insert it into the crossref
+    def update_anchor_create_loc(bib, e, docid)
+      ins = e.at(ns("./localityStack")) || return
+      type = ins&.at(ns("./locality/@type"))&.text
+      ref = ins&.at(ns("./locality/referenceFrom"))&.text
+      (anchor = @files[docid][:anchors][type][ref]) || return
+      ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
+      ref_from.content = anchor.sub(/^_/, "")
+      locality = Nokogiri::XML::Node.new "locality", bib
+      locality[:type] = "anchor"
+      locality.add_child ref_from
+      ins << locality
     end
 
     # compile and output individual file in collection
@@ -232,6 +241,11 @@ module Metanorma
             docxml.at(ns("//*[@id = '#{id}'][@type = '#{schema}']")) and
               refs[schema][id] = identifier
           end
+        end
+      end
+      refs.each do |schema, ids|
+        ids.each do |id, key|
+          key == true and refs[schema][id] = "Missing:#{schema}:#{id}"
         end
       end
       refs
