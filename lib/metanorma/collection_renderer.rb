@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "isodoc"
+require_relative "./collection_fileprocess"
 
 module Metanorma
   # XML collection renderer
@@ -34,6 +35,7 @@ module Metanorma
       @coverpage = options[:coverpage]
       @format = options[:format]
       @compile_options = options[:compile] || {}
+      @log = options[:log]
 
       # list of files in the collection
       @files = read_files folder
@@ -114,68 +116,6 @@ module Metanorma
       IsoDoc::Convert.new({}).ns(xpath)
     end
 
-    # hash for each document in collection of document identifier to:
-    # document reference (fileref or id), type of document reference,
-    # and bibdata entry for that file
-    # @param path [String] path to collection
-    # @return [Hash{String=>Hash}]
-    def read_files(path) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      files = {}
-      @xml.xpath(ns("//docref")).each do |d|
-        identifier = d.at(ns("./identifier")).text
-        files[identifier] = if d["fileref"]
-                              { type: "fileref",
-                                ref: File.join(path, d["fileref"]) }
-                            else { type: "id", ref: d["id"] }
-                            end
-        file, _filename = targetfile(files[identifier], true)
-        xml = Nokogiri::XML(file)
-        add_document_suffix(identifier, xml)
-        files[identifier][:anchors] = read_anchors(xml)
-        files[identifier][:bibdata] = xml.at(ns("//bibdata"))
-      end
-      files
-    end
-
-    def add_suffix_to_attributes(doc, suffix, tag_name, attribute_name)
-      doc.xpath(ns("//#{tag_name}[@#{attribute_name}]")).each do |elem|
-        elem.attributes[attribute_name].value =
-          "#{elem.attributes[attribute_name].value}_#{suffix}"
-      end
-    end
-
-    def add_document_suffix(identifier, doc)
-      document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(identifier)
-      [%w[* id],
-      %w[* bibitemid],
-      %w[review from],
-      %w[review to],
-      %w[index to],
-      %w[xref target],
-      %w[callout target]]
-      .each do |(tag_name, attribute_name)|
-        add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
-      end
-    end
-
-    # map locality type and label (e.g. "clause" "1") to id = anchor for
-    # a document
-    def read_anchors(xml)
-      ret = {}
-      xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n, {})
-      xrefs.parse xml
-      xrefs.get.each do |k, v|
-        ret[v[:type]] ||= {}
-        index = v[:container] || v[:label].nil? || v[:label].empty? ? 
-          UUIDTools::UUID.random_create.to_s : v[:label]
-        # Note: will only key clauses, which have unambiguous reference label in locality.
-        # Notes, examples etc with containers are just plunked agaisnt UUIDs, so that their
-        # IDs can at least be registered to be tracked as existing.
-        ret[v[:type]][index] = k
-      end
-      ret
-    end
-
     # populate liquid template of ARGV[1] with metadata extracted from
     # collection manifest
     def coverpage
@@ -235,132 +175,6 @@ module Metanorma
       end.doc.root.to_html
     end
 
-    # return file contents + output filename for each file in the collection,
-    # given a docref entry
-    # @param data [Hash]
-    # @param read [Boolean]
-    # @return [Array<String, nil>]
-    def targetfile(data, read = false)
-      if data[:type] == "fileref" then ref_file data[:ref], read
-      else xml_file data[:id], read
-      end
-    end
-
-    # @param ref [String]
-    # @param read [Boolean]
-    # @return [Array<String, nil>]
-    def ref_file(ref, read)
-      file = File.read(ref, encoding: "utf-8") if read
-      filename = ref.sub(/\.xml$/, ".html")
-      [file, filename]
-    end
-
-    # @param id [String]
-    # @param read [Boolean]
-    # @return [Array<String, nil>]
-    def xml_file(id, read)
-      file = @xml.at(ns("//doc-container[@id = '#{id}']")).to_xml if read
-      filename = id + ".html"
-      [file, filename]
-    end
-
-    # @param bib [Nokogiri::XML::Element]
-    # @param identifier [String]
-    def update_bibitem(bib, identifier) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      docid = bib&.at(ns("./docidentifier"))&.text
-      unless @files[docid]
-        warn "Cannot find crossreference to document #{docid} in document "\
-          "#{identifier}!"
-        abort
-      end
-      id = bib["id"]
-      newbib = bib.replace(@files[docid][:bibdata])
-      newbib.name = "bibitem"
-      newbib["id"] = id
-      newbib["hidden"] = "true"
-      newbib&.at(ns("./ext"))&.remove
-      _file, url = targetfile(@files[docid], false)
-      uri_node = Nokogiri::XML::Node.new "uri", newbib
-      uri_node[:type] = "citation"
-      uri_node.content = url
-      newbib.at(ns("./docidentifier")).previous = uri_node
-    end
-
-    # TODO: update crossreferences to other files in the selection
-    # repo(current-metanorma-collection/ISO 17301-1:2016)
-    # replaced by
-    # bibdata of "ISO 17301-1:2016" in situ as bibitem
-    # Any erefs to that bibitem id are replaced with relative URL
-    # Preferably with anchor, and is a job to realise dynamic lookup of
-    # localities
-    # @param file [String] XML content
-    # @param identifier [String] docid
-    # @return [String] XML content
-    def update_xrefs(file, identifier)
-      docxml = Nokogiri::XML(file)
-      add_document_suffix(identifier, docxml)
-      docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
-        docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
-        next unless docid && %r{^current-metanorma-collection/}.match(docid)
-        update_bibitem(b, identifier)
-        update_anchors(b, docxml, docid)
-      end
-      docxml.xpath(ns("//references[not(./bibitem[not(@hidden) or @hidden = 'false'])]")).each do |f|
-        f["hidden"] = "true"
-      end
-      docxml.to_xml
-    end
-
-    # if there is a crossref to another document, with no anchor, retrieve the
-    # anchor given the locality, and insert it into the crossref
-    def update_anchors(bib, docxml, _id) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      docid = bib&.at(ns("./docidentifier"))&.text
-      document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(docid)
-      docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
-        if loc = e.at(ns(".//locality[@type = 'anchor']"))
-          ref = loc.at(ns("./referenceFrom")) || next
-          anchor = "#{ref.text}_#{document_suffix}"
-          next unless @files[docid][:anchors].inject([]) { |m, (_, x)| m+= x.values }.include?(anchor)
-          ref.content = anchor
-        else
-          ins = e.at(ns("./localityStack")) || next
-          type = ins&.at(ns("./locality/@type"))&.text
-          ref = ins&.at(ns("./locality/referenceFrom"))&.text
-          (anchor = @files[docid][:anchors][type][ref]) || next
-          ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
-          ref_from.content = anchor.sub(/^_/, "")
-          locality = Nokogiri::XML::Node.new "locality", bib
-          locality[:type] = "anchor"
-          locality.add_child ref_from
-          ins << locality
-        end
-      end
-    end
-
-    # process each file in the collection
-    # files are held in memory, and altered as postprocessing
-    def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      @files.each do |identifier, x|
-        file, filename = targetfile(x, true)
-        file = update_xrefs(file, identifier)
-        Tempfile.open(["collection", ".xml"], encoding: "utf-8") do |f|
-          f.write(file)
-          f.close
-          # warn "metanorma compile -x html #{f.path}"
-          c = Compile.new
-          options = { format: :asciidoc, extension_keys: @format }.merge @compile_options
-          c.compile f.path, options
-          @files[identifier][:outputs] = {}
-          @format.each do |e|
-            ext = c.processor.output_formats[e]
-            fn = File.basename(filename).sub(/(?<=\.)[^\.]+$/, ext.to_s)
-            FileUtils.mv f.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
-            @files[identifier][:outputs][e] = File.join(@outdir, fn)
-          end
-        end
-      end
-    end
-
     private
 
     # @param options [Hash]
@@ -370,7 +184,6 @@ module Metanorma
         raise ArgumentError, "Need to specify formats (xml,html,pdf,doc)"
       end
       return if !options[:format].include?(:html) || options[:coverpage]
-
       raise ArgumentError, "Need to specify a coverpage to render HTML"
     end
   end

@@ -3,6 +3,7 @@
 require "relaton"
 require "relaton/cli"
 require "metanorma/collection_manifest"
+require "metanorma-standoc"
 
 module Metanorma
   # Metanorma collection of documents
@@ -39,8 +40,14 @@ module Metanorma
       @documents.merge! @manifest.documents(File.dirname(@file))
       @prefatory = args[:prefatory]
       @final = args[:final]
+      Asciidoctor.load nil, backend: :standoc
+      @log = Asciidoctor::Standoc::Log.new
     end
+
     # rubocop:enable Metrics/AbcSize,Metrics/MethodLength
+     def clean_exit
+       @log.write(File.join(File.dirname(@file), File.basename(@file, ".*") + ".err"))
+     end
 
     # @return [String] XML
     def to_xml
@@ -57,7 +64,8 @@ module Metanorma
     end
 
     def render(opts)
-      CollectionRenderer.render self, opts
+      CollectionRenderer.render self, opts.merge(log: @log)
+      clean_exit
     end
 
     class << self

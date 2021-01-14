@@ -174,10 +174,35 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 <p id="_60bc26a9-2eaa-4f54-97f6-b58af731babb_ISO_17301-1_2016">This document is unrelated to <eref type="inline" bibitemid="Dummy_ISO_17301-1_2016" citeas="ISO 17302">
 <localityStack>
 <locality type="anchor">
-  <referenceFrom>what</referenceFrom>
+  <referenceFrom>what_ISO_17302</referenceFrom>
 </locality>
 </localityStack>
 </eref>.
+</p>
+<p id=''>
+  This document uses schemas
+  <eref bibitemid='express-schema_E0_ISO_17301-1_2016' citeas='Missing:express-schema:E0'>
+  <locality type='anchor'>
+    <referenceFrom>E0.A0</referenceFrom>
+  </locality>
+  E0/A0<strong>** Unresolved reference to document
+    Missing:express-schema:E0, id express-schema_E0_ISO_17301-1_2016</strong>
+</eref>
+,
+  <eref bibitemid='express-schema_E1_ISO_17301-1_2016' citeas='ISO 17302'>
+    <locality type='anchor'>
+      <referenceFrom>E1.A1</referenceFrom>
+    </locality>
+    E1/A1
+  </eref>
+   and
+  <eref bibitemid='express-schema_E2_ISO_17301-1_2016' citeas='ISO 17302'>
+    <locality type='anchor'>
+      <referenceFrom>E2.A2_ISO_17302</referenceFrom>
+    </locality>
+    E2/A2
+  </eref>
+  .
 </p>
 </clause>
 </sections>
@@ -410,6 +435,51 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 </relation>
 <place>Geneva</place>
 </bibitem>
+<bibitem id='express-schema_E0_ISO_17301-1_2016' type='internal'>
+  <docidentifier type='X'>Missing:express-schema:E0</docidentifier>
+  <docidentifier type='repository'>current-metanorma-collection/Missing:express-schema:E0</docidentifier>
+</bibitem>
+<bibitem type='standard' id='express-schema_E2_ISO_17301-1_2016' hidden='true'>
+  <title language='en' format='text/plain' type='main'>Dummy document</title>
+  <title language='en' format='text/plain' type='title-main'>Dummy document</title>
+  <title language='fr' format='text/plain' type='main'>Dummy document</title>
+  <title language='fr' format='text/plain' type='title-main'>Dummy document</title>
+  <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
+  <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
+  <docidentifier type='ISO'>ISO 17302:2016</docidentifier>
+  <docidentifier type='iso-with-lang'>ISO 17302:2016(E)</docidentifier>
+  <docidentifier type='iso-reference'>ISO 17302:2016(E)</docidentifier>
+  <docnumber>17302</docnumber>
+  <contributor>
+    <role type='author'/>
+    <organization>
+      <name>International Organization for Standardization</name>
+      <abbreviation>ISO</abbreviation>
+    </organization>
+  </contributor>
+  <contributor>
+    <role type='publisher'/>
+    <organization>
+      <name>International Organization for Standardization</name>
+      <abbreviation>ISO</abbreviation>
+    </organization>
+  </contributor>
+  <language>en</language>
+  <script>Latn</script>
+  <status>
+    <stage abbreviation='IS'>60</stage>
+    <substage>60</substage>
+  </status>
+  <copyright>
+    <from>2016</from>
+    <owner>
+      <organization>
+        <name>International Organization for Standardization</name>
+        <abbreviation>ISO</abbreviation>
+      </organization>
+    </owner>
+  </copyright>
+</bibitem>
 </references>
 </bibliography>
 </iso-standard>
@@ -509,8 +579,10 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 <clause id="_scope_ISO_17302" obligation="normative">
 <title>Scope</title>
 <p id="_9f7c3e34-6854-4fa6-bb3b-e967ff9f5bf2_ISO_17302">This is a dummy document.</p>
+</clause>
+<clause id='E1_ISO_17302' type='express-schema'>
 <figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1_ISO_17302">
-<pre id="_0855e974-d21b-48ad-8627-0c53719b8dcf_ISO_17302">
+  <pre id='E1.A1_ISO_17302'>
 module Metanorma
   class Document
     # @return [Strin]
@@ -603,7 +675,9 @@ end
 <p id="_5bbe5050-8dc1-4b7b-936c-d63ca93fa72a_ISO_17302">What?</p>
 </li>
 </ol>
-<figure id="_c70d742f-3b61-4aaa-8343-981678eeb1f4_ISO_17302">
+ </clause>
+ <clause id='E2_ISO_17302' type='express-schema'>
+   <figure id='E2.A2_ISO_17302'>
 <pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438_ISO_17302">
 module Metanorma
   # Metanorma collection's manifest
@@ -982,6 +1056,8 @@ at the address below or ISO&#x2019;s member body in the country of the requester
                    <title language='en' format='text/plain' type='title-main'>Dummy document</title>
                    <title language='fr' format='text/plain' type='main'>Dummy document</title>
                    <title language='fr' format='text/plain' type='title-main'>Dummy document</title>
+                   <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
+                   <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
                    <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
                    <docidentifier type='ISO'>ISO 17302:2016</docidentifier>
                    <docidentifier type='iso-with-lang'>ISO 17302:2016(E)</docidentifier>
