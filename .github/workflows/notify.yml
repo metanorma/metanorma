@@ -3,16 +3,16 @@
 name: notify
 
 on:
-  push:
-    branches: [ master ]
-    tags:
-      - '*'
+  repository_dispatch:
+    types: [ notify ]
 
 jobs:
   notify:
     name: Notify dependent repos
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: Trigger repositories
         env:
           GH_USERNAME: metanorma-ci
@@ -21,7 +21,7 @@ jobs:
           curl -LO --retry 3 https://raw.githubusercontent.com/metanorma/metanorma-build-scripts/master/trigger-gh-actions.sh
           [[ -f ".github/workflows/dependent_repos.env" ]] && source .github/workflows/dependent_repos.env
           CLIENT_PAYLOAD=$(cat <<EOF
-          "{ "ref": "${GITHUB_REF}", "repo": "${GITHUB_REPOSITORY}" }"
+          "{ "ref": "${{ github.event.client_payload.ref }}", "repo": "${GITHUB_REPOSITORY}" }"
           EOF
           )
           for repo in $TEMPLATE_REPOS" $SAMPLES_REPOS"
@@ -30,7 +30,7 @@ jobs:
           done
 
       - name: Trigger release repositories
-        if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')
+        if: github.event.client_payload.ref == 'refs/heads/master' || startsWith(github.event.client_payload.ref, 'refs/tags/v')
         env:
           GH_USERNAME: metanorma-ci
           GH_ACCESS_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
@@ -38,7 +38,7 @@ jobs:
           curl -LO --retry 3 https://raw.githubusercontent.com/metanorma/metanorma-build-scripts/master/trigger-gh-actions.sh
           [[ -f ".github/workflows/dependent_repos.env" ]] && source .github/workflows/dependent_repos.env
           CLIENT_PAYLOAD=$(cat <<EOF
-          "{ "ref": "${GITHUB_REF}", "repo": "${GITHUB_REPOSITORY}" }"
+          "{ "ref": "${{ github.event.client_payload.ref }}", "repo": "${GITHUB_REPOSITORY}" }"
           EOF
           )
           for repo in $DEPENDENT_REPOS
