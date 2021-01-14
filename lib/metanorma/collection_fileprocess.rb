@@ -101,7 +101,9 @@ module Metanorma
     def update_bibitem(bib, identifier) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       docid = bib&.at(ns("./docidentifier"))&.text
       unless @files[docid]
-        warn "Cannot find crossreference to document #{docid} in document #{identifier}!"
+        error = "[metanorma] Cannot find crossreference to document #{docid} in document #{identifier}."
+        @log.add("Cross-References", nil, error)
+        Util.log(error, :warning)
         return
       end
       id = bib["id"]
@@ -175,7 +177,7 @@ module Metanorma
             update_anchor_loc(loc, docid) :
             update_anchor_create_loc(bib, e, docid)
         else
-          e << "** Unresolved reference to document #{docid}, id #{e['bibitemid']}"
+          e << "<strong>** Unresolved reference to document #{docid}, id #{e['bibitemid']}</strong>"
         end
       end
     end

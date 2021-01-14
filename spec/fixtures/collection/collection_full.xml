@@ -185,8 +185,8 @@ at the address below or ISO&#x2019;s member body in the country of the requester
   <locality type='anchor'>
     <referenceFrom>E0.A0</referenceFrom>
   </locality>
-  E0/A0** Unresolved reference to document
-  Missing:express-schema:E0, id express-schema_E0_ISO_17301-1_2016
+  E0/A0<strong>** Unresolved reference to document
+    Missing:express-schema:E0, id express-schema_E0_ISO_17301-1_2016</strong>
 </eref>
 ,
   <eref bibitemid='express-schema_E1_ISO_17301-1_2016' citeas='ISO 17302'>

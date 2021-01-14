@@ -35,6 +35,7 @@ module Metanorma
       @coverpage = options[:coverpage]
       @format = options[:format]
       @compile_options = options[:compile] || {}
+      @log = options[:log]
 
       # list of files in the collection
       @files = read_files folder
