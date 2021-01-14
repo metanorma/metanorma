@@ -4,7 +4,7 @@ name: rake
 
 on:
   push:
-    branches: [ master, main  ]
+    branches: [ master, main ]
     tags: [ v* ]
   pull_request:
 
@@ -36,9 +36,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
 
-      - if: matrix.os == 'macos-latest'
-        run: brew install autoconf automake libtool
-
       - uses: actions/cache@v2
         with:
           path: vendor/bundle
@@ -55,11 +52,9 @@ jobs:
     needs: rake
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger tests passed event
-        uses: Sibz/github-status-action@v1
+      - uses: peter-evans/repository-dispatch@v1
         with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: 'tests-passed-successfully'
-          description: 'Tests passed successfully'
-          state: 'success'
-          sha: ${{ github.event.pull_request.head.sha || github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          event-type: notify
+          client-payload: '{"ref": "${{ github.ref }}"}'
