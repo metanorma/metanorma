@@ -154,18 +154,21 @@ module Metanorma
     def update_indirect_refs_to_docs(docxml, internal_refs)
       internal_refs.each do |schema, ids|
         ids.each do |id, file|
-          docxml.xpath(ns("//eref[@bibitemid = '#{schema}_#{id}']")).each do |e|
-            e["citeas"] = file
-            if loc = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
-              loc.children = "#{id}.#{loc.text}"
-            end
-          end
-          bib = docxml.xpath(ns("//bibitem[@id = '#{schema}_#{id}']")) or next
-          docid = bib.at(ns("./docidentifier[@type = 'repository']")) or next
-          docid.children = "current-metanorma-collection/#{file}"
-          docid.previous = "<docidentifier type='X'>#{file}</docidentifier>"
+          update_indirect_refs_to_docs1(docxml, schema, id, file)
         end
       end
+    end
+
+    def update_indirect_refs_to_docs1(docxml, schema, id, file)
+      docxml.xpath(ns("//eref[@bibitemid = '#{schema}_#{id}']")).each do |e|
+        e["citeas"] = file
+        if loc = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+          loc.children = "#{id}.#{loc.text}"
+        end
+      end
+      docid = docxml.at(ns("//bibitem[@id = '#{schema}_#{id}']/docidentifier[@type = 'repository']")) or return
+      docid.children = "current-metanorma-collection/#{file}"
+      docid.previous = "<docidentifier type='X'>#{file}</docidentifier>"
     end
 
     # update crossrefences to other documents, to include disambiguating document suffix on id
@@ -173,16 +176,15 @@ module Metanorma
       docid = bib&.at(ns("./docidentifier"))&.text
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
         if @files[docid]
-          (loc = e.at(ns(".//locality[@type = 'anchor']"))) ?
-            update_anchor_loc(loc, docid) :
-            update_anchor_create_loc(bib, e, docid)
+          update_anchor_loc(bib, e, docid)
         else
           e << "<strong>** Unresolved reference to document #{docid}, id #{e['bibitemid']}</strong>"
         end
       end
     end
 
-    def update_anchor_loc(loc, docid)
+    def update_anchor_loc(bib, e, docid)
+      loc = e.at(ns(".//locality[@type = 'anchor']")) or return update_anchor_create_loc(bib, e, docid)
       document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(docid)
       ref = loc.at(ns("./referenceFrom")) || return
       anchor = "#{ref.text}_#{document_suffix}"
