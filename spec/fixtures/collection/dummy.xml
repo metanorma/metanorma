@@ -93,7 +93,7 @@ at the address below or ISO’s member body in the country of the requester.
   </clause>
   <clause id="E1" type="express-schema">
 <figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1">
-<pre id="E1.A1">
+<pre id="A1">
 module Metanorma
   class Document
     # @return [Strin]
@@ -185,7 +185,7 @@ end
 </ol>
 </clause>
   <clause id="E2" type="express-schema">
-<figure id="E2.A2">
+<figure id="A2">
 <pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438">
 module Metanorma
   # Metanorma collection's manifest

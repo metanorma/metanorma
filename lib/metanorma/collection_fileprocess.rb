@@ -162,9 +162,6 @@ module Metanorma
     def update_indirect_refs_to_docs1(docxml, schema, id, file)
       docxml.xpath(ns("//eref[@bibitemid = '#{schema}_#{id}']")).each do |e|
         e["citeas"] = file
-        if loc = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
-          loc.children = "#{id}.#{loc.text}"
-        end
       end
       docid = docxml.at(ns("//bibitem[@id = '#{schema}_#{id}']/docidentifier[@type = 'repository']")) or return
       docid.children = "current-metanorma-collection/#{file}"

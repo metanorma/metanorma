@@ -183,7 +183,7 @@ at the address below or ISO&#x2019;s member body in the country of the requester
   This document uses schemas
   <eref bibitemid='express-schema_E0_ISO_17301-1_2016' citeas='Missing:express-schema:E0'>
   <locality type='anchor'>
-    <referenceFrom>E0.A0</referenceFrom>
+    <referenceFrom>A0</referenceFrom>
   </locality>
   E0/A0<strong>** Unresolved reference to document
     Missing:express-schema:E0, id express-schema_E0_ISO_17301-1_2016</strong>
@@ -191,14 +191,14 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 ,
   <eref bibitemid='express-schema_E1_ISO_17301-1_2016' citeas='ISO 17302'>
     <locality type='anchor'>
-      <referenceFrom>E1.A1</referenceFrom>
+      <referenceFrom>A1</referenceFrom>
     </locality>
     E1/A1
   </eref>
    and
   <eref bibitemid='express-schema_E2_ISO_17301-1_2016' citeas='ISO 17302'>
     <locality type='anchor'>
-      <referenceFrom>E2.A2_ISO_17302</referenceFrom>
+      <referenceFrom>A2_ISO_17302</referenceFrom>
     </locality>
     E2/A2
   </eref>
@@ -582,7 +582,7 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 </clause>
 <clause id='E1_ISO_17302' type='express-schema'>
 <figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1_ISO_17302">
-  <pre id='E1.A1_ISO_17302'>
+  <pre id='A1_ISO_17302'>
 module Metanorma
   class Document
     # @return [Strin]
@@ -677,7 +677,7 @@ end
 </ol>
  </clause>
  <clause id='E2_ISO_17302' type='express-schema'>
-   <figure id='E2.A2_ISO_17302'>
+   <figure id='A2_ISO_17302'>
 <pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438_ISO_17302">
 module Metanorma
   # Metanorma collection's manifest
