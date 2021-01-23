@@ -280,6 +280,8 @@ module Metanorma
         return
       end
 
+      @updated_formulas_repo = false
+
       manifest = @processor.fonts_manifest
       agree_to_terms = options[:"agree-to-terms"] || false
       continue_without_fonts = options[:"continue-without-fonts"] || false
@@ -299,13 +301,16 @@ module Metanorma
           " make sure that you have set option --agree-to-terms", :fatal)
       end
     rescue Fontist::Errors::FontError => e
+      log_level = continue ? :warning : :fatal
       Util.log("[fontist] '#{e.font}' font is not supported. " \
         "Please report this issue at github.com/metanorma/metanorma-#{@processor.short}/issues" \
-        " to report this issue.", :info)
+        " to report this issue.", log_level)
     rescue Fontist::Errors::FormulaIndexNotFoundError
+      Util.log("[fontist] Bug: formula index not found after 'fontist update'", :fatal) if @updated_formulas_repo
       Util.log("[fontist] Missing formula index. Fetching it...", :debug)
       Fontist::Formula.update_formulas_repo
-      fontist_install(manifest, agree)
+      @updated_formulas_repo = true
+      install_fonts_safe(manifest, agree, continue)
     end
 
     def fontist_install(manifest, agree)
