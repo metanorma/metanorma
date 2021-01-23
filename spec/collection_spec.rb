@@ -57,7 +57,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "spec/fixtures/collection/collection_cover.html",
         compile: {
-          :"no-install-fonts" => true
+          no_install_fonts: true
         }
       )
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
@@ -116,7 +116,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "spec/fixtures/collection/collection_cover.html",
         compile: {
-          :"no-install-fonts" => true
+          :no_install_fonts => true
         }
       )
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
