@@ -13,14 +13,14 @@ RSpec.describe Metanorma::Compile do
     FileUtils.rm_rf "spec/assets/extract"
   end
 
-  before(:each) do clean_outputs end
-  after(:all) do clean_outputs end
+  before(:each) { clean_outputs }
+  after(:all) { clean_outputs }
 
   around(:each) do |example|
     begin
       example.run
     rescue SystemExit
-      fail 'Unexpected exit encountered'
+      fail "Unexpected exit encountered"
     end
   end
 
@@ -30,7 +30,7 @@ RSpec.describe Metanorma::Compile do
     allow(compile).to receive(:fontist_install) {}
     expect(compile).to receive(:fontist_install).once
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"agree-to-terms" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true)
   end
 
   it "fontist_install called with explicit no_install_fonts=false" do
@@ -39,7 +39,7 @@ RSpec.describe Metanorma::Compile do
     allow(compile).to receive(:fontist_install) {}
     expect(compile).to receive(:fontist_install).once
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"agree-to-terms" => true, :"no-install-fonts" => false)
+    compile.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true, no_install_fonts: false)
   end
 
   it "skip font install with no_install_fonts" do
@@ -48,7 +48,7 @@ RSpec.describe Metanorma::Compile do
     allow(compile).to receive(:fontist_install) {}
     expect(compile).not_to receive(:fontist_install)
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"no-install-fonts" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", no_install_fonts: true)
   end
 
   it "exit on license error" do
@@ -67,7 +67,7 @@ RSpec.describe Metanorma::Compile do
     allow(compile).to receive(:fontist_install).and_raise(Fontist::Errors::LicensingError)
     expect(compile).to receive(:fontist_install).once
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"continue-without-fonts" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
   end
 
   it "exit on license error" do
@@ -102,7 +102,7 @@ RSpec.describe Metanorma::Compile do
     )
     expect(compile).to receive(:fontist_install).once
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"continue-without-fonts" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
   end
 
   it "handle missing fontist index" do
@@ -116,7 +116,7 @@ RSpec.describe Metanorma::Compile do
     allow(Fontist::Formula).to receive(:update_formulas_repo)
     expect(compile).to receive(:fontist_install).twice
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"continue-without-fonts" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
   end
 
   it "exit on twice missing fontist index" do
@@ -158,11 +158,11 @@ RSpec.describe Metanorma::Compile do
     allow(Fontist::Formula).to receive(:update_formulas_repo)
     expect(compile).to receive(:fontist_install).twice
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"continue-without-fonts" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
   end
 
   it "processes metanorma options inside Asciidoc" do
-    Metanorma::Compile.new().compile("spec/assets/test1.adoc", :"agree-to-terms" => true)
+    Metanorma::Compile.new.compile("spec/assets/test1.adoc", agree_to_terms: true)
     expect(File.exist?("spec/assets/test1.xml")).to be true
     expect(File.exist?("spec/assets/test1.doc")).to be false
     expect(File.exist?("spec/assets/test1.html")).to be true
@@ -173,7 +173,7 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes an asciidoc ISO document" do
-    Metanorma::Compile.new().compile("spec/assets/test.adoc", type: "iso", :"agree-to-terms" => true)
+    Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true)
     expect(File.exist?("spec/assets/test.xml")).to be true
     expect(File.exist?("spec/assets/test.doc")).to be true
     expect(File.exist?("spec/assets/test.html")).to be true
@@ -181,7 +181,7 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes all extensions of an asciidoc ISO document" do
-    Metanorma::Compile.new().compile("spec/assets/test.adoc", type: "iso", extension_keys: [:all], :"agree-to-terms" => true)
+    Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", extension_keys: [:all], agree_to_terms: true)
     expect(File.exist?("spec/assets/test.xml")).to be true
     expect(File.exist?("spec/assets/test.doc")).to be true
     expect(File.exist?("spec/assets/test.html")).to be true
@@ -189,7 +189,10 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes specific extensions of an asciidoc ISO document" do
-    Metanorma::Compile.new().compile("spec/assets/test.adoc", type: "iso", extension_keys: [:xml, :doc], :"agree-to-terms" => true)
+    Metanorma::Compile.new.compile("spec/assets/test.adoc",
+                                   type: "iso",
+                                   extension_keys: %i(xml doc),
+                                   agree_to_terms: true)
     expect(File.exist?("spec/assets/test.xml")).to be true
     expect(File.exist?("spec/assets/test.doc")).to be true
     expect(File.exist?("spec/assets/test.html")).to be false
@@ -199,7 +202,9 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "write documents to specified output dir" do
-    Metanorma::Compile.new.compile "spec/examples/metanorma-collection/dummy.adoc", "output-dir": "spec/assets", "agree-to-terms": true
+    Metanorma::Compile.new.compile("spec/examples/metanorma-collection/dummy.adoc",
+                                   output_dir: "spec/assets",
+                                   agree_to_terms: true)
     expect(File.exist?("spec/assets/dummy.doc"))
     expect(File.exist?("spec/assets/dummy.html"))
     expect(File.exist?("spec/assets/dummy.pdf"))
@@ -212,17 +217,19 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes a Metanorma XML ISO document" do
-    Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", "agree-to-terms": true)
+    Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true)
     expect(File.exist?("spec/assets/test.xml")).to be true
     FileUtils.rm_f %w(spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)
-    expect { Metanorma::Compile.new().compile("spec/assets/test.xml") }.not_to output(/Error: Please specify a standard type/).to_stdout
+    expect do
+      Metanorma::Compile.new.compile("spec/assets/test.xml")
+    end.not_to output(/Error: Please specify a standard type/).to_stdout
     expect(File.exist?("spec/assets/test.html")).to be true
     html = File.read("spec/assets/test.html", encoding: "utf-8")
     expect(html).to include "ISO copyright office"
   end
 
   it "extracts isodoc options from asciidoc file" do
-    Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", extension_keys: [:html], :"agree-to-terms" => true)
+    Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", extension_keys: [:html], agree_to_terms: true)
     html = File.read("spec/assets/test.html", encoding: "utf-8")
     expect(html).to include "font-family: body-font;"
     expect(html).to include "font-family: header-font;"
@@ -230,21 +237,23 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "wraps HTML output" do
-    Metanorma::Compile.new.compile("spec/assets/test.adoc",
+    Metanorma::Compile.new.compile(
+      "spec/assets/test.adoc",
       type: "iso",
       wrapper: true,
       extension_keys: [:html],
-      :"agree-to-terms" => true
+      agree_to_terms: true
     )
     expect(File.exist?("spec/assets/test/test.html")).to be true
   end
 
   it "data64 encodes images" do
-    Metanorma::Compile.new().compile("spec/assets/test.adoc",
+    Metanorma::Compile.new.compile(
+      "spec/assets/test.adoc",
       type: "iso",
       datauriimage: true,
       extension_keys: [:html],
-      :"agree-to-terms" => true
+      agree_to_terms: true
     )
     expect(File.exist?("spec/assets/test.html")).to be true
     html = File.read("spec/assets/test.html", encoding: "utf-8")
@@ -252,11 +261,12 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "exports bibdata" do
-    Metanorma::Compile.new.compile("spec/assets/test.adoc",
+    Metanorma::Compile.new.compile(
+      "spec/assets/test.adoc",
       type: "iso",
       relaton: "spec/assets/testrelaton.xml",
       extension_keys: [:xml],
-      :"agree-to-terms" => true
+      agree_to_terms: true
     )
     expect(File.exist?("spec/assets/testrelaton.xml")).to be true
     xml = File.read("spec/assets/testrelaton.xml", encoding: "utf-8")
@@ -264,18 +274,14 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "exports bibdata, rxl" do
-    Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", extension_keys: [:rxl], :"agree-to-terms" => true)
+    Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", extension_keys: [:rxl], agree_to_terms: true)
     expect(File.exist?("spec/assets/test.rxl")).to be true
     xml = File.read("spec/assets/test.rxl", encoding: "utf-8")
     expect(xml).to include %(<bibdata type="standard">)
   end
 
   it "keeps asciimath" do
-    Metanorma::Compile.new.compile("spec/assets/test1.adoc",
-      type: "iso",
-      extension_keys: [:xml],
-      :"agree-to-terms" => true
-    )
+    Metanorma::Compile.new.compile("spec/assets/test1.adoc", type: "iso", extension_keys: [:xml], agree_to_terms: true)
     expect(File.exist?("spec/assets/test1.xml")).to be true
     xml = File.read("spec/assets/test1.xml", encoding: "utf-8")
     expect(xml).not_to include %(<stem type="MathML">)
@@ -283,29 +289,32 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "exports assets" do
-    Metanorma::Compile.new.compile("spec/assets/test.adoc",
+    Metanorma::Compile.new.compile(
+      "spec/assets/test.adoc",
       type: "iso",
       extract: "spec/assets/extract",
-      extract_type: [:sourcecode, :image, :requirement],
-      extension_keys: [:xml, :html],
-      :"agree-to-terms" => true
+      extract_type: %i(sourcecode image requirement),
+      extension_keys: %i(xml html),
+      agree_to_terms: true
     )
     expect(File.exist?("spec/assets/test.xml")).to be true
     expect(File.exist?("spec/assets/extract/sourcecode/sourcecode-0000.txt")).to be true
     expect(File.exist?("spec/assets/extract/sourcecode/sourcecode-0001.txt")).to be false
     expect(File.exist?("spec/assets/extract/sourcecode/a.html")).to be true
-    expect(File.read("spec/assets/extract/sourcecode/sourcecode-0000.txt", encoding: "utf-8") + "\n").to eq <<~OUTPUT
-def ruby(x)
-  if x < 0 && x > 1
-    return
-  end
-end
-    OUTPUT
-    expect(File.read("spec/assets/extract/sourcecode/a.html", encoding: "utf-8") + "\n").to eq <<~OUTPUT
-<html>
-  <head>&amp;</head>
-</html>
-    OUTPUT
+    expect(File.read("spec/assets/extract/sourcecode/sourcecode-0000.txt", encoding: "utf-8"))
+      .to eq <<~OUTPUT.chomp
+        def ruby(x)
+          if x < 0 && x > 1
+            return
+          end
+        end
+      OUTPUT
+    expect(File.read("spec/assets/extract/sourcecode/a.html", encoding: "utf-8"))
+      .to eq <<~OUTPUT.chomp
+        <html>
+          <head>&amp;</head>
+        </html>
+      OUTPUT
     expect(File.exist?("spec/assets/extract/image/image-0000.png")).to be true
     expect(File.exist?("spec/assets/extract/image/image-0001.png")).to be false
     expect(File.exist?("spec/assets/extract/image/img1.png")).to be true
@@ -316,36 +325,52 @@ end
   end
 
   it "warns when no standard type provided" do
-    expect { Metanorma::Compile.new.compile("spec/assets/test.adoc", relaton: "testrelaton.xml", :"agree-to-terms" => true) }.to output(/Please specify a standard type/).to_stdout
+    expect do
+      Metanorma::Compile.new.compile("spec/assets/test.adoc", relaton: "testrelaton.xml", agree_to_terms: true)
+    end.to output(/Please specify a standard type/).to_stdout
   end
 
   it "throw an error when bogus standard type requested" do
     expect do
-      Metanorma::Compile.new.
-        compile(
+      Metanorma::Compile.new
+        .compile(
           "spec/assets/test.adoc",
-          type: "bogus_format",
-      )
+          type: "bogus_format"
+        )
     end.to output(/loading gem `metanorma-bogus_format` failed/).to_stdout
   end
 
   it "warns when bogus format requested" do
-    expect { Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", format: "bogus_format", :"agree-to-terms" => true ) }.to output(/Only source file format currently supported is 'asciidoc'/).to_stdout
+    expect do
+      Metanorma::Compile.new.compile(
+        "spec/assets/test.adoc",
+        type: "iso",
+        format: "bogus_format",
+        agree_to_terms: true
+      )
+    end.to output(/Only source file format currently supported is 'asciidoc'/).to_stdout
   end
 
   it "warns when bogus extension requested" do
-    expect { Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", extension_keys: [:bogus_format], :"agree-to-terms" => true) }.to output(/bogus_format format is not supported for this standard/).to_stdout
+    expect do
+      Metanorma::Compile.new.compile(
+        "spec/assets/test.adoc",
+        type: "iso",
+        extension_keys: [:bogus_format],
+        agree_to_terms: true
+      )
+    end.to output(/bogus_format format is not supported for this standard/).to_stdout
   end
 
   it "rewrites remote include paths" do
-    Metanorma::Compile.new().compile("spec/assets/test2.adoc", { type: "iso", extension_keys: [:xml] } )
+    Metanorma::Compile.new.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:xml])
     expect(File.exist?("spec/assets/test2.xml")).to be true
     xml = File.read("spec/assets/test2.xml", encoding: "utf-8")
     expect(xml).to include "ABC"
   end
 
   it "processes a Metanorma XML ISO document with CRLF line endings" do
-    doc_name = 'test_crlf.adoc'
+    doc_name = "test_crlf.adoc"
 
     # convert LF -> CRLF
     doc = "spec/assets/#{doc_name}.xml"

@@ -269,7 +269,7 @@ module Metanorma
     end
 
     def install_fonts(options)
-      if options[:"no-install-fonts"]
+      if options[:no_install_fonts]
         Util.log("[fontist] Skip font installation because" \
           " --no-install-fonts argument passed", :debug)
         return
@@ -283,8 +283,8 @@ module Metanorma
       @updated_formulas_repo = false
 
       manifest = @processor.fonts_manifest
-      agree_to_terms = options[:"agree-to-terms"] || false
-      continue_without_fonts = options[:"continue-without-fonts"] || false
+      agree_to_terms = options[:agree_to_terms] || false
+      continue_without_fonts = options[:continue_without_fonts] || false
 
       install_fonts_safe(manifest, agree_to_terms, continue_without_fonts)
     end
@@ -323,8 +323,8 @@ module Metanorma
     # @param options [Hash]
     # @return [String]
     def change_output_dir(options)
-      if options[:"output-dir"]
-        File.join options[:"output-dir"], File.basename(options[:filename])
+      if options[:output_dir]
+        File.join options[:output_dir], File.basename(options[:filename])
       else options[:filename]
       end
     end
