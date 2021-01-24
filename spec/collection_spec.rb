@@ -2,9 +2,8 @@
 
 RSpec.describe Metanorma::Collection do
   context "parse" do
-
     it "YAML collection" do
-    mock_pdf
+      mock_pdf
       xml_file = "spec/fixtures/collection/collection1.xml"
       mc = Metanorma::Collection.parse "spec/fixtures/collection/collection1.yml"
       xml = mc.to_xml
@@ -15,7 +14,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "YAML collection with docs inline" do
-    mock_pdf
+      mock_pdf
       xml_file = "spec/fixtures/collection/collection_docinline.xml"
       mc = Metanorma::Collection
         .parse("spec/fixtures/collection/collection_docinline.yml")
@@ -26,7 +25,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "XML collection" do
-    mock_pdf
+      mock_pdf
       file = "spec/fixtures/collection/collection1.xml"
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
@@ -35,7 +34,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "XML collection with docs inline" do
-    mock_pdf
+      mock_pdf
       file = "spec/fixtures/collection/collection_docinline.xml"
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
@@ -46,8 +45,8 @@ RSpec.describe Metanorma::Collection do
 
   context "render html & build doc, pdf, xml files from" do
     it "YAML collection" do # rubocop:disable metrics/blocklength
-    mock_pdf
-    FileUtils.rm_f "spec/fixtures/ouput/collection.err"
+      mock_pdf
+      FileUtils.rm_f "spec/fixtures/ouput/collection.err"
       file = "spec/fixtures/collection/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
       of = "spec/fixtures/ouput"
@@ -57,7 +56,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "spec/fixtures/collection/collection_cover.html",
         compile: {
-          no_install_fonts: true
+          no_install_fonts: true,
         }
       )
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
@@ -66,11 +65,13 @@ RSpec.describe Metanorma::Collection do
       expect(xmlpp(concat_file)).to be_equivalent_to xmlpp(concat_text)
       conact_file_doc_xml = Nokogiri::XML(concat_file)
 
-      %w[Dummy_ISO_17301-1_2016
+      %w[
+        Dummy_ISO_17301-1_2016
         StarTrek_ISO_17301-1_2016
         RiceAmd_ISO_17301-1_2016
         _scope_ISO_1701_1974
-        _introduction_ISO_17301-1_2016_Amd.1_2017].each do |id|
+        _introduction_ISO_17301-1_2016_Amd.1_2017
+      ].each do |id|
         expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({}).ns("//*[@id='#{id}']")).length).to_not be_zero
       end
 
@@ -106,7 +107,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "YAML collection with documents inline" do # rubocop:disable metrics/blocklength
-    mock_pdf
+      mock_pdf
       file = "spec/fixtures/collection/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
       of = "spec/fixtures/ouput"
@@ -116,7 +117,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "spec/fixtures/collection/collection_cover.html",
         compile: {
-          :no_install_fonts => true
+          no_install_fonts: true,
         }
       )
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
@@ -163,9 +164,9 @@ RSpec.describe Metanorma::Collection do
 
   private
 
-    def mock_pdf
-      allow(::Mn2pdf).to receive(:convert) do |url, output, c, d|
-        FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
-      end
+  def mock_pdf
+    allow(::Mn2pdf).to receive(:convert) do |url, output, _c, _d|
+      FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
     end
+  end
 end
