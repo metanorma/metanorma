@@ -20,7 +20,7 @@ RSpec.describe Metanorma::Compile do
     begin
       example.run
     rescue SystemExit
-      fail 'Unexpected exit encountered'
+      fail "Unexpected exit encountered"
     end
   end
 
@@ -102,7 +102,7 @@ RSpec.describe Metanorma::Compile do
     )
     expect(compile).to receive(:fontist_install).once
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"continue-without-fonts" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
   end
 
   it "handle missing fontist index" do
@@ -116,7 +116,7 @@ RSpec.describe Metanorma::Compile do
     allow(Fontist::Formula).to receive(:update_formulas_repo)
     expect(compile).to receive(:fontist_install).twice
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"continue-without-fonts" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
   end
 
   it "exit on twice missing fontist index" do
@@ -158,7 +158,7 @@ RSpec.describe Metanorma::Compile do
     allow(Fontist::Formula).to receive(:update_formulas_repo)
     expect(compile).to receive(:fontist_install).twice
 
-    compile.compile("spec/assets/test.adoc", type: "iso", :"continue-without-fonts" => true)
+    compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
   end
 
   it "processes metanorma options inside Asciidoc" do
