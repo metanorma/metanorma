@@ -1,3 +1,3 @@
 module Metanorma
-  VERSION = "1.2.5"
+  VERSION = "1.2.6pre"
 end

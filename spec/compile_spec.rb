@@ -159,6 +159,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "handle not supported font after missing fontist index" do
+    mock_pdf
+    mock_sts
     compile = Metanorma::Compile.new
 
     @fontist_install_called = 0
