@@ -14,7 +14,7 @@ module Metanorma
           header_footer: true,
           attributes: [
             "nodoc", "stem", "xrefstyle=short", "docfile=#{filename}",
-            "output_dir=#{options[:"output-dir"]}"
+            "output_dir=#{options[:output_dir]}"
           ]
         }
         unless asciidoctor_validate(file, filename, out_opts)
