@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'htmlentities'
   spec.add_runtime_dependency 'nokogiri'
   spec.add_runtime_dependency 'mn2pdf', "~> 1"
+  spec.add_runtime_dependency 'metanorma-utils', "~> 1"
   spec.add_runtime_dependency 'pry'
   spec.add_runtime_dependency 'fontist', '~> 1.8'
 
@@ -39,7 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "byebug", "~> 10.0"
   spec.add_development_dependency "rspec-command", "~> 1.0"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
-  spec.add_development_dependency "metanorma-iso", "~> 1.6.0"
+  spec.add_development_dependency "metanorma-iso", "~> 1.7.0"
   spec.add_development_dependency "sassc", "~> 2.4.0"
-  #spec.add_development_dependency "isodoc", "~> 1.2.1"
 end

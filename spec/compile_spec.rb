@@ -17,6 +17,8 @@ RSpec.describe Metanorma::Compile do
   after(:all) do clean_outputs end
 
   it "fontist_install called" do
+    mock_pdf
+    mock_sts
     compile = Metanorma::Compile.new
 
     allow(compile).to receive(:fontist_install) {}
@@ -26,6 +28,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "fontist_install called with explicit no_install_fonts=false" do
+    mock_pdf
+    mock_sts
     compile = Metanorma::Compile.new
 
     allow(compile).to receive(:fontist_install) {}
@@ -35,6 +39,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "skip font install with no_install_fonts" do
+    mock_pdf
+    mock_sts
     compile = Metanorma::Compile.new
 
     allow(compile).to receive(:fontist_install) {}
@@ -54,6 +60,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "skip license error" do
+    mock_pdf
+    mock_sts
     compile = Metanorma::Compile.new
 
     allow(compile).to receive(:fontist_install).and_raise(Fontist::Errors::LicensingError)
@@ -63,6 +71,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "handle missing fonts" do
+    mock_pdf
+    mock_sts
     compile = Metanorma::Compile.new
 
     allow(compile).to receive(:fontist_install).and_raise(
@@ -74,6 +84,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "handle missing fontist index" do
+    mock_pdf
+    mock_sts
     compile = Metanorma::Compile.new
 
     @fontist_install_called = 0
@@ -99,6 +111,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes an asciidoc ISO document" do
+    mock_pdf
+    mock_sts
     Metanorma::Compile.new().compile("spec/assets/test.adoc", type: "iso", :"agree-to-terms" => true)
     expect(File.exist?("spec/assets/test.xml")).to be true
     expect(File.exist?("spec/assets/test.doc")).to be true
@@ -107,6 +121,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes all extensions of an asciidoc ISO document" do
+    mock_pdf
+    mock_sts
     Metanorma::Compile.new().compile("spec/assets/test.adoc", type: "iso", extension_keys: [:all], :"agree-to-terms" => true)
     expect(File.exist?("spec/assets/test.xml")).to be true
     expect(File.exist?("spec/assets/test.doc")).to be true
@@ -115,6 +131,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes specific extensions of an asciidoc ISO document" do
+    mock_pdf
+    mock_sts
     Metanorma::Compile.new().compile("spec/assets/test.adoc", type: "iso", extension_keys: [:xml, :doc], :"agree-to-terms" => true)
     expect(File.exist?("spec/assets/test.xml")).to be true
     expect(File.exist?("spec/assets/test.doc")).to be true
@@ -125,6 +143,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "write documents to specified output dir" do
+    mock_pdf
+    mock_sts
     Metanorma::Compile.new.compile "spec/examples/metanorma-collection/dummy.adoc", "output-dir": "spec/assets", "agree-to-terms": true
     expect(File.exist?("spec/assets/dummy.doc"))
     expect(File.exist?("spec/assets/dummy.html"))
@@ -138,6 +158,8 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes a Metanorma XML ISO document" do
+    mock_pdf
+    mock_sts
     Metanorma::Compile.new.compile("spec/assets/test.adoc", type: "iso", "agree-to-terms": true)
     expect(File.exist?("spec/assets/test.xml")).to be true
     FileUtils.rm_f %w(spec/assets/test.html spec/assets/test.alt.html spec/assets/test.doc)

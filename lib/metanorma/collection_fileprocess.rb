@@ -36,7 +36,7 @@ module Metanorma
     end
 
     def add_document_suffix(identifier, doc)
-      document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(identifier)
+      document_suffix = Metanorma::Utils::to_ncname(identifier)
       [%w[* id],
       %w[* bibitemid],
       %w[review from],
@@ -182,7 +182,7 @@ module Metanorma
 
     def update_anchor_loc(bib, e, docid)
       loc = e.at(ns(".//locality[@type = 'anchor']")) or return update_anchor_create_loc(bib, e, docid)
-      document_suffix = Asciidoctor::Standoc::Cleanup.to_ncname(docid)
+      document_suffix = Metanorma::Utils::to_ncname(docid)
       ref = loc.at(ns("./referenceFrom")) || return
       anchor = "#{ref.text}_#{document_suffix}"
       return unless @files[docid][:anchors].inject([]) { |m, (_, x)| m+= x.values }.include?(anchor)

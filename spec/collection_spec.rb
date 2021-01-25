@@ -160,12 +160,4 @@ RSpec.describe Metanorma::Collection do
   def cleanup_id(content)
     content.gsub(/(?<=<p id=")[^"]+/, "")
   end
-
-  private
-
-    def mock_pdf
-      allow(::Mn2pdf).to receive(:convert) do |url, output, c, d|
-        FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
-      end
-    end
 end

@@ -3,7 +3,7 @@
 require "relaton"
 require "relaton/cli"
 require "metanorma/collection_manifest"
-require "metanorma-standoc"
+require "metanorma-utils"
 
 module Metanorma
   # Metanorma collection of documents
@@ -40,8 +40,7 @@ module Metanorma
       @documents.merge! @manifest.documents(File.dirname(@file))
       @prefatory = args[:prefatory]
       @final = args[:final]
-      Asciidoctor.load nil, backend: :standoc
-      @log = Asciidoctor::Standoc::Log.new
+      @log = Metanorma::Utils::Log.new
     end
 
     # rubocop:enable Metrics/AbcSize,Metrics/MethodLength

@@ -103,3 +103,15 @@ ISOXML_BLANK_HDR = <<~"HDR"
   </bibdata>
   </iso-standard>
 HDR
+
+def mock_pdf
+  allow(::Mn2pdf).to receive(:convert) do |url, output, c, d|
+    FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
+  end
+end
+
+def mock_sts
+  allow(::Mn2sts).to receive(:convert) do |url, output, c, d|
+    FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
+  end
+end
