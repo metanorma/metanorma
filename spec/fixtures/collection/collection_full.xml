@@ -204,6 +204,36 @@ at the address below or ISO&#x2019;s member body in the country of the requester
   </eref>
   .
 </p>
+<svgmap id='svg1_ISO_17301-1_2016'>
+  <figure id='fig1_ISO_17301-1_2016'>
+    <image src='action_schemaexpg1.svg' id='__ISO_17301-1_2016' mimetype='image/svg+xml' height='auto' width='auto' alt='Workmap'/>
+  </figure>
+  <target href='mn://support_resource_schema'>
+    <eref bibitemid='express-schema_E0_ISO_17301-1_2016' citeas='Missing:express-schema:E0'>
+      <localityStack>
+        <locality type='anchor'>
+          <referenceFrom>A0</referenceFrom>
+        </locality>
+      </localityStack>
+      <strong>
+        ** Unresolved reference to document Missing:express-schema:E0,
+        id express-schema_E0_ISO_17301-1_2016
+      </strong>
+    </eref>
+  </target>
+  <target href='mn://support_resource_schema'>
+    <eref bibitemid='express-schema_E1_ISO_17301-1_2016' citeas='ISO 17302'>
+      <localityStack>
+        <locality type='anchor'>
+          <referenceFrom>A1</referenceFrom>
+        </locality>
+      </localityStack>
+    </eref>
+  </target>
+  <target href='mn://support_resource_schema'>
+    <link bibitemid='express-schema_E2_ISO_17301-1_2016' citeas='ISO 17302' target='spec/fixtures/collection/dummy.html#A2_ISO_17302'> </link>
+  </target>
+</svgmap>
 </clause>
 </sections>
 <bibliography>

@@ -104,6 +104,32 @@ at the address below or ISO’s member body in the country of the requester.
 <p id="_50a0e498-4b20-401c-ab99-fed8d11e266b">This document is unrelated <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"/>, see e.g. <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality></localityStack></eref>.</p>
 <p id="_60bc26a9-2eaa-4f54-97f6-b58af731babb">This document is unrelated to <eref type="inline" bibitemid="Dummy" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
 <p id="_001">This document uses schemas <eref bibitemid="express-schema_E0"><locality type="anchor"><referenceFrom>A0</referenceFrom></locality>E0/A0</eref>, <eref bibitemid="express-schema_E1"><locality type="anchor"><referenceFrom>A1</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2"><locality type="anchor"><referenceFrom>A2</referenceFrom></locality>E2/A2</eref>.</p>
+<svgmap id='svg1'>
+  <figure id='fig1'>
+    <image src='action_schemaexpg1.svg' id='_' mimetype='image/svg+xml' height='auto' width='auto' alt='Workmap'/>
+  </figure>
+    <target href='mn://support_resource_schema'>
+      <eref bibitemid='express-schema_E0'>      
+        <localityStack>
+          <locality type='anchor'><referenceFrom>A0</referenceFrom></locality>
+        </localityStack>
+      </eref>
+    </target>
+    <target href='mn://support_resource_schema'>
+      <eref bibitemid='express-schema_E1'>
+        <localityStack>
+          <locality type='anchor'><referenceFrom>A1</referenceFrom></locality>
+        </localityStack>
+      </eref>
+    </target>
+    <target href='mn://support_resource_schema'>
+      <eref bibitemid='express-schema_E2'>
+        <localityStack>
+          <locality type='anchor'><referenceFrom>A2</referenceFrom></locality>
+        </localityStack>
+      </eref>
+    </target>
+  </svgmap>
 </clause>
 </sections><bibliography><references id="_normative_references" normative="true" obligation="informative"><title>Normative References</title><p id="_27effc86-b49a-4ba4-a19a-8b03fad45c58">The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</p>
 <bibitem id="RiceAmd"><formattedref format="application/x-isodoc+xml"/><docidentifier type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier><docidentifier type="repository">current-metanorma-collection/rice</docidentifier><docnumber>17301-1:2016/Amd.1:2017</docnumber></bibitem><bibitem id="StarTrek"><formattedref format="application/x-isodoc+xml"/><docidentifier type="ISO">ISO 1701:1974</docidentifier><docidentifier type="repository">current-metanorma-collection/rice</docidentifier><docnumber>1701:1974</docnumber></bibitem></references>
