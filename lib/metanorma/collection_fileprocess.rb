@@ -131,10 +131,25 @@ module Metanorma
       update_indirect_refs_to_docs(docxml, internal_refs)
       add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
+      svgmap_resolve(docxml)
       docxml.xpath(ns("//references[not(./bibitem[not(@hidden) or @hidden = 'false'])]")).each do |f|
         f["hidden"] = "true"
       end
       docxml.to_xml
+    end
+
+    def svgmap_resolve(docxml)
+      isodoc = IsoDoc::Convert.new({})
+      docxml.xpath(ns("//svgmap//eref")).each do |e|
+        href = isodoc.eref_target(e)
+        if href.match(/^#/)
+          next unless docxml.at("//*[@id = #{href.sub(/^#/, '')}]")
+        end
+        e["target"] = href.strip
+        e.name = "link"
+      e&.elements&.remove
+      end
+      Metanorma::Utils::svgmap_rewrite(docxml, "")
     end
 
     # repo(current-metanorma-collection/ISO 17301-1:2016)
