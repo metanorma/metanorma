@@ -63,7 +63,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
       concat_text = read_and_cleanup "spec/fixtures/collection/collection_full.xml"
       concat_file = read_and_cleanup "spec/fixtures/ouput/collection.xml"
-      expect(xmlpp(concat_file).sub(%r{src='data:image/svg+xml;base64,PD94bW.*'}, "src='data:image/svg+xml;base64,_'")).to be_equivalent_to xmlpp(concat_text).sub(%r{src='data:image/svg+xml;base64,PD94bW.*'}, "src='data:image/svg+xml;base64,_'")
+      expect(xmlpp(concat_file).sub(%r{src='data:image/svg\+xml;base64,PD94bW[^']*'}, "src='data:image/svg+xml;base64,_'")).to be_equivalent_to xmlpp(concat_text).sub(%r{src='data:image/svg\+xml;base64,PD94bW[^']*'}, "src='data:image/svg+xml;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
 
       %w[
