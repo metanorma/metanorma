@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "isodoc"
+require "metanorma-utils"
 
 module Metanorma
   # XML collection renderer
@@ -131,23 +132,29 @@ module Metanorma
       update_indirect_refs_to_docs(docxml, internal_refs)
       add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
-      svgmap_resolve(docxml)
+      svgmap_resolve(datauri_encode(docxml))
       docxml.xpath(ns("//references[not(./bibitem[not(@hidden) or @hidden = 'false'])]")).each do |f|
         f["hidden"] = "true"
       end
       docxml.to_xml
     end
 
+    def datauri_encode(docxml)
+      docxml.xpath(ns("//image")).each { |i| i["src"] = Metanorma::Utils::datauri(i["src"]) }
+      docxml
+    end
+
     def svgmap_resolve(docxml)
       isodoc = IsoDoc::Convert.new({})
       docxml.xpath(ns("//svgmap//eref")).each do |e|
         href = isodoc.eref_target(e)
+        next if href == "#" + e["bibitemid"]
         if href.match(/^#/)
-          next unless docxml.at("//*[@id = #{href.sub(/^#/, '')}]")
+          next unless docxml.at("//*[@id = '#{href.sub(/^#/, '')}']")
         end
         e["target"] = href.strip
         e.name = "link"
-      e&.elements&.remove
+        e&.elements&.remove
       end
       Metanorma::Utils::svgmap_rewrite(docxml, "")
     end

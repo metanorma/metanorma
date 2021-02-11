@@ -47,12 +47,13 @@ RSpec.describe Metanorma::Collection do
     it "YAML collection" do # rubocop:disable metrics/blocklength
       mock_pdf
       FileUtils.rm_f "spec/fixtures/ouput/collection.err"
+      FileUtils.cp "spec/fixtures/collection/action_schemaexpg1.svg", "action_schemaexpg1.svg"
       file = "spec/fixtures/collection/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
       of = "spec/fixtures/ouput"
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[presentation html pdf xml doc],
+        format: %i[presentation html pdf xml],
         output_folder: of,
         coverpage: "spec/fixtures/collection/collection_cover.html",
         compile: {
@@ -62,7 +63,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("spec/fixtures/ouput/collection.xml")).to be true
       concat_text = read_and_cleanup "spec/fixtures/collection/collection_full.xml"
       concat_file = read_and_cleanup "spec/fixtures/ouput/collection.xml"
-      expect(xmlpp(concat_file)).to be_equivalent_to xmlpp(concat_text)
+      expect(xmlpp(concat_file).sub(%r{src='data:image/svg\+xml;base64,PD94bW[^']*'}, "src='data:image/svg+xml;base64,_'")).to be_equivalent_to xmlpp(concat_text).sub(%r{src='data:image/svg\+xml;base64,PD94bW[^']*'}, "src='data:image/svg+xml;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
 
       %w[
@@ -84,22 +85,22 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("spec/fixtures/ouput/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1</h1>"
       expect(File.exist?("spec/fixtures/ouput/dummy.html")).to be true
-      expect(File.exist?("spec/fixtures/ouput/dummy.doc")).to be true
+      #expect(File.exist?("spec/fixtures/ouput/dummy.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.html")).to be true
-      expect(File.exist?("spec/fixtures/ouput/rice-amd.final.doc")).to be true
+      #expect(File.exist?("spec/fixtures/ouput/rice-amd.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.html")).to be true
-      expect(File.exist?("spec/fixtures/ouput/rice-en.final.doc")).to be true
+      #expect(File.exist?("spec/fixtures/ouput/rice-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.html")).to be true
-      expect(File.exist?("spec/fixtures/ouput/rice1-en.final.doc")).to be true
+      #expect(File.exist?("spec/fixtures/ouput/rice1-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.presentation.xml")).to be true
@@ -108,12 +109,13 @@ RSpec.describe Metanorma::Collection do
 
     it "YAML collection with documents inline" do # rubocop:disable metrics/blocklength
       mock_pdf
+      FileUtils.cp "spec/fixtures/collection/action_schemaexpg1.svg", "action_schemaexpg1.svg"
       file = "spec/fixtures/collection/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
       of = "spec/fixtures/ouput"
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[presentation html pdf xml doc],
+        format: %i[presentation html pdf xml],
         output_folder: of,
         coverpage: "spec/fixtures/collection/collection_cover.html",
         compile: {
@@ -126,22 +128,22 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("spec/fixtures/ouput/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1</h1>"
       expect(File.exist?("spec/fixtures/ouput/dummy.html")).to be true
-      expect(File.exist?("spec/fixtures/ouput/dummy.doc")).to be true
+      #expect(File.exist?("spec/fixtures/ouput/dummy.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.html")).to be true
-      expect(File.exist?("spec/fixtures/ouput/rice-amd.final.doc")).to be true
+      #expect(File.exist?("spec/fixtures/ouput/rice-amd.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.html")).to be true
-      expect(File.exist?("spec/fixtures/ouput/rice-en.final.doc")).to be true
+      #expect(File.exist?("spec/fixtures/ouput/rice-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-en.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.html")).to be true
-      expect(File.exist?("spec/fixtures/ouput/rice1-en.final.doc")).to be true
+      #expect(File.exist?("spec/fixtures/ouput/rice1-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.presentation.xml")).to be true
