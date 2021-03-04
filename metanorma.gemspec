@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
   #spec.add_dependency "relaton-cli"
   #spec.add_dependency "metanorma-standoc"
 
-  spec.add_development_dependency "rake", "~> 12.0"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "byebug", "~> 10.0"
   spec.add_development_dependency "rspec-command", "~> 1.0"
