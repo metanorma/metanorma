@@ -261,7 +261,7 @@ module Metanorma
         docxml = Nokogiri::XML(file)
         refs.each do |schema, ids|
           ids.keys.each do |id|
-            docxml.at(ns("//*[@id = '#{id}'][@type = '#{schema}']")) and
+            n = docxml.at("//*[@id = '#{id}']") and n.at("./ancestor-or-self::*[@type = '#{schema}']") and
               refs[schema][id] = identifier
           end
         end
