@@ -1,6 +1,7 @@
 require "fileutils"
 require "nokogiri"
 require "htmlentities"
+require "yaml"
 
 require "fontist"
 require "fontist/manifest/install"
@@ -251,6 +252,10 @@ module Metanorma
         isodoc_options[:datauriimage] = true if options[:datauriimage]
         file_extension = @processor.output_formats[ext]
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
+        if ext == :pdf
+          font_locations = fontist_font_locations
+          isodoc_options[:mn2pdf] = { font_manifest_file: font_locations.path } if font_locations
+        end
         if ext == :rxl
           options[:relaton] = outfilename
           relaton_export(isodoc, options)
@@ -264,6 +269,9 @@ module Metanorma
             puts e.backtrace.join("\n")
           end
         end
+        if ext == :pdf
+          # font_locations.unlink
+        end
         wrap_html(options, file_extension, outfilename)
       end
     end
@@ -275,7 +283,7 @@ module Metanorma
         return
       end
 
-      if !@processor.respond_to?(:fonts_manifest) || @processor.fonts_manifest.nil?
+      if missing_fontist_manifest?
         Util.log("[fontist] Skip font installation because font_manifest is missing", :debug)
         return
       end
@@ -320,6 +328,22 @@ module Metanorma
         confirmation: agree ? "yes" : "no",
         no_progress: no_progress
       )
+    end
+
+    def fontist_font_locations
+      return nil if missing_fontist_manifest?
+
+      location_manifest = Fontist::Manifest::Locations.from_hash(@processor.fonts_manifest)
+
+      location_manifest_file = Tempfile.new(["fontist_manifest_locations", ".yml"])
+      location_manifest_file.write location_manifest.to_yaml
+      location_manifest_file.flush
+
+      location_manifest_file
+    end
+
+    def missing_fontist_manifest?
+      !@processor.respond_to?(:fonts_manifest) || @processor.fonts_manifest.nil?
     end
 
     # @param options [Hash]
