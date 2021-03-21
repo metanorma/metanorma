@@ -175,6 +175,16 @@ RSpec.describe Metanorma::Compile do
     compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
   end
 
+  it "handle no_progress" do
+    mock_pdf
+    mock_sts
+    compile = Metanorma::Compile.new
+
+    expect(compile).to receive(:fontist_install).with(anything, false, true)
+
+    compile.compile("spec/assets/test.adoc", type: "iso", no_progress: true)
+  end
+
   it "processes metanorma options inside Asciidoc" do
     Metanorma::Compile.new.compile("spec/assets/test1.adoc", agree_to_terms: true)
     expect(File.exist?("spec/assets/test1.xml")).to be true

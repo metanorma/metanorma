@@ -285,14 +285,15 @@ module Metanorma
       manifest = @processor.fonts_manifest
       agree_to_terms = options[:agree_to_terms] || false
       continue_without_fonts = options[:continue_without_fonts] || false
+      no_progress = options[:no_progress] || false
 
-      install_fonts_safe(manifest, agree_to_terms, continue_without_fonts)
+      install_fonts_safe(manifest, agree_to_terms, continue_without_fonts, no_progress)
     end
 
     private
 
-    def install_fonts_safe(manifest, agree, continue)
-      fontist_install(manifest, agree)
+    def install_fonts_safe(manifest, agree, continue, no_progress)
+      fontist_install(manifest, agree, no_progress)
     rescue Fontist::Errors::LicensingError
       if continue
         Util.log("[fontist] Processing will continue without fonts installed", :debug)
@@ -310,13 +311,14 @@ module Metanorma
       Util.log("[fontist] Missing formula index. Fetching it...", :debug)
       Fontist::Formula.update_formulas_repo
       @updated_formulas_repo = true
-      install_fonts_safe(manifest, agree, continue)
+      install_fonts_safe(manifest, agree, continue, no_progress)
     end
 
-    def fontist_install(manifest, agree)
+    def fontist_install(manifest, agree, no_progress)
       Fontist::Manifest::Install.from_hash(
         manifest,
-        confirmation: agree ? "yes" : "no"
+        confirmation: agree ? "yes" : "no",
+        no_progress: no_progress
       )
     end
 

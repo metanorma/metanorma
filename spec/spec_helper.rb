@@ -6,6 +6,7 @@ require "rspec/matchers"
 require "equivalent-xml"
 require "rspec-command"
 require "rexml/document"
+require "mn2sts"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
