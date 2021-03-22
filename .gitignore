@@ -20,3 +20,5 @@
 Gemfile.lock
 relaton/
 .vscode/
+
+.rubocop-https--*

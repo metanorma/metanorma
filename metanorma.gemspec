@@ -42,4 +42,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
   spec.add_development_dependency "metanorma-iso", "~> 1.7.0"
   spec.add_development_dependency "sassc", "~> 2.4.0"
+  spec.add_development_dependency "rubocop", "~> 1.5.2"
 end
