@@ -70,11 +70,13 @@ module Metanorma
         /\n:title-font: (?<titlefont>[^\n]+)\n/ =~ headerextract
         /\n:i18nyaml: (?<i18nyaml>[^\n]+)\n/ =~ headerextract
         /\n:htmlstylesheet: (?<htmlstylesheet>[^\n]+)\n/ =~ headerextract
+        /\n:htmlstylesheet-override: (?<htmlstylesheet_override>[^\n]+)\n/ =~ headerextract
         /\n:htmlcoverpage: (?<htmlcoverpage>[^\n]+)\n/ =~ headerextract
         /\n:htmlintropage: (?<htmlintropage>[^\n]+)\n/ =~ headerextract
         /\n:scripts: (?<scripts>[^\n]+)\n/ =~ headerextract
         /\n:scripts-pdf: (?<scripts_pdf>[^\n]+)\n/ =~ headerextract
         /\n:wordstylesheet: (?<wordstylesheet>[^\n]+)\n/ =~ headerextract
+        /\n:wordstylesheet-override: (?<wordstylesheet_override>[^\n]+)\n/ =~ headerextract
         /\n:standardstylesheet: (?<standardstylesheet>[^\n]+)\n/ =~ headerextract
         /\n:header: (?<header>[^\n]+)\n/ =~ headerextract
         /\n:wordcoverpage: (?<wordcoverpage>[^\n]+)\n/ =~ headerextract
@@ -102,11 +104,13 @@ module Metanorma
           titlefont: defined?(titlefont) ? titlefont : nil,
           i18nyaml: defined?(i18nyaml) ? i18nyaml : nil,
           htmlstylesheet: defined?(htmlstylesheet) ? htmlstylesheet : nil,
+          htmlstylesheet_override: defined?(htmlstylesheet_override) ? htmlstylesheet_override : nil,
           htmlcoverpage: defined?(htmlcoverpage) ? htmlcoverpage : nil,
           htmlintropage: defined?(htmlintropage) ? htmlintropage : nil,
           scripts: defined?(scripts) ? scripts : nil,
           scripts_pdf: defined?(scripts_pdf) ? scripts_pdf : nil,
           wordstylesheet: defined?(wordstylesheet) ? wordstylesheet : nil,
+          wordstylesheet_override: defined?(wordstylesheet_override) ? wordstylesheet_override : nil,
           standardstylesheet: defined?(standardstylesheet) ? standardstylesheet : nil,
           header: defined?(header) ? header : nil,
           wordcoverpage: defined?(wordcoverpage) ? wordcoverpage : nil,
