@@ -31,6 +31,7 @@ RSpec.describe Metanorma::Compile do
 
     allow(compile).to receive(:fontist_install) {}
     expect(compile).to receive(:fontist_install).once
+    expect(compile).to receive(:fontist_font_locations).once
 
     compile.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true)
   end
@@ -42,6 +43,7 @@ RSpec.describe Metanorma::Compile do
 
     allow(compile).to receive(:fontist_install) {}
     expect(compile).to receive(:fontist_install).once
+    expect(compile).to receive(:fontist_font_locations).once
 
     compile.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true, no_install_fonts: false)
   end
@@ -170,6 +172,7 @@ RSpec.describe Metanorma::Compile do
       raise Fontist::Errors::UnsupportedFontError.new("TestFont") if @fontist_install_called == 2
     end
     allow(Fontist::Formula).to receive(:update_formulas_repo)
+    allow(Fontist::Manifest::Locations).to receive(:from_hash)
     expect(compile).to receive(:fontist_install).twice
 
     compile.compile("spec/assets/test.adoc", type: "iso", continue_without_fonts: true)
@@ -181,6 +184,7 @@ RSpec.describe Metanorma::Compile do
     compile = Metanorma::Compile.new
 
     expect(compile).to receive(:fontist_install).with(anything, false, true)
+    expect(compile).to receive(:fontist_font_locations).once
 
     compile.compile("spec/assets/test.adoc", type: "iso", no_progress: true)
   end

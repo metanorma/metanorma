@@ -253,7 +253,7 @@ module Metanorma
         file_extension = @processor.output_formats[ext]
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :pdf
-          font_locations = fontist_font_locations
+          font_locations = fontist_font_locations(options)
           isodoc_options[:mn2pdf] = { font_manifest_file: font_locations.path } if font_locations
         end
         if ext == :rxl
@@ -304,7 +304,10 @@ module Metanorma
       fontist_install(manifest, agree, no_progress)
     rescue Fontist::Errors::LicensingError
       if continue
-        Util.log("[fontist] Processing will continue without fonts installed", :debug)
+        Util.log(
+          "[fontist] Processing will continue without fonts installed",
+          :debug
+        )
       else
         Util.log("[fontist] Aborting without proper fonts installed," \
           " make sure that you have set option --agree-to-terms", :fatal)
@@ -312,10 +315,15 @@ module Metanorma
     rescue Fontist::Errors::FontError => e
       log_level = continue ? :warning : :fatal
       Util.log("[fontist] '#{e.font}' font is not supported. " \
-        "Please report this issue at github.com/metanorma/metanorma-#{@processor.short}/issues" \
-        " to report this issue.", log_level)
+        "Please report this issue at github.com/metanorma/metanorma-"\
+        "#{@processor.short}/issues to report this issue.", log_level)
     rescue Fontist::Errors::FormulaIndexNotFoundError
-      Util.log("[fontist] Bug: formula index not found after 'fontist update'", :fatal) if @updated_formulas_repo
+      if @updated_formulas_repo
+        Util.log(
+          "[fontist] Bug: formula index not found after 'fontist update'",
+          :fatal
+        )
+      end
       Util.log("[fontist] Missing formula index. Fetching it...", :debug)
       Fontist::Formula.update_formulas_repo
       @updated_formulas_repo = true
@@ -330,16 +338,21 @@ module Metanorma
       )
     end
 
-    def fontist_font_locations
-      return nil if missing_fontist_manifest?
+    def fontist_font_locations(options)
+      return nil if missing_fontist_manifest? || options[:no_install_fonts]
 
-      location_manifest = Fontist::Manifest::Locations.from_hash(@processor.fonts_manifest)
-
-      location_manifest_file = Tempfile.new(["fontist_manifest_locations", ".yml"])
+      location_manifest = Fontist::Manifest::Locations.from_hash(
+        @processor.fonts_manifest
+      )
+      location_manifest_file = Tempfile.new(["fontist_locations", ".yml"])
       location_manifest_file.write location_manifest.to_yaml
       location_manifest_file.flush
 
       location_manifest_file
+    rescue Fontist::Errors::FormulaIndexNotFoundError
+      raise unless options[:continue_without_fonts]
+
+      nil
     end
 
     def missing_fontist_manifest?
