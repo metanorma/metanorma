@@ -341,18 +341,22 @@ module Metanorma
     def fontist_font_locations(options)
       return nil if missing_fontist_manifest? || options[:no_install_fonts]
 
+      dump_fontist_manifest_locations(@processor.fonts_manifest)
+    rescue Fontist::Errors::FormulaIndexNotFoundError
+      raise unless options[:continue_without_fonts]
+
+      nil
+    end
+
+    def dump_fontist_manifest_locations(manifest)
       location_manifest = Fontist::Manifest::Locations.from_hash(
-        @processor.fonts_manifest
+        manifest
       )
       location_manifest_file = Tempfile.new(["fontist_locations", ".yml"])
       location_manifest_file.write location_manifest.to_yaml
       location_manifest_file.flush
 
       location_manifest_file
-    rescue Fontist::Errors::FormulaIndexNotFoundError
-      raise unless options[:continue_without_fonts]
-
-      nil
     end
 
     def missing_fontist_manifest?
