@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'htmlentities'
   spec.add_runtime_dependency 'nokogiri'
   spec.add_runtime_dependency 'mn2pdf', "~> 1"
-  spec.add_runtime_dependency 'metanorma-utils', "~> 1.0.3"
+  spec.add_runtime_dependency 'metanorma-utils', "~> 1.1.0"
   spec.add_runtime_dependency 'pry'
   spec.add_runtime_dependency 'fontist', '~> 1.8'
 
