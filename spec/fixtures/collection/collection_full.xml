@@ -44,6 +44,13 @@
         <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
       </docref>
     </manifest>
+    <manifest>
+  <level>attachments</level>
+  <title>Attachments</title>
+  <docref fileref='pics/action_schemaexpg1.svg' attachment='true' id='doc000000004'>
+    <identifier>action_schemaexpg1.svg</identifier>
+  </docref>
+</manifest>
   </manifest>
   <prefatory-content>
     <clause id="_clause" inline-header="false" obligation="normative">

@@ -64,6 +64,7 @@ module Metanorma
         out = col.clone
         out.directives << "documents-inline"
         out.documents.keys.each do |id|
+          next if @files[id][:attachment]
           filename = @files[id][:outputs][e]
           out.documents[id] = Metanorma::Document.raw_file(filename)
         end

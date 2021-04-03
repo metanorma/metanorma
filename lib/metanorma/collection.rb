@@ -168,6 +168,7 @@ module Metanorma
       return unless Array(@directives).include? "documents-inline"
 
       documents.each_with_index do |(_, d), i|
+        next if d.attachment
         id = format("doc%<index>09d", index: i)
         builder.send("doc-container", id: id) { |b| d.to_xml b }
       end
