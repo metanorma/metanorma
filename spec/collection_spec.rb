@@ -47,7 +47,8 @@ RSpec.describe Metanorma::Collection do
     it "YAML collection" do # rubocop:disable metrics/blocklength
       mock_pdf
       FileUtils.rm_f "spec/fixtures/ouput/collection.err"
-      FileUtils.cp "spec/fixtures/collection/action_schemaexpg1.svg", "action_schemaexpg1.svg"
+      FileUtils.cp "spec/fixtures/collection/action_schemaexpg1.svg",
+        "action_schemaexpg1.svg"
       file = "spec/fixtures/collection/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
       of = "spec/fixtures/ouput"
@@ -73,7 +74,8 @@ RSpec.describe Metanorma::Collection do
         _scope_ISO_1701_1974
         _introduction_ISO_17301-1_2016_Amd.1_2017
       ].each do |id|
-        expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({}).ns("//*[@id='#{id}']")).length).to_not be_zero
+        expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
+          .ns("//*[@id='#{id}']")).length).to_not be_zero
       end
 
       expect(File.exist?("spec/fixtures/collection/collection1.err")).to be true
@@ -84,6 +86,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("spec/fixtures/ouput/index.html")).to be true
       expect(File.read("spec/fixtures/ouput/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1</h1>"
+      expect(File.exist?("spec/fixtures/ouput/pics/action_schemaexpg1.svg")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.html")).to be true
       #expect(File.exist?("spec/fixtures/ouput/dummy.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.pdf")).to be true

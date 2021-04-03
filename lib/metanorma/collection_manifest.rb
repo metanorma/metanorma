@@ -45,6 +45,7 @@ module Metanorma
         mnf.xpath("xmlns:docref").map do |dr|
           h = { "identifier" => dr.at("identifier").text }
           h["fileref"] = dr[:fileref] if dr[:fileref]
+          h["attachment"] = dr[:attachment] if dr[:attachment]
           h
         end
       end
@@ -62,7 +63,7 @@ module Metanorma
       docs = @docref.each_with_object({}) do |dr, m|
         next m unless dr["fileref"]
 
-        m[dr["identifier"]] = Document.parse_file File.join(dir, dr["fileref"])
+        m[dr["identifier"]] = Document.parse_file(File.join(dir, dr["fileref"]), dr["attachment"])
         m
       end
       @manifest.reduce(docs) do |mem, mnf|
@@ -101,6 +102,7 @@ module Metanorma
       @docref.each do |dr|
         drf = builder.docref { |b| b.identifier dr["identifier"] }
         drf[:fileref] = dr["fileref"]
+        drf[:attachment] = dr["attachment"] if dr["attachment"]
         if collection.directives.include?("documents-inline")
           id = collection.documents.find_index { |k, _| k == dr["identifier"] }
           drf[:id] = format("doc%<index>09d", index: id)

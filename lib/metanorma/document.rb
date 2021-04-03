@@ -1,20 +1,22 @@
 module Metanorma
   class Document
     # @return [Strin]
-    attr_reader :file
+    attr_reader :file, :attachment
 
     # @param bibitem [RelatonBib::BibliographicItem]
     def initialize(bibitem, file, options = {})
       @bibitem = bibitem
       @file = file
+      @attachment = options[:attachment]
       @raw = options[:raw]
     end
 
     class << self
       # @param file [String] file path
+      # @param attachment [Bool] is an attachment
       # @return [Metanorma::Document]
-      def parse_file(file)
-        new bibitem(file), file
+      def parse_file(file, attachment)
+        new bibitem(file), file, { attachment: attachment }
       end
 
       # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
