@@ -4,7 +4,6 @@ RSpec.describe Metanorma::Registry do
   it "has a registry" do
     class NewProcessor < Metanorma::Processor
       def initialize
-        super
         @short = :new
       end
 
@@ -23,7 +22,6 @@ RSpec.describe Metanorma::Registry do
   it "deals with multiple aliases" do
     class NewProcessor < Metanorma::Processor
       def initialize
-        super
         @short = %i[new new2]
       end
 
@@ -51,7 +49,6 @@ RSpec.describe Metanorma::Registry do
   it "detects root tag of iso" do
     class NewProcessor < Metanorma::Processor
       def initialize
-        super
         @short = :iso
         @asciidoctor_backend = :iso
       end
