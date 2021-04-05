@@ -22,7 +22,6 @@ RSpec.describe Metanorma::Input::Asciidoc do
     expect(Hash[Metanorma::Input::Asciidoc.new.extract_options(<<~"INPUT").sort].to_s + "\n").to eq <<~"OUTPUT"
       = Document title
       Author
-      :script: a
       :body-font: b
       :header-font: c
       :title-font: d
@@ -48,7 +47,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :htmlstylesheet-override: x
       :wordstylesheet-override: y
     INPUT
-      {:bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :script=>"a", :scripts=>"i", :scripts_pdf=>"j", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
+      {:bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :scripts=>"i", :scripts_pdf=>"j", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
     OUTPUT
   end
 
