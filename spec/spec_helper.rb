@@ -22,12 +22,12 @@ RSpec.configure do |config|
   config.include RSpecCommand
 end
 
-def xmlpp(x)
+def xmlpp(xml)
   s = ""
   f = REXML::Formatters::Pretty.new(2)
   f.compact = true
   s1 = +s
-  f.write(REXML::Document.new(x),s1)
+  f.write(REXML::Document.new(xml), s1)
   s1
 end
 
@@ -106,13 +106,13 @@ ISOXML_BLANK_HDR = <<~"HDR"
 HDR
 
 def mock_pdf
-  allow(::Mn2pdf).to receive(:convert) do |url, output, c, d|
+  allow(::Mn2pdf).to receive(:convert) do |url, output, _c, _d|
     FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
   end
 end
 
 def mock_sts
-  allow(::Mn2sts).to receive(:convert) do |url, output, c, d|
+  allow(::Mn2sts).to receive(:convert) do |url, output, _c, _d|
     FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
   end
 end

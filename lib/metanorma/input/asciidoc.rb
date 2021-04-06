@@ -66,7 +66,7 @@ module Metanorma
                  scripts-pdf wordstylesheet
                  standardstylesheet header wordcoverpage wordintropage i18nyaml
                  ulstyle olstyle htmlstylesheet-override
-                 htmltoclevels doctoclevels
+                 htmltoclevels doctoclevels sectionsplit
                  body-font header-font monospace-font title-font
                  wordstylesheet-override).each_with_object({}) do |w, acc|
           m = /\n:#{w}: ([^\n]+)\n/.match(header) or next

@@ -15,6 +15,6 @@ RSpec.describe Metanorma::Config do
   end
 
   def restore_to_default_config
-    Metanorma.configuration.logs = [:warning, :error]
+    Metanorma.configuration.logs = %i[warning error]
   end
 end
