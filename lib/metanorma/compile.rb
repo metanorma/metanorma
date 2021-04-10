@@ -4,8 +4,8 @@ require "htmlentities"
 require "yaml"
 require "fontist"
 require "fontist/manifest/install"
-require_relative "fontist"
 require_relative "compile_validate"
+require_relative "fontist_utils"
 
 module Metanorma
   class Compile
@@ -26,7 +26,7 @@ module Metanorma
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
-      install_fonts(options)
+      FontistUtils.install_fonts(@processor, options)
       process_extensions(extensions, file, isodoc, options)
     end
 
@@ -209,7 +209,7 @@ module Metanorma
         file_extension = @processor.output_formats[ext]
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :pdf
-          font_locations = fontist_font_locations(options)
+          font_locations = FontistUtils.fontist_font_locations(@processor, options)
           font_locations and
             isodoc_options[:mn2pdf] = { font_manifest_file: font_locations.path }
         end

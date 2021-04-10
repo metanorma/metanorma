@@ -1,25 +1,40 @@
 module Metanorma
-  class Compile
-    def install_fonts(options)
-      return unless validate_install_fonts(options)
+  class FontistUtils
+    def self.install_fonts(processor, options)
+      return unless validate_install_fonts(processor, options)
 
-      @updated_formulas_repo = false
-      manifest = @processor.fonts_manifest
+      @@updated_formulas_repo = false
+      manifest = processor.fonts_manifest
       agree_to_terms = options[:agree_to_terms] || false
       continue_without_fonts = options[:continue_without_fonts] || false
       no_progress = options[:no_progress] || false
-      install_fonts_safe(manifest, agree_to_terms, continue_without_fonts,
-                         no_progress)
+
+      install_fonts_safe(
+        manifest,
+        agree_to_terms,
+        continue_without_fonts,
+        no_progress
+      )
+    end
+
+    def self.fontist_font_locations(processor, options)
+      return nil if missing_fontist_manifest?(processor) || options[:no_install_fonts]
+
+      dump_fontist_manifest_locations(processor.fonts_manifest)
+    rescue Fontist::Errors::FormulaIndexNotFoundError
+      raise unless options[:continue_without_fonts]
+
+      nil
     end
 
     private
 
-    def validate_install_fonts(options)
+    def self.validate_install_fonts(processor, options)
       if options[:no_install_fonts]
         Util.log("[fontist] Skip font installation because" \
                  " --no-install-fonts argument passed", :debug)
         return false
-      elsif missing_fontist_manifest?
+      elsif missing_fontist_manifest?(processor)
         Util.log("[fontist] Skip font installation because "\
                  "font_manifest is missing", :debug)
         return false
@@ -27,7 +42,7 @@ module Metanorma
       true
     end
 
-    def install_fonts_safe(manifest, agree, continue, no_progress)
+    def self.install_fonts_safe(manifest, agree, continue, no_progress)
       fontist_install(manifest, agree, no_progress)
     rescue Fontist::Errors::LicensingError
       if continue
@@ -42,10 +57,10 @@ module Metanorma
     rescue Fontist::Errors::FontError => e
       log_level = continue ? :warning : :fatal
       Util.log("[fontist] '#{e.font}' font is not supported. " \
-               "Please report this issue at github.com/metanorma/metanorma-"\
-               "#{@processor.short}/issues to report this issue.", log_level)
+               "Please report this issue at github.com/metanorma/metanorma" \
+               "/issues to report this issue.", log_level)
     rescue Fontist::Errors::FormulaIndexNotFoundError
-      if @updated_formulas_repo
+      if @@updated_formulas_repo
         Util.log(
           "[fontist] Bug: formula index not found after 'fontist update'",
           :fatal
@@ -53,11 +68,11 @@ module Metanorma
       end
       Util.log("[fontist] Missing formula index. Fetching it...", :debug)
       Fontist::Formula.update_formulas_repo
-      @updated_formulas_repo = true
+      @@updated_formulas_repo = true
       install_fonts_safe(manifest, agree, continue, no_progress)
     end
 
-    def fontist_install(manifest, agree, no_progress)
+    def self.fontist_install(manifest, agree, no_progress)
       Fontist::Manifest::Install.from_hash(
         manifest,
         confirmation: agree ? "yes" : "no",
@@ -65,17 +80,7 @@ module Metanorma
       )
     end
 
-    def fontist_font_locations(options)
-      return nil if missing_fontist_manifest? || options[:no_install_fonts]
-
-      dump_fontist_manifest_locations(@processor.fonts_manifest)
-    rescue Fontist::Errors::FormulaIndexNotFoundError
-      raise unless options[:continue_without_fonts]
-
-      nil
-    end
-
-    def dump_fontist_manifest_locations(manifest)
+    def self.dump_fontist_manifest_locations(manifest)
       location_manifest = Fontist::Manifest::Locations.from_hash(
         manifest
       )
@@ -85,8 +90,8 @@ module Metanorma
       location_manifest_file
     end
 
-    def missing_fontist_manifest?
-      !@processor.respond_to?(:fonts_manifest) || @processor.fonts_manifest.nil?
+    def self.missing_fontist_manifest?(processor)
+      !processor.respond_to?(:fonts_manifest) || processor.fonts_manifest.nil?
     end
   end
 end
