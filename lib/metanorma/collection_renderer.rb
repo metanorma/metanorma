@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require "isodoc"
-require_relative "./collection_fileprocess"
+require_relative "collection_fileprocess"
+require_relative "fontist_utils"
 
 module Metanorma
   # XML collection renderer
@@ -75,13 +76,27 @@ module Metanorma
     end
 
     def pdfconv
-      x = Asciidoctor.load nil, backend: @doctype.to_sym
-      x.converter.pdf_converter(Dummy.new)
+      doctype = @doctype.to_sym
+      x = Asciidoctor.load nil, backend: doctype
+      x.converter.pdf_converter(PdfOptionsNode.new(doctype, @compile_options))
+    end
+
+    class PdfOptionsNode
+      def initialize(doctype, options)
+        doc_proc = Metanorma::Registry.instance.find_processor(doctype)
+        @font_locations = FontistUtils.fontist_font_locations(doc_proc, options)
+      end
+
+      def attr(key)
+        if key == "mn2pdf-font-manifest-file" && @font_locations
+          @font_locations.path
+        end
+      end
     end
 
     # Dummy class
     class Dummy
-      def attr(_xyz); end
+      def attr(_key); end
     end
 
     # The isodoc class for the metanorma flavour we are using
