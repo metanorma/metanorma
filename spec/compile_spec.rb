@@ -24,6 +24,16 @@ RSpec.describe Metanorma::Compile do
     end
   end
 
+  it "passes asciidoc options onto isodoc" do
+    mock_iso_processor_output("spec/assets/test2.xml", "spec/assets/test2.presentation.xml",
+                             {:datauriimage=>true, :sourcefilename=>"spec/assets/test2.adoc"})
+    Metanorma::Compile.new.compile("spec/assets/test2.adoc",
+                                   type: "iso",
+                                   extension_keys: [:presentation],
+                                   datauriimage: true,
+                                   agree_to_terms: true)
+  end
+
   it "fontist_install called" do
     mock_pdf
     mock_sts
@@ -427,5 +437,13 @@ RSpec.describe Metanorma::Compile do
 
     Metanorma::Compile.new.compile(doc)
     expect(File.exist?("spec/assets/#{doc_name}.xml")).to be true
+  end
+
+  private
+
+  def mock_iso_processor_output(inname, outname, hash)
+    require "metanorma-iso"
+    expect(Metanorma::Registry.instance.find_processor(:iso)).to receive(:output)
+      .with(an_instance_of(String), inname, outname, :presentation, hash).at_least :once
   end
 end
