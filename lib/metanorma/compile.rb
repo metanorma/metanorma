@@ -210,6 +210,8 @@ module Metanorma
         file_extension = @processor.output_formats[ext]
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :pdf
+          p @processor
+          puts @processor.fonts_manifest
           font_locations = FontistUtils.fontist_font_locations(@processor, options)
           font_locations and
             isodoc_options[:mn2pdf] = { font_manifest_file: font_locations.path }
