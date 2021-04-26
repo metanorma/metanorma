@@ -223,12 +223,13 @@ module Metanorma
               @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
           rescue StandardError => e
-            puts e.message
-            puts e.backtrace.join("\n")
+            if e.message.start_with? "mn2pdf"
+              @errors << e.message
+            else
+              puts e.message
+              puts e.backtrace.join("\n")
+            end
           end
-        end
-        if ext == :pdf
-          # font_locations.unlink
         end
         wrap_html(options, file_extension, outfilename)
       end

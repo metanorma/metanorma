@@ -482,6 +482,15 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("spec/assets/#{doc_name}.xml")).to be true
   end
 
+  it "don't skip mn2pdf errors" do
+    allow(::Mn2pdf).to receive(:convert).and_raise("mn2pdf error")
+
+    c = Metanorma::Compile.new
+    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:pdf])
+
+    expect(c.errors).to include("mn2pdf error")
+  end
+
   private
 
   def mock_iso_processor_output(inname, outname, hash)
