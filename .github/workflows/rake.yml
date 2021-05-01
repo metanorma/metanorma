@@ -49,5 +49,5 @@ jobs:
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN || secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
-          event-type: notify
+          event-type: tests-passed
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
