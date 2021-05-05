@@ -19,6 +19,17 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  config.around do |example|
+    Dir.mktmpdir("rspec-") do |dir|
+      ["spec/assets/", "spec/examples/", "spec/fixtures/"].each do |assets|
+        tmp_assets = File.join(dir, assets)
+        FileUtils.mkdir_p tmp_assets
+        FileUtils.cp_r Dir.glob("#{assets}*"), tmp_assets
+      end
+      Dir.chdir(dir) { example.run }
+    end
+  end
+
   config.include RSpecCommand
 end
 
