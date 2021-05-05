@@ -223,7 +223,7 @@ module Metanorma
               @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
           rescue StandardError => e
-            if e.message.start_with? "mn2pdf"
+            if e.message.include? "Fatal:"
               @errors << e.message
             else
               puts e.message
