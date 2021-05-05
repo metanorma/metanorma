@@ -63,7 +63,8 @@ module Metanorma
       docs = @docref.each_with_object({}) do |dr, m|
         next m unless dr["fileref"]
 
-        m[dr["identifier"]] = Document.parse_file(File.join(dir, dr["fileref"]), dr["attachment"])
+        m[dr["identifier"]] = Document
+          .parse_file(File.join(dir, dr["fileref"]), dr["attachment"])
         m
       end
       @manifest.reduce(docs) do |mem, mnf|
