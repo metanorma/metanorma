@@ -17,13 +17,16 @@ module Metanorma
       @xml.xpath(ns("//docref")).each do |d|
         identifier = d.at(ns("./identifier")).text
         files[identifier] = file_entry(d, path)
-        next if files[identifier][:attachment]
-
-        file, _filename = targetfile(files[identifier], true)
-        xml = Nokogiri::XML(file)
-        add_document_suffix(identifier, xml)
-        files[identifier][:anchors] = read_anchors(xml)
-        files[identifier][:bibdata] = xml.at(ns("//bibdata"))
+        if files[identifier][:attachment]
+          files[identifier][:bibdata] = Metanorma::Document
+            .attachment_bibitem(identifier).root
+        else
+          file, _filename = targetfile(files[identifier], true)
+          xml = Nokogiri::XML(file)
+          add_document_suffix(identifier, xml)
+          files[identifier][:anchors] = read_anchors(xml)
+          files[identifier][:bibdata] = xml.at(ns("//bibdata"))
+        end
       end
       files
     end

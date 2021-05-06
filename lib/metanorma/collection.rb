@@ -111,7 +111,7 @@ module Metanorma
       # @parma mnf [Metanorma::CollectionManifest]
       # @return [Hash{String=>Metanorma::Document}]
       def docs_from_xml(xml, mnf)
-        xml.xpath("//xmlns:doc-container/*/xmlns:bibdata")
+        xml.xpath("//xmlns:doc-container//xmlns:bibdata")
           .each_with_object({}) do |b, m|
           bd = Relaton::Cli.parse_xml b
           docref = mnf.docref_by_id bd.docidentifier.first.id
@@ -172,6 +172,7 @@ module Metanorma
         id = format("doc%<index>09d", index: i)
         builder.send("doc-container", id: id) do |b|
           if d.attachment
+            d.bibitem and b << d.bibitem.root.to_xml
             b.attachment Metanorma::Utils::datauri(d.file)
           else d.to_xml b
           end

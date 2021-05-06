@@ -1,7 +1,7 @@
 module Metanorma
   class Document
     # @return [Strin]
-    attr_reader :file, :attachment
+    attr_reader :file, :attachment, :bibitem
 
     # @param bibitem [RelatonBib::BibliographicItem]
     def initialize(bibitem, file, options = {})
@@ -14,9 +14,12 @@ module Metanorma
     class << self
       # @param file [String] file path
       # @param attachment [Bool] is an attachment
+      # @param identifier [String] is the identifier assigned the file
+      # in the collection file
       # @return [Metanorma::Document]
-      def parse_file(file, attachment)
-        new bibitem(file), file, { attachment: attachment }
+      def parse_file(file, attachment, identifier = nil)
+        new(bibitem(file, attachment, identifier), file,
+            { attachment: attachment })
       end
 
       # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
@@ -29,6 +32,12 @@ module Metanorma
       def raw_file(filename)
         doc = Nokogiri::XML(File.read(filename, encoding: "UTF-8"))
         new(doc, filename, raw: true)
+      end
+
+      def attachment_bibitem(identifier)
+        Nokogiri::XML(
+          "<bibdata><docidentifier>#{identifier}</docidentifier></bibdata>",
+        )
       end
 
       private
@@ -51,13 +60,16 @@ module Metanorma
       # @param file [String]
       # @return [RelatonBib::BibliographicItem,
       #   RelatonIso::IsoBibliographicItem]
-      def bibitem(file)
-        case format(file)
-        when :xml
-          from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8"))
-        when :yaml
-          yaml = File.read(file, encoding: "UTF-8")
-          Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
+      def bibitem(file, attachment, identifier)
+        if attachment then attachment_bibitem(identifier)
+        else
+          case format(file)
+          when :xml
+            from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8"))
+          when :yaml
+            yaml = File.read(file, encoding: "UTF-8")
+            Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
+          end
         end
       end
     end

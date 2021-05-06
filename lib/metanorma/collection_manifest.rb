@@ -63,13 +63,13 @@ module Metanorma
       docs = @docref.each_with_object({}) do |dr, m|
         next m unless dr["fileref"]
 
-        m[dr["identifier"]] = Document
-          .parse_file(File.join(dir, dr["fileref"]), dr["attachment"])
+        m[dr["identifier"]] = Document.parse_file(
+          File.join(dir, dr["fileref"]),
+          dr["attachment"], dr["identifier"]
+        )
         m
       end
-      @manifest.reduce(docs) do |mem, mnf|
-        mem.merge mnf.documents(dir)
-      end
+      @manifest.reduce(docs) { |mem, mnf| mem.merge mnf.documents(dir) }
     end
 
     # @param builder [Nokogiri::XML::Builder]
