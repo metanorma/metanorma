@@ -165,5 +165,6 @@ RSpec.describe Metanorma::Collection do
   # @return [String]
   def cleanup_id(content)
     content.gsub(/(?<=<p id=")[^"]+/, "")
+     .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
   end
 end
