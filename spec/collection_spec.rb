@@ -21,7 +21,8 @@ RSpec.describe Metanorma::Collection do
       xml = mc.to_xml
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
-      expect(cleanup_id(xml)).to be_equivalent_to read_and_cleanup(xml_file)
+      expect(xmlpp(cleanup_id(xml)))
+        .to be_equivalent_to xmlpp(read_and_cleanup(xml_file))
     end
 
     it "XML collection" do
@@ -39,7 +40,7 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(cleanup_id(mc.to_xml)).to be_equivalent_to xml
+      expect(xmlpp(cleanup_id(mc.to_xml))).to be_equivalent_to xmlpp(xml)
     end
   end
 
@@ -77,7 +78,6 @@ RSpec.describe Metanorma::Collection do
         expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
           .ns("//*[@id='#{id}']")).length).to_not be_zero
       end
-
       expect(File.exist?("spec/fixtures/collection/collection1.err")).to be true
       expect(File.read("spec/fixtures/collection/collection1.err", encoding: "utf-8"))
         .to include "Cannot find crossreference to document"
@@ -165,5 +165,6 @@ RSpec.describe Metanorma::Collection do
   # @return [String]
   def cleanup_id(content)
     content.gsub(/(?<=<p id=")[^"]+/, "")
+     .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
   end
 end

@@ -4,7 +4,5 @@ require_relative "./output/xslfo"
 
 module Metanorma
   module Output
-
   end
 end
-

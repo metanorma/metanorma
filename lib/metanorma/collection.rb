@@ -44,9 +44,10 @@ module Metanorma
     end
 
     # rubocop:enable Metrics/AbcSize,Metrics/MethodLength
-     def clean_exit
-       @log.write(File.join(File.dirname(@file), File.basename(@file, ".*") + ".err"))
-     end
+    def clean_exit
+      @log.write(File.join(File.dirname(@file),
+                           "#{File.basename(@file, '.*')}.err"))
+    end
 
     # @return [String] XML
     def to_xml
@@ -110,7 +111,7 @@ module Metanorma
       # @parma mnf [Metanorma::CollectionManifest]
       # @return [Hash{String=>Metanorma::Document}]
       def docs_from_xml(xml, mnf)
-        xml.xpath("//xmlns:doc-container/*/xmlns:bibdata")
+        xml.xpath("//xmlns:doc-container//xmlns:bibdata")
           .each_with_object({}) do |b, m|
           bd = Relaton::Cli.parse_xml b
           docref = mnf.docref_by_id bd.docidentifier.first.id
@@ -153,7 +154,7 @@ module Metanorma
 
       require "metanorma-#{doctype}"
       out = sections(dummy_header + cnt)
-      builder.send(elm + "-content") { |b| b << out }
+      builder.send("#{elm}-content") { |b| b << out }
     end
 
     # @param cnt [String] prefatory/final content
@@ -168,9 +169,14 @@ module Metanorma
       return unless Array(@directives).include? "documents-inline"
 
       documents.each_with_index do |(_, d), i|
-        next if d.attachment
         id = format("doc%<index>09d", index: i)
-        builder.send("doc-container", id: id) { |b| d.to_xml b }
+        builder.send("doc-container", id: id) do |b|
+          if d.attachment
+            d.bibitem and b << d.bibitem.root.to_xml
+            b.attachment Metanorma::Utils::datauri(d.file)
+          else d.to_xml b
+          end
+        end
       end
     end
 
