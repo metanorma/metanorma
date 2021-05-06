@@ -21,7 +21,7 @@ module Metanorma
           files[identifier][:bibdata] = Metanorma::Document
             .attachment_bibitem(identifier).root
         else
-          file, _filename = targetfile(files[identifier], true)
+          file, _filename = targetfile(files[identifier], read: true)
           xml = Nokogiri::XML(file)
           add_document_suffix(identifier, xml)
           files[identifier][:anchors] = read_anchors(xml)
@@ -61,12 +61,20 @@ module Metanorma
 
     # return file contents + output filename for each file in the collection,
     # given a docref entry
-    # @param data [Hash]
-    # @param read [Boolean]
+    # @param data [Hash] docref entry
+    # @param read [Boolean] read the file in and return it
+    # @param doc [Boolean] I am a Metanorma document,
+    # so my URL should end with html or pdf or whatever
+    # @param relative [Boolean] Return path relative to YAML file,
+    # not relative to calling function
     # @return [Array<String, nil>]
-    def targetfile(data, read = false, doc = true)
-      if data[:type] == "fileref" then ref_file data[:ref], read, doc
-      else xml_file data[:id], read
+    def targetfile(data, options)
+      options = { read: false, doc: true, relative: false }.merge(options)
+      path = options[:relative] ? data[:rel_path] : data[:ref]
+      if data[:type] == "fileref"
+        ref_file path, options[:read], options[:doc]
+      else
+        xml_file data[:id], options[:read]
       end
     end
 
@@ -97,7 +105,7 @@ module Metanorma
     end
 
     def copy_file_to_dest(fileref)
-      _file, filename = targetfile(fileref, true, false)
+      _file, filename = targetfile(fileref, read: true, doc: false)
       dest = File.join(@outdir, fileref[:rel_path])
       FileUtils.mkdir_p(File.dirname(dest))
       FileUtils.cp filename, dest
@@ -110,7 +118,7 @@ module Metanorma
       @files.each do |identifier, x|
         if x[:attachment] then copy_file_to_dest(x)
         else
-          file, filename = targetfile(x, true)
+          file, filename = targetfile(x, read: true)
           file = update_xrefs(file, identifier, internal_refs)
           Tempfile.open(["collection", ".xml"], encoding: "utf-8") do |f|
             f.write(file)

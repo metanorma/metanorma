@@ -78,7 +78,6 @@ RSpec.describe Metanorma::Collection do
         expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
           .ns("//*[@id='#{id}']")).length).to_not be_zero
       end
-require "byebug"; byebug
       expect(File.exist?("spec/fixtures/collection/collection1.err")).to be true
       expect(File.read("spec/fixtures/collection/collection1.err", encoding: "utf-8"))
         .to include "Cannot find crossreference to document"

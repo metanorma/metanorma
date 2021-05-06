@@ -222,7 +222,7 @@ at the address below or ISO&#x2019;s member body in the country of the requester
    <a xlink:href='mn://basic_attribute_schema'>
      <rect x='324.69' y='450.52' class='st0' width='132.62' height='40.75'/>
    </a>
-   <a xlink:href='spec/fixtures/collection/dummy.html#A2_ISO_17302'>
+   <a xlink:href='dummy.html#A2_ISO_17302'>
      <rect x='324.69' y='528.36' class='st0' width='148.16' height='40.75'/>
    </a>
  </svg>
@@ -269,7 +269,7 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 <title language="fr" format="text/plain" type="title-main">Sp&#xE9;cification et m&#xE9;thodes d&#x2019;essai</title>
 <title language="fr" format="text/plain" type="title-part">Riz</title>
 <title language="fr" format="text/plain" type="title-amd">Fraction massique de mati&#xE8;re &#xE9;trang&#xE8;re, riz usin&#xE9; (non gluant), diviseurs d&#x2019;&#xE9;chantillon et recommandations relatives aux conditions d&#x2019;entreposage et de transport</title>
-<uri type="citation">spec/fixtures/collection/rice-amd.final.html</uri>
+<uri type="citation">rice-amd.final.html</uri>
 <docidentifier type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier>
 <docidentifier type="iso-with-lang">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
 <docidentifier type="iso-reference">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
@@ -320,7 +320,7 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
 <title language="fr" format="text/plain" type="main">Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0; table de hauteur variable, &#xE0; broche horizontale ou verticale</title>
 <title language="fr" format="text/plain" type="title-main">Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0; table de hauteur variable, &#xE0; broche horizontale ou verticale</title>
-<uri type="citation">spec/fixtures/collection/rice1-en.final.html</uri>
+<uri type="citation">rice1-en.final.html</uri>
 <docidentifier type="ISO">ISO 1701:1974</docidentifier>
 <docidentifier type="iso-with-lang">ISO 1701:1974(E)</docidentifier>
 <docidentifier type="iso-reference">ISO 1701:1974(E)</docidentifier>
@@ -494,8 +494,8 @@ at the address below or ISO&#x2019;s member body in the country of the requester
   <title language='en' format='text/plain' type='title-main'>Dummy document</title>
   <title language='fr' format='text/plain' type='main'>Dummy document</title>
   <title language='fr' format='text/plain' type='title-main'>Dummy document</title>
-  <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
-  <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
+  <uri type='citation'>dummy.html</uri>
+  <uri type='citation'>dummy.html</uri>
   <docidentifier type='ISO'>ISO 17302:2016</docidentifier>
   <docidentifier type='iso-with-lang'>ISO 17302:2016(E)</docidentifier>
   <docidentifier type='iso-reference'>ISO 17302:2016(E)</docidentifier>
@@ -531,7 +531,7 @@ at the address below or ISO&#x2019;s member body in the country of the requester
   </copyright>
 </bibitem>
 <bibitem id='action_schemaexpg1.svg_ISO_17301-1_2016' hidden='true'>
-  <uri type='citation'>spec/fixtures/collection/pics/action_schemaexpg1.svg</uri>
+  <uri type='citation'>pics/action_schemaexpg1.svg</uri>
   <docidentifier>action_schemaexpg1.svg</docidentifier>
 </bibitem>
 </references>
@@ -994,8 +994,8 @@ at the address below or ISO&#x2019;s member body in the country of the requester
                      Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0;
                      table de hauteur variable, &#xE0; broche horizontale ou verticale
                    </title>
-                   <uri type='citation'>spec/fixtures/collection/rice1-en.final.html</uri>
-                   <uri type='citation'>spec/fixtures/collection/rice1-en.final.html</uri>
+                   <uri type='citation'>rice1-en.final.html</uri>
+                   <uri type='citation'>rice1-en.final.html</uri>
                    <docidentifier type='ISO'>ISO 1701:1974</docidentifier>
                    <docidentifier type='iso-with-lang'>ISO 1701:1974(E)</docidentifier>
                    <docidentifier type='iso-reference'>ISO 1701:1974(E)</docidentifier>
@@ -1061,8 +1061,8 @@ at the address below or ISO&#x2019;s member body in the country of the requester
                      recommandations relatives aux conditions d&#x2019;entreposage et
                      de transport
                    </title>
-                   <uri type='citation'>spec/fixtures/collection/rice-amd.final.html</uri>
-                   <uri type='citation'>spec/fixtures/collection/rice-amd.final.html</uri>
+                   <uri type='citation'>rice-amd.final.html</uri>
+                   <uri type='citation'>rice-amd.final.html</uri>
                    <docidentifier type='ISO'>ISO 17301-1:2016/Amd.1:2017</docidentifier>
                    <docidentifier type='iso-with-lang'>ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
                    <docidentifier type='iso-reference'>ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
@@ -1110,9 +1110,9 @@ at the address below or ISO&#x2019;s member body in the country of the requester
                    <title language='en' format='text/plain' type='title-main'>Dummy document</title>
                    <title language='fr' format='text/plain' type='main'>Dummy document</title>
                    <title language='fr' format='text/plain' type='title-main'>Dummy document</title>
-                   <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
-                   <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
-                   <uri type='citation'>spec/fixtures/collection/dummy.html</uri>
+                   <uri type='citation'>dummy.html</uri>
+                   <uri type='citation'>dummy.html</uri>
+                   <uri type='citation'>dummy.html</uri>
                    <docidentifier type='ISO'>ISO 17302:2016</docidentifier>
                    <docidentifier type='iso-with-lang'>ISO 17302:2016(E)</docidentifier>
                    <docidentifier type='iso-reference'>ISO 17302:2016(E)</docidentifier>
