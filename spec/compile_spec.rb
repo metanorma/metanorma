@@ -483,12 +483,13 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "don't skip mn2pdf errors" do
-    allow(::Mn2pdf).to receive(:convert).and_raise("mn2pdf error")
+    exception_msg = "[mn2pdf] Fatal:"
+    allow(::Mn2pdf).to receive(:convert).and_raise(exception_msg)
 
     c = Metanorma::Compile.new
     c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:pdf])
 
-    expect(c.errors).to include("mn2pdf error")
+    expect(c.errors).to include(exception_msg)
   end
 
   private
