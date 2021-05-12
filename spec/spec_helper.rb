@@ -127,3 +127,8 @@ def mock_sts
     FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
   end
 end
+
+def supress_exit
+  yield
+rescue SystemExit
+end
