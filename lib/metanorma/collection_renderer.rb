@@ -135,6 +135,7 @@ module Metanorma
     # populate liquid template of ARGV[1] with metadata extracted from
     # collection manifest
     def coverpage
+      return unless @coverpage
       File.open(File.join(@outdir, "index.html"), "w:UTF-8") do |f|
         f.write @isodoc.populate_template(File.read(@coverpage))
       end
@@ -199,8 +200,8 @@ module Metanorma
       unless options[:format].is_a?(Array) && (FORMATS & options[:format]).any?
         raise ArgumentError, "Need to specify formats (xml,html,pdf,doc)"
       end
-      return if !options[:format].include?(:html) || options[:coverpage]
-      raise ArgumentError, "Need to specify a coverpage to render HTML"
+      #return if !options[:format].include?(:html) || options[:coverpage]
+      #raise ArgumentError, "Need to specify a coverpage to render HTML"
     end
   end
 end
