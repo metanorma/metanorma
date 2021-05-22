@@ -16,7 +16,7 @@ module Metanorma
       files = {}
       @xml.xpath(ns("//docref")).each do |d|
         identifier = d.at(ns("./identifier")).text
-        files[identifier] = file_entry(d, path)
+        files[identifier] = file_entry(d, identifier, path)
         if files[identifier][:attachment]
           files[identifier][:bibdata] = Metanorma::Document
             .attachment_bibitem(identifier).root
@@ -31,10 +31,14 @@ module Metanorma
       files
     end
 
-    def file_entry(docref, path)
+    # rel_path is the source file address, determined relative to the YAML.
+    # out_path is the destination file address, with any references outside
+    # the working directory (../../...) truncated
+    def file_entry(docref, identifier, _path)
       ret = if docref["fileref"]
-              { type: "fileref", ref: File.join(path, docref["fileref"]),
-                rel_path: docref["fileref"] }
+              { type: "fileref", ref: @documents[identifier].file,
+                rel_path: docref["fileref"],
+                out_path: Util::source2dest_filename(docref["fileref"]) }
             else
               { type: "id", ref: docref["id"] }
             end
@@ -65,12 +69,12 @@ module Metanorma
     # @param read [Boolean] read the file in and return it
     # @param doc [Boolean] I am a Metanorma document,
     # so my URL should end with html or pdf or whatever
-    # @param relative [Boolean] Return path relative to YAML file,
-    # not relative to calling function
+    # @param relative [Boolean] Return output path,
+    # formed relative to YAML file, not input path, relative to calling function
     # @return [Array<String, nil>]
     def targetfile(data, options)
       options = { read: false, doc: true, relative: false }.merge(options)
-      path = options[:relative] ? data[:rel_path] : data[:ref]
+      path = options[:relative] ? data[:out_path] : data[:ref]
       if data[:type] == "fileref"
         ref_file path, options[:read], options[:doc]
       else
@@ -90,23 +94,23 @@ module Metanorma
     end
 
     # compile and output individual file in collection
-    def file_compile(f, filename, identifier)
+    def file_compile(file, filename, identifier)
       # warn "metanorma compile -x html #{f.path}"
       c = Compile.new
-      c.compile f.path, { format: :asciidoc,
-                          extension_keys: @format }.merge(@compile_options)
+      c.compile file.path, { format: :asciidoc,
+                             extension_keys: @format }.merge(@compile_options)
       @files[identifier][:outputs] = {}
       @format.each do |e|
         ext = c.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^\.]+$/, ext.to_s)
-        FileUtils.mv f.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
+        FileUtils.mv file.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
         @files[identifier][:outputs][e] = File.join(@outdir, fn)
       end
     end
 
     def copy_file_to_dest(fileref)
       _file, filename = targetfile(fileref, read: true, doc: false)
-      dest = File.join(@outdir, fileref[:rel_path])
+      dest = File.join(@outdir, fileref[:out_path])
       FileUtils.mkdir_p(File.dirname(dest))
       FileUtils.cp filename, dest
     end

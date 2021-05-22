@@ -51,16 +51,21 @@ module Metanorma
 
     # @return [String] XML
     def to_xml
-      Nokogiri::XML::Builder.new do |xml|
+      b = Nokogiri::XML::Builder.new do |xml|
         xml.send("metanorma-collection",
                  "xmlns" => "http://metanorma.org") do |mc|
-          mc << @bibdata.to_xml(bibdata: true, date_format: :full)
-          @manifest.to_xml mc
-          content_to_xml "prefatory", mc
-          doccontainer mc
-          content_to_xml "final", mc
+          collection_body(mc)
         end
-      end.to_xml
+      end
+      b.to_xml
+    end
+
+    def collection_body(coll)
+      coll << @bibdata.to_xml(bibdata: true, date_format: :full)
+      @manifest.to_xml coll
+      content_to_xml "prefatory", coll
+      doccontainer coll
+      content_to_xml "final", coll
     end
 
     def render(opts)
@@ -128,7 +133,7 @@ module Metanorma
         <<~CONT
 
           == #{xml.at('title')&.text}
-          #{xml.at('p')&.text}
+        #{xml.at('p')&.text}
         CONT
       end
     end
@@ -153,7 +158,7 @@ module Metanorma
       return unless (cnt = send(elm))
 
       require "metanorma-#{doctype}"
-      out = sections(dummy_header + cnt)
+      out = sections(dummy_header + cnt.strip)
       builder.send("#{elm}-content") { |b| b << out }
     end
 
@@ -169,13 +174,17 @@ module Metanorma
       return unless Array(@directives).include? "documents-inline"
 
       documents.each_with_index do |(_, d), i|
-        id = format("doc%<index>09d", index: i)
-        builder.send("doc-container", id: id) do |b|
-          if d.attachment
-            d.bibitem and b << d.bibitem.root.to_xml
-            b.attachment Metanorma::Utils::datauri(d.file)
-          else d.to_xml b
-          end
+        doccontainer1(builder, d, i)
+      end
+    end
+
+    def doccontainer1(builder, doc, idx)
+      id = format("doc%<index>09d", index: idx)
+      builder.send("doc-container", id: id) do |b|
+        if doc.attachment
+          doc.bibitem and b << doc.bibitem.root.to_xml
+          b.attachment Metanorma::Utils::datauri(doc.file)
+        else doc.to_xml b
         end
       end
     end

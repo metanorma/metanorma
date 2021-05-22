@@ -11,5 +11,9 @@ module Metanorma
         exit(1)
       end
     end
+
+    def self.source2dest_filename(name)
+      name.sub(%r{^(\./)?(\.\./)+}, "")
+    end
   end
 end

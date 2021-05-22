@@ -87,6 +87,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("spec/fixtures/ouput/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1</h1>"
       expect(File.exist?("spec/fixtures/ouput/pics/action_schemaexpg1.svg")).to be true
+      expect(File.exist?("spec/fixtures/ouput/assets/rice_image1.png")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.html")).to be true
       #expect(File.exist?("spec/fixtures/ouput/dummy.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.pdf")).to be true
@@ -106,6 +107,7 @@ RSpec.describe Metanorma::Collection do
       #expect(File.exist?("spec/fixtures/ouput/rice1-en.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/rice1-en.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.presentation.xml")).to be true
       FileUtils.rm_rf of
     end
@@ -165,6 +167,7 @@ RSpec.describe Metanorma::Collection do
   # @return [String]
   def cleanup_id(content)
     content.gsub(/(?<=<p id=")[^"]+/, "")
-     .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
+      .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
+      .gsub(%r{data:image/png[^<"']+}, "data:image/png")
   end
 end

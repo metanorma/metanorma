@@ -48,13 +48,17 @@ manifest:
         - fileref: pics/action_schemaexpg1.svg
           identifier: action_schemaexpg1.svg
           attachment: true
+        - fileref: ../../assets/rice_image1.png
+          identifier: rice_image1.png
+          attachment: true
 prefatory-content: 
 |
 
-  == Clause
-  Welcome to our collection
+ == Clause
+ Welcome to our collection
 
 final-content:
 |
-  == Exordium
-  Hic explicit
+
+ == Exordium
+ Hic explicit
