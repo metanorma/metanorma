@@ -51,10 +51,11 @@ manifest:
 prefatory-content: 
 |
 
-  == Clause
-  Welcome to our collection
+ == Clause
+ Welcome to our collection
 
 final-content:
 |
-  == Exordium
-  Hic explicit
+
+ == Exordium
+ Hic explicit

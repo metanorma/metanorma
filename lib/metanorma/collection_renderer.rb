@@ -21,9 +21,9 @@ module Metanorma
     # the collection, and that the flavour gem can sensibly process it. We may
     # need to enhance metadata in the flavour gems isodoc/metadata.rb with
     # collection metadata
-    def initialize(xml, folder, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    def initialize(collection, folder, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       check_options options
-      @xml = Nokogiri::XML xml # @xml is the collection manifest
+      @xml = Nokogiri::XML collection.to_xml # @xml is the collection manifest
       @lang = @xml&.at(ns("//bibdata/language"))&.text || "en"
       @script = @xml&.at(ns("//bibdata/script"))&.text || "Latn"
       @doctype = doctype
@@ -37,6 +37,7 @@ module Metanorma
       @format = options[:format]
       @compile_options = options[:compile] || {}
       @log = options[:log]
+      @documents = collection.documents
 
       # list of files in the collection
       @files = read_files folder
@@ -51,7 +52,7 @@ module Metanorma
     # @option options [Strong] :ourput_folder output directory
     def self.render(col, options = {})
       folder = File.dirname col.file
-      cr = new(col.to_xml, folder, options)
+      cr = new(col, folder, options)
       cr.files
       cr.concatenate(col, options)
       cr.coverpage if options[:format]&.include?(:html)
@@ -61,11 +62,13 @@ module Metanorma
       options[:format] << :presentation if options[:format].include?(:pdf)
       options[:format].uniq.each do |e|
         next unless %i(presentation xml).include?(e)
+
         ext = e == :presentation ? "presentation.xml" : e.to_s
         out = col.clone
         out.directives << "documents-inline"
         out.documents.keys.each do |id|
           next if @files[id][:attachment]
+
           filename = @files[id][:outputs][e]
           out.documents[id] = Metanorma::Document.raw_file(filename)
         end
@@ -136,6 +139,7 @@ module Metanorma
     # collection manifest
     def coverpage
       return unless @coverpage
+
       File.open(File.join(@outdir, "index.html"), "w:UTF-8") do |f|
         f.write @isodoc.populate_template(File.read(@coverpage))
       end
@@ -200,8 +204,6 @@ module Metanorma
       unless options[:format].is_a?(Array) && (FORMATS & options[:format]).any?
         raise ArgumentError, "Need to specify formats (xml,html,pdf,doc)"
       end
-      #return if !options[:format].include?(:html) || options[:coverpage]
-      #raise ArgumentError, "Need to specify a coverpage to render HTML"
     end
   end
 end

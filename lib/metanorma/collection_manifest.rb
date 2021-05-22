@@ -44,7 +44,7 @@ module Metanorma
       def parse_docref(mnf)
         mnf.xpath("xmlns:docref").map do |dr|
           h = { "identifier" => dr.at("identifier").text }
-          h["fileref"] = dr[:fileref] if dr[:fileref]
+          dr[:fileref] and h["fileref"] = dr[:fileref]
           h["attachment"] = dr[:attachment] if dr[:attachment]
           h
         end
@@ -102,7 +102,7 @@ module Metanorma
     def docref_to_xml(builder)
       @docref.each do |dr|
         drf = builder.docref { |b| b.identifier dr["identifier"] }
-        drf[:fileref] = dr["fileref"]
+        drf[:fileref] = Util::source2dest_filename(dr["fileref"])
         drf[:attachment] = dr["attachment"] if dr["attachment"]
         if collection.directives.include?("documents-inline")
           id = collection.documents.find_index { |k, _| k == dr["identifier"] }
