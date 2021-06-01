@@ -57,7 +57,7 @@ module Metanorma
       end
 
       ADOC_OPTIONS = %w(htmlstylesheet htmlcoverpage htmlintropage scripts
-                        scripts-pdf wordstylesheet bare i18nyaml
+                        scripts-override scripts-pdf wordstylesheet bare i18nyaml
                         standardstylesheet header wordcoverpage wordintropage
                         ulstyle olstyle htmlstylesheet-override
                         htmltoclevels doctoclevels sectionsplit
