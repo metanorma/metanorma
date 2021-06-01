@@ -45,10 +45,11 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :hierarchical-assets: t
       :use-xinclude: u
       :break-up-urls-in-tables: v
+      :bare: w
       :htmlstylesheet-override: x
       :wordstylesheet-override: y
     INPUT
-      {:bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :scripts=>"i", :scripts_pdf=>"j", :sectionsplit=>"a", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
+      {:bare=>"w", :bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :scripts=>"i", :scripts_pdf=>"j", :sectionsplit=>"a", :standardstylesheet=>"l", :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
     OUTPUT
   end
 
