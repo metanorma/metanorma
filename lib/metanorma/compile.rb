@@ -217,6 +217,8 @@ module Metanorma
         if ext == :rxl
           options[:relaton] = outfilename
           relaton_export(isodoc, options)
+        elsif options[:passthrough_presentation_xml] && ext == :presentation
+          FileUtils.cp f, presentationxml_name
         else
           begin
             @processor.use_presentation_xml(ext) ?

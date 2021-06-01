@@ -38,6 +38,7 @@ module Metanorma
       @compile_options = options[:compile] || {}
       @log = options[:log]
       @documents = collection.documents
+      @directives = collection.directives
 
       # list of files in the collection
       @files = read_files folder
@@ -170,7 +171,7 @@ module Metanorma
       elm.xpath(ns("./docref")).each do |d|
         identifier = d.at(ns("./identifier")).text
         link = if d["fileref"] then d["fileref"].sub(/\.xml$/, ".html")
-               else d["id"] + ".html"
+               else "#{d['id']}.html"
                end
         builder.li { builder.a identifier, href: link }
       end

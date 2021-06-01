@@ -96,6 +96,8 @@ module Metanorma
     # compile and output individual file in collection
     def file_compile(file, filename, identifier)
       # warn "metanorma compile -x html #{f.path}"
+      Array(@directives).include?("presentation-xml") and
+        @compile_options.merge!(passthrough_presentation_xml: true)
       c = Compile.new
       c.compile file.path, { format: :asciidoc,
                              extension_keys: @format }.merge(@compile_options)
@@ -103,7 +105,7 @@ module Metanorma
       @format.each do |e|
         ext = c.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^\.]+$/, ext.to_s)
-        FileUtils.mv file.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
+        FileUtils.cp file.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
         @files[identifier][:outputs][e] = File.join(@outdir, fn)
       end
     end
