@@ -162,11 +162,11 @@ module Metanorma
 
     # if there is a crossref to another document, with no anchor, retrieve the
     # anchor given the locality, and insert it into the crossref
-    def update_anchor_create_loc(bib, e, docid)
-      ins = e.at(ns("./localityStack")) || return
+    def update_anchor_create_loc(bib, eref, docid)
+      ins = eref.at(ns("./localityStack")) or return
       type = ins&.at(ns("./locality/@type"))&.text
       ref = ins&.at(ns("./locality/referenceFrom"))&.text
-      (anchor = @files[docid][:anchors][type][ref]) || return
+      anchor = @files[docid][:anchors].dig(type, ref) or return
       ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
       ref_from.content = anchor.sub(/^_/, "")
       locality = Nokogiri::XML::Node.new "locality", bib
