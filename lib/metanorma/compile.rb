@@ -207,6 +207,7 @@ module Metanorma
         isodoc_options = @processor.extract_options(file)
         isodoc_options[:datauriimage] = true if options[:datauriimage]
         isodoc_options[:sourcefilename] = options[:filename]
+        isodoc_options[:bare] = options[:bare]
         file_extension = @processor.output_formats[ext]
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :pdf

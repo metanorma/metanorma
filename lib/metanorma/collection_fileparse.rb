@@ -41,11 +41,12 @@ module Metanorma
         return
       end
       id = bib["id"]
-      newbib = bib.replace(@files[docid][:bibdata])
+      newbib = @files[docid][:bibdata].dup
       newbib.name = "bibitem"
       newbib["id"] = id
       newbib["hidden"] = "true"
       newbib&.at(ns("./ext"))&.remove
+      bib.replace(newbib)
       _file, url = targetfile(@files[docid], relative: true, read: false,
                                              doc: !@files[docid][:attachment])
       uri_node = Nokogiri::XML::Node.new "uri", newbib

@@ -121,7 +121,9 @@ module Metanorma
     # files are held in memory, and altered as postprocessing
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       internal_refs = locate_internal_refs
-      @files.each do |identifier, x|
+      @files.each_with_index do |(identifier, x), i|
+        i.positive? && Array(@directives).include?("bare-after-first") and
+          @compile_options.merge!(bare: true)
         if x[:attachment] then copy_file_to_dest(x)
         else
           file, filename = targetfile(x, read: true)
