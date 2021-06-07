@@ -15,7 +15,7 @@ module Metanorma
     def read_files(path) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       files = {}
       @xml.xpath(ns("//docref")).each do |d|
-        identifier = d.at(ns("./identifier")).text
+        identifier = d.at(ns("./identifier")).children.to_xml
         files[identifier] = file_entry(d, identifier, path)
         if files[identifier][:attachment]
           files[identifier][:bibdata] = Metanorma::Document

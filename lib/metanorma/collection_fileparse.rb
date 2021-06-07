@@ -32,7 +32,7 @@ module Metanorma
     # @param bib [Nokogiri::XML::Element]
     # @param identifier [String]
     def update_bibitem(bib, identifier) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      docid = bib&.at(ns("./docidentifier"))&.text
+      docid = bib&.at(ns("./docidentifier"))&.children&.to_xml
       unless @files[docid]
         error = "[metanorma] Cannot find crossreference to document #{docid} "\
           "in document #{identifier}."
@@ -136,7 +136,7 @@ module Metanorma
     # update crossrefences to other documents, to include
     # disambiguating document suffix on id
     def update_anchors(bib, docxml, _id) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      docid = bib&.at(ns("./docidentifier"))&.text
+      docid = bib&.at(ns("./docidentifier"))&.children.to_xml
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
         if @files[docid]
           update_anchor_loc(bib, e, docid)

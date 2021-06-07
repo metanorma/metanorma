@@ -112,7 +112,7 @@ module Metanorma
       # extracted from the manifest
       nav = indexfile(@xml.at(ns("//manifest")))
       i18n = isodoc.i18n
-      i18n.set(:navigation, nav)
+      i18n.set("navigation", nav)
       isodoc.metadata_init(@lang, @script, i18n)
       # populate the @meta class of isodoc with the various metadata fields
       # native to the flavour; used to populate Liquid
@@ -169,11 +169,14 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def docrefs(elm, builder)
       elm.xpath(ns("./docref")).each do |d|
-        identifier = d.at(ns("./identifier")).text
         link = if d["fileref"] then d["fileref"].sub(/\.xml$/, ".html")
                else "#{d['id']}.html"
                end
-        builder.li { builder.a identifier, href: link }
+        builder.li do |li|
+          li.a **{ href: link } do |a|
+            a << d.at(ns("./identifier")).children.to_xml
+          end
+        end
       end
     end
 
