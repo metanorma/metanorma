@@ -86,6 +86,8 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("spec/fixtures/ouput/index.html")).to be true
       expect(File.read("spec/fixtures/ouput/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1</h1>"
+      expect(File.read("spec/fixtures/ouput/index.html", encoding: "utf-8"))
+        .to include "ISO 17301-1:2016/Amd.1:2017"
       expect(File.exist?("spec/fixtures/ouput/pics/action_schemaexpg1.svg")).to be true
       expect(File.exist?("spec/fixtures/ouput/assets/rice_image1.png")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.html")).to be true
@@ -93,6 +95,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("spec/fixtures/ouput/dummy.pdf")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/dummy.presentation.xml")).to be true
+      expect(File.read("spec/fixtures/ouput/dummy.xml")).not_to be_equivalent_to File.read("spec/fixtures/ouput/dummy.presentation.xml")
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.html")).to be true
       #expect(File.exist?("spec/fixtures/ouput/rice-amd.final.doc")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice-amd.final.pdf")).to be true
@@ -109,6 +112,31 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.presentation.xml")).to be true
       expect(File.exist?("spec/fixtures/ouput/rice1-en.final.presentation.xml")).to be true
+      FileUtils.rm_rf of
+    end
+
+    it "uses presentation XML directive, markup in identifiers" do # rubocop:disable metrics/blocklength
+      mock_pdf
+      FileUtils.rm_f "spec/fixtures/ouput/collection.err"
+      FileUtils.cp "spec/fixtures/collection/action_schemaexpg1.svg",
+        "action_schemaexpg1.svg"
+      file = "spec/fixtures/collection/collection2.yml"
+      of = "spec/fixtures/ouput"
+      col = Metanorma::Collection.parse file
+      col.render(
+        format: %i[html presentation xml],
+        output_folder: of,
+        coverpage: "spec/fixtures/collection/collection_cover.html",
+        compile: {
+          no_install_fonts: true,
+        }
+      )
+      expect(File.exist?("spec/fixtures/ouput/dummy.xml")).to be true
+      expect(File.exist?("spec/fixtures/ouput/dummy.presentation.xml")).to be true
+      expect(File.read("spec/fixtures/ouput/dummy.xml")).to be_equivalent_to File.read("spec/fixtures/ouput/dummy.presentation.xml")
+      expect(File.exist?("spec/fixtures/ouput/index.html")).to be true
+      expect(File.read("spec/fixtures/ouput/index.html", encoding: "utf-8"))
+        .to include "1701<sup>x</sup>"
       FileUtils.rm_rf of
     end
 
