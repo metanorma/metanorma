@@ -45,7 +45,7 @@ module Metanorma
       newbib.name = "bibitem"
       newbib["id"] = id
       newbib["hidden"] = "true"
-      newbib&.at(ns("./ext"))&.remove
+      newbib&.at("./*[local-name() = 'ext']")&.remove
       bib.replace(newbib)
       _file, url = targetfile(@files[docid], relative: true, read: false,
                                              doc: !@files[docid][:attachment])
