@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require_relative "util"
 
 module Metanorma
   # Metanorma collection's manifest
@@ -15,6 +16,7 @@ module Metanorma
       @title = title
       @docref = docref
       @manifest = manifest
+      @disambig = Util::DisambigFiles.new
     end
 
     class << self
@@ -100,6 +102,7 @@ module Metanorma
 
     # @param builder [Nokogiri::XML::Builder]
     def docref_to_xml(builder)
+      @disambig = Util::DisambigFiles.new
       @docref.each do |dr|
         drf = builder.docref do |b|
           b.identifier do |i|
@@ -111,7 +114,7 @@ module Metanorma
     end
 
     def docref_to_xml_attrs(elem, docref)
-      elem[:fileref] = Util::source2dest_filename(docref["fileref"])
+      elem[:fileref] = @disambig.source2dest_filename(docref["fileref"])
       elem[:attachment] = docref["attachment"] if docref["attachment"]
       if collection.directives.include?("documents-inline")
         id = collection.documents.find_index do |k, _|

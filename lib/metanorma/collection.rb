@@ -4,6 +4,7 @@ require "relaton"
 require "relaton/cli"
 require "metanorma/collection_manifest"
 require "metanorma-utils"
+require_relative "util"
 
 module Metanorma
   # Metanorma collection of documents
@@ -17,6 +18,8 @@ module Metanorma
 
     # @return [Hash<String, Metanorma::Document>]
     attr_accessor :documents
+
+    attr_accessor :disambig
 
     # @param file [String] path to source file
     # @param directives [Array<String>] documents-inline to inject the XML into
@@ -41,6 +44,7 @@ module Metanorma
       @prefatory = args[:prefatory]
       @final = args[:final]
       @log = Metanorma::Utils::Log.new
+      @disambig = Util::DisambigFiles.new
     end
 
     # rubocop:enable Metrics/AbcSize,Metrics/MethodLength

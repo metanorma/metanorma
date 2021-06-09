@@ -38,7 +38,7 @@ module Metanorma
       ret = if docref["fileref"]
               { type: "fileref", ref: @documents[identifier].file,
                 rel_path: docref["fileref"],
-                out_path: Util::source2dest_filename(docref["fileref"]) }
+                out_path: docref["fileref"] }
             else
               { type: "id", ref: docref["id"] }
             end
@@ -74,9 +74,9 @@ module Metanorma
     # @return [Array<String, nil>]
     def targetfile(data, options)
       options = { read: false, doc: true, relative: false }.merge(options)
-      path = options[:relative] ? data[:out_path] : data[:ref]
+      path = options[:relative] ? data[:rel_path] : data[:ref]
       if data[:type] == "fileref"
-        ref_file path, options[:read], options[:doc]
+        ref_file path, data[:out_path], options[:read], options[:doc]
       else
         xml_file data[:id], options[:read]
       end
@@ -86,9 +86,9 @@ module Metanorma
     # @param read [Boolean]
     # @param doc [Boolean]
     # @return [Array<String, nil>]
-    def ref_file(ref, read, doc)
+    def ref_file(ref, out, read, doc)
       file = File.read(ref, encoding: "utf-8") if read
-      filename = ref.dup
+      filename = out.dup
       filename.sub!(/\.xml$/, ".html") if doc
       [file, filename]
     end
@@ -111,10 +111,9 @@ module Metanorma
     end
 
     def copy_file_to_dest(fileref)
-      _file, filename = targetfile(fileref, read: true, doc: false)
       dest = File.join(@outdir, fileref[:out_path])
       FileUtils.mkdir_p(File.dirname(dest))
-      FileUtils.cp filename, dest
+      FileUtils.cp fileref[:ref], dest
     end
 
     # process each file in the collection

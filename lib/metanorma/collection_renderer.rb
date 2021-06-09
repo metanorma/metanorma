@@ -3,6 +3,7 @@
 require "isodoc"
 require_relative "collection_fileprocess"
 require_relative "fontist_utils"
+require_relative "util"
 
 module Metanorma
   # XML collection renderer
@@ -39,6 +40,7 @@ module Metanorma
       @log = options[:log]
       @documents = collection.documents
       @directives = collection.directives
+      @disambig = Util::DisambigFiles.new
 
       # list of files in the collection
       @files = read_files folder
