@@ -32,7 +32,7 @@ module Metanorma
     # @param bib [Nokogiri::XML::Element]
     # @param identifier [String]
     def update_bibitem(bib, identifier) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      docid = bib&.at(ns("./docidentifier"))&.text
+      docid = bib&.at(ns("./docidentifier"))&.children&.to_xml
       unless @files[docid]
         error = "[metanorma] Cannot find crossreference to document #{docid} "\
           "in document #{identifier}."
@@ -41,11 +41,12 @@ module Metanorma
         return
       end
       id = bib["id"]
-      newbib = bib.replace(@files[docid][:bibdata])
+      newbib = @files[docid][:bibdata].dup
       newbib.name = "bibitem"
       newbib["id"] = id
       newbib["hidden"] = "true"
-      newbib&.at(ns("./ext"))&.remove
+      newbib&.at("./*[local-name() = 'ext']")&.remove
+      bib.replace(newbib)
       _file, url = targetfile(@files[docid], relative: true, read: false,
                                              doc: !@files[docid][:attachment])
       uri_node = Nokogiri::XML::Node.new "uri", newbib
@@ -135,7 +136,7 @@ module Metanorma
     # update crossrefences to other documents, to include
     # disambiguating document suffix on id
     def update_anchors(bib, docxml, _id) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      docid = bib&.at(ns("./docidentifier"))&.text
+      docid = bib&.at(ns("./docidentifier"))&.children.to_xml
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
         if @files[docid]
           update_anchor_loc(bib, e, docid)
@@ -161,11 +162,11 @@ module Metanorma
 
     # if there is a crossref to another document, with no anchor, retrieve the
     # anchor given the locality, and insert it into the crossref
-    def update_anchor_create_loc(bib, e, docid)
-      ins = e.at(ns("./localityStack")) || return
+    def update_anchor_create_loc(bib, eref, docid)
+      ins = eref.at(ns("./localityStack")) or return
       type = ins&.at(ns("./locality/@type"))&.text
       ref = ins&.at(ns("./locality/referenceFrom"))&.text
-      (anchor = @files[docid][:anchors][type][ref]) || return
+      anchor = @files[docid][:anchors].dig(type, ref) or return
       ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
       ref_from.content = anchor.sub(/^_/, "")
       locality = Nokogiri::XML::Node.new "locality", bib

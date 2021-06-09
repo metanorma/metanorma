@@ -15,7 +15,7 @@ module Metanorma
     def read_files(path) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       files = {}
       @xml.xpath(ns("//docref")).each do |d|
-        identifier = d.at(ns("./identifier")).text
+        identifier = d.at(ns("./identifier")).children.to_xml
         files[identifier] = file_entry(d, identifier, path)
         if files[identifier][:attachment]
           files[identifier][:bibdata] = Metanorma::Document
@@ -96,6 +96,8 @@ module Metanorma
     # compile and output individual file in collection
     def file_compile(file, filename, identifier)
       # warn "metanorma compile -x html #{f.path}"
+      Array(@directives).include?("presentation-xml") and
+        @compile_options.merge!(passthrough_presentation_xml: true)
       c = Compile.new
       c.compile file.path, { format: :asciidoc,
                              extension_keys: @format }.merge(@compile_options)
@@ -103,7 +105,7 @@ module Metanorma
       @format.each do |e|
         ext = c.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^\.]+$/, ext.to_s)
-        FileUtils.mv file.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
+        FileUtils.cp file.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
         @files[identifier][:outputs][e] = File.join(@outdir, fn)
       end
     end
@@ -119,7 +121,9 @@ module Metanorma
     # files are held in memory, and altered as postprocessing
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       internal_refs = locate_internal_refs
-      @files.each do |identifier, x|
+      @files.each_with_index do |(identifier, x), i|
+        i.positive? && Array(@directives).include?("bare-after-first") and
+          @compile_options.merge!(bare: true)
         if x[:attachment] then copy_file_to_dest(x)
         else
           file, filename = targetfile(x, read: true)

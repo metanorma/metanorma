@@ -28,6 +28,7 @@ RSpec.describe Metanorma::Compile do
       "spec/assets/test2.xml",
       "spec/assets/test2.presentation.xml",
       {
+        bare: nil,
         datauriimage: true,
         sourcefilename: "spec/assets/test2.adoc",
       },
@@ -35,6 +36,7 @@ RSpec.describe Metanorma::Compile do
     Metanorma::Compile.new.compile("spec/assets/test2.adoc",
                                    type: "iso",
                                    extension_keys: [:presentation],
+                                   bare: nil,
                                    datauriimage: true,
                                    agree_to_terms: true)
   end

@@ -74,7 +74,9 @@ module Metanorma
           memo
         end
       end
-      if !extensions.include?(:presentation) and extensions.any? { |e| @processor.use_presentation_xml(e) }
+      if !extensions.include?(:presentation) && extensions.any? do |e|
+        @processor.use_presentation_xml(e)
+      end
         extensions << :presentation
       end
       extensions
@@ -88,7 +90,7 @@ module Metanorma
         options[:asciimath] and
           file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
         dir = File.dirname(filename)
-        dir != '.' and
+        dir != "." and
           file.gsub!(/^include::/, "include::#{dir}/")
         [file, @processor.input_to_isodoc(file, filename, options)]
       when ".xml"
@@ -108,15 +110,17 @@ module Metanorma
 
     def relaton_export(isodoc, options)
       return unless options[:relaton]
+
       xml = Nokogiri::XML(isodoc)
       bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
-      #docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
-      #outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
+      # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
+      # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
       File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
     end
 
     def clean_sourcecode(xml)
-      xml.xpath(".//callout | .//annotation | .//xmlns:callout | .//xmlns:annotation").each do |x|
+      xml.xpath(".//callout | .//annotation | .//xmlns:callout | "\
+                ".//xmlns:annotation").each do |x|
         x.remove
       end
       xml.xpath(".//br | .//xmlns:br").each { |x| x.replace("\n") }
@@ -125,6 +129,7 @@ module Metanorma
 
     def extract(isodoc, dirname, extract_types)
       return unless dirname
+
       if extract_types.nil? || extract_types.empty?
         extract_types = [:sourcecode, :image, :requirement]
       end
@@ -207,6 +212,7 @@ module Metanorma
         isodoc_options = @processor.extract_options(file)
         isodoc_options[:datauriimage] = true if options[:datauriimage]
         isodoc_options[:sourcefilename] = options[:filename]
+        isodoc_options[:bare] = options[:bare]
         file_extension = @processor.output_formats[ext]
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         if ext == :pdf
@@ -217,6 +223,8 @@ module Metanorma
         if ext == :rxl
           options[:relaton] = outfilename
           relaton_export(isodoc, options)
+        elsif options[:passthrough_presentation_xml] && ext == :presentation
+          FileUtils.cp f, presentationxml_name
         else
           begin
             @processor.use_presentation_xml(ext) ?

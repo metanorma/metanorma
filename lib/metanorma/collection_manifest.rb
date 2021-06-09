@@ -43,7 +43,7 @@ module Metanorma
       # @return [Hash{String=>String}]
       def parse_docref(mnf)
         mnf.xpath("xmlns:docref").map do |dr|
-          h = { "identifier" => dr.at("identifier").text }
+          h = { "identifier" => dr.at("identifier").children.to_xml }
           dr[:fileref] and h["fileref"] = dr[:fileref]
           h["attachment"] = dr[:attachment] if dr[:attachment]
           h
@@ -101,13 +101,23 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def docref_to_xml(builder)
       @docref.each do |dr|
-        drf = builder.docref { |b| b.identifier dr["identifier"] }
-        drf[:fileref] = Util::source2dest_filename(dr["fileref"])
-        drf[:attachment] = dr["attachment"] if dr["attachment"]
-        if collection.directives.include?("documents-inline")
-          id = collection.documents.find_index { |k, _| k == dr["identifier"] }
-          drf[:id] = format("doc%<index>09d", index: id)
+        drf = builder.docref do |b|
+          b.identifier do |i|
+            i << dr["identifier"]
+          end
         end
+        docref_to_xml_attrs(drf, dr)
+      end
+    end
+
+    def docref_to_xml_attrs(elem, docref)
+      elem[:fileref] = Util::source2dest_filename(docref["fileref"])
+      elem[:attachment] = docref["attachment"] if docref["attachment"]
+      if collection.directives.include?("documents-inline")
+        id = collection.documents.find_index do |k, _|
+          k == docref["identifier"]
+        end
+        elem[:id] = format("doc%<index>09d", index: id)
       end
     end
   end
