@@ -17,6 +17,7 @@ module Metanorma
                 else v[:label]
                 end
         ret[v[:type]][index] = k
+        ret[v[:type]][v[:label]] = k if v[:label]
       end
     end
 
@@ -165,6 +166,7 @@ module Metanorma
     def update_anchor_create_loc(bib, eref, docid)
       ins = eref.at(ns("./localityStack")) or return
       type = ins&.at(ns("./locality/@type"))&.text
+      type = "clause" if type == "annex"
       ref = ins&.at(ns("./locality/referenceFrom"))&.text
       anchor = @files[docid][:anchors].dig(type, ref) or return
       ref_from = Nokogiri::XML::Node.new "referenceFrom", bib
