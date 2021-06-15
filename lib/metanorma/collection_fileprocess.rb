@@ -34,15 +34,16 @@ module Metanorma
     # rel_path is the source file address, determined relative to the YAML.
     # out_path is the destination file address, with any references outside
     # the working directory (../../...) truncated
-    def file_entry(docref, identifier, _path)
-      ret = if docref["fileref"]
+    def file_entry(ref, identifier, _path)
+      out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
+      ret = if ref["fileref"]
               { type: "fileref", ref: @documents[identifier].file,
-                rel_path: docref["fileref"],
-                out_path: docref["fileref"] }
+                rel_path: ref["fileref"],
+                out_path: out }
             else
-              { type: "id", ref: docref["id"] }
+              { type: "id", ref: ref["id"] }
             end
-      ret[:attachment] = docref["attachment"] if docref["attachment"]
+      ret[:attachment] = ref["attachment"] if ref["attachment"]
       ret
     end
 
