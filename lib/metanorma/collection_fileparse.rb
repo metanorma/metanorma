@@ -11,13 +11,14 @@ module Metanorma
       xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n, {})
       xrefs.parse xml
       xrefs.get.each_with_object({}) do |(k, v), ret|
+        v[:type] ||= "clause"
         ret[v[:type]] ||= {}
         index = if v[:container] || v[:label].nil? || v[:label].empty?
                   UUIDTools::UUID.random_create.to_s
                 else v[:label]
                 end
         ret[v[:type]][index] = k
-        ret[v[:type]][v[:label]] = k if v[:label]
+        ret[v[:type]][v[:value]] = k if v[:value]
       end
     end
 
