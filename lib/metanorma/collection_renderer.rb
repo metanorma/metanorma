@@ -44,6 +44,7 @@ module Metanorma
 
       # list of files in the collection
       @files = read_files folder
+      isodoc_populate(@isodoc)
       FileUtils.rm_rf @outdir
       FileUtils.mkdir_p @outdir
     end
@@ -106,10 +107,16 @@ module Metanorma
     end
 
     # The isodoc class for the metanorma flavour we are using
-    def isodoc # rubocop:disable Metrics/MethodLength
+    def isodoc
       x = Asciidoctor.load nil, backend: @doctype.to_sym
       isodoc = x.converter.html_converter(Dummy.new)
       isodoc.i18n_init(@lang, @script) # read in internationalisation
+      isodoc.metadata_init(@lang, @script, isodoc.i18n)
+      isodoc.info(@xml, nil)
+      isodoc
+    end
+
+    def isodoc_populate(isodoc)
       # create the @meta class of isodoc, with "navigation" set to the index bar
       # extracted from the manifest
       nav = indexfile(@xml.at(ns("//manifest")))
@@ -171,14 +178,19 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def docrefs(elm, builder)
       elm.xpath(ns("./docref")).each do |d|
-        link = if d["fileref"] then d["fileref"].sub(/\.xml$/, ".html")
-               else "#{d['id']}.html"
-               end
+        ident = d.at(ns("./identifier")).children.to_xml
         builder.li do |li|
-          li.a **{ href: link } do |a|
-            a << d.at(ns("./identifier")).children.to_xml
+          li.a **{ href: index_link(d, ident) } do |a|
+            a << ident
           end
         end
+      end
+    end
+
+    def index_link(docref, ident)
+      if docref["fileref"]
+        @files[ident][:out_path].sub(/\.xml$/, ".html")
+      else "#{docref['id']}.html"
       end
     end
 
