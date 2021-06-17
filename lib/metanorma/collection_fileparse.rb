@@ -72,7 +72,7 @@ module Metanorma
       add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
       svgmap_resolve(datauri_encode(docxml))
-      docxml.xpath(ns("//references[not(./bibitem[not(@hidden) or "\
+      docxml.xpath(ns("//references[bibitem][not(./bibitem[not(@hidden) or "\
                       "@hidden = 'false'])]")).each do |f|
         f["hidden"] = "true"
       end
