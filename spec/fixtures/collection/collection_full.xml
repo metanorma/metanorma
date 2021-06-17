@@ -1008,6 +1008,9 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 </clause>
 </sections>
 <bibliography>
+  <references id='_normref_ISO_1701_1974' normative='true' obligation='informative'>
+  <title>Normative References</title>
+</references>
                <references id='_bibliography_ISO_1701_1974' normative='false' obligation='informative' hidden='true'>
                  <title>Bibliography</title>
                  <bibitem type='standard' id='StarTrek_ISO_1701_1974' hidden='true'>
