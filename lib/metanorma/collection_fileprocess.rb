@@ -44,6 +44,8 @@ module Metanorma
               { type: "id", ref: ref["id"] }
             end
       ret[:attachment] = ref["attachment"] if ref["attachment"]
+      ret[:sectionsplit] = ref["sectionsplit"] if ref["sectionsplit"]
+      ret[:presentationxml] = ref["presentation-xml"] if ref["presentation-xml"]
       ret
     end
 
@@ -95,20 +97,47 @@ module Metanorma
     end
 
     # compile and output individual file in collection
+    # warn "metanorma compile -x html #{f.path}"
     def file_compile(file, filename, identifier)
-      # warn "metanorma compile -x html #{f.path}"
-      Array(@directives).include?("presentation-xml") and
-        @compile_options.merge!(passthrough_presentation_xml: true)
       c = Compile.new
-      c.compile file.path, { format: :asciidoc,
-                             extension_keys: @format }.merge(@compile_options)
+      require "byebug"; byebug
+      c.compile file.path, { format: :asciidoc, extension_keys: @format }
+        .merge(compile_options(identifier))
       @files[identifier][:outputs] = {}
+      file_compile_formats(file, filename, identifier, c)
+    end
+
+    def compile_options(identifier)
+      ret = @compile_options.dup
+      Array(@directives).include?("presentation-xml") ||
+        @files[identifier][:presentationxml] and
+        ret.merge!(passthrough_presentation_xml: true)
+      @files[identifier][:sectionsplit] == "true" and
+        ret.merge!(sectionsplit: "true")
+      ret
+    end
+
+    def file_compile_formats(file, filename, identifier, compile)
       @format.each do |e|
-        ext = c.processor.output_formats[e]
-        fn = File.basename(filename).sub(/(?<=\.)[^\.]+$/, ext.to_s)
-        FileUtils.cp file.path.sub(/\.xml$/, ".#{ext}"), File.join(@outdir, fn)
-        @files[identifier][:outputs][e] = File.join(@outdir, fn)
+        ext = compile.processor.output_formats[e]
+        fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)
+        if /html$/.match?(ext) && @files[identifier][:sectionsplit]
+          file_sectionsplit_copy(file, fn, identifier, ext, e)
+        else
+          FileUtils.cp file.path.sub(/\.xml$/, ".#{ext}"),
+                       File.join(@outdir, fn)
+          @files[identifier][:outputs][e] = File.join(@outdir, fn)
+        end
       end
+    end
+
+    def file_sectionsplit_copy(file, base, identifier, ext, format)
+      dir = file.path.sub(/\.xml$/, ".#{ext}_collection")
+      files = Dir.glob("#{dir}/*.#{ext}")
+      FileUtils.cp files, @outdir
+      cover = File.join(@outdir, base.sub(/\.html$/, ".index.html"))
+      FileUtils.cp File.join(dir, "index.html"), cover
+      @files[identifier][:outputs][format] = cover
     end
 
     def copy_file_to_dest(fileref)
