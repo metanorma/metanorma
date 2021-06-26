@@ -30,6 +30,7 @@ RSpec.describe Metanorma::Compile do
       {
         bare: nil,
         datauriimage: true,
+        sectionsplit: nil,
         sourcefilename: "spec/assets/test2.adoc",
       },
     )
@@ -37,6 +38,7 @@ RSpec.describe Metanorma::Compile do
                                    type: "iso",
                                    extension_keys: [:presentation],
                                    bare: nil,
+                                   sectionsplit: nil,
                                    datauriimage: true,
                                    agree_to_terms: true)
   end

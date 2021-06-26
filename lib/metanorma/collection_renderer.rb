@@ -70,7 +70,7 @@ module Metanorma
         ext = e == :presentation ? "presentation.xml" : e.to_s
         out = col.clone
         out.directives << "documents-inline"
-        out.documents.keys.each do |id|
+        out.documents.each_key do |id|
           next if @files[id][:attachment]
 
           filename = @files[id][:outputs][e]

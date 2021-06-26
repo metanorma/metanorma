@@ -207,7 +207,6 @@ module Metanorma
           FileUtils.cp f, presentationxml_name
         else
           begin
-            require "byebug"; byebug
             @processor.use_presentation_xml(ext) ?
               @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)

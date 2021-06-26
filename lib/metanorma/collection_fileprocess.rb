@@ -27,8 +27,41 @@ module Metanorma
           files[identifier][:anchors] = read_anchors(xml)
           files[identifier][:bibdata] = xml.at(ns("//bibdata"))
         end
+        files[identifier][:bibitem] = files[identifier][:bibdata].dup
+          files[identifier][:bibitem].name = "bibitem"
+          files[identifier][:bibitem]["hidden"] = "true"
+          files[identifier][:bibitem]&.at("./*[local-name() = 'ext']")&.remove
       end
-      files
+      add_section_split(files)
+    end
+
+    def add_section_split(files)
+      files.keys.each_with_object({}) do |k, m|
+        if files[k][:sectionsplit] == "true" && !files[k]["attachment"]
+          sectionsplit(files[k][:rel_path]).each_with_index do |f1, i|
+            m[k + f1[:title]] =
+              { parentid: k, presentationxml: true, type: "fileref",
+                rel_path: f1[:url], out_path: File.basename(f1[:url]),
+                anchors: read_anchors(Nokogiri::XML(File.read(f1[:url]))),
+                bibdata: files[k][:bibdata], ref: f1[:url] }
+            m[k + f1[:title]][:bare] = true unless i.zero?
+          end
+          m[k] = files[k]
+        else
+          m[k] = files[k]
+        end
+      end
+    end
+
+    def sectionsplit(file)
+      Compile.new.compile(
+        file, { format: :asciidoc, extension_keys: [:presentation] }
+        .merge(@compile_options)
+      )
+      r = file.sub(/\.xml$/, ".presentation.xml")
+      @isodoc.sectionsplit(
+        Nokogiri::XML(File.read(r)), File.basename(r), File.dirname(r)
+      ).sort_by { |f| f[:order] }
     end
 
     # rel_path is the source file address, determined relative to the YAML.
@@ -46,6 +79,7 @@ module Metanorma
       ret[:attachment] = ref["attachment"] if ref["attachment"]
       ret[:sectionsplit] = ref["sectionsplit"] if ref["sectionsplit"]
       ret[:presentationxml] = ref["presentation-xml"] if ref["presentation-xml"]
+      ret[:bareafterfirst] = ref["bare-after-first"] if ref["bare-after-first"]
       ret
     end
 
@@ -100,7 +134,6 @@ module Metanorma
     # warn "metanorma compile -x html #{f.path}"
     def file_compile(file, filename, identifier)
       c = Compile.new
-      require "byebug"; byebug
       c.compile file.path, { format: :asciidoc, extension_keys: @format }
         .merge(compile_options(identifier))
       @files[identifier][:outputs] = {}
@@ -114,6 +147,8 @@ module Metanorma
         ret.merge!(passthrough_presentation_xml: true)
       @files[identifier][:sectionsplit] == "true" and
         ret.merge!(sectionsplit: "true")
+      @files[identifier][:bare] == true and
+        ret.merge!(bare: true)
       ret
     end
 
@@ -122,11 +157,11 @@ module Metanorma
         ext = compile.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)
         if /html$/.match?(ext) && @files[identifier][:sectionsplit]
-          file_sectionsplit_copy(file, fn, identifier, ext, e)
+          # file_sectionsplit_copy(file, fn, identifier, ext, e)
         else
           FileUtils.cp file.path.sub(/\.xml$/, ".#{ext}"),
-                       File.join(@outdir, fn)
-          @files[identifier][:outputs][e] = File.join(@outdir, fn)
+            File.join(@outdir, fn)
+            @files[identifier][:outputs][e] = File.join(@outdir, fn)
         end
       end
     end
