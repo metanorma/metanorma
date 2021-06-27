@@ -35,7 +35,7 @@ module Metanorma
     end
 
     def xml_options_extract(file)
-      xml = Nokogiri::XML(file)
+      xml = Nokogiri::XML(file) { |config| config.huge }
       if xml.root
         @registry.root_tags.each do |k, v|
           return { type: k } if v == xml.root.name
@@ -111,7 +111,7 @@ module Metanorma
     def relaton_export(isodoc, options)
       return unless options[:relaton]
 
-      xml = Nokogiri::XML(isodoc)
+      xml = Nokogiri::XML(isodoc) { |config| config.huge }
       bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
       # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
       # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
@@ -135,7 +135,7 @@ module Metanorma
       end
       FileUtils.rm_rf dirname
       FileUtils.mkdir_p dirname
-      xml = Nokogiri::XML(isodoc)
+      xml = Nokogiri::XML(isodoc) { |config| config.huge }
       sourcecode_export(xml, dirname) if extract_types.include? :sourcecode
       image_export(xml, dirname) if extract_types.include? :image
       requirement_export(xml, dirname) if extract_types.include? :requirement

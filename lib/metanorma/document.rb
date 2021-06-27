@@ -30,7 +30,9 @@ module Metanorma
 
       # raw XML file, can be used to put in entire file instead of just bibitem
       def raw_file(filename)
-        doc = Nokogiri::XML(File.read(filename, encoding: "UTF-8"))
+        doc = Nokogiri::XML(File.read(filename, encoding: "UTF-8")) do |config|
+          config.huge
+        end
         new(doc, filename, raw: true)
       end
 
