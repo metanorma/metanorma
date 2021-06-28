@@ -6,6 +6,7 @@ require "fontist"
 require "fontist/manifest/install"
 require_relative "compile_validate"
 require_relative "fontist_utils"
+require_relative "util"
 
 module Metanorma
   class Compile
@@ -181,17 +182,6 @@ module Metanorma
       end
     end
 
-    # dependency ordering
-    def sort_extensions_execution(ext)
-      case ext
-      when :xml then 0
-      when :rxl then 1
-      when :presentation then 2
-      else
-        99
-      end
-    end
-
     def wrap_html(options, file_extension, outfilename)
       if options[:wrapper] && /html$/.match(file_extension)
         outfilename = outfilename.sub(/\.html$/, "")
@@ -206,20 +196,10 @@ module Metanorma
       f = change_output_dir options
       xml_name = f.sub(/\.[^.]+$/, ".xml")
       presentationxml_name = f.sub(/\.[^.]+$/, ".presentation.xml")
-      extensions.sort do |a, b|
-        sort_extensions_execution(a) <=> sort_extensions_execution(b)
-      end.each do |ext|
-        isodoc_options = @processor.extract_options(file)
-        isodoc_options[:datauriimage] = true if options[:datauriimage]
-        isodoc_options[:sourcefilename] = options[:filename]
-        isodoc_options[:bare] = options[:bare]
+      Util.sort_extensions_execution(extensions).each do |ext|
         file_extension = @processor.output_formats[ext]
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
-        if ext == :pdf
-          font_locations = FontistUtils.fontist_font_locations(@processor, options)
-          font_locations and
-            isodoc_options[:mn2pdf] = { font_manifest_file: font_locations.path }
-        end
+        isodoc_options = get_isodoc_options(file, options, ext)
         if ext == :rxl
           options[:relaton] = outfilename
           relaton_export(isodoc, options)
@@ -231,12 +211,7 @@ module Metanorma
               @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
           rescue StandardError => e
-            if e.message.include? "Fatal:"
-              @errors << e.message
-            else
-              puts e.message
-              puts e.backtrace.join("\n")
-            end
+            isodoc_error_process(e)
           end
         end
         wrap_html(options, file_extension, outfilename)
@@ -244,6 +219,28 @@ module Metanorma
     end
 
     private
+
+    def isodoc_error_process(err)
+      if err.message.include? "Fatal:"
+        @errors << err.message
+      else
+        puts err.message
+        puts err.backtrace.join("\n")
+      end
+    end
+
+    def get_isodoc_options(file, options, ext)
+      isodoc_options = @processor.extract_options(file)
+      isodoc_options[:datauriimage] = true if options[:datauriimage]
+      isodoc_options[:sourcefilename] = options[:filename]
+      isodoc_options[:bare] = options[:bare]
+      isodoc_options[:sectionsplit] = options[:sectionsplit]
+      if ext == :pdf
+        floc = FontistUtils.fontist_font_locations(@processor, options) and
+          isodoc_options[:mn2pdf] = { font_manifest_file: floc.path }
+      end
+      isodoc_options
+    end
 
     # @param options [Hash]
     # @return [String]

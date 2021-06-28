@@ -193,15 +193,15 @@ at the address below or ISO&#x2019;s member body in the country of the requester
   This document uses schemas
   <eref bibitemid='express-schema_E0_ISO_17301-1_2016' citeas='Missing:express-schema:E0'>
   <locality type='anchor'>
-    <referenceFrom>A0</referenceFrom>
+    <referenceFrom>A0_Missing_express-schema_E0</referenceFrom>
   </locality>
   E0/A0<strong>** Unresolved reference to document
-    Missing:express-schema:E0, id express-schema_E0_ISO_17301-1_2016</strong>
+    Missing:express-schema:E0 from eref</strong>
 </eref>
 ,
   <eref bibitemid='express-schema_E1_ISO_17301-1_2016' citeas='ISO 17302'>
     <locality type='anchor'>
-      <referenceFrom>A1</referenceFrom>
+      <referenceFrom>A1_ISO_17302</referenceFrom>
     </locality>
     E1/A1
   </eref>
@@ -234,12 +234,11 @@ at the address below or ISO&#x2019;s member body in the country of the requester
     <eref bibitemid='express-schema_E0_ISO_17301-1_2016' citeas='Missing:express-schema:E0'>
       <localityStack>
         <locality type='anchor'>
-          <referenceFrom>A0</referenceFrom>
+          <referenceFrom>A0_Missing_express-schema_E0</referenceFrom>
         </locality>
       </localityStack>
       <strong>
-        ** Unresolved reference to document Missing:express-schema:E0,
-        id express-schema_E0_ISO_17301-1_2016
+        ** Unresolved reference to document Missing:express-schema:E0 from eref
       </strong>
     </eref>
   </target>

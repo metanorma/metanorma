@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "util"
 
 module Metanorma
@@ -48,6 +49,8 @@ module Metanorma
           h = { "identifier" => dr.at("identifier").children.to_xml }
           dr[:fileref] and h["fileref"] = dr[:fileref]
           h["attachment"] = dr[:attachment] if dr[:attachment]
+          h["sectionsplit"] = dr[:sectionsplit] if dr[:sectionsplit]
+          h["presentation-xml"] = dr[:presentationxml] if dr[:presentationxml]
           h
         end
       end
@@ -59,7 +62,7 @@ module Metanorma
       @manifest.each { |mnf| mnf.collection = col }
     end
 
-    # @param dir [String] path to coolection
+    # @param dir [String] path to collection
     # @return [Hash<String, Metanorma::Document>]
     def documents(dir = "")
       docs = @docref.each_with_object({}) do |dr, m|
@@ -116,6 +119,9 @@ module Metanorma
     def docref_to_xml_attrs(elem, docref)
       elem[:fileref] = @disambig.source2dest_filename(docref["fileref"])
       elem[:attachment] = docref["attachment"] if docref["attachment"]
+      elem[:sectionsplit] = docref["sectionsplit"] if docref["sectionsplit"]
+      elem[:presentationxml] = "true" if docref["presentation-xml"] &&
+        docref["presentation-xml"] == "true" || docref["presentation-xml"] == true
       if collection.directives.include?("documents-inline")
         id = collection.documents.find_index do |k, _|
           k == docref["identifier"]

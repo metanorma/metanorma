@@ -102,7 +102,9 @@ module Metanorma
       if @raw
         builder << @bibitem.root.to_xml
       else
-        builder.send(type + "-standard") { |b| b << @bibitem.to_xml(bibdata: true) }
+        builder.send("#{type}-standard") do |b|
+          b << @bibitem.to_xml(bibdata: true)
+        end
       end
     end
   end

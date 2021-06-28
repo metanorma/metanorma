@@ -12,6 +12,23 @@ module Metanorma
       end
     end
 
+    # dependency ordering
+    def self.sort_extensions_execution_ord(ext)
+      case ext
+      when :xml then 0
+      when :rxl then 1
+      when :presentation then 2
+      else
+        99
+      end
+    end
+
+    def self.sort_extensions_execution(ext)
+      ext.sort do |a, b|
+        sort_extensions_execution_ord(a) <=> sort_extensions_execution_ord(b)
+      end
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

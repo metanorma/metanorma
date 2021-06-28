@@ -35,7 +35,7 @@ module Metanorma
 
       @outdir = options[:output_folder]
       @coverpage = options[:coverpage]
-      @format = options[:format]
+      @format = Util.sort_extensions_execution(options[:format])
       @compile_options = options[:compile] || {}
       @log = options[:log]
       @documents = collection.documents
@@ -70,7 +70,7 @@ module Metanorma
         ext = e == :presentation ? "presentation.xml" : e.to_s
         out = col.clone
         out.directives << "documents-inline"
-        out.documents.keys.each do |id|
+        out.documents.each_key do |id|
           next if @files[id][:attachment]
 
           filename = @files[id][:outputs][e]
@@ -215,6 +215,14 @@ module Metanorma
     end
 
     private
+
+    def format_sort(formats)
+      ret = []
+      formats.include?(:xml) and ret << :xml
+      formats.include?(:presentation) and ret << :presentation
+      a = %i(presentation xml)
+      ret + formats.reject { |i| a.include? i }
+    end
 
     # @param options [Hash]
     # @raise [ArgumentError]
