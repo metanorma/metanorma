@@ -77,7 +77,7 @@ module Metanorma
     # @param internal_refs [Hash{String=>Hash{String=>String}] schema name to anchor to filename
     # @return [String] XML content
     def update_xrefs(file, identifier, internal_refs)
-      docxml = Nokogiri::XML(file)
+      docxml = Nokogiri::XML(file) { |config| config.huge }
       update_indirect_refs_to_docs(docxml, internal_refs)
       add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
@@ -224,7 +224,7 @@ module Metanorma
 
     def locate_internal_refs1(refs, identifier, filedesc)
       file, _filename = targetfile(filedesc, read: true)
-      xml = Nokogiri::XML(file)
+      xml = Nokogiri::XML(file) { |config| config.huge }
       t = xml.xpath("//*/@id").each_with_object({}) { |i, x| x[i.text] = true }
       refs.each do |schema, ids|
         ids.keys.select { |id| t[id] }.each do |id|

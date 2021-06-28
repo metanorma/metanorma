@@ -91,7 +91,9 @@ module Metanorma
       private
 
       def parse_xml(file)
-        xml = Nokogiri::XML File.read(file, encoding: "UTF-8")
+        xml = Nokogiri::XML File.read(file, encoding: "UTF-8") do |config|
+          config.huge
+        end
         if (b = xml.at("/xmlns:metanorma-collection/xmlns:bibdata"))
           bd = Relaton::Cli.parse_xml b
         end
