@@ -6,7 +6,7 @@ require "rspec/matchers"
 require "equivalent-xml"
 require "rspec-command"
 require "rexml/document"
-require "mn2sts"
+require "mnconvert"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -123,7 +123,7 @@ def mock_pdf
 end
 
 def mock_sts
-  allow(::Mn2sts).to receive(:convert) do |url, output, _c, _d|
+  allow(::MnConvert).to receive(:convert) do |url, output, _c|
     FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
   end
 end
