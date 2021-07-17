@@ -38,17 +38,23 @@ module Metanorma
     def add_section_split(files)
       files.keys.each_with_object({}) do |k, m|
         if files[k][:sectionsplit] == "true" && !files[k]["attachment"]
-          sectionsplit(files[k][:rel_path]).each_with_index do |f1, i|
-            m[k + f1[:title]] =
-              { parentid: k, presentationxml: true, type: "fileref",
-                rel_path: f1[:url], out_path: File.basename(f1[:url]),
-                anchors: read_anchors(Nokogiri::XML(File.read(f1[:url]))),
-                bibdata: files[k][:bibdata], ref: f1[:url] }
-            m[k + f1[:title]][:bare] = true unless i.zero?
+          sectionsplit(files[k][:ref]).each_with_index do |f1, i|
+            add_section_split_instance(f1, m, k, i, files)
           end
         end
         m[k] = files[k]
       end
+    end
+
+    def add_section_split_instance(file, manifest, key, idx, files)
+      dir = File.dirname(files[key][:ref])
+      presfile = File.join(dir, File.basename(file[:url]))
+      manifest[key + file[:title]] =
+        { parentid: key, presentationxml: true, type: "fileref",
+          rel_path: file[:url], out_path: File.basename(file[:url]),
+          anchors: read_anchors(Nokogiri::XML(File.read(presfile))),
+          bibdata: files[key][:bibdata], ref: presfile }
+      manifest[key + file[:title]][:bare] = true unless idx.zero?
     end
 
     def sectionsplit(file)
