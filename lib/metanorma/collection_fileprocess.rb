@@ -28,9 +28,9 @@ module Metanorma
           files[identifier][:bibdata] = xml.at(ns("//bibdata"))
         end
         files[identifier][:bibitem] = files[identifier][:bibdata].dup
-          files[identifier][:bibitem].name = "bibitem"
-          files[identifier][:bibitem]["hidden"] = "true"
-          files[identifier][:bibitem]&.at("./*[local-name() = 'ext']")&.remove
+        files[identifier][:bibitem].name = "bibitem"
+        files[identifier][:bibitem]["hidden"] = "true"
+        files[identifier][:bibitem]&.at("./*[local-name() = 'ext']")&.remove
       end
       add_section_split(files)
     end
@@ -46,10 +46,8 @@ module Metanorma
                 bibdata: files[k][:bibdata], ref: f1[:url] }
             m[k + f1[:title]][:bare] = true unless i.zero?
           end
-          m[k] = files[k]
-        else
-          m[k] = files[k]
         end
+        m[k] = files[k]
       end
     end
 
@@ -160,8 +158,8 @@ module Metanorma
           # file_sectionsplit_copy(file, fn, identifier, ext, e)
         else
           FileUtils.cp file.path.sub(/\.xml$/, ".#{ext}"),
-            File.join(@outdir, fn)
-            @files[identifier][:outputs][e] = File.join(@outdir, fn)
+                       File.join(@outdir, fn)
+          @files[identifier][:outputs][e] = File.join(@outdir, fn)
         end
       end
     end

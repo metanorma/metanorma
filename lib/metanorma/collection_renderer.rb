@@ -76,7 +76,9 @@ module Metanorma
           filename = @files[id][:outputs][e]
           out.documents[id] = Metanorma::Document.raw_file(filename)
         end
-        File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") { |f| f.write(out.to_xml) }
+        File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") do |f|
+          f.write(out.to_xml)
+        end
       end
       options[:format].include?(:pdf) and
         pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))

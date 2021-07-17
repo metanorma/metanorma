@@ -233,8 +233,8 @@ module Metanorma
       isodoc_options = @processor.extract_options(file)
       isodoc_options[:datauriimage] = true if options[:datauriimage]
       isodoc_options[:sourcefilename] = options[:filename]
-      isodoc_options[:bare] = options[:bare]
-      isodoc_options[:sectionsplit] = options[:sectionsplit]
+      isodoc_options[:bare] ||= options[:bare]
+      isodoc_options[:sectionsplit] ||= options[:sectionsplit]
       if ext == :pdf
         floc = FontistUtils.fontist_font_locations(@processor, options) and
           isodoc_options[:mn2pdf] = { font_manifest_file: floc.path }
