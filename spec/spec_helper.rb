@@ -7,6 +7,7 @@ require "equivalent-xml"
 require "rspec-command"
 require "rexml/document"
 require "mnconvert"
+require "mn2pdf"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

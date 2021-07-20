@@ -7,6 +7,7 @@ require "fontist/manifest/install"
 require_relative "compile_validate"
 require_relative "fontist_utils"
 require_relative "util"
+require_relative "sectionsplit"
 
 module Metanorma
   class Compile
@@ -16,6 +17,7 @@ module Metanorma
     def initialize
       @registry = Metanorma::Registry.instance
       @errors = []
+      @isodoc = IsoDoc::Convert.new({})
     end
 
     def compile(filename, options = {})
@@ -54,7 +56,7 @@ module Metanorma
       dir = filename.sub(%r(/[^/]+$), "/")
       options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
       options[:sourcecode] ||= "#{dir}/#{o[:sourcecode]}" if o[:sourcecode]
-      options[:extension_keys] ||= o[:extensions]&.split(/,[ ]*/)&.map(&:to_sym)
+      options[:extension_keys] ||= o[:extensions]&.split(/, */)&.map(&:to_sym)
       options[:extension_keys] = nil if options[:extension_keys] == [:all]
       options[:format] ||= :asciidoc
       options[:filename] = filename
@@ -62,9 +64,8 @@ module Metanorma
     end
 
     def get_extensions(options)
-      options[:extension_keys] ||= @processor.output_formats.reduce([]) do |memo, (k, _)|
-        memo << k
-      end
+      options[:extension_keys] ||=
+        @processor.output_formats.reduce([]) { |memo, (k, _)| memo << k }
       extensions = options[:extension_keys].reduce([]) do |memo, e|
         if @processor.output_formats[e]
           memo << e
@@ -132,7 +133,7 @@ module Metanorma
       return unless dirname
 
       if extract_types.nil? || extract_types.empty?
-        extract_types = [:sourcecode, :image, :requirement]
+        extract_types = %i[sourcecode image requirement]
       end
       FileUtils.rm_rf dirname
       FileUtils.mkdir_p dirname
@@ -157,7 +158,7 @@ module Metanorma
       xml.at("//image | //xmlns:image") or return
       FileUtils.mkdir_p "#{dirname}/image"
       xml.xpath("//image | //xmlns:image").each_with_index do |s, i|
-        next unless /^data:image/.match s["src"]
+        next unless /^data:image/.match? s["src"]
 
         %r{^data:image/(?<imgtype>[^;]+);base64,(?<imgdata>.+)$} =~ s["src"]
         filename = s["filename"] || sprintf("image-%04d.%s", i, imgtype)
@@ -205,11 +206,15 @@ module Metanorma
           relaton_export(isodoc, options)
         elsif options[:passthrough_presentation_xml] && ext == :presentation
           FileUtils.cp f, presentationxml_name
+        elsif ext == :html && options[:sectionsplit]
+          sectionsplit_convert(xml_name, isodoc, outfilename, isodoc_options)
         else
           begin
-            @processor.use_presentation_xml(ext) ?
-              @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
+            if @processor.use_presentation_xml(ext)
+              @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options)
+            else
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
+            end
           rescue StandardError => e
             isodoc_error_process(e)
           end

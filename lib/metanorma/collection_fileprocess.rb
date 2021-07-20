@@ -63,8 +63,8 @@ module Metanorma
         .merge(@compile_options)
       )
       r = file.sub(/\.xml$/, ".presentation.xml")
-      @isodoc.sectionsplit(
-        Nokogiri::XML(File.read(r)), File.basename(r), File.dirname(r)
+      Compile.new.sectionsplit(
+        Nokogiri::XML(File.read(r)), File.basename(r), File.dirname(r),
       ).sort_by { |f| f[:order] }
     end
 
