@@ -29,6 +29,7 @@ RSpec.describe Metanorma::Compile do
       {
         bare: nil,
         datauriimage: true,
+        no_install_fonts: nil,
         sectionsplit: nil,
         sourcefilename: "spec/assets/test2.adoc",
       },
