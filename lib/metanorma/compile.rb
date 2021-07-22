@@ -21,6 +21,7 @@ module Metanorma
     end
 
     def compile(filename, options = {})
+      warn "#{filename} #{options}"
       require_libraries(options)
       options = options_extract(filename, options)
       validate_options(options)
@@ -67,8 +68,7 @@ module Metanorma
       options[:extension_keys] ||=
         @processor.output_formats.reduce([]) { |memo, (k, _)| memo << k }
       extensions = options[:extension_keys].reduce([]) do |memo, e|
-        if @processor.output_formats[e]
-          memo << e
+        if @processor.output_formats[e] then memo << e
         else
           message = "[metanorma] Error: #{e} format is not supported for this standard."
           @errors << message
@@ -86,24 +86,31 @@ module Metanorma
 
     def process_input(filename, options)
       case extname = File.extname(filename)
-      when ".adoc"
-        Util.log("[metanorma] Processing: AsciiDoc input.", :info)
-        file = read_file(filename)
-        options[:asciimath] and
-          file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
-        dir = File.dirname(filename)
-        dir != "." and
-          file.gsub!(/^include::/, "include::#{dir}/")
-        [file, @processor.input_to_isodoc(file, filename, options)]
-      when ".xml"
-        Util.log("[metanorma] Processing: Metanorma XML input.", :info)
-        # TODO NN: this is a hack -- we should provide/bridge the
-        # document attributes in Metanorma XML
-        ["", read_file(filename)]
+      when ".adoc" then process_input_adoc(filename, options)
+      when ".xml" then process_input_xml(filename, options)
       else
-        Util.log("[metanorma] Error: file extension #{extname} is not supported.", :error)
+        Util.log("[metanorma] Error: file extension #{extname} "\
+                 "is not supported.", :error)
         nil
       end
+    end
+
+    def process_input_adoc(filename, options)
+      Util.log("[metanorma] Processing: AsciiDoc input.", :info)
+      file = read_file(filename)
+      options[:asciimath] and
+        file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
+      dir = File.dirname(filename)
+      dir != "." and
+        file.gsub!(/^include::/, "include::#{dir}/")
+      [file, @processor.input_to_isodoc(file, filename, options)]
+    end
+
+    def process_input_xml(filename, _options)
+      Util.log("[metanorma] Processing: Metanorma XML input.", :info)
+      # TODO NN: this is a hack -- we should provide/bridge the
+      # document attributes in Metanorma XML
+      ["", read_file(filename)]
     end
 
     def read_file(filename)
@@ -202,8 +209,7 @@ module Metanorma
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         isodoc_options = get_isodoc_options(file, options, ext)
         if ext == :rxl
-          options[:relaton] = outfilename
-          relaton_export(isodoc, options)
+          relaton_export(isodoc, options.merge(relaton: outfilename))
         elsif options[:passthrough_presentation_xml] && ext == :presentation
           FileUtils.cp f, presentationxml_name
         elsif ext == :html && options[:sectionsplit]
@@ -238,8 +244,9 @@ module Metanorma
       isodoc_options = @processor.extract_options(file)
       isodoc_options[:datauriimage] = true if options[:datauriimage]
       isodoc_options[:sourcefilename] = options[:filename]
-      isodoc_options[:bare] ||= options[:bare]
-      isodoc_options[:sectionsplit] ||= options[:sectionsplit]
+      %i(bare sectionsplit no_install_fonts).each do |x|
+        isodoc_options[x] ||= options[x]
+      end
       if ext == :pdf
         floc = FontistUtils.fontist_font_locations(@processor, options) and
           isodoc_options[:mn2pdf] = { font_manifest_file: floc.path }
