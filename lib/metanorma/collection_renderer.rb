@@ -37,6 +37,7 @@ module Metanorma
       @coverpage = options[:coverpage]
       @format = Util.sort_extensions_execution(options[:format])
       @compile_options = options[:compile] || {}
+      @compile_options[:no_install_fonts] = true if options[:no_install_fonts]
       @log = options[:log]
       @documents = collection.documents
       @directives = collection.directives
@@ -56,6 +57,7 @@ module Metanorma
     # @option options [Strong] :ourput_folder output directory
     def self.render(col, options = {})
       folder = File.dirname col.file
+      #require "byebug"; byebug
       cr = new(col, folder, options)
       cr.files
       cr.concatenate(col, options)

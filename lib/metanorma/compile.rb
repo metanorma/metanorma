@@ -22,6 +22,7 @@ module Metanorma
 
     def compile(filename, options = {})
       warn "#{filename} #{options}"
+      #require "byebug"; byebug if options[:passthrough_presentation_xml]
       require_libraries(options)
       options = options_extract(filename, options)
       validate_options(options)
