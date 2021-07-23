@@ -42,6 +42,7 @@ module Metanorma
       @documents = collection.documents
       @directives = collection.directives
       @disambig = Util::DisambigFiles.new
+      @compile = Compile.new
 
       # list of files in the collection
       @files = read_files folder
@@ -58,10 +59,15 @@ module Metanorma
     def self.render(col, options = {})
       folder = File.dirname col.file
       #require "byebug"; byebug
+      warn "\n\n\n\n\nRender Init: #{DateTime.now.strftime('%H:%M:%S')}"
       cr = new(col, folder, options)
+      warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.files
+      warn "\n\n\n\n\nConcatenate: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.concatenate(col, options)
+      warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.coverpage if options[:format]&.include?(:html)
+      warn "\n\n\n\n\nDone: #{DateTime.now.strftime('%H:%M:%S')}"
     end
 
     def concatenate(col, options)

@@ -58,12 +58,12 @@ module Metanorma
     end
 
     def sectionsplit(file)
-      Compile.new.compile(
+      @compile.compile(
         file, { format: :asciidoc, extension_keys: [:presentation] }
         .merge(@compile_options)
       )
       r = file.sub(/\.xml$/, ".presentation.xml")
-      Compile.new.sectionsplit(
+      @compile.sectionsplit(
         Nokogiri::XML(File.read(r)), File.basename(r), File.dirname(r),
       ).sort_by { |f| f[:order] }
     end
@@ -137,11 +137,10 @@ module Metanorma
     # compile and output individual file in collection
     # warn "metanorma compile -x html #{f.path}"
     def file_compile(file, filename, identifier)
-      c = Compile.new
-      c.compile file.path, { format: :asciidoc, extension_keys: @format }
+      @compile.compile file.path, { format: :asciidoc, extension_keys: @format }
         .merge(compile_options(identifier))
       @files[identifier][:outputs] = {}
-      file_compile_formats(file, filename, identifier, c)
+      file_compile_formats(file, filename, identifier)
     end
 
     def compile_options(identifier)
@@ -156,9 +155,9 @@ module Metanorma
       ret
     end
 
-    def file_compile_formats(file, filename, identifier, compile)
+    def file_compile_formats(file, filename, identifier)
       @format.each do |e|
-        ext = compile.processor.output_formats[e]
+        ext = @compile.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)
         if /html$/.match?(ext) && @files[identifier][:sectionsplit]
           # file_sectionsplit_copy(file, fn, identifier, ext, e)
@@ -188,6 +187,7 @@ module Metanorma
     # process each file in the collection
     # files are held in memory, and altered as postprocessing
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+            warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
       internal_refs = locate_internal_refs
       @files.each_with_index do |(identifier, x), i|
         i.positive? && Array(@directives).include?("bare-after-first") and
@@ -195,6 +195,7 @@ module Metanorma
         if x[:attachment] then copy_file_to_dest(x)
         else
           file, filename = targetfile(x, read: true)
+            warn "\n\n\n\n\nProcess #{filename}: #{DateTime.now.strftime('%H:%M:%S')}"
           file = update_xrefs(file, identifier, internal_refs)
           Tempfile.open(["collection", ".xml"], encoding: "utf-8") do |f|
             f.write(file)

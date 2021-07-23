@@ -18,11 +18,10 @@ module Metanorma
       @registry = Metanorma::Registry.instance
       @errors = []
       @isodoc = IsoDoc::Convert.new({})
+      @fontist_installed = false
     end
 
     def compile(filename, options = {})
-      warn "#{filename} #{options}"
-      #require "byebug"; byebug if options[:passthrough_presentation_xml]
       require_libraries(options)
       options = options_extract(filename, options)
       validate_options(options)
@@ -31,7 +30,8 @@ module Metanorma
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
-      FontistUtils.install_fonts(@processor, options)
+      FontistUtils.install_fonts(@processor, options) unless @fontist_installed
+      @fontist_installed = true
       process_extensions(extensions, file, isodoc, options)
     end
 

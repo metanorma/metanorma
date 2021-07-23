@@ -57,17 +57,21 @@ module Metanorma
       COVER
     end
 
-    def sectionsplit(xml, filename, dir)
-      xref_preprocess(xml)
-      out = emptydoc(xml)
+    SPLITSECTIONS =
       [["//preface/*", "preface"], ["//sections/*", "sections"],
        ["//annex", nil],
        ["//bibliography/*[not(@hidden = 'true')]", "bibliography"],
-       ["//indexsect", nil]].each_with_object([]) do |n, ret|
-         xml.xpath(ns(n[0])).each do |s|
-           ret << sectionfile(out, dir, "#{filename}.#{ret.size}", s, n[1])
-         end
-       end
+       ["//indexsect", nil]].freeze
+
+    def sectionsplit(xml, filename, dir)
+      @key = xref_preprocess(xml)
+      @splitdir = dir
+      out = emptydoc(xml)
+      SPLITSECTIONS.each_with_object([]) do |n, ret|
+        xml.xpath(ns(n[0])).each do |s|
+          ret << sectionfile(xml, out, "#{filename}.#{ret.size}", s, n[1])
+        end
+      end
     end
 
     def emptydoc(xml)
@@ -79,34 +83,49 @@ module Metanorma
       out
     end
 
-    def sectionfile(xml, dir, file, chunk, parentnode)
-      fname = create_sectionfile(xml.dup, dir, file, chunk, parentnode)
+    def sectionfile(fulldoc, xml, file, chunk, parentnode)
+      fname = create_sectionfile(fulldoc, xml.dup, file, chunk, parentnode)
       { order: chunk["displayorder"].to_i, url: fname,
         title: titlerender(chunk) }
     end
 
-    def create_sectionfile(out, dir, file, chunk, parentnode)
+    def create_sectionfile(xml, out, file, chunk, parentnode)
       ins = out.at(ns("//misccontainer")) || out.at(ns("//bibdata"))
       if parentnode
         ins.next = "<#{parentnode}/>"
         ins.next.add_child(chunk.dup)
-      else
-        ins.next = chunk.dup
+      else ins.next = chunk.dup
       end
+      xref_process(out, xml, @key)
       outname = "#{file}.xml"
-      File.open(File.join(dir, outname), "w:UTF-8") { |f| f.write(out) }
+      File.open(File.join(@splitdir, outname), "w:UTF-8") { |f| f.write(out) }
       outname
     end
+
+    #     def xref_preprocess(xml)
+    #       svg_preprocess(xml)
+    #       key = (0...8).map { rand(65..90).chr }.join # random string
+    #       xml.root["type"] = key # to force recognition of internal refs
+    #       refs = eref_to_internal_eref(xml, key)
+    #       refs += xref_to_internal_eref(xml, key)
+    #       ins = new_hidden_ref(xml)
+    #       copy_repo_items_biblio(ins, xml)
+    #       insert_indirect_biblio(ins, refs, key)
+    #     end
 
     def xref_preprocess(xml)
       svg_preprocess(xml)
       key = (0...8).map { rand(65..90).chr }.join # random string
-      refs = eref_to_internal_eref(xml, key)
-      refs += xref_to_internal_eref(xml, key)
       xml.root["type"] = key # to force recognition of internal refs
-      ins = new_hidden_ref(xml)
-      copy_repo_items_biblio(ins, xml)
-      insert_indirect_biblio(ins, refs, key)
+      key
+    end
+
+    def xref_process(section, xml, key)
+      refs = eref_to_internal_eref(section, xml, key)
+      refs += xref_to_internal_eref(section, key)
+      ins = new_hidden_ref(section)
+      copied_refs = copy_repo_items_biblio(ins, xml)
+      insert_indirect_biblio(ins, refs - copied_refs, key)
     end
 
     def svg_preprocess(xml)
@@ -145,10 +164,10 @@ module Metanorma
       end.keys
     end
 
-    def eref_to_internal_eref(xml, key)
-      eref_to_internal_eref_select(xml).each_with_object([]) do |x, m|
+    def eref_to_internal_eref(section, xml, key)
+      eref_to_internal_eref_select(section).each_with_object([]) do |x, m|
         url = xml.at(ns("//bibitem[@id = '#{x}']/url[@type = 'citation']"))
-        xml.xpath(("//*[@bibitemid = '#{x}']")).each do |e|
+        section.xpath(("//*[@bibitemid = '#{x}']")).each do |e|
           id = eref_to_internal_eref1(e, key, url)
           id and m << id
         end
@@ -186,8 +205,9 @@ module Metanorma
 
     def copy_repo_items_biblio(ins, xml)
       xml.xpath(ns("//references/bibitem[docidentifier/@type = 'repository']"))
-        .each do |b|
+        .each_with_object([]) do |b, m|
         ins << b.dup
+        m << b["id"]
       end
     end
 
