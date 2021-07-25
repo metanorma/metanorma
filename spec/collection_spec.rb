@@ -252,6 +252,25 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
+  it "skips indexing of files in coverpage on request" do
+    file = "#{INPATH}/collection.dup.yml"
+    of = OUTPATH
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation xml html],
+      output_folder: of,
+      coverpage: "#{INPATH}/collection_cover.html",
+      compile: {
+        no_install_fonts: true,
+      },
+    )
+    index = File.read("#{OUTPATH}/index.html")
+    expect(index).to include "ISO 44001"
+    expect(index).not_to include "ISO 44002"
+    expect(index).to include "ISO 44003"
+    FileUtils.rm_rf of
+  end
+
   def read_and_cleanup(file)
     content = File.read(file, encoding: "UTF-8").gsub(
       /(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s

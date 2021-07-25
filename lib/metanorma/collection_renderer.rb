@@ -58,7 +58,7 @@ module Metanorma
     # @option options [Strong] :ourput_folder output directory
     def self.render(col, options = {})
       folder = File.dirname col.file
-      #require "byebug"; byebug
+      # require "byebug"; byebug
       warn "\n\n\n\n\nRender Init: #{DateTime.now.strftime('%H:%M:%S')}"
       cr = new(col, folder, options)
       warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
@@ -179,7 +179,7 @@ module Metanorma
     # @param elm [Nokogiri::XML::Element]
     # @param builder [Nokogiri::XML::Builder]
     def indexfile_docref(elm, builder)
-      return "" unless elm.at(ns("./docref"))
+      return "" unless elm.at(ns("./docref[@index = 'true']"))
 
       builder.ul { |b| docrefs(elm, b) }
     end
@@ -187,7 +187,7 @@ module Metanorma
     # @param elm [Nokogiri::XML::Element]
     # @param builder [Nokogiri::XML::Builder]
     def docrefs(elm, builder)
-      elm.xpath(ns("./docref")).each do |d|
+      elm.xpath(ns("./docref[@index = 'true']")).each do |d|
         ident = d.at(ns("./identifier")).children.to_xml
         builder.li do |li|
           li.a **{ href: index_link(d, ident) } do |a|

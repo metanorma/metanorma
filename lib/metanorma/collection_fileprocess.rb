@@ -80,8 +80,9 @@ module Metanorma
             else
               { type: "id", ref: ref["id"] }
             end
-      ret[:attachment] = ref["attachment"] if ref["attachment"]
-      ret[:sectionsplit] = ref["sectionsplit"] if ref["sectionsplit"]
+      %i(attachment sectionsplit index).each do |s|
+        ret[s] = ref[s.to_s] if ref[s.to_s]
+      end
       ret[:presentationxml] = ref["presentation-xml"] if ref["presentation-xml"]
       ret[:bareafterfirst] = ref["bare-after-first"] if ref["bare-after-first"]
       ret

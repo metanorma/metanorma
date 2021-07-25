@@ -18,8 +18,10 @@ manifest:
       docref:
         - fileref: ../collection/dummy.xml
           identifier: ISO 44001
+          index: true
         - fileref: dummy.1.xml
           identifier: ISO 44002
+          index: false
         - fileref: dummy.xml
           identifier: ISO 44003
 

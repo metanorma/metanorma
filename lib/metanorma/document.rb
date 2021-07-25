@@ -1,13 +1,15 @@
 module Metanorma
   class Document
     # @return [Strin]
-    attr_reader :file, :attachment, :bibitem
+    attr_reader :file, :attachment, :bibitem, :index
 
     # @param bibitem [RelatonBib::BibliographicItem]
     def initialize(bibitem, file, options = {})
       @bibitem = bibitem
       @file = file
       @attachment = options[:attachment]
+      @index = options[:index]
+      @index = true if @index.nil?
       @raw = options[:raw]
     end
 
@@ -16,10 +18,11 @@ module Metanorma
       # @param attachment [Bool] is an attachment
       # @param identifier [String] is the identifier assigned the file
       # in the collection file
+      # @param index [Bool] is indication on whether to index this file in coverpage
       # @return [Metanorma::Document]
-      def parse_file(file, attachment, identifier = nil)
+      def parse_file(file, attachment, identifier = nil, index = true)
         new(bibitem(file, attachment, identifier), file,
-            { attachment: attachment })
+            { attachment: attachment, index: index })
       end
 
       # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]

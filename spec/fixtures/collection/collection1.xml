@@ -27,30 +27,30 @@
     <manifest>
       <level>subcollection</level>
       <title>Standards</title>
-      <docref fileref="rice-en.final.xml">
+      <docref fileref="rice-en.final.xml" index="true">
         <identifier>ISO 17301-1:2016</identifier>
       </docref>
-      <docref fileref="dummy.xml">
+      <docref fileref="dummy.xml" index="true">
         <identifier>ISO 17302</identifier>
       </docref>
-      <docref fileref="rice1-en.final.xml">
+      <docref fileref="rice1-en.final.xml" index="true">
         <identifier>ISO 1701:1974</identifier>
       </docref>
     </manifest>
     <manifest>
       <level>subcollection</level>
       <title>Amendments</title>
-      <docref fileref="rice-amd.final.xml">
+      <docref fileref="rice-amd.final.xml" index="true">
         <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
       </docref>
     </manifest>
     <manifest>
   <level>attachments</level>
   <title>Attachments</title>
-  <docref fileref="pics/action_schemaexpg1.svg" attachment="true">
+  <docref fileref="pics/action_schemaexpg1.svg" attachment="true" index="true">
     <identifier>action_schemaexpg1.svg</identifier>
   </docref>
-  <docref fileref="assets/rice_image1.png" attachment="true">
+  <docref fileref="assets/rice_image1.png" attachment="true" index="true">
   <identifier>rice_image1.png</identifier>
 </docref>
 </manifest>
