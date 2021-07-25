@@ -37,7 +37,7 @@ module Metanorma
     end
 
     def collection_setup(filename, dir)
-      FileUtils.mkdir_p "#{filename}_collection"
+      FileUtils.mkdir_p "#{filename}_collection" if filename
       FileUtils.mkdir_p dir
       File.open(File.join(dir, "cover.html"), "w:UTF-8") do |f|
         f.write(coll_cover)
@@ -124,7 +124,7 @@ module Metanorma
       refs = eref_to_internal_eref(section, xml, key)
       refs += xref_to_internal_eref(section, key)
       ins = new_hidden_ref(section)
-      copied_refs = copy_repo_items_biblio(ins, xml)
+      copied_refs = copy_repo_items_biblio(ins, section, xml)
       insert_indirect_biblio(ins, refs - copied_refs, key)
     end
 
@@ -203,9 +203,10 @@ module Metanorma
       ins.add_child("<references hidden='true' normative='false'/>").first
     end
 
-    def copy_repo_items_biblio(ins, xml)
+    def copy_repo_items_biblio(ins, section, xml)
       xml.xpath(ns("//references/bibitem[docidentifier/@type = 'repository']"))
         .each_with_object([]) do |b, m|
+        section.at("//*[@bibitemid = '#{b['id']}']") or next
         ins << b.dup
         m << b["id"]
       end

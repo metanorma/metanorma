@@ -212,6 +212,7 @@ RSpec.describe Metanorma::Collection do
       )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/ISO 17301-1:2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO Collection 1"
@@ -222,8 +223,8 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml")).to be false
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html")).to be true

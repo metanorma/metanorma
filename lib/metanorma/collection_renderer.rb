@@ -54,7 +54,7 @@ module Metanorma
     # @param col [Metanorma::Collection] XML collection
     # @param options [Hash]
     # @option options [String] :coverpage cover page HTML (Liquid template)
-    # @option options [Array<Synbol>] :format list of formats
+    # @option options [Array<Symbol>] :format list of formats
     # @option options [Strong] :ourput_folder output directory
     def self.render(col, options = {})
       folder = File.dirname col.file
@@ -79,7 +79,7 @@ module Metanorma
         out = col.clone
         out.directives << "documents-inline"
         out.documents.each_key do |id|
-          next if @files[id][:attachment]
+          next if @files[id][:attachment] || @files[id][:outputs].nil?
 
           filename = @files[id][:outputs][e]
           out.documents[id] = Metanorma::Document.raw_file(filename)

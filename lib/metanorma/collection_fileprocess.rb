@@ -38,23 +38,45 @@ module Metanorma
     def add_section_split(files)
       files.keys.each_with_object({}) do |k, m|
         if files[k][:sectionsplit] == "true" && !files[k]["attachment"]
-          sectionsplit(files[k][:ref]).each_with_index do |f1, i|
+          s, manifest = sectionsplit(files[k][:ref])
+          s.each_with_index do |f1, i|
             add_section_split_instance(f1, m, k, i, files)
           end
+          m["#{k}:index.html"] = add_section_split_cover(files, manifest, k)
         end
         m[k] = files[k]
       end
     end
 
+    def add_section_split_cover(files, manifest, ident)
+      cover = section_split_cover(manifest, ident)
+      files[ident][:out_path] = cover
+      { attachment: true, index: false, out_path: cover,
+        ref: File.join(File.dirname(manifest.file), cover) }
+    end
+
+    def section_split_cover(col, ident)
+      dir = File.dirname(col.file)
+      @compile.collection_setup(nil, dir)
+      CollectionRenderer.new(col, dir,
+                             output_folder: "#{ident}_collection",
+                             format: %i(html),
+                             coverpage: File.join(dir, "cover.html")).coverpage
+      FileUtils.mv "#{ident}_collection/index.html",
+                   File.join(dir, "#{ident}_index.html")
+      FileUtils.rm_rf "#{ident}_collection"
+      "#{ident}_index.html"
+    end
+
     def add_section_split_instance(file, manifest, key, idx, files)
       dir = File.dirname(files[key][:ref])
       presfile = File.join(dir, File.basename(file[:url]))
-      manifest[key + file[:title]] =
+      manifest["#{key} #{file[:title]}"] =
         { parentid: key, presentationxml: true, type: "fileref",
           rel_path: file[:url], out_path: File.basename(file[:url]),
           anchors: read_anchors(Nokogiri::XML(File.read(presfile))),
           bibdata: files[key][:bibdata], ref: presfile }
-      manifest[key + file[:title]][:bare] = true unless idx.zero?
+      manifest["#{key} #{file[:title]}"][:bare] = true unless idx.zero?
     end
 
     def sectionsplit(file)
@@ -63,9 +85,11 @@ module Metanorma
         .merge(@compile_options)
       )
       r = file.sub(/\.xml$/, ".presentation.xml")
-      @compile.sectionsplit(
-        Nokogiri::XML(File.read(r)), File.basename(r), File.dirname(r),
-      ).sort_by { |f| f[:order] }
+      xml = Nokogiri::XML(File.read(r))
+      s = @compile.sectionsplit(xml, File.basename(r), File.dirname(r))
+        .sort_by { |f| f[:order] }
+      [s, @compile.collection_manifest(File.basename(r), s, xml, nil,
+                                       File.dirname(r))]
     end
 
     # rel_path is the source file address, determined relative to the YAML.
@@ -138,6 +162,8 @@ module Metanorma
     # compile and output individual file in collection
     # warn "metanorma compile -x html #{f.path}"
     def file_compile(file, filename, identifier)
+      return if @files[identifier][:sectionsplit] == "true"
+
       @compile.compile file.path, { format: :asciidoc, extension_keys: @format }
         .merge(compile_options(identifier))
       @files[identifier][:outputs] = {}
@@ -188,7 +214,7 @@ module Metanorma
     # process each file in the collection
     # files are held in memory, and altered as postprocessing
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-            warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
+      warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
       internal_refs = locate_internal_refs
       @files.each_with_index do |(identifier, x), i|
         i.positive? && Array(@directives).include?("bare-after-first") and
@@ -196,7 +222,7 @@ module Metanorma
         if x[:attachment] then copy_file_to_dest(x)
         else
           file, filename = targetfile(x, read: true)
-            warn "\n\n\n\n\nProcess #{filename}: #{DateTime.now.strftime('%H:%M:%S')}"
+          warn "\n\n\n\n\nProcess #{filename}: #{DateTime.now.strftime('%H:%M:%S')}"
           file = update_xrefs(file, identifier, internal_refs)
           Tempfile.open(["collection", ".xml"], encoding: "utf-8") do |f|
             f.write(file)
