@@ -185,9 +185,50 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html")).to be false
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
       # expect(File.exist?("#{OUTPATH}/rice1-en.final.doc")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml")).to be true
+      FileUtils.rm_rf of
+    end
+
+    it "YAML collection with sectionsplit" do # rubocop:disable metrics/blocklength
+      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg", "action_schemaexpg1.svg"
+      file = "#{INPATH}/collection_sectionsplit.yml"
+      # xml = file.read file, encoding: "utf-8"
+      of = OUTPATH.to_s
+      col = Metanorma::Collection.parse file
+      col.render(
+        format: %i[presentation html xml],
+        output_folder: of,
+        coverpage: "#{INPATH}/collection_cover.html",
+        compile: {
+          no_install_fonts: true,
+        },
+      )
+      expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/ISO 17301-1:2016_index.html")).to be true
+      expect(File.exist?("#{OUTPATH}/index.html")).to be true
+      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
+        .to include "ISO Collection 1"
+      expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml")).to be true
       FileUtils.rm_rf of
@@ -209,6 +250,25 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
     expect(File.exist?("#{OUTPATH}/dummy.1.xml")).to be true
     expect(File.exist?("#{OUTPATH}/dummy.2.xml")).to be true
+    FileUtils.rm_rf of
+  end
+
+  it "skips indexing of files in coverpage on request" do
+    file = "#{INPATH}/collection.dup.yml"
+    of = OUTPATH
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation xml html],
+      output_folder: of,
+      coverpage: "#{INPATH}/collection_cover.html",
+      compile: {
+        no_install_fonts: true,
+      },
+    )
+    index = File.read("#{OUTPATH}/index.html")
+    expect(index).to include "ISO 44001"
+    expect(index).not_to include "ISO 44002"
+    expect(index).to include "ISO 44003"
     FileUtils.rm_rf of
   end
 

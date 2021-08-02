@@ -1,6 +1,5 @@
 require_relative "spec_helper"
 require "fileutils"
-
 require "fontist"
 
 RSpec.describe Metanorma::Compile do
@@ -30,6 +29,7 @@ RSpec.describe Metanorma::Compile do
       {
         bare: nil,
         datauriimage: true,
+        no_install_fonts: nil,
         sectionsplit: nil,
         sourcefilename: "spec/assets/test2.adoc",
       },
@@ -505,7 +505,137 @@ RSpec.describe Metanorma::Compile do
     expect(c.errors).to include(exception_msg)
   end
 
+
+  it "processes section split HTML" do
+    FileUtils.rm_rf "test_collection"
+    FileUtils.rm_rf "test_files"
+    mock_render
+    Metanorma::Compile.new.compile("spec/fixtures/test_sectionsplit.xml",
+                                   type: "iso",
+                                   extension_keys: %i[presentation html],
+                                   bare: nil,
+                                   sectionsplit: "true",
+                                   datauriimage: true,
+                                   agree_to_terms: true)
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/index.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.0.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.1.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.2.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.3.html")).to be false
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.4.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.5.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.6.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.7.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.8.html")).to be false
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/cover.html")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.0.xml")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.1.xml")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.2.xml")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.3.xml")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.4.xml")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.5.xml")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.6.xml")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.7.xml")).to be true
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.8.xml")).to be false
+    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.html.yaml")).to be true
+    m = /type="([^"]+)"/.match(File.read("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.0.xml"))
+    file2 = Nokogiri::XML(File.read("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.2.xml"))
+    expect(xmlpp(file2
+     .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:eref[@bibitemid = '#{m[1]}_R1']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>#{m[1]}_R1</referenceFrom></locality></localityStack></eref>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <bibitem id="#{m[1]}_R1" type="internal">
+        <docidentifier type="repository">#{m[1]}/R1</docidentifier>
+        </bibitem>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <bibitem id="#{m[1]}_A" type="internal">
+        <docidentifier type="repository">#{m[1]}/A</docidentifier>
+        </bibitem>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:svgmap[1]").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <svgmap>
+        <figure>
+          <svg xmlns="http://www.w3.org/2000/svg">
+            <a href="A">A</a>
+            <a href="B">B</a>
+          </svg>
+          <target href="B"><eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>#{m[1]}_R1</referenceFrom></locality></localityStack></eref></target>
+        </figure>
+        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:svgmap[2]").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <svgmap><figure>
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <a href="P">P</a>
+        </svg>
+        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
+      OUTPUT
+    expect(File.read("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.html.yaml")).to be_equivalent_to <<~OUTPUT
+      ---
+      directives:
+       - presentation-xml
+       - bare-after-first
+       bibdata:
+         title:
+           type: title-main
+           language:
+           content: ISO Title
+         type: collection
+         docid:
+           type: ISO
+           id: ISO 1
+       manifest:
+         level: collection
+         title: Collection
+         docref:
+         - fileref: test_sectionsplit.html.3.xml
+           identifier: "[Untitled]"
+         - fileref: test_sectionsplit.html.0.xml
+           identifier: abstract
+         - fileref: test_sectionsplit.html.1.xml
+           identifier: introduction
+         - fileref: test_sectionsplit.html.6.xml
+           identifier: Normative References
+         - fileref: test_sectionsplit.html.2.xml
+           identifier: Clause 4
+         - fileref: test_sectionsplit.html.4.xml
+           identifier: Annex (informative)
+         - fileref: test_sectionsplit.html.5.xml
+           identifier: "[Untitled]"
+         - fileref: test_sectionsplit.html.7.xml
+           identifier: Bibliography
+    OUTPUT
+  end
+
   private
+
+  def mock_render
+    original_add = ::Metanorma::CollectionRenderer.method(:render)
+    allow(::Metanorma::CollectionRenderer)
+      .to receive(:render) do |col, opts|
+      original_add.call(col, opts.merge(compile: { no_install_fonts: true }))
+    end
+  end
+
+
+
+
 
   def mock_iso_processor_output(inname, outname, hash)
     require "metanorma-iso"

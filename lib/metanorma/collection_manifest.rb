@@ -47,9 +47,9 @@ module Metanorma
       def parse_docref(mnf)
         mnf.xpath("xmlns:docref").map do |dr|
           h = { "identifier" => dr.at("identifier").children.to_xml }
-          dr[:fileref] and h["fileref"] = dr[:fileref]
-          h["attachment"] = dr[:attachment] if dr[:attachment]
-          h["sectionsplit"] = dr[:sectionsplit] if dr[:sectionsplit]
+          %i(fileref attachment sectionsplit index).each do |s|
+            h[s.to_s] = dr[s] if dr[s]
+          end
           h["presentation-xml"] = dr[:presentationxml] if dr[:presentationxml]
           h
         end
@@ -70,7 +70,7 @@ module Metanorma
 
         m[dr["identifier"]] = Document.parse_file(
           File.join(dir, dr["fileref"]),
-          dr["attachment"], dr["identifier"]
+          dr["attachment"], dr["identifier"], dr["index"]
         )
         m
       end
@@ -118,10 +118,16 @@ module Metanorma
 
     def docref_to_xml_attrs(elem, docref)
       elem[:fileref] = @disambig.source2dest_filename(docref["fileref"])
-      elem[:attachment] = docref["attachment"] if docref["attachment"]
-      elem[:sectionsplit] = docref["sectionsplit"] if docref["sectionsplit"]
+      %i(attachment sectionsplit).each do |i|
+        elem[i] = docref[i.to_s] if docref[i.to_s]
+      end
+      elem[:index] = docref.has_key?("index") ? docref["index"] : "true"
       elem[:presentationxml] = "true" if docref["presentation-xml"] &&
-        docref["presentation-xml"] == "true" || docref["presentation-xml"] == true
+        [true, "true"].include?(docref["presentation-xml"])
+      docref_to_xml_attrs_id(elem, docref)
+    end
+
+    def docref_to_xml_attrs_id(elem, docref)
       if collection.directives.include?("documents-inline")
         id = collection.documents.find_index do |k, _|
           k == docref["identifier"]

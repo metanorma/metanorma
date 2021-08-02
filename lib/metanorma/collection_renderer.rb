@@ -37,10 +37,12 @@ module Metanorma
       @coverpage = options[:coverpage]
       @format = Util.sort_extensions_execution(options[:format])
       @compile_options = options[:compile] || {}
+      @compile_options[:no_install_fonts] = true if options[:no_install_fonts]
       @log = options[:log]
       @documents = collection.documents
       @directives = collection.directives
       @disambig = Util::DisambigFiles.new
+      @compile = Compile.new
 
       # list of files in the collection
       @files = read_files folder
@@ -52,14 +54,20 @@ module Metanorma
     # @param col [Metanorma::Collection] XML collection
     # @param options [Hash]
     # @option options [String] :coverpage cover page HTML (Liquid template)
-    # @option options [Array<Synbol>] :format list of formats
+    # @option options [Array<Symbol>] :format list of formats
     # @option options [Strong] :ourput_folder output directory
     def self.render(col, options = {})
       folder = File.dirname col.file
+      # require "byebug"; byebug
+      warn "\n\n\n\n\nRender Init: #{DateTime.now.strftime('%H:%M:%S')}"
       cr = new(col, folder, options)
+      warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.files
+      warn "\n\n\n\n\nConcatenate: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.concatenate(col, options)
+      warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.coverpage if options[:format]&.include?(:html)
+      warn "\n\n\n\n\nDone: #{DateTime.now.strftime('%H:%M:%S')}"
     end
 
     def concatenate(col, options)
@@ -71,7 +79,7 @@ module Metanorma
         out = col.clone
         out.directives << "documents-inline"
         out.documents.each_key do |id|
-          next if @files[id][:attachment]
+          next if @files[id][:attachment] || @files[id][:outputs].nil?
 
           filename = @files[id][:outputs][e]
           out.documents[id] = Metanorma::Document.raw_file(filename)
@@ -171,7 +179,7 @@ module Metanorma
     # @param elm [Nokogiri::XML::Element]
     # @param builder [Nokogiri::XML::Builder]
     def indexfile_docref(elm, builder)
-      return "" unless elm.at(ns("./docref"))
+      return "" unless elm.at(ns("./docref[@index = 'true']"))
 
       builder.ul { |b| docrefs(elm, b) }
     end
@@ -179,7 +187,7 @@ module Metanorma
     # @param elm [Nokogiri::XML::Element]
     # @param builder [Nokogiri::XML::Builder]
     def docrefs(elm, builder)
-      elm.xpath(ns("./docref")).each do |d|
+      elm.xpath(ns("./docref[@index = 'true']")).each do |d|
         ident = d.at(ns("./identifier")).children.to_xml
         builder.li do |li|
           li.a **{ href: index_link(d, ident) } do |a|

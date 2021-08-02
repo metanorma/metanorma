@@ -3,10 +3,7 @@
 
 module Metanorma
   class Processor
-
-    attr_reader :short
-    attr_reader :input_format
-    attr_reader :asciidoctor_backend
+    attr_reader :short, :input_format, :asciidoctor_backend
 
     def initialize
       raise "This is an abstract class!"
@@ -16,7 +13,7 @@ module Metanorma
       {
         xml: "xml",
         presentation: "presentation.xml",
-        rxl: "rxl"
+        rxl: "rxl",
       }
     end
 
@@ -36,7 +33,7 @@ module Metanorma
       end
     end
 
-    def output(isodoc_node, inname, outname, format, options={})
+    def output(isodoc_node, _inname, outname, _format, _options = {})
       File.open(outname, "w:UTF-8") { |f| f.write(isodoc_node) }
     end
 

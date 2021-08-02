@@ -7,6 +7,7 @@ require "fontist/manifest/install"
 require_relative "compile_validate"
 require_relative "fontist_utils"
 require_relative "util"
+require_relative "sectionsplit"
 
 module Metanorma
   class Compile
@@ -16,6 +17,8 @@ module Metanorma
     def initialize
       @registry = Metanorma::Registry.instance
       @errors = []
+      @isodoc = IsoDoc::Convert.new({})
+      @fontist_installed = false
     end
 
     def compile(filename, options = {})
@@ -27,7 +30,8 @@ module Metanorma
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
-      FontistUtils.install_fonts(@processor, options)
+      FontistUtils.install_fonts(@processor, options) unless @fontist_installed
+      @fontist_installed = true
       process_extensions(extensions, file, isodoc, options)
     end
 
@@ -54,7 +58,7 @@ module Metanorma
       dir = filename.sub(%r(/[^/]+$), "/")
       options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
       options[:sourcecode] ||= "#{dir}/#{o[:sourcecode]}" if o[:sourcecode]
-      options[:extension_keys] ||= o[:extensions]&.split(/,[ ]*/)&.map(&:to_sym)
+      options[:extension_keys] ||= o[:extensions]&.split(/, */)&.map(&:to_sym)
       options[:extension_keys] = nil if options[:extension_keys] == [:all]
       options[:format] ||= :asciidoc
       options[:filename] = filename
@@ -62,12 +66,10 @@ module Metanorma
     end
 
     def get_extensions(options)
-      options[:extension_keys] ||= @processor.output_formats.reduce([]) do |memo, (k, _)|
-        memo << k
-      end
+      options[:extension_keys] ||=
+        @processor.output_formats.reduce([]) { |memo, (k, _)| memo << k }
       extensions = options[:extension_keys].reduce([]) do |memo, e|
-        if @processor.output_formats[e]
-          memo << e
+        if @processor.output_formats[e] then memo << e
         else
           message = "[metanorma] Error: #{e} format is not supported for this standard."
           @errors << message
@@ -85,24 +87,31 @@ module Metanorma
 
     def process_input(filename, options)
       case extname = File.extname(filename)
-      when ".adoc"
-        Util.log("[metanorma] Processing: AsciiDoc input.", :info)
-        file = read_file(filename)
-        options[:asciimath] and
-          file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
-        dir = File.dirname(filename)
-        dir != "." and
-          file.gsub!(/^include::/, "include::#{dir}/")
-        [file, @processor.input_to_isodoc(file, filename, options)]
-      when ".xml"
-        Util.log("[metanorma] Processing: Metanorma XML input.", :info)
-        # TODO NN: this is a hack -- we should provide/bridge the
-        # document attributes in Metanorma XML
-        ["", read_file(filename)]
+      when ".adoc" then process_input_adoc(filename, options)
+      when ".xml" then process_input_xml(filename, options)
       else
-        Util.log("[metanorma] Error: file extension #{extname} is not supported.", :error)
+        Util.log("[metanorma] Error: file extension #{extname} "\
+                 "is not supported.", :error)
         nil
       end
+    end
+
+    def process_input_adoc(filename, options)
+      Util.log("[metanorma] Processing: AsciiDoc input.", :info)
+      file = read_file(filename)
+      options[:asciimath] and
+        file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
+      dir = File.dirname(filename)
+      dir != "." and
+        file.gsub!(/^include::/, "include::#{dir}/")
+      [file, @processor.input_to_isodoc(file, filename, options)]
+    end
+
+    def process_input_xml(filename, _options)
+      Util.log("[metanorma] Processing: Metanorma XML input.", :info)
+      # TODO NN: this is a hack -- we should provide/bridge the
+      # document attributes in Metanorma XML
+      ["", read_file(filename)]
     end
 
     def read_file(filename)
@@ -132,7 +141,7 @@ module Metanorma
       return unless dirname
 
       if extract_types.nil? || extract_types.empty?
-        extract_types = [:sourcecode, :image, :requirement]
+        extract_types = %i[sourcecode image requirement]
       end
       FileUtils.rm_rf dirname
       FileUtils.mkdir_p dirname
@@ -157,7 +166,7 @@ module Metanorma
       xml.at("//image | //xmlns:image") or return
       FileUtils.mkdir_p "#{dirname}/image"
       xml.xpath("//image | //xmlns:image").each_with_index do |s, i|
-        next unless /^data:image/.match s["src"]
+        next unless /^data:image/.match? s["src"]
 
         %r{^data:image/(?<imgtype>[^;]+);base64,(?<imgdata>.+)$} =~ s["src"]
         filename = s["filename"] || sprintf("image-%04d.%s", i, imgtype)
@@ -201,15 +210,18 @@ module Metanorma
         outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
         isodoc_options = get_isodoc_options(file, options, ext)
         if ext == :rxl
-          options[:relaton] = outfilename
-          relaton_export(isodoc, options)
+          relaton_export(isodoc, options.merge(relaton: outfilename))
         elsif options[:passthrough_presentation_xml] && ext == :presentation
           FileUtils.cp f, presentationxml_name
+        elsif ext == :html && options[:sectionsplit]
+          sectionsplit_convert(xml_name, isodoc, outfilename, isodoc_options)
         else
           begin
-            @processor.use_presentation_xml(ext) ?
-              @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options) :
+            if @processor.use_presentation_xml(ext)
+              @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options)
+            else
               @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
+            end
           rescue StandardError => e
             isodoc_error_process(e)
           end
@@ -233,8 +245,9 @@ module Metanorma
       isodoc_options = @processor.extract_options(file)
       isodoc_options[:datauriimage] = true if options[:datauriimage]
       isodoc_options[:sourcefilename] = options[:filename]
-      isodoc_options[:bare] ||= options[:bare]
-      isodoc_options[:sectionsplit] ||= options[:sectionsplit]
+      %i(bare sectionsplit no_install_fonts).each do |x|
+        isodoc_options[x] ||= options[x]
+      end
       if ext == :pdf
         floc = FontistUtils.fontist_font_locations(@processor, options) and
           isodoc_options[:mn2pdf] = { font_manifest_file: floc.path }
