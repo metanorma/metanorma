@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.5.0"
 
   spec.add_runtime_dependency "asciidoctor"
-  spec.add_runtime_dependency "fontist", "~> 1.9.0"
+  spec.add_runtime_dependency "fontist", "~> 1.11"
   spec.add_runtime_dependency "htmlentities"
   spec.add_runtime_dependency "metanorma-utils", "~> 1.2.0"
   spec.add_runtime_dependency "mn2pdf", "~> 1"
