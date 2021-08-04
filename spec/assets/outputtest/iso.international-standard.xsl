@@ -1436,7 +1436,7 @@
 	</xsl:template>
 
 	<xsl:template match="iso:sourcecode">
-		<fo:block font-family="Courier" font-size="9pt" margin-bottom="12pt">
+		<fo:block font-family="Courier New" font-size="9pt" margin-bottom="12pt">
 			<xsl:choose>
 				<xsl:when test="@lang = 'en'"/>
 				<xsl:otherwise>
@@ -2760,7 +2760,7 @@
 			<xsl:apply-templates/>
 		</fo:inline>
 	</xsl:template><xsl:template xmlns:iec="http://riboseinc.com/isoxml" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:nist="http://www.nist.gov/metanorma" xmlns:un="https://open.ribose.com/standards/unece" xmlns:csd="https://www.calconnect.org/standards/csd" match="*[local-name()='tt']">
-		<fo:inline font-family="Courier" font-size="10pt">
+		<fo:inline font-family="Courier New" font-size="10pt">
 			<xsl:apply-templates/>
 		</fo:inline>
 	</xsl:template><xsl:template xmlns:iec="http://riboseinc.com/isoxml" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:nist="http://www.nist.gov/metanorma" xmlns:un="https://open.ribose.com/standards/unece" xmlns:csd="https://www.calconnect.org/standards/csd" match="*[local-name()='del']">
