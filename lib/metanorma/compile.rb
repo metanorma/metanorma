@@ -52,7 +52,7 @@ module Metanorma
     def options_extract(filename, options)
       content = read_file(filename)
       o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(content)
-      o = o.merge(xml_options_extract(content))
+        .merge(xml_options_extract(content))
       options[:type] ||= o[:type]&.to_sym
       t = @registry.alias(options[:type]) and options[:type] = t
       dir = filename.sub(%r(/[^/]+$), "/")
@@ -130,9 +130,7 @@ module Metanorma
 
     def clean_sourcecode(xml)
       xml.xpath(".//callout | .//annotation | .//xmlns:callout | "\
-                ".//xmlns:annotation").each do |x|
-        x.remove
-      end
+                ".//xmlns:annotation").each(&:remove)
       xml.xpath(".//br | .//xmlns:br").each { |x| x.replace("\n") }
       HTMLEntities.new.decode(xml.children.to_xml)
     end
@@ -177,8 +175,8 @@ module Metanorma
     end
 
     REQUIREMENT_XPATH = "//requirement | //xmlns:requirement | "\
-      "//recommendation | //xmlns:recommendation | //permission | "\
-      "//xmlns:permission".freeze
+                        "//recommendation | //xmlns:recommendation | //permission | "\
+                        "//xmlns:permission".freeze
 
     def requirement_export(xml, dirname)
       xml.at(REQUIREMENT_XPATH) or return
@@ -218,9 +216,11 @@ module Metanorma
         else
           begin
             if @processor.use_presentation_xml(ext)
-              @processor.output(nil, presentationxml_name, outfilename, ext, isodoc_options)
+              @processor.output(nil, presentationxml_name, outfilename, ext,
+                                isodoc_options)
             else
-              @processor.output(isodoc, xml_name, outfilename, ext, isodoc_options)
+              @processor.output(isodoc, xml_name, outfilename, ext,
+                                isodoc_options)
             end
           rescue StandardError => e
             isodoc_error_process(e)

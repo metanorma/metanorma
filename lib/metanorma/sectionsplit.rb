@@ -46,8 +46,7 @@ module Metanorma
 
     def coll_cover
       <<~COVER
-        <html>
-          <head/>
+        <html><head/>
             <body>
               <h1>{{ doctitle }}</h1>
               <h2>{{ docnumber }}</h2>
@@ -102,17 +101,6 @@ module Metanorma
       outname
     end
 
-    #     def xref_preprocess(xml)
-    #       svg_preprocess(xml)
-    #       key = (0...8).map { rand(65..90).chr }.join # random string
-    #       xml.root["type"] = key # to force recognition of internal refs
-    #       refs = eref_to_internal_eref(xml, key)
-    #       refs += xref_to_internal_eref(xml, key)
-    #       ins = new_hidden_ref(xml)
-    #       copy_repo_items_biblio(ins, xml)
-    #       insert_indirect_biblio(ins, refs, key)
-    #     end
-
     def xref_preprocess(xml)
       svg_preprocess(xml)
       key = (0...8).map { rand(65..90).chr }.join # random string
@@ -136,7 +124,7 @@ module Metanorma
 
           a["href"] = a["href"].sub(/^#/, "")
           m << "<target href='#{a['href']}'>"\
-            "<xref target='#{a['href']}'/></target>"
+               "<xref target='#{a['href']}'/></target>"
         end
       end
     end
@@ -224,9 +212,7 @@ module Metanorma
 
     def recursive_string_keys(hash)
       case hash
-      when Hash then Hash[
-        hash.map { |k, v| [k.to_s, recursive_string_keys(v)] }
-      ]
+      when Hash then hash.map { |k, v| [k.to_s, recursive_string_keys(v)] }.to_h
       when Enumerable then hash.map { |v| recursive_string_keys(v) }
       else
         hash
@@ -246,9 +232,8 @@ module Metanorma
         directives: ["presentation-xml", "bare-after-first"],
         bibdata: {
           title: {
-            type: "title-main",
-            language: @lang,
-            content: xml.at(ns("//bibdata/title")).text,
+            type: "title-main", language: @lang,
+            content: xml.at(ns("//bibdata/title")).text
           },
           type: "collection",
           docid: {
@@ -257,11 +242,10 @@ module Metanorma
           },
         },
         manifest: {
-          level: "collection",
-          title: "Collection",
+          level: "collection", title: "Collection",
           docref: files.sort_by { |f| f[:order] }.each.map do |f|
             { fileref: f[:url], identifier: f[:title] }
-          end,
+          end
         },
       }
       recursive_string_keys(ret).to_yaml
