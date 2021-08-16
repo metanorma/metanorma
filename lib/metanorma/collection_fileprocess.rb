@@ -49,7 +49,7 @@ module Metanorma
     end
 
     def add_section_split_cover(files, manifest, ident)
-      cover = section_split_cover(manifest, ident)
+      cover = section_split_cover(manifest, dir_name_cleanse(ident))
       files[ident][:out_path] = cover
       { attachment: true, index: false, out_path: cover,
         ref: File.join(File.dirname(manifest.file), cover) }

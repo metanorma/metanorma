@@ -52,7 +52,7 @@ module Metanorma
     end
 
     def dir_name_cleanse(name)
-      name.gsub(/[<>:"\/\\|?*]/, "_")
+      name.gsub(/[<>:"|?*]/, "_")
     end
 
     # @param col [Metanorma::Collection] XML collection
