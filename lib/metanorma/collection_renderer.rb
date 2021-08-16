@@ -33,7 +33,7 @@ module Metanorma
       # output processor for flavour
       @isodoc = isodoc
 
-      @outdir = options[:output_folder]
+      @outdir = dir_name_cleanse(options[:output_folder])
       @coverpage = options[:coverpage]
       @format = Util.sort_extensions_execution(options[:format])
       @compile_options = options[:compile] || {}
@@ -49,6 +49,10 @@ module Metanorma
       isodoc_populate(@isodoc)
       FileUtils.rm_rf @outdir
       FileUtils.mkdir_p @outdir
+    end
+
+    def dir_name_cleanse(name)
+      name.gsub(/[<>:"\/\\|?*]/, "_")
     end
 
     # @param col [Metanorma::Collection] XML collection
