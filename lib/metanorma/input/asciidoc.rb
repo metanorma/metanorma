@@ -75,6 +75,7 @@ module Metanorma
         /\n:(?<hier_assets>hierarchical-assets:[^\n]*)\n/ =~ header
         /\n:(?<use_xinclude>use-xinclude:[^\n]*)\n/ =~ header
         /\n:(?<break_up>break-up-urls-in-tables:[^\n]*)\n/ =~ header
+        /\n:suppress-asciimath-dup: (?<suppress_asciimath_dup>[^\n]+)\n/ =~ header
 
         defined?(hier_assets) and
           hier_assets = empty_attr(hier_assets, "hierarchical-assets")
@@ -84,6 +85,7 @@ module Metanorma
           break_up = empty_attr(break_up, "break-up-urls-in-tables")
         ret.merge(
           datauriimage: defined?(datauriimage) ? datauriimage != "false" : nil,
+          suppressasciimathdup: defined?(suppress_asciimath_dup) ? suppress_asciimath_dup != "false" : nil,
           hierarchical_assets: defined?(hier_assets) ? hier_assets : nil,
           use_xinclude: defined?(use_xinclude) ? use_xinclude : nil,
           break_up_urls_in_tables: defined?(break_up) ? break_up : nil,

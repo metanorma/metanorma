@@ -15,11 +15,9 @@ RSpec.describe Metanorma::Compile do
   after(:all) { clean_outputs }
 
   around(:each) do |example|
-    begin
-      example.run
-    rescue SystemExit
-      fail "Unexpected exit encountered"
-    end
+    example.run
+  rescue SystemExit
+    fail "Unexpected exit encountered"
   end
 
   it "passes asciidoc options onto isodoc" do
@@ -29,6 +27,7 @@ RSpec.describe Metanorma::Compile do
       {
         bare: nil,
         datauriimage: true,
+        suppressasciimathdup: true,
         no_install_fonts: nil,
         sectionsplit: nil,
         sourcefilename: "spec/assets/test2.adoc",
@@ -38,6 +37,7 @@ RSpec.describe Metanorma::Compile do
                                    type: "iso",
                                    extension_keys: [:presentation],
                                    bare: nil,
+                                   suppressasciimathdup: true,
                                    sectionsplit: nil,
                                    datauriimage: true,
                                    agree_to_terms: true)
@@ -505,7 +505,6 @@ RSpec.describe Metanorma::Compile do
     expect(c.errors).to include(exception_msg)
   end
 
-
   it "processes section split HTML" do
     FileUtils.rm_rf "test_collection"
     FileUtils.rm_rf "test_files"
@@ -632,10 +631,6 @@ RSpec.describe Metanorma::Compile do
       original_add.call(col, opts.merge(compile: { no_install_fonts: true }))
     end
   end
-
-
-
-
 
   def mock_iso_processor_output(inname, outname, hash)
     require "metanorma-iso"
