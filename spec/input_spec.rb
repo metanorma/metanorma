@@ -70,7 +70,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
         :break-up-urls-in-tables:
         :suppress-asciimath-dup:
       INPUT
-        {:break_up_urls_in_tables=>"true", :datauriimage=>true, :hierarchical_assets=>"true", suppressasciimathdup=>true, :use_xinclude=>"true"}
+        {:break_up_urls_in_tables=>"true", :datauriimage=>true, :hierarchical_assets=>"true", :suppressasciimathdup=>true, :use_xinclude=>"true"}
       OUTPUT
   end
 
