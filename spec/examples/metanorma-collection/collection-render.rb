@@ -31,31 +31,30 @@ def init
 end
 
 class Dummy
-  def attr(_x)
-  end
+  def attr(_x); end
 end
 
 # The isodoc class for the metanorma flavour we are using
 def isodoc
-  x = Asciidoctor.load nil, {backend: @doctype.to_sym}
+  x = Asciidoctor.load nil, { backend: @doctype.to_sym }
   isodoc = x.converter.html_converter(Dummy.new)
   # read in internationalisation
   isodoc.i18n_init(@lang, @script)
   # create the @meta class of isodoc, with "navigation" set to the index bar extracted from the manifest
   isodoc.metadata_init(@lang, @script,
-                        isodoc.labels.merge(navigation: indexfile(@xml.at(ns("//manifest")))))
+                       isodoc.labels.merge(navigation: indexfile(@xml.at(ns("//manifest")))))
   # populate the @meta class of isodoc with the various metadata fields native to the flavour;
   # used to populate Liquid
   isodoc.info(@xml, nil)
-isodoc
+  isodoc
 end
 
 # infer the flavour from the first document identifier; relaton does that
 def doctype
   if docid = @xml&.at(ns("//bibdata/docidentifier/@type"))&.text
     doctype = docid.downcase
-  elsif docid = @xml&.at(ns("//bibdata/docidentifier"))&.text 
-    doctype =  docid.sub(/\s.*$/, "").lowercase
+  elsif docid = @xml&.at(ns("//bibdata/docidentifier"))&.text
+    doctype = docid.sub(/\s.*$/, "").lowercase
   else
     return "standoc"
   end
@@ -74,8 +73,11 @@ def read_files
   files = {}
   @xml.xpath(ns("//docref")).each do |d|
     identifier = d.at(ns("./identifier")).text
-    files[identifier] = (d["fileref"] ? {type: "fileref", ref: d["fileref"]} :
-                         {type: "id", ref: d["id"]})
+    files[identifier] = (if d["fileref"]
+                           { type: "fileref", ref: d["fileref"] }
+                         else
+                           { type: "id", ref: d["id"] }
+                         end)
     file, filename = targetfile(files[identifier], true)
     xml = Nokogiri::XML(file)
     files[identifier][:anchors] = read_anchors(xml)
@@ -100,24 +102,30 @@ end
 # populate liquid template of ARGV[1] with metadata extracted from collection manifest
 def coverpage
   File.open(File.join(ARGV[2], "index.html"), "w:UTF-8") do |f|
-    f.write  @isodoc.populate_template(File.read(ARGV[1]))
+    f.write @isodoc.populate_template(File.read(ARGV[1]))
   end
 end
 
 def indexfile_title(m)
   lvl = m&.at(ns("./level"))&.text&.capitalize
   lbl = m&.at(ns("./title"))&.text
-  "#{lvl}#{ lvl && lbl ? ": ": "" }#{lbl}"
+  "#{lvl}#{lvl && lbl ? ': ' : ''}#{lbl}"
 end
 
 # uses the identifier to label documents; other attributes (title) can be looked up
 # in @files[id][:bibdata]
 def indexfile_docref(m)
   return "" unless m.at(ns("./docref"))
+
   ret = "<ul>\n"
   m.xpath(ns("./docref")).each do |d|
     identifier = d.at(ns("./identifier")).text
-    link = d["fileref"] ? d["fileref"].sub(/\.xml$/, ".html") : d["id"] + ".html"
+    link = if d["fileref"]
+             d["fileref"].sub(/\.xml$/,
+                              ".html")
+           else
+             d["id"] + ".html"
+           end
     ret += "<li><a href='./#{link}'>#{identifier}</a></li>\n"
   end
   ret += "</ul>\n"
@@ -178,7 +186,8 @@ def update_xrefs(file, identifier)
   docxml = Nokogiri::XML(file)
   docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
     next unless docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
-    next unless %r{^current-metanorma-collection/}.match(docid)
+    next unless %r{^current-metanorma-collection/}.match?(docid)
+
     update_bibitem(b, docid, identifier)
     update_anchors(b, docxml, docid)
   end
@@ -187,7 +196,7 @@ end
 
 # if there is a crossref to another document, with no anchor, retrieve the
 # anchor given the locality, and insert it into the crossref
-def update_anchors(b, docxml, id)
+def update_anchors(b, docxml, _id)
   docid = b&.at(ns("./docidentifier"))&.text
   docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
     e.at(ns(".//locality[@type = 'anchor']")).nil? or next
@@ -195,7 +204,8 @@ def update_anchors(b, docxml, id)
     type = ins&.at(ns("./locality/@type"))&.text
     ref = ins&.at(ns("./locality/referenceFrom"))&.text
     anchor = @files[docid][:anchors][type][ref] and
-      ins << %(<locality type="anchor"><referenceFrom>#{anchor.sub(/^_/, '')}</referenceFrom></locality>)
+      ins << %(<locality type="anchor"><referenceFrom>#{anchor.sub(/^_/,
+                                                                   '')}</referenceFrom></locality>)
   end
 end
 
