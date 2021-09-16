@@ -244,6 +244,7 @@ module Metanorma
     def get_isodoc_options(file, options, ext)
       isodoc_options = @processor.extract_options(file)
       isodoc_options[:datauriimage] = true if options[:datauriimage]
+      isodoc_options[:baseassetpath] = true if options[:baseassetpath]
       isodoc_options[:sourcefilename] = options[:filename]
       %i(bare sectionsplit no_install_fonts).each do |x|
         isodoc_options[x] ||= options[x]
