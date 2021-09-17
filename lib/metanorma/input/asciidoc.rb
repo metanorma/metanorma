@@ -60,7 +60,7 @@ module Metanorma
                         scripts-override scripts-pdf wordstylesheet i18nyaml
                         standardstylesheet header wordcoverpage wordintropage
                         ulstyle olstyle htmlstylesheet-override bare
-                        htmltoclevels doctoclevels sectionsplit
+                        htmltoclevels doctoclevels sectionsplit base-asset-path
                         body-font header-font monospace-font title-font
                         wordstylesheet-override).freeze
 

@@ -55,8 +55,9 @@ RSpec.describe Metanorma::Input::Asciidoc do
         :wordstylesheet-override: y
         :scripts-override: z
         :suppress-asciimath-dup: true
+        :base-asset-path: aa
       INPUT
-        {:bare=>"w", :bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :scripts=>"i", :scripts_override=>"z", :scripts_pdf=>"j", :sectionsplit=>"a", :standardstylesheet=>"l", :suppressasciimathdup=>true, :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
+        {:bare=>"w", :baseassetpath=>"aa", :bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :scripts=>"i", :scripts_override=>"z", :scripts_pdf=>"j", :sectionsplit=>"a", :standardstylesheet=>"l", :suppressasciimathdup=>true, :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
       OUTPUT
   end
 
