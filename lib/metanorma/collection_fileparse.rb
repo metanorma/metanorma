@@ -44,7 +44,7 @@ module Metanorma
       newbib = dup_bibitem(docid, bib)
       bib.replace(newbib)
       _file, url = targetfile(@files[docid], relative: true, read: false,
-                              doc: !@files[docid][:attachment])
+                                             doc: !@files[docid][:attachment])
       uri_node = Nokogiri::XML::Node.new "uri", newbib
       uri_node[:type] = "citation"
       uri_node.content = url
@@ -53,7 +53,7 @@ module Metanorma
 
     def fail_update_bibitem(docid, identifier)
       error = "[metanorma] Cannot find crossreference to document #{docid} "\
-        "in document #{identifier}."
+              "in document #{identifier}."
       @log.add("Cross-References", nil, error)
       Util.log(error, :warning)
     end
@@ -78,6 +78,7 @@ module Metanorma
     # @return [String] XML content
     def update_xrefs(file, identifier, internal_refs)
       docxml = Nokogiri::XML(file) { |config| config.huge }
+      supply_repo_ids(docxml)
       update_indirect_refs_to_docs(docxml, internal_refs)
       add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
@@ -87,6 +88,18 @@ module Metanorma
         f["hidden"] = "true"
       end
       docxml.to_xml
+    end
+
+    def supply_repo_ids(docxml)
+      docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
+        next if b&.at(ns("./docidentifier[@type = 'repository']"))
+
+        b.xpath(ns("./docidentifier")).each do |d|
+          next unless @files[d.text]
+
+          d.next = "<docidentifier type='repository'>current-metanorma-collection/#{d.text}"
+        end
+      end
     end
 
     def datauri_encode(docxml)
@@ -161,7 +174,7 @@ module Metanorma
         if @files[docid] then update_anchor_loc(bib, e, docid)
         else
           e << "<strong>** Unresolved reference to document #{docid} "\
-            "from eref</strong>"
+               "from eref</strong>"
         end
       end
     end
@@ -188,7 +201,7 @@ module Metanorma
       ref = ins&.at(ns("./locality/referenceFrom"))&.text
       anchor = @files[docid][:anchors].dig(type, ref) or return
       ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}"\
-        "</referenceFrom></locality>"
+             "</referenceFrom></locality>"
     end
 
     # gather internal bibitem references

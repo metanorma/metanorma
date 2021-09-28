@@ -272,6 +272,24 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
+  it "injects repository identifiers" do
+    file = "#{INPATH}/collection1.norepo.yml"
+    of = OUTPATH
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation xml html],
+      output_folder: of,
+      coverpage: "#{INPATH}/collection_cover.html",
+      compile: {
+        no_install_fonts: true,
+      },
+    )
+    index = File.read("#{OUTPATH}/rice-en.final.norepo.xml")
+    expect(index).to include 'Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions'
+    # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
+    FileUtils.rm_rf of
+  end
+
   def read_and_cleanup(file)
     content = File.read(file, encoding: "UTF-8").gsub(
       /(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s
