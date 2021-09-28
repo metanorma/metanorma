@@ -356,12 +356,45 @@ at the address below or ISO&#x2019;s member body in the country of the requester
 </references>
 <references id="_bibliography_ISO_17301-1_2016" normative="false" obligation="informative">
 <title>Bibliography</title>
-<bibitem id="Dummy_ISO_17301-1_2016">
-<formattedref format="application/x-isodoc+xml"/>
-<uri type="URI">dummy</uri>
-<uri type="citation">dummy</uri>
-<docidentifier type="ISO">ISO 17302</docidentifier>
-<docnumber>17302</docnumber>
+  <bibitem type='standard' hidden='true' id='Dummy_ISO_17301-1_2016'>
+  <title language='en' format='text/plain' type='main'>Dummy document</title>
+  <title language='en' format='text/plain' type='title-main'>Dummy document</title>
+  <title language='fr' format='text/plain' type='main'>Dummy document</title>
+  <title language='fr' format='text/plain' type='title-main'>Dummy document</title>
+  <uri type='citation'>dummy.html</uri>
+  <docidentifier type='ISO'>ISO 17302:2016</docidentifier>
+  <docidentifier type='iso-with-lang'>ISO 17302:2016(E)</docidentifier>
+  <docidentifier type='iso-reference'>ISO 17302:2016(E)</docidentifier>
+  <docnumber>17302</docnumber>
+  <contributor>
+    <role type='author'/>
+    <organization>
+      <name>International Organization for Standardization</name>
+      <abbreviation>ISO</abbreviation>
+    </organization>
+  </contributor>
+  <contributor>
+    <role type='publisher'/>
+    <organization>
+      <name>International Organization for Standardization</name>
+      <abbreviation>ISO</abbreviation>
+    </organization>
+  </contributor>
+  <language>en</language>
+  <script>Latn</script>
+  <status>
+    <stage abbreviation='IS'>60</stage>
+    <substage>60</substage>
+  </status>
+  <copyright>
+    <from>2016</from>
+    <owner>
+      <organization>
+        <name>International Organization for Standardization</name>
+        <abbreviation>ISO</abbreviation>
+      </organization>
+    </owner>
+  </copyright>
 </bibitem>
 <bibitem id="ISO712_ISO_17301-1_2016" type="standard">
 <fetched>2020-07-14</fetched>
