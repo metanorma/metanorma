@@ -32,6 +32,7 @@ RSpec.describe Metanorma::Compile do
         sectionsplit: nil,
         sourcefilename: "spec/assets/test2.adoc",
         baseassetpath: "spec/assets",
+        aligncrosselements: "p,table",
       },
     )
     Metanorma::Compile.new.compile("spec/assets/test2.adoc",
@@ -42,6 +43,7 @@ RSpec.describe Metanorma::Compile do
                                    suppressasciimathdup: true,
                                    sectionsplit: nil,
                                    datauriimage: true,
+                                   aligncrosselements: "p,table",
                                    agree_to_terms: true)
   end
 

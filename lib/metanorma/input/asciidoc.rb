@@ -49,7 +49,7 @@ module Metanorma
           extensions: defined?(extensions) ? extensions : nil,
           relaton: defined?(relaton) ? relaton : nil,
           asciimath: asciimath,
-        }.reject { |_, val| val.nil? }
+        }.compact
       end
 
       def empty_attr(attr, name)
@@ -62,7 +62,7 @@ module Metanorma
                         ulstyle olstyle htmlstylesheet-override bare
                         htmltoclevels doctoclevels sectionsplit base-asset-path
                         body-font header-font monospace-font title-font
-                        wordstylesheet-override).freeze
+                        align-cross-elements wordstylesheet-override).freeze
 
       def extract_options(file)
         header = file.sub(/\n\n.*$/m, "\n")
@@ -89,7 +89,7 @@ module Metanorma
           hierarchical_assets: defined?(hier_assets) ? hier_assets : nil,
           use_xinclude: defined?(use_xinclude) ? use_xinclude : nil,
           break_up_urls_in_tables: defined?(break_up) ? break_up : nil,
-        ).reject { |_, val| val.nil? }
+        ).compact
       end
     end
   end
