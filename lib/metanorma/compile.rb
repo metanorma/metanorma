@@ -214,6 +214,10 @@ module Metanorma
         elsif ext == :html && options[:sectionsplit]
           sectionsplit_convert(xml_name, isodoc, outfilename, isodoc_options)
         else
+          if ext == :pdf
+            floc = FontistUtils.fontist_font_locations(@processor, options)
+            isodoc_options[:mn2pdf] = { font_manifest_file: floc.path } if floc
+          end
           begin
             if @processor.use_presentation_xml(ext)
               @processor.output(nil, presentationxml_name, outfilename, ext,
@@ -248,10 +252,6 @@ module Metanorma
       %i(bare sectionsplit no_install_fonts baseassetpath aligncrosselements)
         .each do |x|
         isodoc_options[x] ||= options[x]
-      end
-      if ext == :pdf
-        floc = FontistUtils.fontist_font_locations(@processor, options) and
-          isodoc_options[:mn2pdf] = { font_manifest_file: floc.path }
       end
       isodoc_options
     end
