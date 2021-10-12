@@ -84,7 +84,7 @@ module Metanorma
         defined?(break_up) and
           break_up = empty_attr(break_up, "break-up-urls-in-tables")
         ret.merge(
-          datauriimage: defined?(datauriimage) ? datauriimage != "false" : nil,
+          datauriimage: defined?(datauriimage) ? datauriimage != "false" : true,
           suppressasciimathdup: defined?(suppress_asciimath_dup) ? suppress_asciimath_dup != "false" : nil,
           hierarchical_assets: defined?(hier_assets) ? hier_assets : nil,
           use_xinclude: defined?(use_xinclude) ? use_xinclude : nil,
