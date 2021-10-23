@@ -54,7 +54,6 @@ RSpec.describe Metanorma::Compile do
 
     allow(Metanorma::FontistUtils).to receive(:fontist_install) {}
     expect(Metanorma::FontistUtils).to receive(:fontist_install).once
-    expect(Metanorma::FontistUtils).to receive(:fontist_font_locations).once
 
     compile.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true)
   end
@@ -66,7 +65,6 @@ RSpec.describe Metanorma::Compile do
 
     allow(Metanorma::FontistUtils).to receive(:fontist_install) {}
     expect(Metanorma::FontistUtils).to receive(:fontist_install).once
-    expect(Metanorma::FontistUtils).to receive(:fontist_font_locations).once
 
     compile.compile("spec/assets/test.adoc", type: "iso",
                                              agree_to_terms: true,
@@ -217,7 +215,6 @@ RSpec.describe Metanorma::Compile do
 
     expect(Metanorma::FontistUtils).to receive(:fontist_install)
       .with(anything, false, true)
-    expect(Metanorma::FontistUtils).to receive(:fontist_font_locations).once
 
     compile.compile("spec/assets/test.adoc", type: "iso", no_progress: true)
   end
