@@ -104,13 +104,15 @@ module Metanorma
 
     class PdfOptionsNode
       def initialize(doctype, options)
-        doc_proc = Metanorma::Registry.instance.find_processor(doctype)
-        @font_locations = FontistUtils.fontist_font_locations(doc_proc, options)
+        docproc = Metanorma::Registry.instance.find_processor(doctype)
+        if FontistUtils.has_fonts_manifest?(docproc, options)
+          @fonts_manifest = FontistUtils.location_manifest(docproc)
+        end
       end
 
       def attr(key)
-        if key == "mn2pdf-font-manifest-file" && @font_locations
-          @font_locations.path
+        if key == "fonts-manifest" && @font_locations
+          @fonts_manifest
         end
       end
     end
