@@ -32,7 +32,7 @@ module Metanorma
       extract(isodoc, options[:extract], options[:extract_type])
       FontistUtils.install_fonts(@processor, options) unless @fontist_installed
       @fontist_installed = true
-      process_extensions(extensions, file, isodoc, options)
+      process_extensions(filename, extensions, file, isodoc, options)
     end
 
     def require_libraries(options)
@@ -199,7 +199,7 @@ module Metanorma
     end
 
     # isodoc is Raw Metanorma XML
-    def process_extensions(extensions, file, isodoc, options)
+    def process_extensions(filename, extensions, file, isodoc, options)
       f = change_output_dir options
       xml_name = f.sub(/\.[^.]+$/, ".xml")
       presentationxml_name = f.sub(/\.[^.]+$/, ".presentation.xml")
@@ -210,7 +210,7 @@ module Metanorma
         if ext == :rxl
           relaton_export(isodoc, options.merge(relaton: outfilename))
         elsif options[:passthrough_presentation_xml] && ext == :presentation
-          FileUtils.cp f, presentationxml_name
+          FileUtils.cp filename, presentationxml_name
         elsif ext == :html && options[:sectionsplit]
           sectionsplit_convert(xml_name, isodoc, outfilename, isodoc_options)
         else
