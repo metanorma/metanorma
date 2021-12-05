@@ -1,0 +1,44 @@
+= Document title
+Author
+:docfile: test.adoc
+:nodoc:
+:novalid:
+:no-isobib:
+:script: script.html
+:body-font: body-font
+:header-font: header-font
+:monospace-font: monospace-font
+:title-font: title-font
+:data-uri-image: true
+
+== Scope
+image::rice_image1.png[]
+
+[filename="img1.png"]
+image::rice_image1.png[]
+
+[source,ruby]
+----
+def ruby(x)
+  if x < 0 && x > 1
+    return
+  end
+end
+----
+
+[source,html,filename="a.html"]
+----
+<html>
+  <head>&amp;</head>
+</html>
+----
+
+[.requirement]
+====
+Requirement 1
+====
+
+[.permission,filename="reqt1.xml"]
+====
+Permission 2
+====

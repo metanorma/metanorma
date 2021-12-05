@@ -62,7 +62,6 @@ module Metanorma
     # @option options [Strong] :ourput_folder output directory
     def self.render(col, options = {})
       folder = File.dirname col.file
-      # require "byebug"; byebug
       warn "\n\n\n\n\nRender Init: #{DateTime.now.strftime('%H:%M:%S')}"
       cr = new(col, folder, options)
       warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
