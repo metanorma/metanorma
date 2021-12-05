@@ -36,11 +36,12 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "debug"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
-  spec.add_development_dependency "metanorma-iso", "~> 1.9.0"
+  spec.add_development_dependency "metanorma-iso", "~> 1.10"
   spec.add_development_dependency "mnconvert"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-command", "~> 1.0"
   spec.add_development_dependency "rubocop", "~> 1.5.2"
   spec.add_development_dependency "sassc", "~> 2.4.0"
+  spec.add_development_dependency "reline", "~> 0.2.8.pre.11"
 end

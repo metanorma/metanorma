@@ -99,17 +99,15 @@ module Metanorma
       out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
       ret = if ref["fileref"]
               { type: "fileref", ref: @documents[identifier].file,
-                rel_path: ref["fileref"],
-                out_path: out }
-            else
-              { type: "id", ref: ref["id"] }
+                rel_path: ref["fileref"], out_path: out }
+            else { type: "id", ref: ref["id"] }
             end
       %i(attachment sectionsplit index).each do |s|
         ret[s] = ref[s.to_s] if ref[s.to_s]
       end
-      ret[:presentationxml] = ref["presentation-xml"] if ref["presentation-xml"]
-      ret[:bareafterfirst] = ref["bare-after-first"] if ref["bare-after-first"]
-      ret
+      ret[:presentationxml] = ref["presentation-xml"]
+      ret[:bareafterfirst] = ref["bare-after-first"]
+      ret.compact
     end
 
     def add_suffix_to_attributes(doc, suffix, tag_name, attribute_name)

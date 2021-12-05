@@ -8,6 +8,7 @@ require_relative "compile_validate"
 require_relative "fontist_utils"
 require_relative "util"
 require_relative "sectionsplit"
+require_relative "extract"
 
 module Metanorma
   class Compile
@@ -118,75 +119,9 @@ module Metanorma
       File.read(filename, encoding: "utf-8").gsub("\r\n", "\n")
     end
 
-    def relaton_export(isodoc, options)
-      return unless options[:relaton]
-
-      xml = Nokogiri::XML(isodoc) { |config| config.huge }
-      bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
-      # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
-      # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
-      File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
-    end
-
-    def clean_sourcecode(xml)
-      xml.xpath(".//callout | .//annotation | .//xmlns:callout | "\
-                ".//xmlns:annotation").each(&:remove)
-      xml.xpath(".//br | .//xmlns:br").each { |x| x.replace("\n") }
-      HTMLEntities.new.decode(xml.children.to_xml)
-    end
-
-    def extract(isodoc, dirname, extract_types)
-      return unless dirname
-
-      if extract_types.nil? || extract_types.empty?
-        extract_types = %i[sourcecode image requirement]
-      end
-      FileUtils.rm_rf dirname
-      FileUtils.mkdir_p dirname
-      xml = Nokogiri::XML(isodoc) { |config| config.huge }
-      sourcecode_export(xml, dirname) if extract_types.include? :sourcecode
-      image_export(xml, dirname) if extract_types.include? :image
-      requirement_export(xml, dirname) if extract_types.include? :requirement
-    end
-
-    def sourcecode_export(xml, dirname)
-      xml.at("//sourcecode | //xmlns:sourcecode") or return
-      FileUtils.mkdir_p "#{dirname}/sourcecode"
-      xml.xpath("//sourcecode | //xmlns:sourcecode").each_with_index do |s, i|
-        filename = s["filename"] || sprintf("sourcecode-%04d.txt", i)
-        File.open("#{dirname}/sourcecode/#{filename}", "w:UTF-8") do |f|
-          f.write clean_sourcecode(s.dup)
-        end
-      end
-    end
-
-    def image_export(xml, dirname)
-      xml.at("//image | //xmlns:image") or return
-      FileUtils.mkdir_p "#{dirname}/image"
-      xml.xpath("//image | //xmlns:image").each_with_index do |s, i|
-        next unless /^data:image/.match? s["src"]
-
-        %r{^data:image/(?<imgtype>[^;]+);base64,(?<imgdata>.+)$} =~ s["src"]
-        filename = s["filename"] || sprintf("image-%04d.%s", i, imgtype)
-        File.open("#{dirname}/image/#{filename}", "wb") do |f|
-          f.write(Base64.strict_decode64(imgdata))
-        end
-      end
-    end
-
-    REQUIREMENT_XPATH = "//requirement | //xmlns:requirement | "\
-                        "//recommendation | //xmlns:recommendation | //permission | "\
-                        "//xmlns:permission".freeze
-
-    def requirement_export(xml, dirname)
-      xml.at(REQUIREMENT_XPATH) or return
-      FileUtils.mkdir_p "#{dirname}/requirement"
-      xml.xpath(REQUIREMENT_XPATH).each_with_index do |s, i|
-        filename = s["filename"] || sprintf("%s-%04d.xml", s.name, i)
-        File.open("#{dirname}/requirement/#{filename}", "w:UTF-8") do |f|
-          f.write s
-        end
-      end
+    def export_output(fname, content, **options)
+      mode = options[:binary] ? "wb" : "w:UTF-8"
+      File.open(fname, mode) { |f| f.write content }
     end
 
     def wrap_html(options, file_extension, outfilename)
@@ -201,18 +136,18 @@ module Metanorma
     # isodoc is Raw Metanorma XML
     def process_extensions(filename, extensions, file, isodoc, options)
       f = change_output_dir options
-      xml_name = f.sub(/\.[^.]+$/, ".xml")
-      presentationxml_name = f.sub(/\.[^.]+$/, ".presentation.xml")
+      name = { xml: f.sub(/\.[^.]+$/, ".xml"),
+               presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
       Util.sort_extensions_execution(extensions).each do |ext|
         file_extension = @processor.output_formats[ext]
-        outfilename = f.sub(/\.[^.]+$/, ".#{file_extension}")
+        name[:out] = f.sub(/\.[^.]+$/, ".#{file_extension}")
         isodoc_options = get_isodoc_options(file, options, ext)
         if ext == :rxl
-          relaton_export(isodoc, options.merge(relaton: outfilename))
+          relaton_export(isodoc, options.merge(relaton: name[:out]))
         elsif options[:passthrough_presentation_xml] && ext == :presentation
-          FileUtils.cp filename, presentationxml_name
+          FileUtils.cp filename, name[:presentationxml]
         elsif ext == :html && options[:sectionsplit]
-          sectionsplit_convert(xml_name, isodoc, outfilename, isodoc_options)
+          sectionsplit_convert(name[:xml], isodoc, name[:out], isodoc_options)
         else
           if ext == :pdf && FontistUtils.has_fonts_manifest?(@processor,
                                                              options)
@@ -220,20 +155,22 @@ module Metanorma
               font_manifest: FontistUtils.location_manifest(@processor),
             }
           end
-          begin
-            if @processor.use_presentation_xml(ext)
-              @processor.output(nil, presentationxml_name, outfilename, ext,
-                                isodoc_options)
-            else
-              @processor.output(isodoc, xml_name, outfilename, ext,
-                                isodoc_options)
-            end
-          rescue StandardError => e
-            isodoc_error_process(e)
-          end
+          process_extensions1(ext, name, isodoc, isodoc_options)
         end
-        wrap_html(options, file_extension, outfilename)
+        wrap_html(options, file_extension, name[:out])
       end
+    end
+
+    def process_extensions1(ext, fnames, isodoc, isodoc_options)
+      if @processor.use_presentation_xml(ext)
+        @processor.output(nil, fnames[:presentationxml], fnames[:out], ext,
+                          isodoc_options)
+      else
+        @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
+                          isodoc_options)
+      end
+    rescue StandardError => e
+      isodoc_error_process(e)
     end
 
     private
@@ -247,7 +184,7 @@ module Metanorma
       end
     end
 
-    def get_isodoc_options(file, options, ext)
+    def get_isodoc_options(file, options, _ext)
       isodoc_options = @processor.extract_options(file)
       isodoc_options[:datauriimage] = true if options[:datauriimage]
       isodoc_options[:sourcefilename] = options[:filename]

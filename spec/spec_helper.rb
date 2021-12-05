@@ -125,7 +125,7 @@ end
 
 def mock_sts
   allow(::MnConvert).to receive(:convert) do |url, output, _c|
-    FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
+    FileUtils.cp(url.gsub(/"/, ""), output[:output_file].gsub(/"/, ""))
   end
 end
 

@@ -83,11 +83,15 @@ module Metanorma
       add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
       svgmap_resolve(datauri_encode(docxml))
+      hide_refs(docxml)
+      docxml.to_xml
+    end
+
+    def hide_refs(docxml)
       docxml.xpath(ns("//references[bibitem][not(./bibitem[not(@hidden) or "\
                       "@hidden = 'false'])]")).each do |f|
         f["hidden"] = "true"
       end
-      docxml.to_xml
     end
 
     def supply_repo_ids(docxml)
@@ -97,7 +101,8 @@ module Metanorma
         b.xpath(ns("./docidentifier")).each do |d|
           next unless @files[d.text]
 
-          d.next = "<docidentifier type='repository'>current-metanorma-collection/#{d.text}"
+          d.next = "<docidentifier type='repository'>"\
+                   "current-metanorma-collection/#{d.text}"
         end
       end
     end
@@ -111,16 +116,21 @@ module Metanorma
 
     def svgmap_resolve(docxml)
       isodoc = IsoDoc::Convert.new({})
+      isodoc.bibitem_lookup(docxml)
       docxml.xpath(ns("//svgmap//eref")).each do |e|
-        href = isodoc.eref_target(e)
-        next if href == "##{e['bibitemid']}" ||
-          href =~ /^#/ && !docxml.at("//*[@id = '#{href.sub(/^#/, '')}']")
-
-        e["target"] = href.strip
-        e.name = "link"
-        e&.elements&.remove
+        svgmap_resolve1(e, isodoc)
       end
       Metanorma::Utils::svgmap_rewrite(docxml, "")
+    end
+
+    def svgmap_resolve1(eref, isodoc)
+      href = isodoc.eref_target(eref)
+      return if href == "##{eref['bibitemid']}" ||
+        (href =~ /^#/ && !docxml.at("//*[@id = '#{href.sub(/^#/, '')}']"))
+
+      eref["target"] = href.strip
+      eref.name = "link"
+      eref&.elements&.remove
     end
 
     # repo(current-metanorma-collection/ISO 17301-1:2016)
@@ -129,11 +139,7 @@ module Metanorma
     # Preferably with anchor, and is a job to realise dynamic lookup
     # of localities.
     def update_direct_refs_to_docs(docxml, identifier)
-      erefs = docxml.xpath(ns("//eref"))
-        .each_with_object({ citeas: {}, bibitemid: {} }) do |i, m|
-        m[:citeas][i["citeas"]] = true
-        m[:bibitemid][i["bibitemid"]] = true
-      end
+      erefs = collect_erefs(docxml)
       docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
         docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
         next unless docid && %r{^current-metanorma-collection/}.match(docid)
@@ -141,6 +147,14 @@ module Metanorma
         update_bibitem(b, identifier)
         docid = b&.at(ns("./docidentifier"))&.children&.to_xml or next
         erefs[:citeas][docid] and update_anchors(b, docxml, docid)
+      end
+    end
+
+    def collect_erefs(docxml)
+      docxml.xpath(ns("//eref"))
+        .each_with_object({ citeas: {}, bibitemid: {} }) do |i, m|
+        m[:citeas][i["citeas"]] = true
+        m[:bibitemid][i["bibitemid"]] = true
       end
     end
 
