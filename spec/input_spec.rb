@@ -24,7 +24,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
 
   it "extracts Asciidoctor document attributes" do
     expect(Hash[Metanorma::Input::Asciidoc.new
-      .extract_options(<<~"INPUT").sort].to_s + "\n").to eq <<~"OUTPUT"
+      .extract_options(<<~"INPUT").sort].to_s + "\n").to eq <<~OUTPUT
         = Document title
         Author
         :sectionsplit: a
@@ -57,8 +57,21 @@ RSpec.describe Metanorma::Input::Asciidoc do
         :suppress-asciimath-dup: true
         :base-asset-path: aa
         :align-cross-elements: ab
+        :pdf-encrypt: ac
+        :pdf-encryption-length: ad
+        :pdf-user-password: ae
+        :pdf-owner-password: af
+        :pdf-allow-copy-content: ag
+        :pdf-allow-edit-content: ah
+        :pdf-allow-assemble-document: ai
+        :pdf-allow-edit-annotations: aj
+        :pdf-allow-print: ak
+        :pdf-allow-print-hq: al
+        :pdf-allow-fill-in-forms: am
+        :pdf-allow-access-content: an
+        :pdf-encrypt-metadata: ao
       INPUT
-        {:aligncrosselements=>"ab", :bare=>"w", :baseassetpath=>"aa", :bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :scripts=>"i", :scripts_override=>"z", :scripts_pdf=>"j", :sectionsplit=>"a", :standardstylesheet=>"l", :suppressasciimathdup=>true, :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
+        {:aligncrosselements=>"ab", :bare=>"w", :baseassetpath=>"aa", :bodyfont=>"b", :break_up_urls_in_tables=>"v", :datauriimage=>false, :doctoclevels=>"s", :header=>"m", :headerfont=>"c", :hierarchical_assets=>"t", :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :olstyle=>"q", :pdfallowaccesscontent=>"an", :pdfallowassembledocument=>"ai", :pdfallowcopycontent=>"ag", :pdfalloweditannotations=>"aj", :pdfalloweditcontent=>"ah", :pdfallowfillinforms=>"am", :pdfallowprint=>"ak", :pdfallowprinthq=>"al", :pdfencrypt=>"ac", :pdfencryptionlength=>"ad", :pdfencryptmetadata=>"ao", :pdfownerpassword=>"af", :pdfuserpassword=>"ae", :scripts=>"i", :scripts_override=>"z", :scripts_pdf=>"j", :sectionsplit=>"a", :standardstylesheet=>"l", :suppressasciimathdup=>true, :titlefont=>"d", :ulstyle=>"p", :use_xinclude=>"u", :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
       OUTPUT
   end
 
@@ -78,7 +91,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
 
   it "extracts Asciidoctor document attributes for Metanorma" do
     expect(Hash[Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(<<~"INPUT").sort].to_s + "\n").to eq <<~"OUTPUT"
+      .extract_metanorma_options(<<~"INPUT").sort].to_s + "\n").to eq <<~OUTPUT
         = Document title
         Author
         :mn-document-class: a
@@ -91,7 +104,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
 
   it "extracts Asciidoctor document attributes for Metanorma" do
     expect(Hash[Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(<<~"INPUT").sort].to_s + "\n").to eq <<~"OUTPUT"
+      .extract_metanorma_options(<<~"INPUT").sort].to_s + "\n").to eq <<~OUTPUT
         = Document title
         Author
       INPUT
