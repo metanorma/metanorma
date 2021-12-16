@@ -1,5 +1,15 @@
 module Metanorma
   class Compile
+    def relaton_export(isodoc, options)
+      return unless options[:relaton]
+
+      xml = Nokogiri::XML(isodoc) { |config| config.huge }
+      bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
+      # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
+      # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
+      File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
+    end
+
     def clean_sourcecode(xml)
       xml.xpath(".//callout | .//annotation | .//xmlns:callout | "\
                 ".//xmlns:annotation").each(&:remove)
@@ -10,15 +20,15 @@ module Metanorma
     def extract(isodoc, dirname, extract_types)
       return unless dirname
 
-      if extract_types.nil? || extract_types.empty?
+      extract_types.nil? || extract_types.empty? and
         extract_types = %i[sourcecode image requirement]
-      end
       FileUtils.rm_rf dirname
       FileUtils.mkdir_p dirname
       xml = Nokogiri::XML(isodoc) { |config| config.huge }
       sourcecode_export(xml, dirname) if extract_types.include? :sourcecode
       image_export(xml, dirname) if extract_types.include? :image
-      requirement_export(xml, dirname) if extract_types.include? :requirement
+      extract_types.include?(:requirement) and
+        requirement_export(xml, dirname)
     end
 
     def sourcecode_export(xml, dirname)
@@ -26,9 +36,8 @@ module Metanorma
       FileUtils.mkdir_p "#{dirname}/sourcecode"
       xml.xpath("//sourcecode | //xmlns:sourcecode").each_with_index do |s, i|
         filename = s["filename"] || sprintf("sourcecode-%04d.txt", i)
-        File.open("#{dirname}/sourcecode/#{filename}", "w:UTF-8") do |f|
-          f.write clean_sourcecode(s.dup)
-        end
+        export_output("#{dirname}/sourcecode/#{filename}",
+                      clean_sourcecode(s.dup))
       end
     end
 
@@ -39,25 +48,24 @@ module Metanorma
         next unless /^data:image/.match? s["src"]
 
         %r{^data:image/(?<imgtype>[^;]+);base64,(?<imgdata>.+)$} =~ s["src"]
-        filename = s["filename"] || sprintf("image-%04d.%s", i, imgtype)
-        File.open("#{dirname}/image/#{filename}", "wb") do |f|
-          f.write(Base64.strict_decode64(imgdata))
-        end
+        fn = s["filename"] || sprintf("image-%<num>04d.%<name>s",
+                                      num: i, name: imgtype)
+        export_output("#{dirname}/image/#{fn}", Base64.strict_decode64(imgdata),
+                      binary: true)
       end
     end
 
-    REQUIREMENT_XPATH = "//requirement | //xmlns:requirement | "\
-                        "//recommendation | //xmlns:recommendation | //permission | "\
-                        "//xmlns:permission".freeze
+    REQUIREMENT_XPATH =
+      "//requirement | //xmlns:requirement | //recommendation | "\
+      "//xmlns:recommendation | //permission | //xmlns:permission".freeze
 
     def requirement_export(xml, dirname)
       xml.at(REQUIREMENT_XPATH) or return
       FileUtils.mkdir_p "#{dirname}/requirement"
       xml.xpath(REQUIREMENT_XPATH).each_with_index do |s, i|
-        filename = s["filename"] || sprintf("%s-%04d.xml", s.name, i)
-        File.open("#{dirname}/requirement/#{filename}", "w:UTF-8") do |f|
-          f.write s
-        end
+        fn = s["filename"] ||
+          sprintf("%<name>s-%<num>04d.xml", name: s.name, num: i)
+        export_output("#{dirname}/requirement/#{fn}", s)
       end
     end
   end

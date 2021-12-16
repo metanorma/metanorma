@@ -377,8 +377,19 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "exports assets" do
+    sourcecode = "spec/assets/extract/sourcecode"
+    %w(sourcecode-0000.txt sourcecode-0001.txt a.html).each do |w|
+      FileUtils.rm_f "#{sourcecode}/#{w}"
+    end
+    %w(image-0000.png image-0001.png img1.png).each do |w|
+      FileUtils.rm_f "#{sourcecode}/image/#{w}"
+    end
+    %w(requirement-0000.xml requirement-0001.xml permission-0001.xml reqt1.xml)
+      .each do |w|
+      FileUtils.rm_f "#{sourcecode}/requirement/#{w}"
+    end
     Metanorma::Compile.new.compile(
-      "spec/assets/test.adoc",
+      "spec/assets/test_datauri.adoc",
       type: "iso",
       extract: "spec/assets/extract",
       extract_type: %i(sourcecode image requirement),
@@ -386,8 +397,7 @@ RSpec.describe Metanorma::Compile do
       agree_to_terms: true,
     )
 
-    sourcecode = "spec/assets/extract/sourcecode"
-    expect(File.exist?("spec/assets/test.xml")).to be true
+    expect(File.exist?("spec/assets/test_datauri.xml")).to be true
     expect(File.exist?("#{sourcecode}/sourcecode-0000.txt")).to be true
     expect(File.exist?("#{sourcecode}/sourcecode-0001.txt")).to be false
     expect(File.exist?("#{sourcecode}/a.html")).to be true
@@ -517,29 +527,31 @@ RSpec.describe Metanorma::Compile do
                                    sectionsplit: "true",
                                    datauriimage: true,
                                    agree_to_terms: true)
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/index.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.0.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.1.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.2.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.3.html")).to be false
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.4.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.5.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.6.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.7.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit.html_collection/test_sectionsplit.html.8.html")).to be false
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/cover.html")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.0.xml")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.1.xml")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.2.xml")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.3.xml")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.4.xml")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.5.xml")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.6.xml")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.7.xml")).to be true
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.8.xml")).to be false
-    expect(File.exist?("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.html.yaml")).to be true
-    m = /type="([^"]+)"/.match(File.read("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.0.xml"))
-    file2 = Nokogiri::XML(File.read("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.2.xml"))
+    f = "spec/fixtures/test_sectionsplit.html_collection"
+    expect(File.exist?("#{f}/index.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.4.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
+    f = "spec/fixtures/test_sectionsplit_files"
+    expect(File.exist?("#{f}/cover.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.2.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.3.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.4.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.5.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+    m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
+    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
     expect(xmlpp(file2
      .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
@@ -586,41 +598,42 @@ RSpec.describe Metanorma::Compile do
         </svg>
         </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
-    expect(File.read("spec/fixtures/test_sectionsplit_files/test_sectionsplit.html.html.yaml")).to be_equivalent_to <<~OUTPUT
-      ---
-      directives:
-       - presentation-xml
-       - bare-after-first
-       bibdata:
-         title:
-           type: title-main
-           language:
-           content: ISO Title
-         type: collection
-         docid:
-           type: ISO
-           id: ISO 1
-       manifest:
-         level: collection
-         title: Collection
-         docref:
-         - fileref: test_sectionsplit.html.3.xml
-           identifier: "[Untitled]"
-         - fileref: test_sectionsplit.html.0.xml
-           identifier: abstract
-         - fileref: test_sectionsplit.html.1.xml
-           identifier: introduction
-         - fileref: test_sectionsplit.html.6.xml
-           identifier: Normative References
-         - fileref: test_sectionsplit.html.2.xml
-           identifier: Clause 4
-         - fileref: test_sectionsplit.html.4.xml
-           identifier: Annex (informative)
-         - fileref: test_sectionsplit.html.5.xml
-           identifier: "[Untitled]"
-         - fileref: test_sectionsplit.html.7.xml
-           identifier: Bibliography
-    OUTPUT
+    expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
+      .to be_equivalent_to <<~OUTPUT
+        ---
+        directives:
+         - presentation-xml
+         - bare-after-first
+         bibdata:
+           title:
+             type: title-main
+             language:
+             content: ISO Title
+           type: collection
+           docid:
+             type: ISO
+             id: ISO 1
+         manifest:
+           level: collection
+           title: Collection
+           docref:
+           - fileref: test_sectionsplit.html.3.xml
+             identifier: "[Untitled]"
+           - fileref: test_sectionsplit.html.0.xml
+             identifier: abstract
+           - fileref: test_sectionsplit.html.1.xml
+             identifier: introduction
+           - fileref: test_sectionsplit.html.6.xml
+             identifier: Normative References
+           - fileref: test_sectionsplit.html.2.xml
+             identifier: Clause 4
+           - fileref: test_sectionsplit.html.4.xml
+             identifier: Annex (informative)
+           - fileref: test_sectionsplit.html.5.xml
+             identifier: "[Untitled]"
+           - fileref: test_sectionsplit.html.7.xml
+             identifier: Bibliography
+      OUTPUT
   end
 
   private

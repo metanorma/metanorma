@@ -109,18 +109,22 @@ RSpec.describe Metanorma::Collection do
       # expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
+        .to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
       # expect(File.exist?("#{OUTPATH}/rice-en.final.doc")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
+        .to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
       # expect(File.exist?("#{OUTPATH}/rice1-en.final.doc")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
+        .to be true
       FileUtils.rm_rf of
     end
 
@@ -179,20 +183,26 @@ RSpec.describe Metanorma::Collection do
       # expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
+        .to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
       # expect(File.exist?("#{OUTPATH}/rice-en.final.doc")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html"))
+        .to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html"))
+        .to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html"))
+        .to be false
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
       # expect(File.exist?("#{OUTPATH}/rice1-en.final.doc")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
+        .to be true
       FileUtils.rm_rf of
     end
 
@@ -221,16 +231,22 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
+        .to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
+        .to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html"))
+        .to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
+        .to be true
       FileUtils.rm_rf of
     end
   end
@@ -285,8 +301,12 @@ RSpec.describe Metanorma::Collection do
       },
     )
     index = File.read("#{OUTPATH}/rice-en.final.norepo.xml")
-    expect(index).to include 'Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions'
-    # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
+    expect(index).to include "Mass fraction of extraneous matter, milled rice "\
+                             "(nonglutinous), sample dividers and "\
+                             "recommendations relating to storage and "\
+                             "transport conditions"
+    # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
+    # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
     FileUtils.rm_rf of
   end
 

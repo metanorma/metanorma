@@ -99,17 +99,15 @@ module Metanorma
       out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
       ret = if ref["fileref"]
               { type: "fileref", ref: @documents[identifier].file,
-                rel_path: ref["fileref"],
-                out_path: out }
-            else
-              { type: "id", ref: ref["id"] }
+                rel_path: ref["fileref"], out_path: out }
+            else { type: "id", ref: ref["id"] }
             end
       %i(attachment sectionsplit index).each do |s|
         ret[s] = ref[s.to_s] if ref[s.to_s]
       end
-      ret[:presentationxml] = ref["presentation-xml"] if ref["presentation-xml"]
-      ret[:bareafterfirst] = ref["bare-after-first"] if ref["bare-after-first"]
-      ret
+      ret[:presentationxml] = ref["presentation-xml"]
+      ret[:bareafterfirst] = ref["bare-after-first"]
+      ret.compact
     end
 
     def add_suffix_to_attributes(doc, suffix, tag_name, attribute_name)
@@ -164,10 +162,15 @@ module Metanorma
     def file_compile(file, filename, identifier)
       return if @files[identifier][:sectionsplit] == "true"
 
-      @compile.compile file.path, { format: :asciidoc, extension_keys: @format }
-        .merge(compile_options(identifier))
+      opts = {
+        format: :asciidoc,
+        extension_keys: @format,
+        output_dir: @outdir,
+      }.merge(compile_options(identifier))
+
+      @compile.compile file, opts
       @files[identifier][:outputs] = {}
-      file_compile_formats(file, filename, identifier)
+      file_compile_formats(filename, identifier)
     end
 
     def compile_options(identifier)
@@ -182,27 +185,16 @@ module Metanorma
       ret
     end
 
-    def file_compile_formats(file, filename, identifier)
+    def file_compile_formats(filename, identifier)
+      file_id = @files[identifier]
+      @format << :presentation if @format.include?(:pdf)
       @format.each do |e|
         ext = @compile.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)
-        if /html$/.match?(ext) && @files[identifier][:sectionsplit]
-          # file_sectionsplit_copy(file, fn, identifier, ext, e)
-        else
-          FileUtils.cp file.path.sub(/\.xml$/, ".#{ext}"),
-                       File.join(@outdir, fn)
-          @files[identifier][:outputs][e] = File.join(@outdir, fn)
+        unless /html$/.match?(ext) && file_id[:sectionsplit]
+          file_id[:outputs][e] = File.join(@outdir, fn)
         end
       end
-    end
-
-    def file_sectionsplit_copy(file, base, identifier, ext, format)
-      dir = file.path.sub(/\.xml$/, ".#{ext}_collection")
-      files = Dir.glob("#{dir}/*.#{ext}")
-      FileUtils.cp files, @outdir
-      cover = File.join(@outdir, base.sub(/\.html$/, ".index.html"))
-      FileUtils.cp File.join(dir, "index.html"), cover
-      @files[identifier][:outputs][format] = cover
     end
 
     def copy_file_to_dest(fileref)
@@ -223,12 +215,13 @@ module Metanorma
         else
           file, filename = targetfile(x, read: true)
           warn "\n\n\n\n\nProcess #{filename}: #{DateTime.now.strftime('%H:%M:%S')}"
-          file = update_xrefs(file, identifier, internal_refs)
-          Tempfile.open(["collection", ".xml"], encoding: "utf-8") do |f|
-            f.write(file)
-            f.close
-            file_compile(f, filename, identifier)
-          end
+          collection_xml = update_xrefs(file, identifier, internal_refs)
+          collection_filename = File.basename(filename, File.extname(filename))
+          collection_xml_path = File.join(Dir.tmpdir,
+                                          "#{collection_filename}.xml")
+          File.write collection_xml_path, collection_xml, encoding: "UTF-8"
+          file_compile(collection_xml_path, filename, identifier)
+          FileUtils.rm(collection_xml_path)
         end
       end
     end

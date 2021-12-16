@@ -33,7 +33,7 @@ module Metanorma
       extract(isodoc, options[:extract], options[:extract_type])
       FontistUtils.install_fonts(@processor, options) unless @fontist_installed
       @fontist_installed = true
-      process_extensions(extensions, file, isodoc, options)
+      process_extensions(filename, extensions, file, isodoc, options)
     end
 
     def require_libraries(options)
@@ -129,6 +129,11 @@ module Metanorma
       File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
     end
 
+    def export_output(fname, content, **options)
+      mode = options[:binary] ? "wb" : "w:UTF-8"
+      File.open(fname, mode) { |f| f.write content }
+    end
+
     def wrap_html(options, file_extension, outfilename)
       if options[:wrapper] && /html$/.match(file_extension)
         outfilename = outfilename.sub(/\.html$/, "")
@@ -139,7 +144,7 @@ module Metanorma
     end
 
     # isodoc is Raw Metanorma XML
-    def process_extensions(extensions, file, isodoc, options)
+    def process_extensions(filename, extensions, file, isodoc, options)
       f = change_output_dir options
       fnames = { xml: f.sub(/\.[^.]+$/, ".xml"), f: f,
                  presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
@@ -151,7 +156,7 @@ module Metanorma
     end
 
     def process_extension(ext, file, isodoc, fnames, options)
-              require "byebug"; byebug
+              # require "byebug"; byebug
       file_extension = @processor.output_formats[ext]
       outfilename = fnames[:f].sub(/\.[^.]+$/, ".#{file_extension}")
       isodoc_options = get_isodoc_options(file, options, ext)
@@ -161,7 +166,7 @@ module Metanorma
         begin
           if @processor.use_presentation_xml(ext)
             thread = Thread.new do
-              require "byebug"; byebug
+              # require "byebug"; byebug
               @processor.output(nil, fnames[:presentationxml], outfilename, ext,
                                 isodoc_options)
               wrap_html(options, file_extension, outfilename)
@@ -188,6 +193,18 @@ module Metanorma
       else return false
       end
       true
+    end
+
+    def process_extensions1(ext, fnames, isodoc, isodoc_options)
+      if @processor.use_presentation_xml(ext)
+        @processor.output(nil, fnames[:presentationxml], fnames[:out], ext,
+                          isodoc_options)
+      else
+        @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
+                          isodoc_options)
+      end
+    rescue StandardError => e
+      isodoc_error_process(e)
     end
 
     private

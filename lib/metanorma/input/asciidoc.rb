@@ -56,13 +56,19 @@ module Metanorma
         attr&.sub(/^#{name}:\s*$/, "#{name}: true")&.sub(/^#{name}:\s+/, "")
       end
 
-      ADOC_OPTIONS = %w(htmlstylesheet htmlcoverpage htmlintropage scripts
-                        scripts-override scripts-pdf wordstylesheet i18nyaml
-                        standardstylesheet header wordcoverpage wordintropage
-                        ulstyle olstyle htmlstylesheet-override bare
-                        htmltoclevels doctoclevels sectionsplit base-asset-path
-                        body-font header-font monospace-font title-font
-                        align-cross-elements wordstylesheet-override).freeze
+      ADOC_OPTIONS =
+        %w(htmlstylesheet htmlcoverpage htmlintropage scripts
+           scripts-override scripts-pdf wordstylesheet i18nyaml
+           standardstylesheet header wordcoverpage wordintropage
+           ulstyle olstyle htmlstylesheet-override bare
+           htmltoclevels doctoclevels sectionsplit base-asset-path
+           body-font header-font monospace-font title-font
+           align-cross-elements wordstylesheet-override
+           pdf-encrypt pdf-encryption-length pdf-user-password
+           pdf-owner-password pdf-allow-copy-content pdf-allow-edit-content
+           pdf-allow-assemble-document pdf-allow-edit-annotations
+           pdf-allow-print pdf-allow-print-hq pdf-allow-fill-in-forms
+           pdf-allow-access-content pdf-encrypt-metadata).freeze
 
       def extract_options(file)
         header = file.sub(/\n\n.*$/m, "\n")
