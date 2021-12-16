@@ -538,7 +538,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
-    f = "spec/fixtures/test_sectionsplit_files"
+    f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
     expect(File.exist?("#{f}/cover.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true

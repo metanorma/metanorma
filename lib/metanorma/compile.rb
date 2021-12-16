@@ -33,7 +33,7 @@ module Metanorma
       extract(isodoc, options[:extract], options[:extract_type])
       FontistUtils.install_fonts(@processor, options) unless @fontist_installed
       @fontist_installed = true
-      process_extensions(filename, extensions, file, isodoc, options)
+      process_exts(filename, extensions, file, isodoc, options)
     end
 
     def require_libraries(options)
@@ -144,65 +144,69 @@ module Metanorma
     end
 
     # isodoc is Raw Metanorma XML
-    def process_extensions(filename, extensions, file, isodoc, options)
+    def process_exts(filename, extensions, file, isodoc, options)
       f = change_output_dir options
       fnames = { xml: f.sub(/\.[^.]+$/, ".xml"), f: f,
+                 orig_filename: filename,
                  presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
       threads = Util.sort_extensions_execution(extensions)
         .each_with_object([]) do |ext, m|
-        m << process_extension(ext, file, isodoc, fnames, options)
+        m << process_ext(ext, file, isodoc, fnames, options)
       end
       threads.compact.each(&:join)
     end
 
-    def process_extension(ext, file, isodoc, fnames, options)
-              # require "byebug"; byebug
-      file_extension = @processor.output_formats[ext]
-      outfilename = fnames[:f].sub(/\.[^.]+$/, ".#{file_extension}")
+    def process_ext(ext, file, isodoc, fnames, options)
+      fnames[:ext] = @processor.output_formats[ext]
+      fnames[:out] = fnames[:f].sub(/\.[^.]+$/, ".#{fnames[:ext]}")
       isodoc_options = get_isodoc_options(file, options, ext)
       thread = nil
-      unless process_extension_simple(ext, isodoc, fnames, outfilename,
-                                      options, isodoc_options)
-        begin
-          if @processor.use_presentation_xml(ext)
-            thread = Thread.new do
-              # require "byebug"; byebug
-              @processor.output(nil, fnames[:presentationxml], outfilename, ext,
+      unless process_ext_simple(ext, isodoc, fnames, options,
                                 isodoc_options)
-              wrap_html(options, file_extension, outfilename)
-            end
-          else
-            @processor.output(isodoc, fnames[:xml], outfilename, ext,
-                              isodoc_options)
-          end
-        rescue StandardError => e
-          isodoc_error_process(e)
-        end
+        thread = process_exts1(ext, fnames, isodoc, options, isodoc_options)
       end
       thread
     end
 
-    def process_extension_simple(ext, isodoc, fnames, outfilename, options, isodoc_options)
+    def process_ext_simple(ext, isodoc, fnames, options, isodoc_options)
       if ext == :rxl
-        relaton_export(isodoc, options.merge(relaton: outfilename))
+        relaton_export(isodoc, options.merge(relaton: fnames[:out]))
       elsif options[:passthrough_presentation_xml] && ext == :presentation
-        FileUtils.cp fnames[:f], fnames[:presentationxml]
+        f = File.exists?(fnames[:f]) ? fnames[:f] : fnames[:orig_filename]
+        FileUtils.cp f, fnames[:presentationxml]
       elsif ext == :html && options[:sectionsplit]
-        sectionsplit_convert(fnames[:xml], isodoc, outfilename,
+        sectionsplit_convert(fnames[:xml], isodoc, fnames[:out],
                              isodoc_options)
       else return false
       end
       true
     end
 
-    def process_extensions1(ext, fnames, isodoc, isodoc_options)
+    def process_exts1(ext, fnames, isodoc, options, isodoc_options)
       if @processor.use_presentation_xml(ext)
-        @processor.output(nil, fnames[:presentationxml], fnames[:out], ext,
-                          isodoc_options)
+        process_output_threaded(ext, fnames, options, isodoc_options)
       else
-        @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
-                          isodoc_options)
+        process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
       end
+    end
+
+    def process_output_threaded(ext, fnames, options, isodoc_options)
+      fnames1 = fnames.dup
+      isodoc_options1 = isodoc_options.dup
+      options1 = options.dup
+      Thread.new do
+        @processor.output(nil, fnames1[:presentationxml], fnames1[:out], ext,
+                          isodoc_options1)
+        wrap_html(options1, fnames1[:ext], fnames1[:out])
+      rescue StandardError => e
+        isodoc_error_process(e)
+      end
+    end
+
+    def process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
+      @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
+                        isodoc_options)
+      nil # return as Thread
     rescue StandardError => e
       isodoc_error_process(e)
     end
