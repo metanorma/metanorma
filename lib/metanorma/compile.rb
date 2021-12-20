@@ -9,6 +9,7 @@ require_relative "fontist_utils"
 require_relative "util"
 require_relative "sectionsplit"
 require_relative "extract"
+require_relative "worker_pool"
 
 module Metanorma
   class Compile
@@ -145,15 +146,16 @@ module Metanorma
 
     # isodoc is Raw Metanorma XML
     def process_exts(filename, extensions, file, isodoc, options)
-      f = change_output_dir options
+      f = File.expand_path(change_output_dir(options))
       fnames = { xml: f.sub(/\.[^.]+$/, ".xml"), f: f,
-                 orig_filename: filename,
+                 orig_filename: File.expand_path(filename),
                  presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
-      threads = Util.sort_extensions_execution(extensions)
-        .each_with_object([]) do |ext, m|
-        m << process_ext(ext, file, isodoc, fnames, options)
+      @queue = ::Metanorma::WorkersPool
+        .new(ENV["RELATON_FETCH_PARALLEL"]&.to_i || 3)
+      Util.sort_extensions_execution(extensions).each do |ext|
+        process_ext(ext, file, isodoc, fnames, options)
       end
-      threads.compact.each(&:join)
+      @queue.shutdown
     end
 
     def process_ext(ext, file, isodoc, fnames, options)
@@ -184,23 +186,21 @@ module Metanorma
 
     def process_exts1(ext, fnames, isodoc, options, isodoc_options)
       if @processor.use_presentation_xml(ext)
-        process_output_threaded(ext, fnames, options, isodoc_options)
+        @queue.schedule(ext, fnames.dup, options.dup,
+                        isodoc_options.dup) do |a, b, c, d|
+          process_output_threaded(a, b, c, d)
+        end
       else
         process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
       end
     end
 
-    def process_output_threaded(ext, fnames, options, isodoc_options)
-      fnames1 = fnames.dup
-      isodoc_options1 = isodoc_options.dup
-      options1 = options.dup
-      Thread.new do
-        @processor.output(nil, fnames1[:presentationxml], fnames1[:out], ext,
-                          isodoc_options1)
-        wrap_html(options1, fnames1[:ext], fnames1[:out])
-      rescue StandardError => e
-        isodoc_error_process(e)
-      end
+    def process_output_threaded(ext, fnames1, options1, isodoc_options1)
+      @processor.output(nil, fnames1[:presentationxml], fnames1[:out], ext,
+                        isodoc_options1)
+      wrap_html(options1, fnames1[:ext], fnames1[:out])
+    rescue StandardError => e
+      isodoc_error_process(e)
     end
 
     def process_output_unthreaded(ext, fnames, isodoc, isodoc_options)

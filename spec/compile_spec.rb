@@ -22,8 +22,8 @@ RSpec.describe Metanorma::Compile do
 
   it "passes asciidoc options onto isodoc" do
     mock_iso_processor_output(
-      "spec/assets/test2.xml",
-      "spec/assets/test2.presentation.xml",
+      File.expand_path("spec/assets/test2.xml"),
+      File.expand_path("spec/assets/test2.presentation.xml"),
       {
         bare: nil,
         datauriimage: true,
@@ -635,7 +635,6 @@ RSpec.describe Metanorma::Compile do
              identifier: Bibliography
       OUTPUT
   end
-
   private
 
   def mock_render

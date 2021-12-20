@@ -247,6 +247,13 @@ The options hash has the same structure it does when invoked in metanorma-cli:
 `:relaton`: exports the bibdata Relaton XML description of the document (which is part of its Metanorma XML)
 to the nominated directory
 
+== Threaded execution
+
+Metanorma has threaded execution, to generate output documents from the same Presentation XML input more quickly.
+As with https://github.com/relaton/relaton[relaton], the `RELATON_FETCH_PARALLEL` environment variable 
+can be used to override the default number of parallel fetches used.
+
+
 == Origin of name
 
 *Meta-* is a prefix of Greek origin ("μετα") for "`with`" "`after`".
