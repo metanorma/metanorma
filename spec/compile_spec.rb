@@ -636,8 +636,8 @@ RSpec.describe Metanorma::Compile do
       OUTPUT
   end
 
-  it "use threads number from METANORMA_FETCH_PARALLEL" do
-    expect(ENV).to receive(:[]).with("METANORMA_FETCH_PARALLEL").and_return(1)
+  it "use threads number from METANORMA_PARALLEL" do
+    expect(ENV).to receive(:[]).with("METANORMA_PARALLEL").and_return(1)
     allow(ENV).to receive(:[]).and_call_original
     expect(Metanorma::WorkersPool).to receive(:new).with(1).and_call_original
     mock_pdf

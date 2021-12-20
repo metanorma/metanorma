@@ -250,7 +250,7 @@ to the nominated directory
 == Threaded execution
 
 Metanorma has threaded execution, to generate output documents from the same Presentation XML input more quickly.
-Similar to https://github.com/relaton/relaton[relaton], the `METANORMA_FETCH_PARALLEL` environment variable 
+Similar to https://github.com/relaton/relaton[relaton], the `METANORMA_PARALLEL` environment variable 
 can be used to override the default number of parallel fetches used.
 
 

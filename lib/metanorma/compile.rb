@@ -151,7 +151,7 @@ module Metanorma
                  orig_filename: File.expand_path(filename),
                  presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
       @queue = ::Metanorma::WorkersPool
-        .new(ENV["METANORMA_FETCH_PARALLEL"]&.to_i || 3)
+        .new(ENV["METANORMA_PARALLEL"]&.to_i || 3)
       Util.sort_extensions_execution(extensions).each do |ext|
         process_ext(ext, file, isodoc, fnames, options)
       end
