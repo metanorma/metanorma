@@ -9,6 +9,7 @@ require_relative "fontist_utils"
 require_relative "util"
 require_relative "sectionsplit"
 require_relative "extract"
+require_relative "worker_pool"
 
 module Metanorma
   class Compile
@@ -33,7 +34,7 @@ module Metanorma
       extract(isodoc, options[:extract], options[:extract_type])
       FontistUtils.install_fonts(@processor, options) unless @fontist_installed
       @fontist_installed = true
-      process_extensions(filename, extensions, file, isodoc, options)
+      process_exts(filename, extensions, file, isodoc, options)
     end
 
     def require_libraries(options)
@@ -119,6 +120,16 @@ module Metanorma
       File.read(filename, encoding: "utf-8").gsub("\r\n", "\n")
     end
 
+    def relaton_export(isodoc, options)
+      return unless options[:relaton]
+
+      xml = Nokogiri::XML(isodoc) { |config| config.huge }
+      bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
+      # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
+      # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
+      File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
+    end
+
     def export_output(fname, content, **options)
       mode = options[:binary] ? "wb" : "w:UTF-8"
       File.open(fname, mode) { |f| f.write content }
@@ -134,41 +145,68 @@ module Metanorma
     end
 
     # isodoc is Raw Metanorma XML
-    def process_extensions(filename, extensions, file, isodoc, options)
-      f = change_output_dir options
-      name = { xml: f.sub(/\.[^.]+$/, ".xml"),
-               presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
+    def process_exts(filename, extensions, file, isodoc, options)
+      f = File.expand_path(change_output_dir(options))
+      fnames = { xml: f.sub(/\.[^.]+$/, ".xml"), f: f,
+                 orig_filename: File.expand_path(filename),
+                 presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
+      @queue = ::Metanorma::WorkersPool
+        .new(ENV["METANORMA_PARALLEL"]&.to_i || 3)
       Util.sort_extensions_execution(extensions).each do |ext|
-        file_extension = @processor.output_formats[ext]
-        name[:out] = f.sub(/\.[^.]+$/, ".#{file_extension}")
-        isodoc_options = get_isodoc_options(file, options, ext)
-        if ext == :rxl
-          relaton_export(isodoc, options.merge(relaton: name[:out]))
-        elsif options[:passthrough_presentation_xml] && ext == :presentation
-          FileUtils.cp filename, name[:presentationxml]
-        elsif ext == :html && options[:sectionsplit]
-          sectionsplit_convert(name[:xml], isodoc, name[:out], isodoc_options)
-        else
-          if ext == :pdf && FontistUtils.has_fonts_manifest?(@processor,
-                                                             options)
-            isodoc_options[:mn2pdf] = {
-              font_manifest: FontistUtils.location_manifest(@processor),
-            }
-          end
-          process_extensions1(ext, name, isodoc, isodoc_options)
+        process_ext(ext, file, isodoc, fnames, options)
+      end
+      @queue.shutdown
+    end
+
+    def process_ext(ext, file, isodoc, fnames, options)
+      fnames[:ext] = @processor.output_formats[ext]
+      fnames[:out] = fnames[:f].sub(/\.[^.]+$/, ".#{fnames[:ext]}")
+      isodoc_options = get_isodoc_options(file, options, ext)
+      thread = nil
+      unless process_ext_simple(ext, isodoc, fnames, options,
+                                isodoc_options)
+        thread = process_exts1(ext, fnames, isodoc, options, isodoc_options)
+      end
+      thread
+    end
+
+    def process_ext_simple(ext, isodoc, fnames, options, isodoc_options)
+      if ext == :rxl
+        relaton_export(isodoc, options.merge(relaton: fnames[:out]))
+      elsif options[:passthrough_presentation_xml] && ext == :presentation
+        f = File.exists?(fnames[:f]) ? fnames[:f] : fnames[:orig_filename]
+        FileUtils.cp f, fnames[:presentationxml]
+      elsif ext == :html && options[:sectionsplit]
+        sectionsplit_convert(fnames[:xml], isodoc, fnames[:out],
+                             isodoc_options)
+      else return false
+      end
+      true
+    end
+
+    def process_exts1(ext, fnames, isodoc, options, isodoc_options)
+      if @processor.use_presentation_xml(ext)
+        @queue.schedule(ext, fnames.dup, options.dup,
+                        isodoc_options.dup) do |a, b, c, d|
+          process_output_threaded(a, b, c, d)
         end
-        wrap_html(options, file_extension, name[:out])
+      else
+        process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
       end
     end
 
-    def process_extensions1(ext, fnames, isodoc, isodoc_options)
-      if @processor.use_presentation_xml(ext)
-        @processor.output(nil, fnames[:presentationxml], fnames[:out], ext,
-                          isodoc_options)
-      else
-        @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
-                          isodoc_options)
-      end
+    def process_output_threaded(ext, fnames1, options1, isodoc_options1)
+      @processor.output(nil, fnames1[:presentationxml], fnames1[:out], ext,
+                        isodoc_options1)
+      wrap_html(options1, fnames1[:ext], fnames1[:out])
+    rescue StandardError => e
+      isodoc_error_process(e)
+    end
+
+    def process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
+      @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
+                        isodoc_options)
+      nil # return as Thread
     rescue StandardError => e
       isodoc_error_process(e)
     end
@@ -184,15 +222,16 @@ module Metanorma
       end
     end
 
-    def get_isodoc_options(file, options, _ext)
-      isodoc_options = @processor.extract_options(file)
-      isodoc_options[:datauriimage] = true if options[:datauriimage]
-      isodoc_options[:sourcefilename] = options[:filename]
+    def get_isodoc_options(file, options, ext)
+      ret = @processor.extract_options(file)
+      ret[:datauriimage] = true if options[:datauriimage]
+      ret[:sourcefilename] = options[:filename]
       %i(bare sectionsplit no_install_fonts baseassetpath aligncrosselements)
-        .each do |x|
-        isodoc_options[x] ||= options[x]
-      end
-      isodoc_options
+        .each { |x| ret[x] ||= options[x] }
+      ext == :pdf && FontistUtils.has_fonts_manifest?(@processor, options) and
+        ret[:mn2pdf] =
+          { font_manifest: FontistUtils.location_manifest(@processor) }
+      ret
     end
 
     # @param options [Hash]

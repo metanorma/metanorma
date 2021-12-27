@@ -22,8 +22,8 @@ RSpec.describe Metanorma::Compile do
 
   it "passes asciidoc options onto isodoc" do
     mock_iso_processor_output(
-      "spec/assets/test2.xml",
-      "spec/assets/test2.presentation.xml",
+      File.expand_path("spec/assets/test2.xml"),
+      File.expand_path("spec/assets/test2.presentation.xml"),
       {
         bare: nil,
         datauriimage: true,
@@ -538,7 +538,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
-    f = "spec/fixtures/test_sectionsplit_files"
+    f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
     expect(File.exist?("#{f}/cover.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true
@@ -634,6 +634,22 @@ RSpec.describe Metanorma::Compile do
            - fileref: test_sectionsplit.html.7.xml
              identifier: Bibliography
       OUTPUT
+  end
+
+  it "use threads number from METANORMA_PARALLEL" do
+    expect(ENV).to receive(:[]).with("METANORMA_PARALLEL").and_return(1)
+    allow(ENV).to receive(:[]).and_call_original
+    expect(Metanorma::WorkersPool).to receive(:new).with(1).and_call_original
+    mock_pdf
+    mock_sts
+    Metanorma::Compile.new.compile("spec/assets/test.adoc",
+                                   type: "iso",
+                                   agree_to_terms: true)
+    expect(File.exist?("spec/assets/test.xml")).to be true
+    expect(File.exist?("spec/assets/test.doc")).to be true
+    expect(File.exist?("spec/assets/test.html")).to be true
+    expect(File.exist?("spec/assets/test.alt.html")).to be true
+    # this isn't really testing threads
   end
 
   private

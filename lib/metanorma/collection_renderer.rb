@@ -16,7 +16,7 @@ module Metanorma
     # @param options [Hash]
     # @option options [String] :coverpage cover page HTML (Liquid template)
     # @option options [Array<Symbol>] :format list of formats (xml,html,doc,pdf)
-    # @option options [String] :ourput_folder output directory
+    # @option options [String] :output_folder output directory
     #
     # We presuppose that the bibdata of the document is equivalent to that of
     # the collection, and that the flavour gem can sensibly process it. We may
