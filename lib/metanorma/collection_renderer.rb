@@ -52,7 +52,13 @@ module Metanorma
     end
 
     def dir_name_cleanse(name)
-      name.gsub(/[<>:"|?*]/, "_")
+      path = Pathname.new(name)
+      clean_regex = /[<>:"|?*]/
+      fallback_sym = "_"
+      return name.gsub(clean_regex, fallback_sym) unless path.absolute?
+
+      File.join(path.dirname,
+                path.basename.to_s.gsub(clean_regex, fallback_sym))
     end
 
     # @param col [Metanorma::Collection] XML collection
