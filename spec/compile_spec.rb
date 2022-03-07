@@ -33,6 +33,9 @@ RSpec.describe Metanorma::Compile do
         sourcefilename: "spec/assets/test2.adoc",
         baseassetpath: "spec/assets",
         aligncrosselements: "p,table",
+        tocfigures: true,
+        toctables: true,
+        tocrecommendations: true,
       },
     )
     Metanorma::Compile.new.compile("spec/assets/test2.adoc",
@@ -44,6 +47,9 @@ RSpec.describe Metanorma::Compile do
                                    sectionsplit: nil,
                                    datauriimage: true,
                                    aligncrosselements: "p,table",
+                                   tocfigures: true,
+                                   toctables: true,
+                                   tocrecommendations: true,
                                    agree_to_terms: true)
   end
 
