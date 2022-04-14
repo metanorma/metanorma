@@ -174,7 +174,7 @@ module Metanorma
       if ext == :rxl
         relaton_export(isodoc, options.merge(relaton: fnames[:out]))
       elsif options[:passthrough_presentation_xml] && ext == :presentation
-        f = File.exists?(fnames[:f]) ? fnames[:f] : fnames[:orig_filename]
+        f = File.exist?(fnames[:f]) ? fnames[:f] : fnames[:orig_filename]
         FileUtils.cp f, fnames[:presentationxml]
       elsif ext == :html && options[:sectionsplit]
         sectionsplit_convert(fnames[:xml], isodoc, fnames[:out],
