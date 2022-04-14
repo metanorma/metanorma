@@ -85,20 +85,23 @@ module Metanorma
         next unless %i(presentation xml).include?(e)
 
         ext = e == :presentation ? "presentation.xml" : e.to_s
-        out = col.clone
-        out.directives << "documents-inline"
-        out.documents.each_key do |id|
-          next if @files[id][:attachment] || @files[id][:outputs].nil?
-
-          filename = @files[id][:outputs][e]
-          out.documents[id] = Metanorma::Document.raw_file(filename)
-        end
         File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") do |f|
-          f.write(out.to_xml)
+          f.write(concatenate1(col.clone, e).to_xml)
         end
       end
       options[:format].include?(:pdf) and
         pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))
+    end
+
+    def concatenate1(out, ext)
+      out.directives << "documents-inline"
+      out.documents.each_key do |id|
+        next if @files[id][:attachment] || @files[id][:outputs].nil?
+
+        out.documents[id] =
+          Metanorma::Document.raw_file(@files[id][:outputs][ext])
+      end
+      out
     end
 
     def pdfconv
@@ -152,9 +155,9 @@ module Metanorma
 
     # infer the flavour from the first document identifier; relaton does that
     def doctype
-      if (docid = @xml&.at(ns("//bibdata/docidentifier/@type"))&.text)
+      if (docid = @xml.at(ns("//bibdata/docidentifier/@type"))&.text)
         dt = docid.downcase
-      elsif (docid = @xml&.at(ns("//bibdata/docidentifier"))&.text)
+      elsif (docid = @xml.at(ns("//bibdata/docidentifier"))&.text)
         dt = docid.sub(/\s.*$/, "").lowercase
       else return "standoc"
       end
@@ -179,8 +182,8 @@ module Metanorma
     # @param elm [Nokogiri::XML::Element]
     # @return [String]
     def indexfile_title(elm)
-      lvl = elm&.at(ns("./level"))&.text&.capitalize
-      lbl = elm&.at(ns("./title"))&.text
+      lvl = elm.at(ns("./level"))&.text&.capitalize
+      lbl = elm.at(ns("./title"))&.text
       "#{lvl}#{lvl && lbl ? ': ' : ''}#{lbl}"
     end
 
