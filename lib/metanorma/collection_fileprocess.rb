@@ -69,8 +69,8 @@ module Metanorma
     end
 
     def add_section_split_instance(file, manifest, key, idx, files)
-      dir = File.dirname(files[key][:ref])
-      presfile = File.join(dir, File.basename(file[:url]))
+      presfile = File.join(File.dirname(files[key][:ref]),
+                           File.basename(file[:url]))
       manifest["#{key} #{file[:title]}"] =
         { parentid: key, presentationxml: true, type: "fileref",
           rel_path: file[:url], out_path: File.basename(file[:url]),

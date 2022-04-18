@@ -56,7 +56,7 @@ module Metanorma
     # @return [String] XML
     def to_xml
       b = Nokogiri::XML::Builder.new do |xml|
-        xml.send("metanorma-collection",
+        xml.send(:"metanorma-collection",
                  "xmlns" => "http://metanorma.org") do |mc|
           collection_body(mc)
         end
@@ -183,7 +183,7 @@ module Metanorma
 
     def doccontainer1(builder, doc, idx)
       id = format("doc%<index>09d", index: idx)
-      builder.send("doc-container", id: id) do |b|
+      builder.send(:"doc-container", id: id) do |b|
         if doc.attachment
           doc.bibitem and b << doc.bibitem.root.to_xml
           b.attachment Metanorma::Utils::datauri(doc.file)
