@@ -23,8 +23,8 @@ module Metanorma
       options[:type] ||= o[:type]&.to_sym
       t = @registry.alias(options[:type]) and options[:type] = t
       dir = filename.sub(%r(/[^/]+$), "/")
-      options[:relaton] ||= "#{dir}/#{o[:relaton]}" if o[:relaton]
-      options[:sourcecode] ||= "#{dir}/#{o[:sourcecode]}" if o[:sourcecode]
+      options[:relaton] ||= File.join(dir, o[:relaton]) if o[:relaton]
+      options[:sourcecode] ||= File.join(dir, o[:sourcecode]) if o[:sourcecode]
       options[:extension_keys] ||= o[:extensions]&.split(/, */)&.map(&:to_sym)
       options[:extension_keys] = nil if options[:extension_keys] == [:all]
       options[:format] ||= :asciidoc
