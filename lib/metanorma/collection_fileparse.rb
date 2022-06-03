@@ -45,7 +45,7 @@ module Metanorma
       bib.replace(newbib)
       _file, url = targetfile(@files[docid], relative: true, read: false,
                                              doc: !@files[docid][:attachment])
-      uri_node = Nokogiri::XML::Node.new "uri", newbib
+      uri_node = Nokogiri::XML::Node.new "uri", newbib.document
       uri_node[:type] = "citation"
       uri_node.content = url
       newbib.at(ns("./docidentifier")).previous = uri_node
