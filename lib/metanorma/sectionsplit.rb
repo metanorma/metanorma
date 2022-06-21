@@ -154,7 +154,7 @@ module Metanorma
 
     def eref_to_internal_eref(section, xml, key)
       eref_to_internal_eref_select(section, xml).each_with_object([]) do |x, m|
-        url = xml.at(ns("//bibitem[@id = '#{x}']/url[@type = 'citation']"))
+        url = xml.at(ns("//bibitem[@id = '#{x}']/uri[@type = 'citation']"))
         section.xpath(("//*[@bibitemid = '#{x}']")).each do |e|
           id = eref_to_internal_eref1(e, key, url)
           id and m << id
