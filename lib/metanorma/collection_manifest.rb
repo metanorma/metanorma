@@ -24,10 +24,10 @@ module Metanorma
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
       def from_yaml(mnf)
-        manifest = RelatonBib::HashConverter.array(mnf["manifest"]).map do |m|
+        manifest = RelatonBib.array(mnf["manifest"]).map do |m|
           from_yaml m
         end
-        docref = RelatonBib::HashConverter.array mnf["docref"]
+        docref = RelatonBib.array mnf["docref"]
         new(mnf["level"], mnf["title"], docref, manifest)
       end
 

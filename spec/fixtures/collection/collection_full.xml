@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <metanorma-collection xmlns="http://metanorma.org">
   <bibdata type="collection">
-    <fetched>2020-12-12</fetched>
     <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
     <docidentifier type="iso">ISO 12345</docidentifier>
     <date type="created">

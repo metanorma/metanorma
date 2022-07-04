@@ -13,7 +13,8 @@ bibdata:
   docid:
     type: iso
     id: ISO 12345
-  edition: 1
+  edition: 
+    content: 1
   date:
     - type: created
       value: "2020"
