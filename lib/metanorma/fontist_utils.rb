@@ -38,6 +38,12 @@ module Metanorma
       end
 
       def fontist_install(manifest, agree, no_progress)
+        if agree
+          no_license_log
+        else
+          Fontist.log_level = :info
+        end
+
         Fontist::Manifest::Install.from_hash(
           manifest,
           confirmation: agree ? "yes" : "no",
@@ -56,6 +62,13 @@ module Metanorma
                    " make sure that you have set option --agree-to-terms",
                    :fatal)
         end
+      end
+
+      def no_license_log
+        Util.log(
+          "[fontist] Font licenses are not shown with --agree-to-terms option.",
+          :info,
+        )
       end
 
       def fintist_update_repo(manifest, agree, continue, no_progress)
