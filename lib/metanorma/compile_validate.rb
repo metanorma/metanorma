@@ -44,8 +44,18 @@ module Metanorma
                "`metanorma-#{stdtype}`, Please add it to your Gemfile "\
                "and run bundle install first", :fatal)
     rescue LoadError
-      Util.log("[metanorma] Error: loading gem `#{flavor}` "\
-               "failed. Exiting.", :fatal)
+      msg = <<~MSG
+        [metanorma] Error: loading gem `#{flavor}` failed. Exiting.
+
+        Troubleshooting:
+        1. If you are using metanorma via bundler/ruby, make sure that your
+           Gemfile contains a line:
+             gem "metanorma-#{stdtype}"
+
+        2. If you are using brew/choco/snap packages, please report an issue
+           to https://github.com/metanorma/packed-mn/issues/new"
+      MSG
+      Util.log(msg, :fatal)
     end
   end
 end
