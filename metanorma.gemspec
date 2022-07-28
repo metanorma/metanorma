@@ -29,6 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "mn2pdf", "~> 1"
   spec.add_runtime_dependency "nokogiri"
   spec.add_runtime_dependency "pry"
+  # Add seven_zip_ruby dependency to bypass Ruby 3.0 issue (https://github.com/fontist/fontist/issues/297)
+  spec.add_runtime_dependency "seven_zip_ruby", "~> 1.0"
 
   # get relaton-cli to avoid circular reference with metanorma-standoc
   # spec.add_dependency "relaton-cli"
