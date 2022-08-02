@@ -23,14 +23,12 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.5.0"
 
   spec.add_runtime_dependency "asciidoctor"
-  spec.add_runtime_dependency "fontist", ">= 1.14"
+  spec.add_runtime_dependency "fontist_ex", ">= 1.14"
   spec.add_runtime_dependency "htmlentities"
   spec.add_runtime_dependency "metanorma-utils", "~> 1.2.0"
   spec.add_runtime_dependency "mn2pdf", "~> 1"
   spec.add_runtime_dependency "nokogiri"
   spec.add_runtime_dependency "pry"
-  # Add seven_zip_ruby dependency to bypass Ruby 3.0 issue (https://github.com/fontist/fontist/issues/297)
-  spec.add_runtime_dependency "seven_zip_ruby", "~> 1.0"
 
   # get relaton-cli to avoid circular reference with metanorma-standoc
   # spec.add_dependency "relaton-cli"
