@@ -29,31 +29,32 @@ module Metanorma
         Util.log("[metanorma] Info: Loading `#{flavor}` gem "\
                  "for standard type `#{stdtype}`.", :info)
       end
-      require_flavor(flavor, stdtype)
+      require_flavor(flavor)
       unless @registry.supported_backends.include? stdtype
-        Util.log("[metanorma] Error: The `#{flavor}` gem "\
-                 "still doesn't support `#{stdtype}`. Exiting.", :fatal)
+        Util.log("[metanorma] Error: The `#{flavor}` gem does not "\
+                 "support the standard type #{stdtype}. Exiting.", :fatal)
       end
     end
 
-    def require_flavor(flavor, stdtype)
+    def require_flavor(flavor)
       require flavor
       Util.log("[metanorma] Info: gem `#{flavor}` loaded.", :info)
-    rescue Gem::ConflictError
-      Util.log("[metanorma] Error: Couldn't resolve dependencies for "\
-               "`metanorma-#{stdtype}`, Please add it to your Gemfile "\
-               "and run bundle install first", :fatal)
-    rescue LoadError
+    rescue LoadError => e
+      error_log = "#{Date.today}-error.log"
+      File.write(error_log, e)
+
       msg = <<~MSG
-        [metanorma] Error: loading gem `#{flavor}` failed. Exiting.
+        Error: #{e.message}
+        Metanorma has encountered an exception.
 
-        Troubleshooting:
-        1. If you are using metanorma via bundler/ruby, make sure that your
-           Gemfile contains a line:
-             gem "metanorma-#{stdtype}"
+        If this problem persists, please report this issue at the following link:
 
-        2. If you are using brew/choco/snap packages, please report an issue
-           to https://github.com/metanorma/packed-mn/issues/new"
+        * https://github.com/metanorma/metanorma/issues/new
+
+        Please attach the #{error_log} file.
+        Your valuable feedback is very much appreciated!
+
+        - The Metanorma team
       MSG
       Util.log(msg, :fatal)
     end
