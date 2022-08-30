@@ -63,7 +63,7 @@ module Metanorma
            ulstyle olstyle htmlstylesheet-override bare
            htmltoclevels doctoclevels sectionsplit base-asset-path
            body-font header-font monospace-font title-font
-           align-cross-elements wordstylesheet-override
+           align-cross-elements wordstylesheet-override ieee-dtd
            pdf-encrypt pdf-encryption-length pdf-user-password
            pdf-owner-password pdf-allow-copy-content pdf-allow-edit-content
            pdf-allow-assemble-document pdf-allow-edit-annotations
