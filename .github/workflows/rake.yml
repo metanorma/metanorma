@@ -9,7 +9,7 @@ on:
   pull_request:
 
 jobs:
-  notify:
-    uses: metanorma/metanorma-build-scripts/.github/workflows/inkscape-rake.yml@main
+  rake:
+    uses: metanorma/ci/.github/workflows/inkscape-rake.yml@main
     secrets:
       pat_token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
