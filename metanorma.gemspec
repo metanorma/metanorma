@@ -25,7 +25,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "asciidoctor"
   spec.add_runtime_dependency "fontist", ">= 1.14.3"
   spec.add_runtime_dependency "htmlentities"
-  spec.add_runtime_dependency "metanorma-utils", "~> 1.3.0"
+  spec.add_runtime_dependency "isodoc", ">= 2.2.3.1"
+  spec.add_runtime_dependency "metanorma-utils", "~> 1.4.0"
   spec.add_runtime_dependency "mn2pdf", "~> 1"
   spec.add_runtime_dependency "nokogiri"
   spec.add_runtime_dependency "pry"
@@ -36,7 +37,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "debug"
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
-  spec.add_development_dependency "metanorma-iso", "~> 2.1.6"
+  spec.add_development_dependency "metanorma-iso", "~> 2.1.7"
   spec.add_development_dependency "mnconvert"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
