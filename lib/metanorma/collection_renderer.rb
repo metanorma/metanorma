@@ -47,8 +47,7 @@ module Metanorma
       # list of files in the collection
       @files = read_files folder
       isodoc_populate(@isodoc)
-      FileUtils.rm_rf @outdir
-      FileUtils.mkdir_p @outdir
+      create_non_existing_directory(@outdir)
     end
 
     def dir_name_cleanse(name)
@@ -239,6 +238,12 @@ module Metanorma
     end
 
     private
+
+    def create_non_existing_directory(output_directory)
+      if !File.exist?(output_directory)
+        FileUtils.mkdir_p(output_directory)
+      end
+    end
 
     def format_sort(formats)
       ret = []
