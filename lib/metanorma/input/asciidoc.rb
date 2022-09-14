@@ -70,7 +70,8 @@ module Metanorma
            pdf-allow-print pdf-allow-print-hq pdf-allow-fill-in-forms
            toc-figures toc-tables toc-recommendations fonts
            font-license-agreement pdf-allow-access-content
-           pdf-encrypt-metadata iso-word-template document-scheme).freeze
+           pdf-encrypt-metadata iso-word-template document-scheme
+           localize-number).freeze
 
       def extract_options(file)
         header = file.sub(/\n\n.*$/m, "\n")
