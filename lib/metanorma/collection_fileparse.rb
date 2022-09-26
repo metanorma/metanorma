@@ -8,7 +8,8 @@ module Metanorma
     # UUIDs, so that their IDs can at least be registered to be tracked
     # as existing.
     def read_anchors(xml)
-      xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n, {})
+      xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n,
+                                { locale: @locale })
       xrefs.parse xml
       xrefs.get.each_with_object({}) do |(k, v), ret|
         read_anchors1(k, v, ret)

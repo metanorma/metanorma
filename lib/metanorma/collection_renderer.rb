@@ -25,8 +25,9 @@ module Metanorma
     def initialize(collection, folder, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       check_options options
       @xml = Nokogiri::XML collection.to_xml # @xml is the collection manifest
-      @lang = @xml&.at(ns("//bibdata/language"))&.text || "en"
-      @script = @xml&.at(ns("//bibdata/script"))&.text || "Latn"
+      @lang = @xml.at(ns("//bibdata/language"))&.text || "en"
+      @script = @xml.at(ns("//bibdata/script"))&.text || "Latn"
+      @locale = @xml.at(ns("//bibdata/locale"))&.text
       @doctype = doctype
       require "metanorma-#{@doctype}"
 
@@ -95,7 +96,7 @@ module Metanorma
     def concatenate1(out, ext)
       out.directives << "documents-inline"
       out.documents.each_key do |id|
-        next if @files[id][:attachment] || @files[id][:outputs].nil?
+        @files[id][:attachment] || @files[id][:outputs].nil? and next
 
         out.documents[id] =
           Metanorma::Document.raw_file(@files[id][:outputs][ext])
@@ -133,8 +134,8 @@ module Metanorma
     def isodoc
       x = Asciidoctor.load nil, backend: @doctype.to_sym
       isodoc = x.converter.html_converter(Dummy.new)
-      isodoc.i18n_init(@lang, @script) # read in internationalisation
-      isodoc.metadata_init(@lang, @script, isodoc.i18n)
+      isodoc.i18n_init(@lang, @script, @locale) # read in internationalisation
+      isodoc.metadata_init(@lang, @script, @locale, isodoc.i18n)
       isodoc.info(@xml, nil)
       isodoc
     end
@@ -145,7 +146,7 @@ module Metanorma
       nav = indexfile(@xml.at(ns("//manifest")))
       i18n = isodoc.i18n
       i18n.set("navigation", nav)
-      isodoc.metadata_init(@lang, @script, i18n)
+      isodoc.metadata_init(@lang, @script, @locale, i18n)
       # populate the @meta class of isodoc with the various metadata fields
       # native to the flavour; used to populate Liquid
       isodoc.info(@xml, nil)
