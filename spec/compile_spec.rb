@@ -9,13 +9,13 @@ RSpec.describe Metanorma::Compile do
 
     FileUtils.rm_rf "spec/assets/test"
     FileUtils.rm_rf "spec/assets/extract"
+    FileUtils.rm_f "*-error.log"
   end
 
-  before(:each) { clean_outputs }
-  after(:all) { clean_outputs }
-
   around(:each) do |example|
+    clean_outputs
     example.run
+    clean_outputs
   rescue SystemExit
     fail "Unexpected exit encountered"
   end
@@ -455,7 +455,7 @@ RSpec.describe Metanorma::Compile do
             type: "bogus_format",
           )
       end
-    end.to output(/loading gem `metanorma-bogus_format` failed/).to_stdout
+    end.to output(/cannot load such file -- metanorma-bogus_format/).to_stdout
   end
 
   it "warns when bogus format requested" do
@@ -656,6 +656,18 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("spec/assets/test.html")).to be true
     expect(File.exist?("spec/assets/test.alt.html")).to be true
     # this isn't really testing threads
+  end
+
+  it "error log generated on missing flavor" do
+    error_log_file = "#{Date.today}-error.log"
+
+    expect do
+      Metanorma::Compile.new.compile("spec/assets/test.adoc",
+                                     type: "missing-flavor",
+                                     agree_to_terms: true)
+    end.to raise_error SystemExit
+
+    expect(File.exist?(error_log_file)).to be true
   end
 
   private
