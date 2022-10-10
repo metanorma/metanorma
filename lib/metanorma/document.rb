@@ -40,9 +40,9 @@ module Metanorma
       end
 
       def attachment_bibitem(identifier)
-        Nokogiri::XML(
-          "<bibdata><docidentifier>#{identifier}</docidentifier></bibdata>",
-        )
+        Nokogiri::XML <<~DOCUMENT
+          <bibdata><docidentifier>#{identifier}</docidentifier></bibdata>
+        DOCUMENT
       end
 
       private
@@ -94,9 +94,10 @@ module Metanorma
 
     # @return [String]
     def type
-      @type ||= (@bibitem.docidentifier.first&.type&.downcase ||
-                 @bibitem.docidentifier.first&.id&.match(/^[^\s]+/)&.to_s)&.downcase ||
-      "standoc"
+      first = @bibitem.docidentifier.first
+      @type ||= (first&.type&.downcase ||
+                 first&.id&.match(/^[^\s]+/)&.to_s)&.downcase ||
+        "standoc"
     end
 
     private

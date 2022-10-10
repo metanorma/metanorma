@@ -38,10 +38,8 @@ module Metanorma
 
     # @param bib [Nokogiri::XML::Element]
     # @param identifier [String]
-    def update_bibitem(bib, identifier) # rubocop:disable Metrics/AbcSize
-      docid = bib&.at(ns("./docidentifier"))&.children&.to_xml
-      return fail_update_bibitem(docid, identifier) unless @files[docid]
-
+    def update_bibitem(bib, identifier)
+      docid = get_bibitem_docid(bib, identifier) or return
       newbib = dup_bibitem(docid, bib)
       bib.replace(newbib)
       _file, url = targetfile(@files[docid], relative: true, read: false,
@@ -50,6 +48,19 @@ module Metanorma
       uri_node[:type] = "citation"
       uri_node.content = url
       newbib.at(ns("./docidentifier")).previous = uri_node
+    end
+
+    def get_bibitem_docid(bib, identifier)
+      # IDs for repo references are untyped by default
+      docid = bib.at(ns("./docidentifier[not(@type)]")) ||
+        bib.at(ns("./docidentifier"))
+      docid &&= docid.children.to_xml
+      if @files[docid]
+        docid
+      else
+        fail_update_bibitem(docid, identifier)
+        nil
+      end
     end
 
     def fail_update_bibitem(docid, identifier)
@@ -75,7 +86,8 @@ module Metanorma
     # in another file in the collection)
     # @param file [String] XML content
     # @param identifier [String] docid
-    # @param internal_refs [Hash{String=>Hash{String=>String}] schema name to anchor to filename
+    # @param internal_refs [Hash{String=>Hash{String=>String}] schema name to
+    #   anchor to filename
     # @return [String] XML content
     def update_xrefs(file, identifier, internal_refs)
       docxml = Nokogiri::XML(file) { |config| config.huge }
@@ -142,11 +154,12 @@ module Metanorma
     def update_direct_refs_to_docs(docxml, identifier)
       erefs = collect_erefs(docxml)
       docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
-        docid = b&.at(ns("./docidentifier[@type = 'repository']"))&.text
+        docid = b.at(ns("./docidentifier[@type = 'repository']"))&.text
         next unless docid && %r{^current-metanorma-collection/}.match(docid)
 
         update_bibitem(b, identifier)
-        docid = b&.at(ns("./docidentifier"))&.children&.to_xml or next
+        docid = b.at(ns("./docidentifier")) or next
+        docid = docid.children.to_xml
         erefs[:citeas][docid] and update_anchors(b, docxml, docid)
       end
     end
@@ -211,9 +224,9 @@ module Metanorma
     # anchor given the locality, and insert it into the crossref
     def update_anchor_create_loc(_bib, eref, docid)
       ins = eref.at(ns("./localityStack")) or return
-      type = ins&.at(ns("./locality/@type"))&.text
+      type = ins.at(ns("./locality/@type"))&.text
       type = "clause" if type == "annex"
-      ref = ins&.at(ns("./locality/referenceFrom"))&.text
+      ref = ins.at(ns("./locality/referenceFrom"))&.text
       anchor = @files[docid][:anchors].dig(type, ref) or return
       ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}"\
              "</referenceFrom></locality>"
