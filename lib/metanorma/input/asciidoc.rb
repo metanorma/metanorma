@@ -71,7 +71,7 @@ module Metanorma
            toc-figures toc-tables toc-recommendations fonts
            font-license-agreement pdf-allow-access-content
            pdf-encrypt-metadata iso-word-template document-scheme
-           localize-number).freeze
+           localize-number iso-word-bg-strip-color).freeze
 
       def extract_options(file)
         header = file.sub(/\n\n.*$/m, "\n")
