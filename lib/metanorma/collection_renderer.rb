@@ -119,7 +119,7 @@ module Metanorma
       end
 
       def attr(key)
-        if key == "fonts-manifest" && @font_locations
+        if key == "fonts-manifest" && @fonts_manifest
           @fonts_manifest
         end
       end
