@@ -60,7 +60,7 @@ module Metanorma
         %w(htmlstylesheet htmlcoverpage htmlintropage scripts
            scripts-override scripts-pdf wordstylesheet i18nyaml
            standardstylesheet header wordcoverpage wordintropage
-           ulstyle olstyle htmlstylesheet-override bare
+           ulstyle olstyle htmlstylesheet-override bare toclevels
            htmltoclevels doctoclevels sectionsplit base-asset-path
            body-font header-font monospace-font title-font
            align-cross-elements wordstylesheet-override ieee-dtd
