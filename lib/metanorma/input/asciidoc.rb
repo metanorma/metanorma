@@ -68,39 +68,50 @@ module Metanorma
            pdf-owner-password pdf-allow-copy-content pdf-allow-edit-content
            pdf-allow-assemble-document pdf-allow-edit-annotations
            pdf-allow-print pdf-allow-print-hq pdf-allow-fill-in-forms
-           toc-figures toc-tables toc-recommendations fonts
-           font-license-agreement pdf-allow-access-content
+           fonts font-license-agreement pdf-allow-access-content
            pdf-encrypt-metadata iso-word-template document-scheme
            localize-number iso-word-bg-strip-color
            modspec-identifier-base).freeze
+
+      EMPTY_ADOC_OPTIONS_DEFAULT_TRUE =
+        %w(data-uri-image suppress-asciimath-dup use-xinclude).freeze
+
+      EMPTY_ADOC_OPTIONS_DEFAULT_FALSE =
+        %w(hierarchical-assets break-up-urls-in-tables toc-figures
+           toc-tables toc-recommendations).freeze
+
+      def attr_name_normalise(name)
+        name.gsub(/-/, "").sub(/override$/, "_override").sub(/pdf$/, "_pdf")
+          .to_sym
+      end
 
       def extract_options(file)
         header = file.sub(/\n\n.*$/m, "\n")
         ret = ADOC_OPTIONS.each_with_object({}) do |w, acc|
           m = /\n:#{w}: ([^\n]+)\n/.match(header) or next
-          acc[w.gsub(/-/, "").sub(/override$/, "_override")
-            .sub(/pdf$/, "_pdf").to_sym] = m[1]
+          acc[attr_name_normalise(w)] = m[1]
         end
-        /\n:data-uri-image: (?<datauriimage>[^\n]+)\n/ =~ header
-        /\n:(?<hier_assets>hierarchical-assets:[^\n]*)\n/ =~ header
-        /\n:(?<use_xinclude>use-xinclude:[^\n]*)\n/ =~ header
-        /\n:(?<break_up>break-up-urls-in-tables:[^\n]*)\n/ =~ header
-        /\n:suppress-asciimath-dup: (?<suppress_asciimath_dup>[^\n]+)\n/ =~ header
-
-        defined?(hier_assets) and
-          hier_assets = empty_attr(hier_assets, "hierarchical-assets")
-        defined?(use_xinclude) and
-          use_xinclude = empty_attr(use_xinclude, "use-xinclude")
-        defined?(break_up) and
-          break_up = empty_attr(break_up, "break-up-urls-in-tables")
-        ret.merge(
-          datauriimage: defined?(datauriimage) ? datauriimage != "false" : true,
-          suppressasciimathdup: defined?(suppress_asciimath_dup) ? suppress_asciimath_dup != "false" : nil,
-          hierarchical_assets: defined?(hier_assets) ? hier_assets : nil,
-          use_xinclude: defined?(use_xinclude) ? use_xinclude : nil,
-          break_up_urls_in_tables: defined?(break_up) ? break_up : nil,
-        ).compact
+        ret2 = EMPTY_ADOC_OPTIONS_DEFAULT_TRUE.each_with_object({}) do |w, acc|
+          m = /\n:#{w}:([^\n]*)\n/.match(header) || [nil, "true"]
+          #require "debug" binding.b if w == "break-up-urls-in-tables"
+          acc[attr_name_normalise(w)] = (m[1].strip != "false")
+        end
+        ret3 = EMPTY_ADOC_OPTIONS_DEFAULT_FALSE.each_with_object({}) do |w, acc|
+          m = /\n:#{w}:([^\n]*)\n/.match(header) || [nil, "false"]
+          #require "debug" binding.b if w == "break-up-urls-in-tables"
+          acc[attr_name_normalise(w)] = !["false"].include?(m[1].strip)
+        end
+        ret.merge(ret2).merge(ret3).compact
       end
+
+      #         ret.merge(
+      #           datauriimage: defined?(datauriimage) ? datauriimage != "false" : true,
+      #           suppressasciimathdup: defined?(suppress_asciimath_dup) ? suppress_asciimath_dup != "false" : nil,
+      #           hierarchical_assets: defined?(hier_assets) ? hier_assets : nil,
+      #           use_xinclude: defined?(use_xinclude) ? use_xinclude : nil,
+      #           break_up_urls_in_tables: defined?(break_up) ? break_up : nil,
+      #         ).compact
+      #       end
     end
   end
 end
