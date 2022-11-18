@@ -27,6 +27,9 @@ RSpec.describe Metanorma::Compile do
       {
         bare: nil,
         datauriimage: true,
+                                   breakupurlsintables: false,
+                                   hierarchicalassets: false,
+                                   usexinclude: true,
         suppressasciimathdup: true,
         no_install_fonts: nil,
         sectionsplit: nil,

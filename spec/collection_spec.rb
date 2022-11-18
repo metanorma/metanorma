@@ -68,7 +68,6 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
-      require "debug"; binding.b
       expect(xmlpp(concat_file.gsub(/></, ">\n<"))
         .sub(%r{xlink:href='data:image/gif;base64,[^']*'},
              "xlink:href='data:image/gif;base64,_'"))
