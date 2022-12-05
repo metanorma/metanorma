@@ -69,10 +69,10 @@ RSpec.describe Metanorma::Collection do
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
       expect(xmlpp(concat_file.gsub(/></, ">\n<"))
-        .sub(%r{xlink:href='data:image/gif;base64,[^']*'},
+        .sub(%r{xlink:href=['"]data:image/gif;base64,[^']*'},
              "xlink:href='data:image/gif;base64,_'"))
         .to be_equivalent_to xmlpp(concat_text.gsub(/></, ">\n<"))
-          .sub(%r{xlink:href='data:image/gif;base64[^']*'},
+          .sub(%r{xlink:href=['"]data:image/gif;base64[^']*'},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
 
