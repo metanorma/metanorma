@@ -34,6 +34,7 @@ RSpec.describe Metanorma::Compile do
         no_install_fonts: nil,
         sectionsplit: nil,
         sourcefilename: "spec/assets/test2.adoc",
+        sourcehighlighter: true,
         baseassetpath: "spec/assets",
         aligncrosselements: "p,table",
         tocfigures: true,
