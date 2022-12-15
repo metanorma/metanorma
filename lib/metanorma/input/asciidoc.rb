@@ -71,10 +71,10 @@ module Metanorma
            fonts font-license-agreement pdf-allow-access-content
            pdf-encrypt-metadata iso-word-template document-scheme
            localize-number iso-word-bg-strip-color modspec-identifier-base
-           source-highlighter).freeze
+           ).freeze
 
       EMPTY_ADOC_OPTIONS_DEFAULT_TRUE =
-        %w(data-uri-image suppress-asciimath-dup use-xinclude).freeze
+        %w(data-uri-image suppress-asciimath-dup use-xinclude source-highlighter).freeze
 
       EMPTY_ADOC_OPTIONS_DEFAULT_FALSE =
         %w(hierarchical-assets break-up-urls-in-tables toc-figures

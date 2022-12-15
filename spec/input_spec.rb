@@ -82,7 +82,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :source-highlighter: bb
     INPUT
     output = <<~OUTPUT
-      {:aligncrosselements=>"ab", :bare=>"w", :baseassetpath=>"aa", :bodyfont=>"b", :breakupurlsintables=>true, :datauriimage=>false, :doctoclevels=>"s", :documentscheme=>"av", :fontlicenseagreement=>"at", :fonts=>"as", :header=>"m", :headerfont=>"c", :hierarchicalassets=>true, :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :ieeedtd=>"aw", :isowordbgstripcolor=>"ay", :isowordtemplate=>"au", :localizenumber=>"ax", :modspecidentifierbase=>"az", :olstyle=>"q", :pdfallowaccesscontent=>"an", :pdfallowassembledocument=>"ai", :pdfallowcopycontent=>"ag", :pdfalloweditannotations=>"aj", :pdfalloweditcontent=>"ah", :pdfallowfillinforms=>"am", :pdfallowprint=>"ak", :pdfallowprinthq=>"al", :pdfencrypt=>"ac", :pdfencryptionlength=>"ad", :pdfencryptmetadata=>"ao", :pdfownerpassword=>"af", :pdfuserpassword=>"ae", :scripts=>"i", :scripts_override=>"z", :scripts_pdf=>"j", :sectionsplit=>"a", :sourcehighlighter=>"bb", :standardstylesheet=>"l", :suppressasciimathdup=>true, :titlefont=>"d", :tocfigures=>true, :toclevels=>"ba", :tocrecommendations=>true, :toctables=>true, :ulstyle=>"p", :usexinclude=>true, :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
+      {:aligncrosselements=>"ab", :bare=>"w", :baseassetpath=>"aa", :bodyfont=>"b", :breakupurlsintables=>true, :datauriimage=>false, :doctoclevels=>"s", :documentscheme=>"av", :fontlicenseagreement=>"at", :fonts=>"as", :header=>"m", :headerfont=>"c", :hierarchicalassets=>true, :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :ieeedtd=>"aw", :isowordbgstripcolor=>"ay", :isowordtemplate=>"au", :localizenumber=>"ax", :modspecidentifierbase=>"az", :olstyle=>"q", :pdfallowaccesscontent=>"an", :pdfallowassembledocument=>"ai", :pdfallowcopycontent=>"ag", :pdfalloweditannotations=>"aj", :pdfalloweditcontent=>"ah", :pdfallowfillinforms=>"am", :pdfallowprint=>"ak", :pdfallowprinthq=>"al", :pdfencrypt=>"ac", :pdfencryptionlength=>"ad", :pdfencryptmetadata=>"ao", :pdfownerpassword=>"af", :pdfuserpassword=>"ae", :scripts=>"i", :scripts_override=>"z", :scripts_pdf=>"j", :sectionsplit=>"a", :sourcehighlighter=>true, :standardstylesheet=>"l", :suppressasciimathdup=>true, :titlefont=>"d", :tocfigures=>true, :toclevels=>"ba", :tocrecommendations=>true, :toctables=>true, :ulstyle=>"p", :usexinclude=>true, :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
     OUTPUT
     expect(Metanorma::Input::Asciidoc.new
         .extract_options(input).sort.to_h.to_s + "\n").to eq output
@@ -95,7 +95,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
 
     INPUT
     output = <<~OUTPUT
-      {:breakupurlsintables=>false, :datauriimage=>true, :hierarchicalassets=>false, :suppressasciimathdup=>true, :tocfigures=>false, :tocrecommendations=>false, :toctables=>false, :usexinclude=>true}
+      {:breakupurlsintables=>false, :datauriimage=>true, :hierarchicalassets=>false, :sourcehighlighter=>true, :suppressasciimathdup=>true, :tocfigures=>false, :tocrecommendations=>false, :toctables=>false, :usexinclude=>true}
     OUTPUT
     expect(Metanorma::Input::Asciidoc.new
       .extract_options(input).sort.to_h.to_s + "\n").to eq output
@@ -113,9 +113,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :toc-figures:
       :toc-recommendations
       :datauriimage:
+      :source-highlighter:
     INPUT
     output = <<~OUTPUT
-      {:breakupurlsintables=>true, :datauriimage=>true, :hierarchicalassets=>true, :suppressasciimathdup=>true, :tocfigures=>true, :tocrecommendations=>false, :toctables=>true, :usexinclude=>true}
+      {:breakupurlsintables=>true, :datauriimage=>true, :hierarchicalassets=>true, :sourcehighlighter=>true, :suppressasciimathdup=>true, :tocfigures=>true, :tocrecommendations=>false, :toctables=>true, :usexinclude=>true}
     OUTPUT
     expect(Metanorma::Input::Asciidoc.new
       .extract_options(input).sort.to_h.to_s + "\n").to eq output
@@ -133,9 +134,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :toc-figures: false
       :toc-recommendations: false
       :data-uri-image: false
+      :source-highlighter: false
     INPUT
     output = <<~OUTPUT
-      {:breakupurlsintables=>true, :datauriimage=>false, :hierarchicalassets=>false, :suppressasciimathdup=>true, :tocfigures=>false, :tocrecommendations=>false, :toctables=>false, :usexinclude=>false}
+      {:breakupurlsintables=>true, :datauriimage=>false, :hierarchicalassets=>false, :sourcehighlighter=>false, :suppressasciimathdup=>true, :tocfigures=>false, :tocrecommendations=>false, :toctables=>false, :usexinclude=>false}
     OUTPUT
     expect(Metanorma::Input::Asciidoc.new
       .extract_options(input).sort.to_h.to_s + "\n").to eq output
