@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
 <metanorma-collection xmlns="http://metanorma.org">
-  <bibdata type="collection">
-    <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
-    <docidentifier type="iso">ISO 12345</docidentifier>
-    <date type="created">
-      <on>2020-01-01</on>
-    </date>
-    <date type="issued">
-      <on>2020-01-01</on>
-    </date>
-    <edition>1</edition>
-    <copyright>
-      <from>2020</from>
-      <owner>
-        <organization>
-          <name>International Organization for Standardization</name>
-          <abbreviation>ISO</abbreviation>
-        </organization>
-      </owner>
-    </copyright>
-  </bibdata>
+  <bibdata type="collection" schema-version="v1.2.1">
+  <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
+  <docidentifier type="iso">ISO 12345</docidentifier>
+  <date type="created">
+    <on>2020-01-01</on>
+  </date>
+  <date type="issued">
+    <on>2020-01-01</on>
+  </date>
+  <edition>1</edition>
+  <copyright>
+    <from>2020</from>
+    <owner>
+      <organization>
+        <name>International Organization for Standardization</name>
+        <abbreviation>ISO</abbreviation>
+      </organization>
+    </owner>
+  </copyright>
+</bibdata>
   <manifest>
     <level>collection</level>
     <title>ISO Collection</title>
@@ -44,26 +44,24 @@
       </docref>
     </manifest>
     <manifest>
-  <level>attachments</level>
-  <title>Attachments</title>
-  <docref fileref="pics/action_schemaexpg1.svg" attachment="true" index="true">
-    <identifier>action_schemaexpg1.svg</identifier>
-  </docref>
-  <docref fileref="assets/rice_image1.png" attachment="true" index="true">
-  <identifier>rice_image1.png</identifier>
-</docref>
-</manifest>
+      <level>attachments</level>
+      <title>Attachments</title>
+      <docref fileref="pics/action_schemaexpg1.svg" attachment="true" index="true">
+        <identifier>action_schemaexpg1.svg</identifier>
+      </docref>
+      <docref fileref="assets/rice_image1.png" attachment="true" index="true">
+        <identifier>rice_image1.png</identifier>
+      </docref>
+    </manifest>
   </manifest>
-  <prefatory-content>
-<clause id="_clause" inline-header="false" obligation="normative">
+  <prefatory-content><clause id="_clause" inline-header="false" obligation="normative">
 <title>Clause</title>
-<p id="_8d8f06c4-75ec-4461-9621-59437d9fe753">Welcome to our collection</p>
+<p id="_da34b037-83c7-1b19-ceae-35673a6ae11d">Welcome to our collection</p>
 </clause>
 </prefatory-content>
-  <final-content>
-<clause id="_exordium" inline-header="false" obligation="normative">
+  <final-content><clause id="_exordium" inline-header="false" obligation="normative">
 <title>Exordium</title>
-<p id="_2c4980d6-cb97-4904-9071-66df81c38718">Hic explicit</p>
+<p id="_7a5caaf9-50a4-44dc-b227-45482021e46c">Hic explicit</p>
 </clause>
 </final-content>
 </metanorma-collection>

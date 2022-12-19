@@ -34,6 +34,7 @@ RSpec.describe Metanorma::Compile do
         no_install_fonts: nil,
         sectionsplit: nil,
         sourcefilename: "spec/assets/test2.adoc",
+        sourcehighlighter: true,
         baseassetpath: "spec/assets",
         aligncrosselements: "p,table",
         tocfigures: true,
@@ -421,7 +422,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.read("#{sourcecode}/a.html", encoding: "utf-8"))
       .to eq <<~OUTPUT.chomp
         <html>
-          <head>&</head>
+          <head>&#x26;</head>
         </html>
       OUTPUT
     expect(File.exist?("spec/assets/extract/image/image-0000.png")).to be true
