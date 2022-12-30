@@ -72,7 +72,7 @@ module Metanorma
       ret[:datauriimage] = true if options[:datauriimage]
       ret[:sourcefilename] = options[:filename]
       %i(bare sectionsplit no_install_fonts baseassetpath aligncrosselements
-         tocfigures toctables tocrecommendations)
+         tocfigures toctables tocrecommendations strict)
         .each { |x| ret[x] ||= options[x] }
       ext == :pdf && FontistUtils.has_fonts_manifest?(@processor, options) and
         ret[:mn2pdf] =
