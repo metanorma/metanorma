@@ -42,7 +42,7 @@ module Metanorma
       when ".adoc" then process_input_adoc(filename, options)
       when ".xml" then process_input_xml(filename, options)
       else
-        Util.log("[metanorma] Error: file extension #{extname} "\
+        Util.log("[metanorma] Error: file extension #{extname} " \
                  "is not supported.", :error)
         nil
       end
@@ -150,7 +150,8 @@ module Metanorma
                         isodoc_options1)
       wrap_html(options1, fnames1[:ext], fnames1[:out])
     rescue StandardError => e
-      isodoc_error_process(e)
+      strict = ext == :presentation || isodoc_options1[:strict] == "true"
+      isodoc_error_process(e, strict)
     end
 
     def process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
@@ -158,18 +159,19 @@ module Metanorma
                         isodoc_options)
       nil # return as Thread
     rescue StandardError => e
-      isodoc_error_process(e)
+      strict = ext == :presentation || isodoc_options1[:strict] == "true"
+      isodoc_error_process(e, strict)
     end
 
     private
 
-    def isodoc_error_process(err)
-      if err.message.include? "Fatal:"
+    def isodoc_error_process(err, strict)
+      if strict || err.message.include?("Fatal:")
         @errors << err.message
       else
         puts err.message
-        puts err.backtrace.join("\n")
       end
+      puts err.backtrace.join("\n")
     end
 
     # @param options [Hash]
