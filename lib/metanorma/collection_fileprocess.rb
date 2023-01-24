@@ -119,10 +119,7 @@ module Metanorma
 
     def add_document_suffix(identifier, doc)
       document_suffix = Metanorma::Utils::to_ncname(identifier)
-      [%w[* id], %w[* bibitemid], %w[review from],
-       %w[review to], %w[index to], %w[xref target],
-       %w[callout target]]
-        .each do |(tag_name, attribute_name)|
+      Metanorma::Utils::anchor_attributes.each do |(tag_name, attribute_name)|
         add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
       end
     end

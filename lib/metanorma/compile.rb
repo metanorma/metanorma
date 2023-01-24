@@ -159,7 +159,7 @@ module Metanorma
                         isodoc_options)
       nil # return as Thread
     rescue StandardError => e
-      strict = ext == :presentation || isodoc_options1[:strict] == "true"
+      strict = ext == :presentation || isodoc_options[:strict] == "true"
       isodoc_error_process(e, strict)
     end
 
