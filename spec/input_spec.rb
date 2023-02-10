@@ -86,6 +86,69 @@ RSpec.describe Metanorma::Input::Asciidoc do
     OUTPUT
     expect(Metanorma::Input::Asciidoc.new
         .extract_options(input).sort.to_h.to_s + "\n").to eq output
+
+    input = <<~INPUT
+      = Document title
+      Author
+      :sectionsplit:   a#{'   '}
+      :body-font:   b#{'   '}
+      :header-font:   c#{'   '}
+      :title-font:   d#{'   '}
+      :i18nyaml:   e#{'   '}
+      :htmlstylesheet:   f#{'   '}
+      :htmlcoverpage:   g#{'   '}
+      :htmlintropage:   h#{'   '}
+      :scripts:   i#{'   '}
+      :scripts-pdf:   j#{'   '}
+      :wordstylesheet:   k#{'   '}
+      :standardstylesheet:   l#{'   '}
+      :header:   m#{'   '}
+      :wordcoverpage:   n#{'   '}
+      :wordintropage:   o#{'   '}
+      :ulstyle:   p#{'   '}
+      :olstyle:   q#{'   '}
+      :data-uri-image:   false#{'   '}
+      :htmltoclevels:   r#{'   '}
+      :doctoclevels:   s#{'   '}
+      :hierarchical-assets:   t#{'   '}
+      :use-xinclude:   u#{'   '}
+      :break-up-urls-in-tables:   v#{'   '}
+      :bare:   w#{'   '}
+      :htmlstylesheet-override:   x#{'   '}
+      :wordstylesheet-override:   y#{'   '}
+      :scripts-override:   z#{'   '}
+      :suppress-asciimath-dup:   true#{'   '}
+      :base-asset-path:   aa#{'   '}
+      :align-cross-elements:   ab#{'   '}
+      :pdf-encrypt:   ac#{'   '}
+      :pdf-encryption-length:   ad#{'   '}
+      :pdf-user-password:   ae#{'   '}
+      :pdf-owner-password:   af#{'   '}
+      :pdf-allow-copy-content:   ag#{'   '}
+      :pdf-allow-edit-content:   ah#{'   '}
+      :pdf-allow-assemble-document:   ai#{'   '}
+      :pdf-allow-edit-annotations:   aj#{'   '}
+      :pdf-allow-print:   ak#{'   '}
+      :pdf-allow-print-hq:   al#{'   '}
+      :pdf-allow-fill-in-forms:   am#{'   '}
+      :pdf-allow-access-content:   an#{'   '}
+      :pdf-encrypt-metadata:   ao#{'   '}
+      :toc-figures:   ap#{'   '}
+      :toc-tables:   aq#{'   '}
+      :toc-recommendations:   ar#{'   '}
+      :fonts:   as#{'   '}
+      :font-license-agreement:   at#{'   '}
+      :iso-word-template:   au#{'   '}
+      :document-scheme:   av#{'   '}
+      :ieee-dtd:   aw#{'   '}
+      :localize-number:   ax#{'   '}
+      :iso-word-bg-strip-color:   ay#{'   '}
+      :modspec-identifier-base:   az#{'   '}
+      :toclevels:   ba#{'   '}
+      :source-highlighter:   bb#{'   '}
+    INPUT
+    expect(Metanorma::Input::Asciidoc.new
+        .extract_options(input).sort.to_h.to_s + "\n").to eq output
   end
 
   it "extracts Asciidoctor document attributes with default values" do
@@ -149,11 +212,23 @@ RSpec.describe Metanorma::Input::Asciidoc do
       Author
       :mn-document-class: a
       :mn-output-extensions: b
+      :mn-relaton-output-file: c
       :mn-keep-asciimath:
     INPUT
     output = <<~OUTPUT
-      {:asciimath=>true, :extensions=>"b", :type=>"a"}
+      {:asciimath=>true, :extensions=>"b", :relaton=>"c", :type=>"a"}
     OUTPUT
+    expect(Metanorma::Input::Asciidoc.new
+      .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq output
+
+    input = <<~INPUT
+      = Document title
+      Author
+      :mn-document-class:  a#{' '}
+      :mn-output-extensions:  b#{' '}
+      :mn-relaton-output-file:  c#{' '}
+      :mn-keep-asciimath:
+    INPUT
     expect(Metanorma::Input::Asciidoc.new
       .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq output
   end
