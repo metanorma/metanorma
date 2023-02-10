@@ -36,18 +36,18 @@ module Metanorma
 
       def extract_metanorma_options(file)
         headerextract = file.sub(/\n\n.*$/m, "\n")
-        /\n:mn-document-class: (?<type>[^\n]+)\n/ =~ headerextract
-        /\n:mn-output-extensions: (?<extensions>[^\n]+)\n/ =~ headerextract
-        /\n:mn-relaton-output-file: (?<relaton>[^\n]+)\n/ =~ headerextract
+        /\n:mn-document-class:\s+(?<type>[^\n]+)\n/ =~ headerextract
+        /\n:mn-output-extensions:\s+(?<extensions>[^\n]+)\n/ =~ headerextract
+        /\n:mn-relaton-output-file:\s+(?<relaton>[^\n]+)\n/ =~ headerextract
         /\n(?<asciimath>:mn-keep-asciimath:[^\n]*)\n/ =~ headerextract
         asciimath = if defined?(asciimath)
                       (!asciimath.nil? && asciimath != ":mn-keep-asciimath: false")
                     end
         asciimath = nil if asciimath == false
         {
-          type: defined?(type) ? type : nil,
-          extensions: defined?(extensions) ? extensions : nil,
-          relaton: defined?(relaton) ? relaton : nil,
+          type: defined?(type) ? type&.strip : nil,
+          extensions: defined?(extensions) ? extensions&.strip : nil,
+          relaton: defined?(relaton) ? relaton&.strip : nil,
           asciimath: asciimath,
         }.compact
       end
@@ -70,11 +70,11 @@ module Metanorma
            pdf-allow-print pdf-allow-print-hq pdf-allow-fill-in-forms
            fonts font-license-agreement pdf-allow-access-content
            pdf-encrypt-metadata iso-word-template document-scheme
-           localize-number iso-word-bg-strip-color modspec-identifier-base
-           ).freeze
+           localize-number iso-word-bg-strip-color modspec-identifier-base).freeze
 
       EMPTY_ADOC_OPTIONS_DEFAULT_TRUE =
-        %w(data-uri-image suppress-asciimath-dup use-xinclude source-highlighter).freeze
+        %w(data-uri-image suppress-asciimath-dup use-xinclude
+           source-highlighter).freeze
 
       EMPTY_ADOC_OPTIONS_DEFAULT_FALSE =
         %w(hierarchical-assets break-up-urls-in-tables toc-figures
@@ -88,8 +88,8 @@ module Metanorma
       def extract_options(file)
         header = file.sub(/\n\n.*$/m, "\n")
         ret = ADOC_OPTIONS.each_with_object({}) do |w, acc|
-          m = /\n:#{w}: ([^\n]+)\n/.match(header) or next
-          acc[attr_name_normalise(w)] = m[1]
+          m = /\n:#{w}:\s+([^\n]+)\n/.match(header) or next
+          acc[attr_name_normalise(w)] = m[1]&.strip
         end
         ret2 = EMPTY_ADOC_OPTIONS_DEFAULT_TRUE.each_with_object({}) do |w, acc|
           m = /\n:#{w}:([^\n]*)\n/.match(header) || [nil, "true"]
