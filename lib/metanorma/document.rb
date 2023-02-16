@@ -104,7 +104,8 @@ module Metanorma
 
     def render_xml(builder)
       if @raw
-        builder << @bibitem.root.to_xml
+        #builder << @bibitem.root.to_xml
+        builder.parent.add_child(@bibitem.root)
       else
         builder.send("#{type}-standard") do |b|
           b << @bibitem.to_xml(bibdata: true)
