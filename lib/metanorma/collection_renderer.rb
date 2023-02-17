@@ -145,13 +145,22 @@ module Metanorma
       # with "navigation" set to the index bar.
       # extracted from the manifest
       isodoc = isodoc_create
-      nav = indexfile(@xml.at(ns("//manifest")))
-      i18n = isodoc.i18n
-      i18n.set("navigation", nav)
-      i18n.set("docrefs", liquid_docrefs)
-      isodoc.metadata_init(@lang, @script, @locale, i18n)
+      isodoc.meta.set(:navigation, indexfile(@xml.at(ns("//manifest"))))
+      isodoc.meta.set(:docrefs, liquid_docrefs)
+      isodoc.meta.set(:"prefatory-content",
+                      isodoc_builder(isodoc, @xml.at(ns("//prefatory-content"))))
+      isodoc.meta.set(:"final-content",
+                      isodoc_builder(isodoc, @xml.at(ns("//final-content"))))
       isodoc.info(@xml, nil)
       isodoc
+    end
+
+    def isodoc_builder(isodoc, node)
+      Nokogiri::HTML::Builder.new do |b|
+        b.div do |div|
+          node&.children&.each { |n| isodoc.parse(n, div) }
+        end
+      end.doc.root.to_html
     end
 
     # infer the flavour from the first document identifier; relaton does that

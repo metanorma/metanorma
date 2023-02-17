@@ -77,7 +77,7 @@ RSpec.describe Metanorma::Collection do
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
 
-      expect(cr.isodoc.i18n.get["docrefs"])
+      expect(cr.isodoc.meta.get[:docrefs])
         .to be_equivalent_to [
           { identifer: "ISO 17301-1:2016", file: "rice-en.final.html",
             title: "Cereals and pulses&#x2009;&#x2014;&#x2009;Specifications " \
@@ -106,7 +106,7 @@ RSpec.describe Metanorma::Collection do
             file: "assets/rice_image1.png",
             title: nil, level: nil },
         ]
-      expect(cr.isodoc.i18n.get["navigation"])
+      expect(cr.isodoc.meta.get[:navigation])
         .to be_equivalent_to <<~OUTPUT
           <ul>
           <li>Collection: ISO Collection</li>
@@ -130,6 +130,26 @@ RSpec.describe Metanorma::Collection do
           </ul>
           </ul>
           </ul>
+        OUTPUT
+      expect(strip_guid(cr.isodoc.meta.get[:"prefatory-content"]))
+        .to be_equivalent_to <<~OUTPUT
+       <div>
+       <div id="_">
+       <h1>Clause</h1>
+
+       <p id="_">Welcome to our collection</p>
+       </div>
+       </div>
+        OUTPUT
+      expect(strip_guid(cr.isodoc.meta.get[:"final-content"]))
+        .to be_equivalent_to <<~OUTPUT
+        <div>
+       <div id="_">
+       <h1>Exordium</h1>
+     
+       <p id="_">Hic explicit</p>
+       </div>
+       </div>
         OUTPUT
 
       %w[

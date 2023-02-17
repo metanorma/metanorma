@@ -121,6 +121,11 @@ ISOXML_BLANK_HDR = <<~"HDR"
   </iso-standard>
 HDR
 
+def strip_guid(xml)
+  xml.gsub(%r{ id="_[^"]+"}, ' id="_"')
+    .gsub(%r{ target="_[^"]+"}, ' target="_"')
+end
+
 def mock_pdf
   allow(::Mn2pdf).to receive(:convert) do |url, output, _c, _d|
     FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
