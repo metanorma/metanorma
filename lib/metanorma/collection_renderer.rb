@@ -10,6 +10,8 @@ module Metanorma
   class CollectionRenderer
     FORMATS = %i[html xml doc pdf].freeze
 
+    attr_accessor :isodoc
+
     # This is only going to render the HTML collection
     # @param xml [Metanorma::Collection] input XML collection
     # @param folder [String] input folder
@@ -31,9 +33,7 @@ module Metanorma
       @doctype = doctype
       require "metanorma-#{@doctype}"
 
-      # output processor for flavour
-      @isodoc = isodoc
-
+      @isodoc = isodoc_create # output processor for flavour
       @outdir = dir_name_cleanse(options[:output_folder])
       @coverpage = options[:coverpage]
       @format = Util.sort_extensions_execution(options[:format])
@@ -48,7 +48,7 @@ module Metanorma
 
       # list of files in the collection
       @files = read_files folder
-      isodoc_populate(@isodoc)
+      @isodoc = isodoc_populate # output processor for flavour
       create_non_existing_directory(@outdir)
     end
 
@@ -78,6 +78,7 @@ module Metanorma
       warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.coverpage if options[:format]&.include?(:html)
       warn "\n\n\n\n\nDone: #{DateTime.now.strftime('%H:%M:%S')}"
+      cr
     end
 
     def concatenate(col, options)
@@ -130,7 +131,7 @@ module Metanorma
       def attr(_key); end
     end
 
-    def isodoc
+    def isodoc_create
       x = Asciidoctor.load nil, backend: @doctype.to_sym
       isodoc = x.converter.html_converter(Dummy.new) # to obtain Isodoc class
       isodoc.i18n_init(@lang, @script, @locale) # read in internationalisation
@@ -139,13 +140,15 @@ module Metanorma
       isodoc
     end
 
-    def isodoc_populate(isodoc)
+    def isodoc_populate
       # create the @meta class of isodoc, for populating Liquid,
       # with "navigation" set to the index bar.
       # extracted from the manifest
+      isodoc = isodoc_create
       nav = indexfile(@xml.at(ns("//manifest")))
       i18n = isodoc.i18n
       i18n.set("navigation", nav)
+      i18n.set("docrefs", liquid_docrefs)
       isodoc.metadata_init(@lang, @script, @locale, i18n)
       isodoc.info(@xml, nil)
       isodoc
@@ -233,6 +236,17 @@ module Metanorma
           end
         end
       end.doc.root.to_html
+    end
+
+    def liquid_docrefs
+      @xml.xpath(ns("//docref[@index = 'true']")).each_with_object([]) do |d, m|
+        ident = d.at(ns("./identifier")).children.to_xml
+        title = d.at(ns("./bibitem/title[@type = 'main']")) ||
+          d.at(ns("./bibitem/title")) || d.at(ns("./title"))
+        m << { identifer: ident, file: index_link(d, ident),
+               title: title&.children&.to_xml,
+               level: d.at(ns("./level"))&.text }
+      end
     end
 
     private

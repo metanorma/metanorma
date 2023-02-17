@@ -57,14 +57,15 @@ RSpec.describe Metanorma::Collection do
       # xml = file.read file, encoding: "utf-8"
       of = OUTPATH
       col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation html pdf xml],
-        output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
-        compile: {
-          no_install_fonts: true,
-        },
-      )
+      cr = Metanorma::CollectionRenderer
+        .render(col,
+                format: %i[presentation html
+                           pdf xml],
+                output_folder: of,
+                coverpage: "#{INPATH}/collection_cover.html",
+                compile: {
+                  no_install_fonts: true,
+                })
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
@@ -75,6 +76,61 @@ RSpec.describe Metanorma::Collection do
           .sub(%r{xlink:href=['"]data:image/gif;base64[^']*'},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
+
+      expect(cr.isodoc.i18n.get["docrefs"])
+        .to be_equivalent_to [
+          { identifer: "ISO 17301-1:2016", file: "rice-en.final.html",
+            title: "Cereals and pulses&#x2009;&#x2014;&#x2009;Specifications " \
+                   "and test methods&#x2009;&#x2014;&#x2009;Rice (Final)",
+            level: nil },
+          { identifer: "ISO 17302",
+            file: "dummy.html",
+            title: "Dummy document",
+            level: nil },
+          { identifer: "ISO 1701:1974",
+            file: "rice1-en.final.html",
+            title: "Test conditions for milling machines with table of " \
+                   "variable height, with horizontal or vertical spindle",
+            level: nil },
+          { identifer: "ISO 17301-1:2016/Amd.1:2017",
+            file: "rice-amd.final.html",
+            title: "Specification and test methods&#x2009;&#x2014;&#x2009;" \
+                   "Rice&#x2009;&#x2014;&#x2009;Mass fraction of extraneous " \
+                   "matter, milled rice (nonglutinous), sample dividers and " \
+                   "recommendations relating to storage and transport conditions",
+            level: nil },
+          { identifer: "action_schemaexpg1.svg",
+            file: "pics/action_schemaexpg1.svg",
+            title: nil, level: nil },
+          { identifer: "rice_image1.png",
+            file: "assets/rice_image1.png",
+            title: nil, level: nil },
+        ]
+      expect(cr.isodoc.i18n.get["navigation"])
+        .to be_equivalent_to <<~OUTPUT
+          <ul>
+          <li>Collection: ISO Collection</li>
+          <ul>
+          <li>Subcollection: Standards</li>
+          <ul>
+          <li><a href="rice-en.final.html">ISO 17301-1:2016</a></li>
+          <li><a href="dummy.html">ISO 17302</a></li>
+          <li><a href="rice1-en.final.html">ISO 1701:1974</a></li>
+          </ul>
+          </ul>
+          <ul>
+          <li>Subcollection: Amendments</li>
+          <ul><li><a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a></li></ul>
+          </ul>
+          <ul>
+          <li>Attachments: Attachments</li>
+          <ul>
+          <li><a href="pics/action_schemaexpg1.svg">action_schemaexpg1.svg</a></li>
+          <li><a href="assets/rice_image1.png">rice_image1.png</a></li>
+          </ul>
+          </ul>
+          </ul>
+        OUTPUT
 
       %w[
         Dummy_ISO_17301-1_2016
@@ -301,9 +357,9 @@ RSpec.describe Metanorma::Collection do
       },
     )
     index = File.read("#{OUTPATH}/rice-en.final.norepo.xml")
-    expect(index).to include "Mass fraction of extraneous matter, milled rice "\
-                             "(nonglutinous), sample dividers and "\
-                             "recommendations relating to storage and "\
+    expect(index).to include "Mass fraction of extraneous matter, milled rice " \
+                             "(nonglutinous), sample dividers and " \
+                             "recommendations relating to storage and " \
                              "transport conditions"
     # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
     # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
