@@ -1,67 +1,248 @@
-<?xml version="1.0"?>
-<metanorma-collection xmlns="http://metanorma.org">
-  <bibdata type="collection" schema-version="v1.2.1">
-  <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
-  <docidentifier type="iso">ISO 12345</docidentifier>
-  <date type="created">
-    <on>2020-01-01</on>
-  </date>
-  <date type="issued">
-    <on>2020-01-01</on>
-  </date>
-  <edition>1</edition>
-  <copyright>
-    <from>2020</from>
-    <owner>
-      <organization>
-        <name>International Organization for Standardization</name>
-        <abbreviation>ISO</abbreviation>
-      </organization>
-    </owner>
-  </copyright>
-</bibdata>
-  <manifest>
-    <level>collection</level>
-    <title>ISO Collection</title>
-    <manifest>
-      <level>subcollection</level>
-      <title>Standards</title>
-      <docref fileref="rice-en.final.xml" index="true">
-        <identifier>ISO 17301-1:2016</identifier>
-      </docref>
-      <docref fileref="dummy.xml" index="true">
-        <identifier>ISO 17302</identifier>
-      </docref>
-      <docref fileref="rice1-en.final.xml" index="true">
-        <identifier>ISO 1701:1974</identifier>
-      </docref>
-    </manifest>
-    <manifest>
-      <level>subcollection</level>
-      <title>Amendments</title>
-      <docref fileref="rice-amd.final.xml" index="true">
-        <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
-      </docref>
-    </manifest>
-    <manifest>
-      <level>attachments</level>
-      <title>Attachments</title>
-      <docref fileref="pics/action_schemaexpg1.svg" attachment="true" index="true">
-        <identifier>action_schemaexpg1.svg</identifier>
-      </docref>
-      <docref fileref="assets/rice_image1.png" attachment="true" index="true">
-        <identifier>rice_image1.png</identifier>
-      </docref>
-    </manifest>
-  </manifest>
-  <prefatory-content><clause id="_clause" inline-header="false" obligation="normative">
-<title>Clause</title>
-<p id="_da34b037-83c7-1b19-ceae-35673a6ae11d">Welcome to our collection</p>
-</clause>
-</prefatory-content>
-  <final-content><clause id="_exordium" inline-header="false" obligation="normative">
-<title>Exordium</title>
-<p id="_7a5caaf9-50a4-44dc-b227-45482021e46c">Hic explicit</p>
-</clause>
-</final-content>
-</metanorma-collection>
+       <metanorma-collection xmlns="http://metanorma.org">
+         <bibdata type="collection" schema-version="v1.2.1">
+         <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
+         <docidentifier type="iso">ISO 12345</docidentifier>
+         <date type="created">
+           <on>2020-01-01</on>
+         </date>
+         <date type="issued">
+           <on>2020-01-01</on>
+         </date>
+         <edition>1</edition>
+         <copyright>
+           <from>2020</from>
+           <owner>
+             <organization>
+               <name>International Organization for Standardization</name>
+               <abbreviation>ISO</abbreviation>
+             </organization>
+           </owner>
+         </copyright>
+       </bibdata>
+         <manifest>
+           <level>collection</level>
+           <title>ISO Collection</title>
+           <manifest>
+             <level>subcollection</level>
+             <title>Standards</title>
+             <docref fileref="rice-en.final.xml" index="true">
+               <identifier>ISO 17301-1:2016</identifier>
+               <bibitem id="ISO17301-1-2016" type="standard" schema-version="v1.2.1">
+         <title type="main" format="text/plain" language="en">Cereals and pulses&#x2009;&#x2014;&#x2009;Specifications and test methods&#x2009;&#x2014;&#x2009;Rice (Final)</title>
+         <title type="title-intro" format="text/plain" language="en">Cereals and pulses</title>
+         <title type="title-main" format="text/plain" language="en">Specifications and test methods</title>
+         <title type="title-part" format="text/plain" language="en">Rice (Final)</title>
+         <title type="main" format="text/plain" language="fr">C&#xE9;r&#xE9;ales et l&#xE9;gumineuses&#x2009;&#x2014;&#x2009;Sp&#xE9;cification et m&#xE9;thodes d&#x2019;essai&#x2009;&#x2014;&#x2009;Riz (Final)</title>
+         <title type="title-intro" format="text/plain" language="fr">C&#xE9;r&#xE9;ales et l&#xE9;gumineuses</title>
+         <title type="title-main" format="text/plain" language="fr">Sp&#xE9;cification et m&#xE9;thodes d&#x2019;essai</title>
+         <title type="title-part" format="text/plain" language="fr">Riz (Final)</title>
+         <docidentifier type="ISO">ISO 17301-1:2016</docidentifier>
+         <docidentifier type="iso-with-lang">ISO 17301-1:2016(E)</docidentifier>
+         <docidentifier type="iso-reference">ISO 17301-1:2016(E)</docidentifier>
+         <docidentifier type="iso-tc">17301</docidentifier>
+         <docnumber>17301</docnumber>
+         <contributor>
+           <role type="author"/>
+           <organization>
+             <name>International Organization for Standardization</name>
+             <abbreviation>ISO</abbreviation>
+           </organization>
+         </contributor>
+         <contributor>
+           <role type="publisher"/>
+           <organization>
+             <name>International Organization for Standardization</name>
+             <abbreviation>ISO</abbreviation>
+           </organization>
+         </contributor>
+         <edition>2</edition>
+         <version>
+           <revision-date>2016-05-01</revision-date>
+         </version>
+         <language>en</language>
+         <script>Latn</script>
+         <status>
+           <stage abbreviation="IS">60</stage>
+           <substage>60</substage>
+         </status>
+         <copyright>
+           <from>2016</from>
+           <owner>
+             <organization>
+               <name>International Organization for Standardization</name>
+               <abbreviation>ISO</abbreviation>
+             </organization>
+           </owner>
+         </copyright>
+       </bibitem>
+             </docref>
+             <docref fileref="dummy.xml" index="true">
+               <identifier>ISO 17302</identifier>
+               <bibitem id="ISO17302-2016" type="standard" schema-version="v1.2.1">
+         <title type="main" format="text/plain" language="en">Dummy document</title>
+         <title type="title-main" format="text/plain" language="en">Dummy document</title>
+         <title type="main" format="text/plain" language="fr">Dummy document</title>
+         <title type="title-main" format="text/plain" language="fr">Dummy document</title>
+         <docidentifier type="ISO">ISO 17302:2016</docidentifier>
+         <docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
+         <docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
+         <docnumber>17302</docnumber>
+         <contributor>
+           <role type="author"/>
+           <organization>
+             <name>International Organization for Standardization</name>
+             <abbreviation>ISO</abbreviation>
+           </organization>
+         </contributor>
+         <contributor>
+           <role type="publisher"/>
+           <organization>
+             <name>International Organization for Standardization</name>
+             <abbreviation>ISO</abbreviation>
+           </organization>
+         </contributor>
+         <language>en</language>
+         <script>Latn</script>
+         <status>
+           <stage abbreviation="IS">60</stage>
+           <substage>60</substage>
+         </status>
+         <copyright>
+           <from>2016</from>
+           <owner>
+             <organization>
+               <name>International Organization for Standardization</name>
+               <abbreviation>ISO</abbreviation>
+             </organization>
+           </owner>
+         </copyright>
+       </bibitem>
+             </docref>
+             <docref fileref="rice1-en.final.xml" index="true">
+               <identifier>ISO 1701:1974</identifier>
+               <bibitem id="ISO1701-1974" type="standard" schema-version="v1.2.1">
+         <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
+         <title type="title-main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
+         <title type="main" format="text/plain" language="fr">Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0; table de hauteur variable, &#xE0; broche horizontale ou verticale</title>
+         <title type="title-main" format="text/plain" language="fr">Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0; table de hauteur variable, &#xE0; broche horizontale ou verticale</title>
+         <docidentifier type="ISO">ISO 1701:1974</docidentifier>
+         <docidentifier type="iso-with-lang">ISO 1701:1974(E)</docidentifier>
+         <docidentifier type="iso-reference">ISO 1701:1974(E)</docidentifier>
+         <docnumber>1701</docnumber>
+         <contributor>
+           <role type="author"/>
+           <organization>
+             <name>International Organization for Standardization</name>
+             <abbreviation>ISO</abbreviation>
+           </organization>
+         </contributor>
+         <contributor>
+           <role type="publisher"/>
+           <organization>
+             <name>International Organization for Standardization</name>
+             <abbreviation>ISO</abbreviation>
+           </organization>
+         </contributor>
+         <edition>1</edition>
+         <version>
+           <revision-date>2016-05-01</revision-date>
+         </version>
+         <language>en</language>
+         <script>Latn</script>
+         <status>
+           <stage abbreviation="IS">60</stage>
+           <substage>60</substage>
+         </status>
+         <copyright>
+           <from>1974</from>
+           <owner>
+             <organization>
+               <name>International Organization for Standardization</name>
+               <abbreviation>ISO</abbreviation>
+             </organization>
+           </owner>
+         </copyright>
+       </bibitem>
+             </docref>
+           </manifest>
+           <manifest>
+             <level>subcollection</level>
+             <title>Amendments</title>
+             <docref fileref="rice-amd.final.xml" index="true">
+               <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
+               <bibitem id="ISO17301-1-2016/Amd.1-2017" type="standard" schema-version="v1.2.1">
+         <title type="main" format="text/plain" language="en">Specification and test methods&#x2009;&#x2014;&#x2009;Rice&#x2009;&#x2014;&#x2009;Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
+         <title type="title-main" format="text/plain" language="en">Specification and test methods</title>
+         <title type="title-part" format="text/plain" language="en">Rice</title>
+         <title type="title-amd" format="text/plain" language="en">Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
+         <title type="main" format="text/plain" language="fr">Sp&#xE9;cification et m&#xE9;thodes d&#x2019;essai&#x2009;&#x2014;&#x2009;Riz&#x2009;&#x2014;&#x2009;Fraction massique de mati&#xE8;re &#xE9;trang&#xE8;re, riz usin&#xE9; (non gluant), diviseurs d&#x2019;&#xE9;chantillon et recommandations relatives aux conditions d&#x2019;entreposage et de transport</title>
+         <title type="title-main" format="text/plain" language="fr">Sp&#xE9;cification et m&#xE9;thodes d&#x2019;essai</title>
+         <title type="title-part" format="text/plain" language="fr">Riz</title>
+         <title type="title-amd" format="text/plain" language="fr">Fraction massique de mati&#xE8;re &#xE9;trang&#xE8;re, riz usin&#xE9; (non gluant), diviseurs d&#x2019;&#xE9;chantillon et recommandations relatives aux conditions d&#x2019;entreposage et de transport</title>
+         <docidentifier type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier>
+         <docidentifier type="iso-with-lang">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
+         <docidentifier type="iso-reference">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
+         <docnumber>17301</docnumber>
+         <date type="created">
+           <on>2016-05-01</on>
+         </date>
+         <date type="updated">
+           <on>2017-02</on>
+         </date>
+         <contributor>
+           <role type="author"/>
+           <organization>
+             <name>International Organization for Standardization</name>
+             <abbreviation>ISO</abbreviation>
+           </organization>
+         </contributor>
+         <contributor>
+           <role type="publisher"/>
+           <organization>
+             <name>International Organization for Standardization</name>
+             <abbreviation>ISO</abbreviation>
+           </organization>
+         </contributor>
+         <edition>2</edition>
+         <version/>
+         <language>en</language>
+         <script>Latn</script>
+         <status>
+           <stage abbreviation="IS">60</stage>
+           <substage>60</substage>
+         </status>
+         <copyright>
+           <from>2017</from>
+           <owner>
+             <organization>
+               <name>International Organization for Standardization</name>
+               <abbreviation>ISO</abbreviation>
+             </organization>
+           </owner>
+         </copyright>
+       </bibitem>
+             </docref>
+           </manifest>
+           <manifest>
+             <level>attachments</level>
+             <title>Attachments</title>
+             <docref fileref="pics/action_schemaexpg1.svg" attachment="true" index="true">
+               <identifier>action_schemaexpg1.svg</identifier>
+             </docref>
+             <docref fileref="assets/rice_image1.png" attachment="true" index="true">
+               <identifier>rice_image1.png</identifier>
+             </docref>
+           </manifest>
+         </manifest>
+         <prefatory-content><clause id="_clause" inline-header="false" obligation="normative">
+       <title>Clause</title>
+       <p id="">Welcome to our collection</p>
+       </clause>
+       </prefatory-content>
+         <final-content><clause id="_exordium" inline-header="false" obligation="normative">
+       <title>Exordium</title>
+       <p id="">Hic explicit</p>
+       </clause>
+       </final-content>
+       </metanorma-collection>
+

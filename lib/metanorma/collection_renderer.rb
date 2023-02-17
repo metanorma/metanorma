@@ -41,6 +41,7 @@ module Metanorma
       @compile_options[:no_install_fonts] = true if options[:no_install_fonts]
       @log = options[:log]
       @documents = collection.documents
+      @bibdata = collection.documents
       @directives = collection.directives
       @disambig = Util::DisambigFiles.new
       @compile = Compile.new
@@ -95,7 +96,7 @@ module Metanorma
 
     def concatenate1(out, ext)
       out.directives << "documents-inline"
-      out.documents.each_key do |id|
+      out.bibdatas.each_key do |id|
         @files[id][:attachment] || @files[id][:outputs].nil? and next
 
         out.documents[id] =
@@ -125,15 +126,13 @@ module Metanorma
       end
     end
 
-    # Dummy class
     class Dummy
       def attr(_key); end
     end
 
-    # The isodoc class for the metanorma flavour we are using
     def isodoc
       x = Asciidoctor.load nil, backend: @doctype.to_sym
-      isodoc = x.converter.html_converter(Dummy.new)
+      isodoc = x.converter.html_converter(Dummy.new) # to obtain Isodoc class
       isodoc.i18n_init(@lang, @script, @locale) # read in internationalisation
       isodoc.metadata_init(@lang, @script, @locale, isodoc.i18n)
       isodoc.info(@xml, nil)
@@ -141,14 +140,13 @@ module Metanorma
     end
 
     def isodoc_populate(isodoc)
-      # create the @meta class of isodoc, with "navigation" set to the index bar
+      # create the @meta class of isodoc, for populating Liquid,
+      # with "navigation" set to the index bar.
       # extracted from the manifest
       nav = indexfile(@xml.at(ns("//manifest")))
       i18n = isodoc.i18n
       i18n.set("navigation", nav)
       isodoc.metadata_init(@lang, @script, @locale, i18n)
-      # populate the @meta class of isodoc with the various metadata fields
-      # native to the flavour; used to populate Liquid
       isodoc.info(@xml, nil)
       isodoc
     end
@@ -172,8 +170,7 @@ module Metanorma
     # populate liquid template of ARGV[1] with metadata extracted from
     # collection manifest
     def coverpage
-      return unless @coverpage
-
+      @coverpage or return
       File.open(File.join(@outdir, "index.html"), "w:UTF-8") do |f|
         f.write @isodoc.populate_template(File.read(@coverpage))
       end
@@ -204,7 +201,7 @@ module Metanorma
       elm.xpath(ns("./docref[@index = 'true']")).each do |d|
         ident = d.at(ns("./identifier")).children.to_xml
         builder.li do |li|
-          li.a **{ href: index_link(d, ident) } do |a|
+          li.a href: index_link(d, ident) do |a|
             a << ident
           end
         end
@@ -241,9 +238,8 @@ module Metanorma
     private
 
     def create_non_existing_directory(output_directory)
-      if !File.exist?(output_directory)
+      !File.exist?(output_directory) and
         FileUtils.mkdir_p(output_directory)
-      end
     end
 
     def format_sort(formats)
@@ -257,9 +253,8 @@ module Metanorma
     # @param options [Hash]
     # @raise [ArgumentError]
     def check_options(options)
-      unless options[:format].is_a?(Array) && (FORMATS & options[:format]).any?
+      (options[:format].is_a?(Array) && (FORMATS & options[:format]).any?) or
         raise ArgumentError, "Need to specify formats (xml,html,pdf,doc)"
-      end
     end
   end
 end
