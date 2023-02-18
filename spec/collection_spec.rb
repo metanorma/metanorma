@@ -79,32 +79,29 @@ RSpec.describe Metanorma::Collection do
 
       expect(cr.isodoc.meta.get[:docrefs])
         .to be_equivalent_to [
-          { identifier: "ISO 17301-1:2016", file: "rice-en.final.html",
-            title: "Cereals and pulses&#x2009;&#x2014;&#x2009;Specifications " \
-                   "and test methods&#x2009;&#x2014;&#x2009;Rice (Final)",
-            level: nil },
-          { identifier: "ISO 17302",
-            file: "dummy.html",
-            title: "Dummy document",
-            level: nil },
-          { identifier: "ISO 1701:1974",
-            file: "rice1-en.final.html",
-            title: "Test conditions for milling machines with table of " \
-                   "variable height, with horizontal or vertical spindle",
-            level: nil },
-          { identifier: "ISO 17301-1:2016/Amd.1:2017",
-            file: "rice-amd.final.html",
-            title: "Specification and test methods&#x2009;&#x2014;&#x2009;" \
-                   "Rice&#x2009;&#x2014;&#x2009;Mass fraction of extraneous " \
-                   "matter, milled rice (nonglutinous), sample dividers and " \
-                   "recommendations relating to storage and transport conditions",
-            level: nil },
-          { identifier: "action_schemaexpg1.svg",
-            file: "pics/action_schemaexpg1.svg",
-            title: nil, level: nil },
-          { identifier: "rice_image1.png",
-            file: "assets/rice_image1.png",
-            title: nil, level: nil },
+          { "identifier" => "ISO 17301-1:2016", "file" => "rice-en.final.html",
+            "title" => "Cereals and pulses&#x2009;&#x2014;&#x2009;" \
+                       "Specifications and test methods&#x2009;&#x2014;" \
+                       "&#x2009;Rice (Final)", "level" => nil },
+          { "identifier" => "ISO 17302", "file" => "dummy.html",
+            "title" => "Dummy document", "level" => nil },
+          { "identifier" => "ISO 1701:1974", "file" => "rice1-en.final.html",
+            "title" => "Test conditions for milling machines with table of " \
+                       "variable height, with horizontal or vertical spindle",
+            "level" => nil },
+          { "identifier" => "ISO 17301-1:2016/Amd.1:2017",
+            "file" => "rice-amd.final.html",
+            "title" => "Specification and test methods&#x2009;&#x2014;&#x2009;" \
+                       "Rice&#x2009;&#x2014;&#x2009;Mass fraction of " \
+                       "extraneous matter, milled rice (nonglutinous), sample " \
+                       "dividers and recommendations relating to storage and " \
+                       "transport conditions", "level" => nil },
+          { "identifier" => "action_schemaexpg1.svg",
+            "file" => "pics/action_schemaexpg1.svg", "title" => nil,
+            "level" => nil },
+          { "identifier" => "rice_image1.png",
+            "file" => "assets/rice_image1.png",
+            "title" => nil, "level" => nil },
         ]
       expect(cr.isodoc.meta.get[:navigation])
         .to be_equivalent_to <<~OUTPUT
@@ -133,23 +130,23 @@ RSpec.describe Metanorma::Collection do
         OUTPUT
       expect(strip_guid(cr.isodoc.meta.get[:"prefatory-content"]))
         .to be_equivalent_to <<~OUTPUT
-       <div>
-       <div id="_">
-       <h1>Clause</h1>
+          <div>
+          <div id="_">
+          <h1>Clause</h1>
 
-       <p id="_">Welcome to our collection</p>
-       </div>
-       </div>
+          <p id="_">Welcome to our collection</p>
+          </div>
+          </div>
         OUTPUT
       expect(strip_guid(cr.isodoc.meta.get[:"final-content"]))
         .to be_equivalent_to <<~OUTPUT
-        <div>
-       <div id="_">
-       <h1>Exordium</h1>
-     
-       <p id="_">Hic explicit</p>
-       </div>
-       </div>
+           <div>
+          <div id="_">
+          <h1>Exordium</h1>
+
+          <p id="_">Hic explicit</p>
+          </div>
+          </div>
         OUTPUT
 
       %w[
