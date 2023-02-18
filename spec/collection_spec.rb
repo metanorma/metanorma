@@ -79,30 +79,30 @@ RSpec.describe Metanorma::Collection do
 
       expect(cr.isodoc.meta.get[:docrefs])
         .to be_equivalent_to [
-          { identifer: "ISO 17301-1:2016", file: "rice-en.final.html",
+          { identifier: "ISO 17301-1:2016", file: "rice-en.final.html",
             title: "Cereals and pulses&#x2009;&#x2014;&#x2009;Specifications " \
                    "and test methods&#x2009;&#x2014;&#x2009;Rice (Final)",
             level: nil },
-          { identifer: "ISO 17302",
+          { identifier: "ISO 17302",
             file: "dummy.html",
             title: "Dummy document",
             level: nil },
-          { identifer: "ISO 1701:1974",
+          { identifier: "ISO 1701:1974",
             file: "rice1-en.final.html",
             title: "Test conditions for milling machines with table of " \
                    "variable height, with horizontal or vertical spindle",
             level: nil },
-          { identifer: "ISO 17301-1:2016/Amd.1:2017",
+          { identifier: "ISO 17301-1:2016/Amd.1:2017",
             file: "rice-amd.final.html",
             title: "Specification and test methods&#x2009;&#x2014;&#x2009;" \
                    "Rice&#x2009;&#x2014;&#x2009;Mass fraction of extraneous " \
                    "matter, milled rice (nonglutinous), sample dividers and " \
                    "recommendations relating to storage and transport conditions",
             level: nil },
-          { identifer: "action_schemaexpg1.svg",
+          { identifier: "action_schemaexpg1.svg",
             file: "pics/action_schemaexpg1.svg",
             title: nil, level: nil },
-          { identifer: "rice_image1.png",
+          { identifier: "rice_image1.png",
             file: "assets/rice_image1.png",
             title: nil, level: nil },
         ]

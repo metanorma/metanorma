@@ -252,9 +252,9 @@ module Metanorma
         ident = d.at(ns("./identifier")).children.to_xml
         title = d.at(ns("./bibitem/title[@type = 'main']")) ||
           d.at(ns("./bibitem/title")) || d.at(ns("./title"))
-        m << { identifer: ident, file: index_link(d, ident),
-               title: title&.children&.to_xml,
-               level: d.at(ns("./level"))&.text }
+        m << { "identifier" => ident, "file" => index_link(d, ident),
+               "title" => title&.children&.to_xml,
+               "level" => d.at(ns("./level"))&.text }
       end
     end
 
