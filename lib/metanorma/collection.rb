@@ -17,9 +17,9 @@ module Metanorma
     attr_accessor :directives
 
     # @return [Hash<String, Metanorma::Document>]
-    attr_accessor :documents
+    attr_accessor :documents, :bibdatas
 
-    attr_accessor :disambig
+    attr_accessor :disambig, :manifest
 
     # @param file [String] path to source file
     # @param directives [Array<String>] documents-inline to inject the XML into
@@ -37,10 +37,12 @@ module Metanorma
       @manifest = args[:manifest]
       @manifest.collection = self
       @documents = args[:documents] || {}
+      @bibdatas = args[:documents] || {}
       if @documents.any? && !@directives.include?("documents-inline")
         @directives << "documents-inline"
       end
       @documents.merge! @manifest.documents(File.dirname(@file))
+      @bibdatas.merge! @manifest.documents(File.dirname(@file))
       @prefatory = args[:prefatory]
       @final = args[:final]
       @log = Metanorma::Utils::Log.new
@@ -99,7 +101,9 @@ module Metanorma
         pref = pref_final_content xml.at("//xmlns:prefatory-content")
         fnl = pref_final_content xml.at("//xmlns:final-content")
         new(file: file, bibdata: bd, manifest: mnf,
-            documents: docs_from_xml(xml, mnf), prefatory: pref, final: fnl)
+            documents: docs_from_xml(xml, mnf), 
+            bibdatas: docs_from_xml(xml, mnf),
+            prefatory: pref, final: fnl)
       end
 
       def parse_yaml(file)
@@ -135,8 +139,8 @@ module Metanorma
 
         <<~CONT
 
-          == #{xml.at('title')&.text}
-        #{xml.at('p')&.text}
+            == #{xml.at('title')&.text}
+          #{xml.at('p')&.text}
         CONT
       end
     end

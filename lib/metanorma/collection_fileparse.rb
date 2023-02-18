@@ -66,7 +66,7 @@ module Metanorma
     def fail_update_bibitem(docid, identifier)
       error = "[metanorma] Cannot find crossreference to document #{docid} "\
               "in document #{identifier}."
-      @log.add("Cross-References", nil, error)
+      @log&.add("Cross-References", nil, error)
       Util.log(error, :warning)
     end
 
