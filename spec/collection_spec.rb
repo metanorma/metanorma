@@ -51,21 +51,21 @@ RSpec.describe Metanorma::Collection do
     it "YAML collection" do # rubocop:disable metrics/blocklength
       mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err"
+      FileUtils.rm_f "#{OUTPATH}/collection1.err"
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
       of = OUTPATH
       col = Metanorma::Collection.parse file
-      cr = Metanorma::CollectionRenderer
-        .render(col,
-                format: %i[presentation html
-                           pdf xml],
-                output_folder: of,
-                coverpage: "#{INPATH}/collection_cover.html",
-                compile: {
-                  no_install_fonts: true,
-                })
+      col.render(
+        format: %i[presentation html pdf xml],
+        output_folder: of,
+        coverpage: "#{INPATH}/collection_cover.html",
+        compile: {
+          no_install_fonts: true,
+        },
+      )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
@@ -77,6 +77,71 @@ RSpec.describe Metanorma::Collection do
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
 
+      %w[
+        Dummy_ISO_17301-1_2016
+        StarTrek_ISO_17301-1_2016
+        RiceAmd_ISO_17301-1_2016
+        _scope_ISO_1701_1974
+        _introduction_ISO_17301-1_2016_Amd.1_2017
+      ].each do |id|
+        expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
+          .ns("//*[@id='#{id}']")).length).to_not be_zero
+      end
+      expect(File.exist?("#{INPATH}/collection1.err")).to be true
+      expect(File.read("#{INPATH}/collection1.err", encoding: "utf-8"))
+        .to include "Cannot find crossreference to document"
+      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/collection.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/index.html")).to be true
+      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
+        .to include "<h1>ISO Collection 1</h1>"
+      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
+        .to include "ISO 17301-1:2016/Amd.1:2017"
+      expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
+      expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
+      expect(File.read("#{OUTPATH}/dummy.xml"))
+        .not_to be_equivalent_to File.read("#{OUTPATH}/dummy.presentation.xml")
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
+        .to be true
+      FileUtils.rm_rf of
+    end
+
+    it "extracts metadata from collection for Liquid" do
+      mock_pdf
+      FileUtils.rm_f "#{OUTPATH}/collection.err"
+      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
+                   "action_schemaexpg1.svg"
+      file = "#{INPATH}/collection1.yml"
+      # xml = file.read file, encoding: "utf-8"
+      of = OUTPATH
+      col = Metanorma::Collection.parse file
+      cr = Metanorma::CollectionRenderer
+        .render(col,
+                format: %i[presentation html xml],
+                output_folder: of,
+                coverpage: "#{INPATH}/collection_cover.html",
+                compile: {
+                  no_install_fonts: true,
+                })
       expect(cr.isodoc.meta.get[:docrefs])
         .to be_equivalent_to [
           { "identifier" => "ISO 17301-1:2016", "file" => "rice-en.final.html",
@@ -148,57 +213,6 @@ RSpec.describe Metanorma::Collection do
           </div>
           </div>
         OUTPUT
-
-      %w[
-        Dummy_ISO_17301-1_2016
-        StarTrek_ISO_17301-1_2016
-        RiceAmd_ISO_17301-1_2016
-        _scope_ISO_1701_1974
-        _introduction_ISO_17301-1_2016_Amd.1_2017
-      ].each do |id|
-        expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
-          .ns("//*[@id='#{id}']")).length).to_not be_zero
-      end
-      expect(File.exist?("#{INPATH}/collection1.err")).to be true
-      expect(File.read("#{INPATH}/collection1.err", encoding: "utf-8"))
-        .to include "Cannot find crossreference to document"
-      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/collection.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/index.html")).to be true
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "<h1>ISO Collection 1</h1>"
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "ISO 17301-1:2016/Amd.1:2017"
-      expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
-      expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/dummy.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
-      expect(File.read("#{OUTPATH}/dummy.xml"))
-        .not_to be_equivalent_to File.read("#{OUTPATH}/dummy.presentation.xml")
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/rice-en.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/rice1-en.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
-        .to be true
-      FileUtils.rm_rf of
     end
 
     it "uses presentation XML directive, markup in identifiers" do # rubocop:disable metrics/blocklength
