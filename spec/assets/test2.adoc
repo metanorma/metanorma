@@ -2,4 +2,5 @@
 Author
 :docfile: test2.adoc
 
+embed::test.adoc[]
 include::test3.adoc[]

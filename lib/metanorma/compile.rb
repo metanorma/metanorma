@@ -55,7 +55,8 @@ module Metanorma
         file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
       dir = File.dirname(filename)
       dir != "." and
-        file.gsub!(/^include::/, "include::#{dir}/")
+        file = file.gsub(/^include::/, "include::#{dir}/")
+          .gsub(/^embed::/, "embed::#{dir}/")
       [file, @processor.input_to_isodoc(file, filename, options)]
     end
 
