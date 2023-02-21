@@ -498,6 +498,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("spec/assets/test2.xml")).to be true
     xml = File.read("spec/assets/test2.xml", encoding: "utf-8")
     expect(xml).to include "ABC"
+    expect(xml).to include "ruby"
   end
 
   it "processes a Metanorma XML ISO document with CRLF line endings" do
