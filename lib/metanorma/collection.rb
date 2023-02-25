@@ -101,7 +101,7 @@ module Metanorma
         pref = pref_final_content xml.at("//xmlns:prefatory-content")
         fnl = pref_final_content xml.at("//xmlns:final-content")
         new(file: file, bibdata: bd, manifest: mnf,
-            documents: docs_from_xml(xml, mnf), 
+            documents: docs_from_xml(xml, mnf),
             bibdatas: docs_from_xml(xml, mnf),
             prefatory: pref, final: fnl)
       end

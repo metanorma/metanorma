@@ -113,7 +113,7 @@ module Metanorma
           end
           !dr["attachment"] && !dr["sectionsplit"] &&
             d = @collection.bibdatas[dr["identifier"]] and
-            b.parent.add_child(d.bibitem.to_xml)
+            b.parent.add_child(d.bibitem.to_xml(bibdata: true))
         end
         docref_to_xml_attrs(drf, dr)
       end

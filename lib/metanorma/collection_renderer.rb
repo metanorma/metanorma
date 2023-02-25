@@ -250,8 +250,8 @@ module Metanorma
     def liquid_docrefs
       @xml.xpath(ns("//docref[@index = 'true']")).each_with_object([]) do |d, m|
         ident = d.at(ns("./identifier")).children.to_xml
-        title = d.at(ns("./bibitem/title[@type = 'main']")) ||
-          d.at(ns("./bibitem/title")) || d.at(ns("./title"))
+        title = d.at(ns("./bibdata/title[@type = 'main']")) ||
+          d.at(ns("./bibdata/title")) || d.at(ns("./title"))
         m << { "identifier" => ident, "file" => index_link(d, ident),
                "title" => title&.children&.to_xml,
                "level" => d.at(ns("./level"))&.text }
