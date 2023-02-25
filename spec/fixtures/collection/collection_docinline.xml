@@ -27,7 +27,7 @@
              <title>Standards</title>
              <docref fileref="rice-en.final.xml" index="true" id="doc000000000">
                <identifier>ISO 17301-1:2016</identifier>
-               <bibitem id="ISO17301-1-2016" type="standard" schema-version="v1.2.1">
+               <bibdata type="standard" schema-version="v1.2.1">
                  <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
                  <title type="title-intro" format="text/plain" language="en">Cereals and pulses</title>
                  <title type="title-main" format="text/plain" language="en">Specifications and test methods</title>
@@ -74,11 +74,27 @@
                      </organization>
                    </owner>
                  </copyright>
-               </bibitem>
+                 <ext schema-version="v1.0.0">
+                   <doctype>international-standard</doctype>
+                   <editorialgroup>
+                     <technical-committee number="34">Food products</technical-committee>
+                     <subcommittee number="4">Cereals and pulses</subcommittee>
+                     <workgroup number="4" type="WG">Amylose in rice</workgroup>
+                     <secretariat>SAC</secretariat>
+                   </editorialgroup>
+                   <ics>
+                     <code>67.060</code>
+                   </ics>
+                   <structuredidentifier>
+                     <project-number part="1">ISO 17301</project-number>
+                   </structuredidentifier>
+                   <stagename>International standard</stagename>
+                 </ext>
+               </bibdata>
              </docref>
              <docref fileref="dummy.xml" index="true" id="doc000000001">
                <identifier>ISO 17302</identifier>
-               <bibitem id="ISO17302-2016" type="standard" schema-version="v1.2.1">
+               <bibdata type="standard" schema-version="v1.2.1">
                  <title type="main" format="text/plain" language="en">Dummy document</title>
                  <title type="title-main" format="text/plain" language="en">Dummy document</title>
                  <title type="main" format="text/plain" language="fr">Dummy document</title>
@@ -116,11 +132,27 @@
                      </organization>
                    </owner>
                  </copyright>
-               </bibitem>
+                 <ext schema-version="v1.0.0">
+                   <doctype>international-standard</doctype>
+                   <editorialgroup>
+                     <technical-committee number="34">Food products</technical-committee>
+                     <subcommittee number="4">Cereals and pulses</subcommittee>
+                     <workgroup number="4" type="WG">Amylose in rice</workgroup>
+                     <secretariat>SAC</secretariat>
+                   </editorialgroup>
+                   <ics>
+                     <code>67.060</code>
+                   </ics>
+                   <structuredidentifier>
+                     <project-number>ISO 17302</project-number>
+                   </structuredidentifier>
+                   <stagename>International standard</stagename>
+                 </ext>
+               </bibdata>
              </docref>
              <docref fileref="rice1-en.final.xml" index="true" id="doc000000002">
                <identifier>ISO 1701:1974</identifier>
-               <bibitem id="ISO1701-1974" type="standard" schema-version="v1.2.1">
+               <bibdata type="standard" schema-version="v1.2.1">
                  <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                  <title type="title-main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                  <title type="main" format="text/plain" language="fr">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
@@ -162,7 +194,23 @@
                      </organization>
                    </owner>
                  </copyright>
-               </bibitem>
+                 <ext schema-version="v1.0.0">
+                   <doctype>international-standard</doctype>
+                   <editorialgroup>
+                     <technical-committee number="34">Food products</technical-committee>
+                     <subcommittee number="4">Cereals and pulses</subcommittee>
+                     <workgroup number="4" type="WG">Amylose in rice</workgroup>
+                     <secretariat>SAC</secretariat>
+                   </editorialgroup>
+                   <ics>
+                     <code>67.060</code>
+                   </ics>
+                   <structuredidentifier>
+                     <project-number>ISO 1701</project-number>
+                   </structuredidentifier>
+                   <stagename>International standard</stagename>
+                 </ext>
+               </bibdata>
              </docref>
            </manifest>
            <manifest>
@@ -170,7 +218,7 @@
              <title>Amendments</title>
              <docref fileref="rice-amd.final.xml" index="true" id="doc000000003">
                <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
-               <bibitem id="ISO17301-1-2016/Amd.1-2017" type="standard" schema-version="v1.2.1">
+               <bibdata type="standard" schema-version="v1.2.1">
                  <title type="main" format="text/plain" language="en">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
                  <title type="title-main" format="text/plain" language="en">Specification and test methods</title>
                  <title type="title-part" format="text/plain" language="en">Rice</title>
@@ -220,7 +268,22 @@
                      </organization>
                    </owner>
                  </copyright>
-               </bibitem>
+                 <ext schema-version="v1.0.0">
+                   <doctype>amendment</doctype>
+                   <editorialgroup>
+                     <technical-committee number="34">Food products</technical-committee>
+                     <subcommittee number="4" type="SC">Cereals and pulses</subcommittee>
+                     <workgroup number="0" type=""/>
+                   </editorialgroup>
+                   <ics>
+                     <code>67.060</code>
+                   </ics>
+                   <structuredidentifier>
+                     <project-number part="1">17301</project-number>
+                   </structuredidentifier>
+                   <stagename>International standard</stagename>
+                 </ext>
+               </bibdata>
              </docref>
            </manifest>
            <manifest>
@@ -510,4 +573,3 @@
            </clause>
          </final-content>
        </metanorma-collection>
-
