@@ -64,7 +64,7 @@ module Metanorma
     end
 
     def fail_update_bibitem(docid, identifier)
-      error = "[metanorma] Cannot find crossreference to document #{docid} "\
+      error = "[metanorma] Cannot find crossreference to document #{docid} " \
               "in document #{identifier}."
       @log&.add("Cross-References", nil, error)
       Util.log(error, :warning)
@@ -101,7 +101,7 @@ module Metanorma
     end
 
     def hide_refs(docxml)
-      docxml.xpath(ns("//references[bibitem][not(./bibitem[not(@hidden) or "\
+      docxml.xpath(ns("//references[bibitem][not(./bibitem[not(@hidden) or " \
                       "@hidden = 'false'])]")).each do |f|
         f["hidden"] = "true"
       end
@@ -114,7 +114,7 @@ module Metanorma
         b.xpath(ns("./docidentifier")).each do |d|
           next unless @files[d.text]
 
-          d.next = "<docidentifier type='repository'>"\
+          d.next = "<docidentifier type='repository'>" \
                    "current-metanorma-collection/#{d.text}"
         end
       end
@@ -189,7 +189,7 @@ module Metanorma
           a.children = "#{a.text}_#{Metanorma::Utils::to_ncname(file)}"
         end
       end
-      docid = docxml.at(ns("//bibitem[@id = '#{schema}_#{id}']/"\
+      docid = docxml.at(ns("//bibitem[@id = '#{schema}_#{id}']/" \
                            "docidentifier[@type = 'repository']")) or return
       docid.children = "current-metanorma-collection/#{file}"
       docid.previous = "<docidentifier type='X'>#{file}</docidentifier>"
@@ -201,7 +201,7 @@ module Metanorma
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
         if @files[docid] then update_anchor_loc(bib, e, docid)
         else
-          e << "<strong>** Unresolved reference to document #{docid} "\
+          e << "<strong>** Unresolved reference to document #{docid} " \
                "from eref</strong>"
         end
       end
@@ -228,7 +228,7 @@ module Metanorma
       type = "clause" if type == "annex"
       ref = ins.at(ns("./locality/referenceFrom"))&.text
       anchor = @files[docid][:anchors].dig(type, ref) or return
-      ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}"\
+      ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}" \
              "</referenceFrom></locality>"
     end
 
@@ -239,7 +239,7 @@ module Metanorma
 
         file, = targetfile(x, read: true)
         Nokogiri::XML(file)
-          .xpath(ns("//bibitem[@type = 'internal']/"\
+          .xpath(ns("//bibitem[@type = 'internal']/" \
                     "docidentifier[@type = 'repository']")).each do |d|
           a = d.text.split(%r{/}, 2)
           a.size > 1 or next
