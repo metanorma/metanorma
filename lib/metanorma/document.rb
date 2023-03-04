@@ -47,10 +47,27 @@ module Metanorma
 
       private
 
+      def mn2relaton_parser(tag)
+        case tag.sub(/-standard/, "")
+        when "bipm" then RelatonBipm::XMLParser
+        when "bsi" then RelatonBsi::XMLParser
+        when "ietf" then RelatonIetf::XMLParser
+        when "iho" then RelatonIho::XMLParser
+        when "itu" then RelatonItu::XMLParser
+        when "iec" then RelatonIec::XMLParser
+        when "iso" then RelatonIsoBib::XMLParser
+        when "nist" then RelatonNist::XMLParser
+        when "ogc" then RelatonOgc::XMLParser
+        else RelatonBib::XMLParser
+        end
+      end
+
       # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
       # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
       def from_xml(xml)
-        Relaton::Cli.parse_xml xml.at("//xmlns:bibitem|//xmlns:bibdata")
+        b = xml.at("//xmlns:bibitem|//xmlns:bibdata")
+        r = mn2relaton_parser(xml.root.name)
+        r.from_xml(b.to_xml)
       end
 
       # @param file [String]
