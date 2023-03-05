@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "isodoc"
+require "htmlentities"
 require_relative "collection_fileprocess"
 require_relative "fontist_utils"
 require_relative "util"
@@ -45,6 +46,7 @@ module Metanorma
       @directives = collection.directives
       @disambig = Util::DisambigFiles.new
       @compile = Compile.new
+      @c = HTMLEntities.new
 
       # list of files in the collection
       @files = read_files folder
@@ -97,7 +99,8 @@ module Metanorma
 
     def concatenate1(out, ext)
       out.directives << "documents-inline"
-      out.bibdatas.each_key do |id|
+      out.bibdatas.each_key do |ident|
+        id = @c.decode(@isodoc.docid_prefix(nil, ident.dup))
         @files[id][:attachment] || @files[id][:outputs].nil? and next
 
         out.documents[id] =
@@ -148,7 +151,8 @@ module Metanorma
       isodoc.meta.set(:navigation, indexfile(@xml.at(ns("//manifest"))))
       isodoc.meta.set(:docrefs, liquid_docrefs)
       isodoc.meta.set(:"prefatory-content",
-                      isodoc_builder(isodoc, @xml.at(ns("//prefatory-content"))))
+                      isodoc_builder(isodoc,
+                                     @xml.at(ns("//prefatory-content"))))
       isodoc.meta.set(:"final-content",
                       isodoc_builder(isodoc, @xml.at(ns("//final-content"))))
       isodoc.info(@xml, nil)
@@ -156,7 +160,7 @@ module Metanorma
     end
 
     def isodoc_builder(isodoc, node)
-      Nokogiri::HTML::Builder.new do |b|
+      Nokogiri::HTML::Builder.new(encoding: "UTF-8") do |b|
         b.div do |div|
           node&.children&.each { |n| isodoc.parse(n, div) }
         end
@@ -212,9 +216,12 @@ module Metanorma
     def docrefs(elm, builder)
       elm.xpath(ns("./docref[@index = 'true']")).each do |d|
         ident = d.at(ns("./identifier")).children.to_xml
+        ident = @c.decode(@isodoc.docid_prefix(nil, ident))
         builder.li do |li|
           li.a href: index_link(d, ident) do |a|
-            a << ident
+            a << ident.split(/([<>&])/).map do |x|
+              /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
+            end.join
           end
         end
       end
@@ -250,6 +257,7 @@ module Metanorma
     def liquid_docrefs
       @xml.xpath(ns("//docref[@index = 'true']")).each_with_object([]) do |d, m|
         ident = d.at(ns("./identifier")).children.to_xml
+        ident = @c.decode(@isodoc.docid_prefix(nil, ident))
         title = d.at(ns("./bibdata/title[@type = 'main']")) ||
           d.at(ns("./bibdata/title")) || d.at(ns("./title"))
         m << { "identifier" => ident, "file" => index_link(d, ident),

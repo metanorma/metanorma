@@ -78,10 +78,10 @@ RSpec.describe Metanorma::Collection do
       conact_file_doc_xml = Nokogiri::XML(concat_file)
 
       %w[
-        Dummy_ISO_17301-1_2016
-        StarTrek_ISO_17301-1_2016
-        RiceAmd_ISO_17301-1_2016
-        _scope_ISO_1701_1974
+        Dummy_ISO__xa0_17301-1_2016
+        StarTrek_ISO__xa0_17301-1_2016
+        RiceAmd_ISO__xa0_17301-1_2016
+        _scope_ISO__xa0_1701_1974
         _introduction_ISO_17301-1_2016_Amd.1_2017
       ].each do |id|
         expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
@@ -144,13 +144,13 @@ RSpec.describe Metanorma::Collection do
                 })
       expect(cr.isodoc.meta.get[:docrefs])
         .to be_equivalent_to [
-          { "identifier" => "ISO 17301-1:2016", "file" => "rice-en.final.html",
+          { "identifier" => "ISO 17301-1:2016", "file" => "rice-en.final.html",
             "title" => "Cereals and pulses&#x2009;&#x2014;&#x2009;" \
                        "Specifications and test methods&#x2009;&#x2014;" \
                        "&#x2009;Rice (Final)", "level" => nil },
-          { "identifier" => "ISO 17302", "file" => "dummy.html",
+          { "identifier" => "ISO 17302", "file" => "dummy.html",
             "title" => "Dummy document", "level" => nil },
-          { "identifier" => "ISO 1701:1974", "file" => "rice1-en.final.html",
+          { "identifier" => "ISO 1701:1974", "file" => "rice1-en.final.html",
             "title" => "Test conditions for milling machines with table of " \
                        "variable height, with horizontal or vertical spindle",
             "level" => nil },
@@ -175,9 +175,9 @@ RSpec.describe Metanorma::Collection do
           <ul>
           <li>Subcollection: Standards</li>
           <ul>
-          <li><a href="rice-en.final.html">ISO 17301-1:2016</a></li>
-          <li><a href="dummy.html">ISO 17302</a></li>
-          <li><a href="rice1-en.final.html">ISO 1701:1974</a></li>
+          <li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li>
+          <li><a href="dummy.html">ISO&nbsp;17302</a></li>
+          <li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li>
           </ul>
           </ul>
           <ul>
@@ -309,7 +309,7 @@ RSpec.describe Metanorma::Collection do
       )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be true
+      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO Collection 1"
@@ -369,9 +369,9 @@ RSpec.describe Metanorma::Collection do
       },
     )
     index = File.read("#{OUTPATH}/index.html")
-    expect(index).to include "ISO 44001"
-    expect(index).not_to include "ISO 44002"
-    expect(index).to include "ISO 44003"
+    expect(index).to include "ISO&nbsp;44001"
+    expect(index).not_to include "ISO&nbsp;44002"
+    expect(index).to include "ISO&nbsp;44003"
     FileUtils.rm_rf of
   end
 

@@ -15,8 +15,10 @@ module Metanorma
     def read_files(path) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       files = {}
       @xml.xpath(ns("//docref")).each do |d|
-        identifier = d.at(ns("./identifier")).children.to_xml
-        files[identifier] = file_entry(d, identifier, path)
+        orig_id = d.at(ns("./identifier"))
+        identifier = @c.decode(@isodoc
+                  .docid_prefix(orig_id["type"], orig_id.children.to_xml))
+        files[identifier] = file_entry(d, orig_id.children.to_xml, path)
         if files[identifier][:attachment]
           files[identifier][:bibdata] = Metanorma::Document
             .attachment_bibitem(identifier).root
@@ -95,6 +97,7 @@ module Metanorma
     # rel_path is the source file address, determined relative to the YAML.
     # out_path is the destination file address, with any references outside
     # the working directory (../../...) truncated
+    # identifier is the id with only spaces, no nbsp
     def file_entry(ref, identifier, _path)
       out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
       ret = if ref["fileref"]

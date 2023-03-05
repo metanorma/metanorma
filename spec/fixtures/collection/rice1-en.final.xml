@@ -96,8 +96,8 @@ at the address below or ISO’s member body in the country of the requester.
 <sections><clause id="_scope" type="scope" inline-header="false" obligation="normative"><title>Scope</title><p id="_0f24bcbe-6ca7-400e-9fb3-34027510f8f2">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
 <p id="_7b4ddc83-6eab-4476-99ab-dee2fa285d14">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
 <p id="_2d5119f1-3fed-4faa-a457-65bb0c0449d2">It is not applicable to cooked rice products.</p>
-<p id="_3ca0ca2e-49cb-45c2-9bd5-e79bdaae0f7a">This document is updated in <eref type="inline" bibitemid="RiceAmd" citeas="ISO 17301-1:2016/Amd.1:2017"/>. It derives from <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"/>. See e.g. <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality></localityStack></eref>.</p>
-<p id="_d726ee55-0554-49a3-851e-dc8e16372c3f">This document is unrelated to <eref type="inline" bibitemid="Dummy" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p></clause>
+<p id="_3ca0ca2e-49cb-45c2-9bd5-e79bdaae0f7a">This document is updated in <eref type="inline" bibitemid="RiceAmd" citeas="ISO 17301-1:2016/Amd.1:2017"/>. It derives from <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"/>. See e.g. <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality></localityStack></eref>.</p>
+<p id="_d726ee55-0554-49a3-851e-dc8e16372c3f">This document is unrelated to <eref type="inline" bibitemid="Dummy" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p></clause>
 </sections><bibliography>
 <references id="_normref" normative="true" obligation="informative">
 <title>Normative References</title>
