@@ -17,7 +17,7 @@ module Metanorma
     attr_accessor :directives
 
     # @return [Hash<String, Metanorma::Document>]
-    attr_accessor :documents, :bibdatas
+    attr_accessor :documents, :bibdatas, :coverpage
 
     attr_accessor :disambig, :manifest
 
@@ -28,6 +28,7 @@ module Metanorma
     # @param manifest [Metanorma::CollectionManifest]
     # @param documents [Hash<String, Metanorma::Document>]
     # @param prefatory [String]
+    # @param coverpage [String]
     # @param final [String]
     # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     def initialize(**args)
@@ -36,6 +37,10 @@ module Metanorma
       @bibdata = args[:bibdata]
       @manifest = args[:manifest]
       @manifest.collection = self
+      c = @directives.detect { |x| x.is_a?(Hash) && x["coverpage"] }
+      c and @coverpage = c["coverpage"]
+      c = @directives.detect { |x| x.is_a?(Hash) && x["coverpage-style"] }
+      c and @coverpage_style = c["coverpage-style"]
       @documents = args[:documents] || {}
       @bibdatas = args[:documents] || {}
       if @documents.any? && !@directives.include?("documents-inline")
@@ -68,10 +73,27 @@ module Metanorma
 
     def collection_body(coll)
       coll << @bibdata.to_xml(bibdata: true, date_format: :full)
+      @directives.each do |d|
+        coll << "<directives>#{obj_to_xml(d)}</directives>"
+      end
       @manifest.to_xml coll
       content_to_xml "prefatory", coll
       doccontainer coll
       content_to_xml "final", coll
+    end
+
+    def obj_to_xml(elem)
+      case elem
+      when ::Array
+        elem.each_with_object([]) do |v, m|
+          m << "<value>#{obj_to_xml(v)}</value>"
+        end.join
+      when ::Hash
+        elem.each_with_object([]) do |(k, v), m|
+          m << "<#{k}>#{obj_to_xml(v)}</#{k}>"
+        end.join
+      else elem
+      end
     end
 
     def render(opts)
@@ -100,10 +122,27 @@ module Metanorma
         mnf = CollectionManifest.from_xml mnf_xml
         pref = pref_final_content xml.at("//xmlns:prefatory-content")
         fnl = pref_final_content xml.at("//xmlns:final-content")
+        cov = pref_final_content xml.at("//xmlns:coverpage")
         new(file: file, bibdata: bd, manifest: mnf,
+            directives: directives_from_xml(xml.xpath("//xmlns:directives")),
             documents: docs_from_xml(xml, mnf),
             bibdatas: docs_from_xml(xml, mnf),
-            prefatory: pref, final: fnl)
+            prefatory: pref, final: fnl, coverpage: cov)
+      end
+
+      # TODO refine
+      def directives_from_xml(dir)
+        dir.each_with_object([]) do |d, m|
+          if d.at("./xmlns:value")
+            m << x.xpath("./xmlns:value").map(&:text)
+          elsif d.at("./*")
+            out = d.elements.each_with_object({}) do |e, ret|
+              ret[e.name] = e.children.to_xml
+            end
+            m << out
+          else m << d.children.to_xml
+          end
+        end
       end
 
       def parse_yaml(file)

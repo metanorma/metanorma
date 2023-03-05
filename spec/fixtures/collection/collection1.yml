@@ -4,6 +4,7 @@ directives:
   # to inject the XML into the collection manifest; 
   - documents-external 
   # keeps them outside
+  - coverpage: spec/fixtures/collection/collection_cover.html
 bibdata:
   title:
     type: title-main

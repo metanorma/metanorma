@@ -19,6 +19,7 @@
              </owner>
            </copyright>
          </bibdata>
+         <directives>documents-inline</directives>
          <manifest>
            <level>collection</level>
            <title>ISO Collection</title>

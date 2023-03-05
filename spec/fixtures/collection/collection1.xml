@@ -19,6 +19,10 @@
            </owner>
          </copyright>
        </bibdata>
+         <directives>documents-external</directives>
+  <directives>
+    <coverpage>spec/fixtures/collection/collection_cover.html</coverpage>
+  </directives>
          <manifest>
            <level>collection</level>
            <title>ISO Collection</title>
