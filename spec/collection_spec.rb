@@ -61,7 +61,7 @@ RSpec.describe Metanorma::Collection do
       col.render(
         format: %i[presentation html pdf xml],
         output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
+        #coverpage: "#{INPATH}/collection_cover.html",
         compile: {
           no_install_fonts: true,
         },

@@ -36,7 +36,7 @@ module Metanorma
 
       @isodoc = isodoc_create # output processor for flavour
       @outdir = dir_name_cleanse(options[:output_folder])
-      @coverpage = options[:coverpage]
+      @coverpage = options[:coverpage] || collection.coverpage
       @format = Util.sort_extensions_execution(options[:format])
       @compile_options = options[:compile] || {}
       @compile_options[:no_install_fonts] = true if options[:no_install_fonts]
