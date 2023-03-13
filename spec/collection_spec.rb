@@ -76,6 +76,7 @@ RSpec.describe Metanorma::Collection do
           .sub(%r{xlink:href=['"]data:image/gif;base64[^']*'},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
+      concat_text_doc_xml = Nokogiri::XML(File.open("#{INPATH}/rice-en.final.xml"))
 
       %w[
         Dummy_ISO__xa0_17301-1_2016
@@ -87,6 +88,15 @@ RSpec.describe Metanorma::Collection do
         expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
           .ns("//*[@id='#{id}']")).length).to_not be_zero
       end
+      expect(concat_text_doc_xml.at("//xmlns:xref/@target").text)
+        .to be_equivalent_to "_scope"
+      expect(conact_file_doc_xml.at("//i:xref/@target", "i" => "https://www.metanorma.org/ns/iso").text)
+        .to be_equivalent_to "_scope_ISO__xa0_17301-1_2016"
+      expect(concat_text_doc_xml.at("//xmlns:strong/@style").text)
+        .to be_equivalent_to "background: url(#svg1); foreground: url(_001); middleground: url(#fig1);"
+      expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/iso").text)
+        .to be_equivalent_to "background: url(#svg1_ISO__xa0_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO__xa0_17301-1_2016);"
+
       expect(File.exist?("#{INPATH}/collection1.err")).to be true
       expect(File.read("#{INPATH}/collection1.err", encoding: "utf-8"))
         .to include "Cannot find crossreference to document"

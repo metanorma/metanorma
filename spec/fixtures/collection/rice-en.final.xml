@@ -130,7 +130,7 @@ at the address below or ISO’s member body in the country of the requester.
       </eref>
     </target>
   </svgmap>
-  <p>You can also download the svg image at: <eref type="inline" bibitemid="action_schemaexpg1.svg" citeas="action_schemaexpg1.svg"/></p>
+  <p>You can also download the svg image at: <eref type="inline" bibitemid="action_schemaexpg1.svg" citeas="action_schemaexpg1.svg"/>. See <xref target="_scope"/> and <strong style="background: url(#svg1); foreground: url(_001); middleground: url(#fig1);">scope</strong></p>
 </clause>
 </sections><bibliography><references id="_normative_references" normative="true" obligation="informative"><title>Normative References</title><p id="_27effc86-b49a-4ba4-a19a-8b03fad45c58">The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</p>
 <bibitem id="RiceAmd"><formattedref format="application/x-isodoc+xml"/><docidentifier type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier><docidentifier type="repository">current-metanorma-collection/rice</docidentifier><docnumber>17301-1:2016/Amd.1:2017</docnumber></bibitem><bibitem id="StarTrek"><formattedref format="application/x-isodoc+xml"/><docidentifier type="ISO">ISO 1701:1974</docidentifier><docidentifier type="repository">current-metanorma-collection/rice</docidentifier><docnumber>1701:1974</docnumber></bibitem></references>

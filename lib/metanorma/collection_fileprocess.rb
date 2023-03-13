@@ -125,6 +125,15 @@ module Metanorma
       Metanorma::Utils::anchor_attributes.each do |(tag_name, attribute_name)|
         add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
       end
+      url_in_css_styles(doc, document_suffix)
+    end
+
+    # update relative URLs, url(#...), in CSS in @style attrs (including SVG)
+    def url_in_css_styles(doc, document_suffix)
+      doc.xpath("//*[@style]").each do |s|
+        s["style"] = s["style"]
+          .gsub(%r{url\(#([^)]+)\)}, "url(#\\1_#{document_suffix})")
+      end
     end
 
     # return file contents + output filename for each file in the collection,
