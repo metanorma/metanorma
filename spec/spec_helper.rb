@@ -23,6 +23,7 @@ RSpec.configure do |config|
     Dir.mktmpdir("rspec-") do |dir|
       ["spec/assets/", "spec/examples/", "spec/fixtures/"].each do |assets|
         tmp_assets = File.join(dir, assets)
+        FileUtils.rm_rf tmp_assets
         FileUtils.mkdir_p tmp_assets
         FileUtils.cp_r Dir.glob("#{assets}*"), tmp_assets
       end
