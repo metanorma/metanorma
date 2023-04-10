@@ -61,7 +61,7 @@ RSpec.describe Metanorma::Collection do
       col.render(
         format: %i[presentation html pdf xml],
         output_folder: of,
-        #coverpage: "#{INPATH}/collection_cover.html",
+        # coverpage: "#{INPATH}/collection_cover.html",
         compile: {
           no_install_fonts: true,
         },
@@ -420,5 +420,6 @@ RSpec.describe Metanorma::Collection do
     content.gsub(/(?<=<p id=")[^"]+/, "")
       .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
       .gsub(%r{data:image/png[^<"']+}, "data:image/png")
+      .gsub(/ schema-version="[^"]+"/, "")
   end
 end
