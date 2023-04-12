@@ -86,15 +86,19 @@ module Metanorma
     def concatenate(col, options)
       options[:format] << :presentation if options[:format].include?(:pdf)
       options[:format].uniq.each do |e|
-        next unless %i(presentation xml).include?(e)
-
+        %i(presentation xml).include?(e) or next
         ext = e == :presentation ? "presentation.xml" : e.to_s
         File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") do |f|
-          f.write(concatenate1(col.clone, e).to_xml)
+          out = concatenate1(col.clone, e).to_xml
+          col.directives.include?("bilingual") and
+            out = Metanorma::Collections::Bilingual
+            .new({align_cross_elements: %w(p note)}).to_bilingual
+          f.write(out)
         end
       end
       options[:format].include?(:pdf) and
         pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))
+      # TODO: single Word or HTML file would also go here
     end
 
     def concatenate1(out, ext)
