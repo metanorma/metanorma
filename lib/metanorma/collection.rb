@@ -50,6 +50,7 @@ module Metanorma
       @bibdatas.merge! @manifest.documents(File.dirname(@file))
       @prefatory = args[:prefatory]
       @final = args[:final]
+      @format = args[:format]
       @log = Metanorma::Utils::Log.new
       @disambig = Util::DisambigFiles.new
     end
@@ -155,7 +156,7 @@ module Metanorma
         pref = yaml["prefatory-content"]
         fnl = yaml["final-content"]
         new(file: file, directives: dirs, bibdata: bd, manifest: mnf,
-            prefatory: pref, final: fnl)
+            prefatory: pref, final: fnl, format: yaml["format"])
       end
 
       # @param xml [Nokogiri::XML::Document]
@@ -245,7 +246,9 @@ module Metanorma
       docid = @bibdata.docidentifier.first
       return unless docid
 
-      docid.type&.downcase || docid.id&.sub(/\s.*$/, "")&.downcase
+      ret = docid.type&.downcase || docid.id&.sub(/\s.*$/, "")&.downcase
+      ret = "bipm" if ret == "jcgm" # TODO store natively in bibdata/ext
+      ret
     end
   end
 end

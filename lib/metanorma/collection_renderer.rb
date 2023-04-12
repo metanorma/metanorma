@@ -99,6 +99,7 @@ module Metanorma
 
     def concatenate1(out, ext)
       out.directives << "documents-inline"
+      out.documents = {} # avoid dupe entries
       out.bibdatas.each_key do |ident|
         id = @c.decode(@isodoc.docid_prefix(nil, ident.dup))
         @files[id][:attachment] || @files[id][:outputs].nil? and next
