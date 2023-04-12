@@ -194,10 +194,11 @@ module Metanorma
       ret
     end
 
+    # skip individual file PDFs, we make one big one for whole collection
     def file_compile_formats(filename, identifier)
       file_id = @files[identifier]
       @format << :presentation if @format.include?(:pdf)
-      @format.each do |e|
+      @format.reject { |k| k == :pdf }.each do |e|
         ext = @compile.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)
         unless /html$/.match?(ext) && file_id[:sectionsplit]
