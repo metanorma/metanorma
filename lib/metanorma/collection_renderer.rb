@@ -92,13 +92,15 @@ module Metanorma
           out = concatenate1(col.clone, e).to_xml
           col.directives.include?("bilingual") and
             out = Metanorma::Collections::Bilingual
-            .new({align_cross_elements: %w(p note)}).to_bilingual
+              .new({ align_cross_elements: %w(p note) }).to_bilingual
           f.write(out)
         end
       end
       options[:format].include?(:pdf) and
         pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))
       # TODO: single Word or HTML file would also go here
+      col.directives.include?("bilingual") and
+        htmlconv.convert(File.join(@outdir, "collection.html"))
     end
 
     def concatenate1(out, ext)
@@ -118,6 +120,12 @@ module Metanorma
       doctype = @doctype.to_sym
       x = Asciidoctor.load nil, backend: doctype
       x.converter.pdf_converter(PdfOptionsNode.new(doctype, @compile_options))
+    end
+
+    def htmlconv
+      doctype = @doctype.to_sym
+      x = Asciidoctor.load nil, backend: doctype
+      x.converter.html_converter(PdfOptionsNode.new(doctype, @compile_options))
     end
 
     class PdfOptionsNode
