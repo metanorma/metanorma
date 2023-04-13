@@ -91,7 +91,7 @@ module Metanorma
         File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") do |f|
           out = concatenate1(col.clone, e).to_xml
           col.directives.include?("bilingual") and
-            out = Metanorma::Collections::Bilingual
+            out = Metanorma::Collection::Bilingual
               .new({ align_cross_elements: %w(p note) }).to_bilingual
           f.write(out)
         end
