@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "asciidoctor"
   spec.add_runtime_dependency "fontist", ">= 1.14.3"
   spec.add_runtime_dependency "htmlentities"
-  spec.add_runtime_dependency "isodoc", ">= 2.3.1"
+  spec.add_runtime_dependency "isodoc", ">= 2.5.4"
   spec.add_runtime_dependency "mn2pdf", "~> 1"
   spec.add_runtime_dependency "nokogiri"
   spec.add_runtime_dependency "pry"
