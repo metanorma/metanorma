@@ -129,7 +129,7 @@ module Metanorma
     end
 
     def svgmap_resolve(docxml)
-      isodoc = IsoDoc::Convert.new({})
+      isodoc = IsoDoc::PresentationXMLConvert.new({})
       isodoc.bibitem_lookup(docxml)
       docxml.xpath(ns("//svgmap//eref")).each do |e|
         svgmap_resolve1(e, isodoc)
