@@ -59,9 +59,16 @@ module Metanorma
       return if !opt[:fonts] ||
         opt[:fontlicenseagreement] == "continue-without-fonts"
 
+      @font_overrides ||= []
+      font_install_override(opt)
+    end
+
+    def font_install_override(opt)
       confirm = opt[:fontlicenseagreement] == "no-install-fonts" ? "no" : "yes"
       CSV.parse_line(opt[:fonts], col_sep: ";").map(&:strip).each do |f|
+        @font_overrides.include?(f) and next
         Fontist::Font.install(f, confirmation: confirm)
+        @font_overrides << f
       end
     end
 

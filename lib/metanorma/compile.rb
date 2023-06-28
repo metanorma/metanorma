@@ -33,7 +33,6 @@ module Metanorma
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
-      font_install(options)
       process_exts(filename, extensions, file, isodoc, options)
     end
 
@@ -103,10 +102,22 @@ module Metanorma
                  presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
       @queue = ::Metanorma::WorkersPool
         .new(ENV["METANORMA_PARALLEL"]&.to_i || 3)
+      gather_and_install_fonts(file, options.dup, extensions)
+      process_exts_run(fnames, file, isodoc, extensions, options)
+      @queue.shutdown
+    end
+
+    def process_exts_run(fnames, file, isodoc, extensions, options)
       Util.sort_extensions_execution(extensions).each do |ext|
         process_ext(ext, file, isodoc, fnames, options)
       end
-      @queue.shutdown
+    end
+
+    def gather_and_install_fonts(file, options, extensions)
+      Util.sort_extensions_execution(extensions).each do |ext|
+        isodoc_options = get_isodoc_options(file, options, ext)
+        font_install(isodoc_options.merge(options))
+      end
     end
 
     def process_ext(ext, file, isodoc, fnames, options)
