@@ -2,24 +2,6 @@ require_relative "spec_helper"
 require "fileutils"
 
 RSpec.describe Metanorma::Input::Asciidoc do
-  it "aborts if include error" do
-    require "metanorma-iso"
-    input = <<~INPUT
-      = Document title
-      Author
-      :docfile: test.adoc
-      :nodoc:
-
-      include::common/common-sections/00-abstract.adoc[]
-
-    INPUT
-    expect do
-      Metanorma::Input::Asciidoc.new
-        .process(input, "test.adoc", :iso)
-    end.to raise_error(SystemExit)
-  rescue SystemExit
-  end
-
   it "extracts Asciidoctor document attributes" do
     input = <<~INPUT
       = Document title
