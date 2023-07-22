@@ -76,7 +76,9 @@ RSpec.describe Metanorma::Collection do
           .sub(%r{xlink:href=['"]data:image/gif;base64[^']*'},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
-      concat_text_doc_xml = Nokogiri::XML(File.open("#{INPATH}/rice-en.final.xml"))
+      concat_text_doc_xml = File.open("#{INPATH}/rice-en.final.xml") do |f|
+        Nokogiri::XML(f)
+      end
 
       %w[
         Dummy_ISO__xa0_17301-1_2016
