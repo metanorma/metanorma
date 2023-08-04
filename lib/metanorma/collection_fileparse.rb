@@ -59,7 +59,7 @@ module Metanorma
       docid &&= @c.decode(@isodoc
           .docid_prefix(docid["type"], docid.children.to_xml)).gsub(/\s/, " ")
       #if @files[docid] then docid
-      if @files.get(docid) then docid
+      if @files.get(docid) || @files.get("X #{docid}") then docid
       else
         #require "debug"; binding.b
         fail_update_bibitem(docid, identifier)
