@@ -60,7 +60,7 @@ module Metanorma
       [["//preface/*", "preface"], ["//sections/*", "sections"],
        ["//annex", nil],
        ["//bibliography/*[not(@hidden = 'true')]", "bibliography"],
-       ["//indexsect", nil]].freeze
+       ["//indexsect", nil], ["//colophon", nil]].freeze
 
     def sectionsplit(xml, filename, dir)
       @key = xref_preprocess(xml)
@@ -76,8 +76,9 @@ module Metanorma
     def emptydoc(xml)
       out = xml.dup
       out.xpath(
-        ns("//preface | //sections | //annex | //bibliography/clause | "\
-           "//bibliography/references[not(@hidden = 'true')] | //indexsect"),
+        ns("//preface | //sections | //annex | //bibliography/clause | " \
+           "//bibliography/references[not(@hidden = 'true')] | //indexsect" \
+           "//colophon"),
       ).each(&:remove)
       out
     end
@@ -123,7 +124,7 @@ module Metanorma
           next unless /^#/.match? a["href"]
 
           a["href"] = a["href"].sub(/^#/, "")
-          m << "<target href='#{a['href']}'>"\
+          m << "<target href='#{a['href']}'>" \
                "<xref target='#{a['href']}'/></target>"
         end
       end
@@ -137,7 +138,7 @@ module Metanorma
     end
 
     def make_anchor(anchor)
-      "<localityStack><locality type='anchor'><referenceFrom>"\
+      "<localityStack><locality type='anchor'><referenceFrom>" \
         "#{anchor}</referenceFrom></locality></localityStack>"
     end
 
@@ -155,7 +156,7 @@ module Metanorma
     def eref_to_internal_eref(section, xml, key)
       eref_to_internal_eref_select(section, xml).each_with_object([]) do |x, m|
         url = xml.at(ns("//bibitem[@id = '#{x}']/uri[@type = 'citation']"))
-        section.xpath(("//*[@bibitemid = '#{x}']")).each do |e|
+        section.xpath("//*[@bibitemid = '#{x}']").each do |e|
           id = eref_to_internal_eref1(e, key, url)
           id and m << id
         end
@@ -176,10 +177,10 @@ module Metanorma
     end
 
     def eref_to_internal_eref_select(section, xml)
-      refs = section.xpath(("//*/@bibitemid")).map { |x| x.text } # rubocop:disable Style/SymbolProc
+      refs = section.xpath("//*/@bibitemid").map { |x| x.text } # rubocop:disable Style/SymbolProc
       refs.uniq.reject do |x|
         xml.at(ns("//bibitem[@id = '#{x}'][@type = 'internal']")) ||
-          xml.at(ns("//bibitem[@id = '#{x}']"\
+          xml.at(ns("//bibitem[@id = '#{x}']" \
                     "[docidentifier/@type = 'repository']"))
       end
     end

@@ -95,12 +95,13 @@ module Metanorma
     def add_section_split_instance(file, manifest, key, idx)
       presfile = File.join(File.dirname(@files[key][:ref]),
                            File.basename(file[:url]))
-      manifest["#{key} #{file[:title]}"] =
+      newkey = key("#{key.strip} #{file[:title]}")
+      manifest[newkey] =
         { parentid: key, presentationxml: true, type: "fileref",
           rel_path: file[:url], out_path: File.basename(file[:url]),
           anchors: read_anchors(Nokogiri::XML(File.read(presfile))),
           bibdata: @files[key][:bibdata], ref: presfile }
-      manifest["#{key} #{file[:title]}"][:bare] = true unless idx.zero?
+      manifest[newkey][:bare] = true unless idx.zero?
     end
 
     def sectionsplit(file)
