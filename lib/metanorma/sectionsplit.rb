@@ -50,7 +50,7 @@ module Metanorma
             <body>
               <h1>{{ doctitle }}</h1>
               <h2>{{ docnumber }}</h2>
-              <nav>{{ labels["navigation"] }}</nav>
+              <nav>{{ navigation }}</nav>
             </body>
         </html>
       COVER

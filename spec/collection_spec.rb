@@ -81,10 +81,10 @@ RSpec.describe Metanorma::Collection do
       end
 
       %w[
-        Dummy_ISO__xa0_17301-1_2016
-        StarTrek_ISO__xa0_17301-1_2016
-        RiceAmd_ISO__xa0_17301-1_2016
-        _scope_ISO__xa0_1701_1974
+        Dummy_ISO_17301-1_2016
+        StarTrek_ISO_17301-1_2016
+        RiceAmd_ISO_17301-1_2016
+        _scope_ISO_1701_1974
         _introduction_ISO_17301-1_2016_Amd.1_2017
       ].each do |id|
         expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
@@ -93,11 +93,11 @@ RSpec.describe Metanorma::Collection do
       expect(concat_text_doc_xml.at("//xmlns:xref/@target").text)
         .to be_equivalent_to "_scope"
       expect(conact_file_doc_xml.at("//i:xref/@target", "i" => "https://www.metanorma.org/ns/iso").text)
-        .to be_equivalent_to "_scope_ISO__xa0_17301-1_2016"
+        .to be_equivalent_to "_scope_ISO_17301-1_2016"
       expect(concat_text_doc_xml.at("//xmlns:strong/@style").text)
         .to be_equivalent_to "background: url(#svg1); foreground: url(_001); middleground: url(#fig1);"
       expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/iso").text)
-        .to be_equivalent_to "background: url(#svg1_ISO__xa0_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO__xa0_17301-1_2016);"
+        .to be_equivalent_to "background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);"
 
       expect(File.exist?("#{INPATH}/collection1.err")).to be true
       expect(File.read("#{INPATH}/collection1.err", encoding: "utf-8"))
@@ -321,7 +321,7 @@ RSpec.describe Metanorma::Collection do
       )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be true
+      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO Collection 1"

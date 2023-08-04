@@ -48,7 +48,7 @@ def xmlpp(xml)
     .to_xml(indent: 2, encoding: "UTF-8")
 end
 
-ASCIIDOC_BLANK_HDR = <<~"HDR"
+ASCIIDOC_BLANK_HDR = <<~HDR
   = Document title
   Author
   :docfile: test.adoc
@@ -58,7 +58,7 @@ ASCIIDOC_BLANK_HDR = <<~"HDR"
 
 HDR
 
-ASCIIDOC_CONFIGURED_HDR = <<~"HDR"
+ASCIIDOC_CONFIGURED_HDR = <<~HDR
   = Document title
   Author
   :docfile: test.adoc
@@ -128,14 +128,14 @@ def strip_guid(xml)
 end
 
 def mock_pdf
-  allow(::Mn2pdf).to receive(:convert) do |url, output, _c, _d|
-    FileUtils.cp(url.gsub(/"/, ""), output.gsub(/"/, ""))
+  allow(Mn2pdf).to receive(:convert) do |url, output, _c, _d|
+    FileUtils.cp(url.gsub('"', ""), output.gsub('"', ""))
   end
 end
 
 def mock_sts
-  allow(::MnConvert).to receive(:convert) do |url, output, _c|
-    FileUtils.cp(url.gsub(/"/, ""), output[:output_file].gsub(/"/, ""))
+  allow(MnConvert).to receive(:convert) do |url, output, _c|
+    FileUtils.cp(url.gsub('"', ""), output[:output_file].gsub('"', ""))
   end
 end
 

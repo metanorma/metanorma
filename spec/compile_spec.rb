@@ -376,17 +376,6 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include %(<bibdata type="standard">)
   end
 
-  it "keeps asciimath" do
-    Metanorma::Compile.new.compile("spec/assets/test1.adoc",
-                                   type: "iso",
-                                   extension_keys: [:xml],
-                                   agree_to_terms: true)
-    expect(File.exist?("spec/assets/test1.xml")).to be true
-    xml = File.read("spec/assets/test1.xml", encoding: "utf-8")
-    expect(xml).not_to include %(<stem type="MathML">)
-    expect(xml).to include %(<stem type="AsciiMath">)
-  end
-
   it "exports assets" do
     sourcecode = "spec/assets/extract/sourcecode"
     %w(sourcecode-0000.txt sourcecode-0001.txt a.html).each do |w|

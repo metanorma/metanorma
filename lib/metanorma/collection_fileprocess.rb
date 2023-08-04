@@ -7,6 +7,7 @@ require_relative "collection_fileparse"
 module Metanorma
   # XML collection renderer
   class CollectionRenderer
+=begin
     # hash for each document in collection of document identifier to:
     # document reference (fileref or id), type of document reference,
     # and bibdata entry for that file
@@ -165,51 +166,64 @@ module Metanorma
       filename.sub!(/\.xml$/, ".html") if doc
       [file, filename]
     end
+=end
 
     # compile and output individual file in collection
     # warn "metanorma compile -x html #{f.path}"
     def file_compile(file, filename, identifier)
-      return if @files[identifier][:sectionsplit] == "true"
+      #return if @files[identifier][:sectionsplit] == "true"
+      return if @files.get(identifier,:sectionsplit) == "true"
 
       opts = {
         format: :asciidoc,
         extension_keys: @format,
         output_dir: @outdir,
-      }.merge(compile_options(identifier))
+      }.merge(compile_options_update(identifier))
 
       @compile.compile file, opts
-      @files[identifier][:outputs] = {}
+      #@files[identifier][:outputs] = {}
+      @files.set(identifier,:outputs, {})
       file_compile_formats(filename, identifier)
     end
 
-    def compile_options(identifier)
+    def compile_options_update(identifier)
       ret = @compile_options.dup
       Array(@directives).include?("presentation-xml") ||
-        @files[identifier][:presentationxml] and
+        #@files[identifier][:presentationxml] and
+        @files.get(identifier,:presentationxml) and
         ret.merge!(passthrough_presentation_xml: true)
-      @files[identifier][:sectionsplit] == "true" and
+      #@files[identifier][:sectionsplit] == "true" and
+      @files.get(identifier,:sectionsplit) == "true" and
         ret.merge!(sectionsplit: "true")
-      @files[identifier][:bare] == true and
+      #@files[identifier][:bare] == true and
+      @files.get(identifier,:bare) == true and
         ret.merge!(bare: true)
       ret
     end
 
     def file_compile_formats(filename, identifier)
-      file_id = @files[identifier]
+      #file_id = @files[identifier]
+      f = @files.get(identifier, :outputs)
       @format << :presentation if @format.include?(:pdf)
       @format.each do |e|
         ext = @compile.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)
-        unless /html$/.match?(ext) && file_id[:sectionsplit]
-          file_id[:outputs][e] = File.join(@outdir, fn)
+        #unless /html$/.match?(ext) && file_id[:sectionsplit]
+        unless /html$/.match?(ext) && @files.get(identifier, :sectionsplit)
+          #file_id[:outputs][e] = File.join(@outdir, fn)
+          f[e] = File.join(@outdir, fn)
         end
       end
+      @files.set(identifier,:outputs, f)
     end
 
-    def copy_file_to_dest(fileref)
-      dest = File.join(@outdir, fileref[:out_path])
+    #def copy_file_to_dest(fileref)
+    def copy_file_to_dest(identifier)
+      dest = File.join(@outdir, @files.get(identifier,:out_path))
       FileUtils.mkdir_p(File.dirname(dest))
-      FileUtils.cp fileref[:ref], dest
+      #FileUtils.cp fileref[:ref], dest
+      #require "debug"; binding.b
+      FileUtils.cp @files.get(identifier,:ref), dest
     end
 
     # process each file in the collection
@@ -217,12 +231,15 @@ module Metanorma
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
       internal_refs = locate_internal_refs
-      @files.each_with_index do |(identifier, x), i|
+      #@files.each_with_index do |(identifier, x), i|
+      @files.keys.each_with_index do |identifier, i|
         i.positive? && Array(@directives).include?("bare-after-first") and
           @compile_options.merge!(bare: true)
-        if x[:attachment] then copy_file_to_dest(x)
+        #if x[:attachment] then copy_file_to_dest(x)
+        if @files.get(identifier,:attachment) then copy_file_to_dest(identifier)
         else
-          file, filename = targetfile(x, read: true)
+          #file, filename = @files.targetfile(x, read: true)
+          file, filename = @files.targetfile_id(identifier, read: true)
           warn "\n\n\n\n\nProcess #{filename}: #{DateTime.now.strftime('%H:%M:%S')}"
           collection_xml = update_xrefs(file, identifier, internal_refs)
           collection_filename = File.basename(filename, File.extname(filename))
