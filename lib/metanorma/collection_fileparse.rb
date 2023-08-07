@@ -1,6 +1,7 @@
 module Metanorma
   # XML collection renderer
   class CollectionRenderer
+=begin
     # map locality type and label (e.g. "clause" "1") to id = anchor for
     # a document
     # Note: will only key clauses, which have unambiguous reference label in
@@ -35,6 +36,7 @@ module Metanorma
       filename = "#{id}.html"
       [file, filename]
     end
+=end
 
     # @param bib [Nokogiri::XML::Element]
     # @param identifier [String]
@@ -42,8 +44,8 @@ module Metanorma
       docid = get_bibitem_docid(bib, identifier) or return
       newbib = dup_bibitem(docid, bib)
       bib.replace(newbib)
-      _file, url = targetfile(@files[docid], relative: true, read: false,
-                                             doc: !@files[docid][:attachment])
+      #_file, url = targetfile(@files[docid], relative: true, read: false, doc: !@files[docid][:attachment])
+      _file, url = @files.targetfile_id(docid, relative: true, read: false, doc: !@files.get(docid,:attachment))
       uri_node = Nokogiri::XML::Node.new "uri", newbib.document
       uri_node[:type] = "citation"
       uri_node.content = url
@@ -55,9 +57,11 @@ module Metanorma
       docid = bib.at(ns("./docidentifier[not(@type)]")) ||
         bib.at(ns("./docidentifier"))
       docid &&= @c.decode(@isodoc
-          .docid_prefix(docid["type"], docid.children.to_xml))
-      if @files[docid] then docid
+          .docid_prefix(docid["type"], docid.children.to_xml)).gsub(/\s/, " ")
+      #if @files[docid] then docid
+      if @files.get(docid) || @files.get("X #{docid}") then docid
       else
+        #require "debug"; binding.b
         fail_update_bibitem(docid, identifier)
         nil
       end
@@ -71,7 +75,8 @@ module Metanorma
     end
 
     def dup_bibitem(docid, bib)
-      newbib = @files[docid][:bibdata].dup
+      #newbib = @files[docid][:bibdata].dup
+      newbib = @files.get(docid,:bibdata).dup
       newbib.name = "bibitem"
       newbib["hidden"] = "true"
       newbib&.at("./*[local-name() = 'ext']")&.remove
@@ -93,7 +98,7 @@ module Metanorma
       docxml = Nokogiri::XML(file) { |config| config.huge }
       supply_repo_ids(docxml)
       update_indirect_refs_to_docs(docxml, internal_refs)
-      add_document_suffix(identifier, docxml)
+      @files.add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
       svgmap_resolve(datauri_encode(docxml))
       hide_refs(docxml)
@@ -112,9 +117,12 @@ module Metanorma
         next if b&.at(ns("./docidentifier[@type = 'repository']"))
 
         b.xpath(ns("./docidentifier")).each do |docid|
-          id = @c.decode(@isodoc
-          .docid_prefix(docid["type"], docid.children.to_xml))
-          @files[id] or next
+          #id = @c.decode(@isodoc
+          #.docid_prefix(docid["type"], docid.children.to_xml))
+          id = @isodoc
+          .docid_prefix(docid["type"], docid.children.to_xml)
+          #@files[id] or next
+          @files.get(id) or next
           docid.next = "<docidentifier type='repository'>" \
                        "current-metanorma-collection/#{id}"
         end
@@ -205,7 +213,8 @@ module Metanorma
     # disambiguating document suffix on id
     def update_anchors(bib, docxml, docid) # rubocop:disable Metrics/AbcSize
       docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
-        if @files[docid] then update_anchor_loc(bib, e, docid)
+        #if @files[docid] then update_anchor_loc(bib, e, docid)
+        if @files.get(docid) then update_anchor_loc(bib, e, docid)
         else
           e << "<strong>** Unresolved reference to document #{docid} " \
                "from eref</strong>"
@@ -219,7 +228,8 @@ module Metanorma
       document_suffix = Metanorma::Utils::to_ncname(docid)
       ref = loc.at(ns("./referenceFrom")) or return
       anchor = "#{ref.text}_#{document_suffix}"
-      return unless @files[docid][:anchors].inject([]) do |m, (_, x)|
+      #return unless @files[docid][:anchors].inject([]) do |m, (_, x)|
+      return unless @files.get(docid,:anchors).inject([]) do |m, (_, x)|
         m += x.values
       end.include?(anchor)
 
@@ -233,16 +243,20 @@ module Metanorma
       type = ins.at(ns("./locality/@type"))&.text
       type = "clause" if type == "annex"
       ref = ins.at(ns("./locality/referenceFrom"))&.text
-      anchor = @files[docid][:anchors].dig(type, ref) or return
+      #anchor = @files[docid][:anchors].dig(type, ref) or return
+      anchor = @files.get(docid,:anchors).dig(type, ref) or return
       ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}" \
              "</referenceFrom></locality>"
     end
 
     # gather internal bibitem references
     def gather_internal_refs
-      @files.each_with_object({}) do |(_, x), refs|
-        x[:attachment] and next
-        file, = targetfile(x, read: true)
+      #@files.each.with_object({}) do |(_, x), refs|
+      @files.keys.each_with_object({}) do |i, refs|
+        #x[:attachment] and next
+        @files.get(i,:attachment) and next
+        #file, = targetfile(x, read: true)
+        file, = @files.targetfile_id(i, read: true)
         Nokogiri::XML(file)
           .xpath(ns("//bibitem[@type = 'internal']/" \
                     "docidentifier[@type = 'repository']")).each do |d|
@@ -256,10 +270,14 @@ module Metanorma
 
     # resolve file location for the target of each internal reference
     def locate_internal_refs
+      #require 'debug'; binding.b
       refs = gather_internal_refs
-      @files.keys.reject { |k| @files[k][:attachment] }.each do |identifier|
-        id = @c.decode(@isodoc.docid_prefix("", identifier.dup))
-        locate_internal_refs1(refs, identifier, @files[id])
+      #@files.keys.reject { |k| @files[k][:attachment] }.each do |identifier|
+      @files.keys.reject { |k| @files.get(k,:attachment) }.each do |identifier|
+        #id = @c.decode(@isodoc.docid_prefix("", identifier.dup))
+        #locate_internal_refs1(refs, identifier, @files[id])
+        id = @isodoc.docid_prefix("", identifier.dup)
+        locate_internal_refs1(refs, identifier, id)
       end
       refs.each do |schema, ids|
         ids.each do |id, key|
@@ -269,8 +287,10 @@ module Metanorma
       refs
     end
 
-    def locate_internal_refs1(refs, identifier, filedesc)
-      file, _filename = targetfile(filedesc, read: true)
+    #def locate_internal_refs1(refs, identifier, filedesc)
+    def locate_internal_refs1(refs, identifier, ident)
+      #file, _filename = targetfile(filedesc, read: true)
+      file, _filename = @files.targetfile_id(ident, read: true)
       xml = Nokogiri::XML(file) { |config| config.huge }
       t = xml.xpath("//*/@id").each_with_object({}) { |i, x| x[i.text] = true }
       refs.each do |schema, ids|

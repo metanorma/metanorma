@@ -1,5 +1,5 @@
        <metanorma-collection xmlns="http://metanorma.org">
-         <bibdata type="collection" schema-version="v1.2.1">
+         <bibdata type="collection">
            <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
            <docidentifier type="iso">ISO 12345</docidentifier>
            <date type="created">
@@ -33,7 +33,7 @@
              <title>Standards</title>
              <docref fileref="rice-en.final.xml" index="true" id="doc000000000">
                <identifier>ISO 17301-1:2016</identifier>
-               <bibdata type="standard" schema-version="v1.2.1">
+               <bibdata type="standard">
                  <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
                  <title type="title-intro" format="text/plain" language="en">Cereals and pulses</title>
                  <title type="title-main" format="text/plain" language="en">Specifications and test methods</title>
@@ -80,7 +80,7 @@
                      </organization>
                    </owner>
                  </copyright>
-                 <ext schema-version="v1.0.0">
+                 <ext>
                    <doctype>international-standard</doctype>
                    <editorialgroup>
                      <technical-committee number="34">Food products</technical-committee>
@@ -100,7 +100,7 @@
              </docref>
              <docref fileref="dummy.xml" index="true" id="doc000000001">
                <identifier>ISO 17302</identifier>
-               <bibdata type="standard" schema-version="v1.2.1">
+               <bibdata type="standard">
                  <title type="main" format="text/plain" language="en">Dummy document</title>
                  <title type="title-main" format="text/plain" language="en">Dummy document</title>
                  <title type="main" format="text/plain" language="fr">Dummy document</title>
@@ -138,7 +138,7 @@
                      </organization>
                    </owner>
                  </copyright>
-                 <ext schema-version="v1.0.0">
+                 <ext>
                    <doctype>international-standard</doctype>
                    <editorialgroup>
                      <technical-committee number="34">Food products</technical-committee>
@@ -158,7 +158,7 @@
              </docref>
              <docref fileref="rice1-en.final.xml" index="true" id="doc000000002">
                <identifier>ISO 1701:1974</identifier>
-               <bibdata type="standard" schema-version="v1.2.1">
+               <bibdata type="standard">
                  <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                  <title type="title-main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                  <title type="main" format="text/plain" language="fr">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
@@ -200,7 +200,7 @@
                      </organization>
                    </owner>
                  </copyright>
-                 <ext schema-version="v1.0.0">
+                 <ext>
                    <doctype>international-standard</doctype>
                    <editorialgroup>
                      <technical-committee number="34">Food products</technical-committee>
@@ -224,7 +224,7 @@
              <title>Amendments</title>
              <docref fileref="rice-amd.final.xml" index="true" id="doc000000003">
                <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
-               <bibdata type="standard" schema-version="v1.2.1">
+               <bibdata type="standard">
                  <title type="main" format="text/plain" language="en">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
                  <title type="title-main" format="text/plain" language="en">Specification and test methods</title>
                  <title type="title-part" format="text/plain" language="en">Rice</title>
@@ -274,7 +274,7 @@
                      </organization>
                    </owner>
                  </copyright>
-                 <ext schema-version="v1.0.0">
+                 <ext>
                    <doctype>amendment</doctype>
                    <editorialgroup>
                      <technical-committee number="34">Food products</technical-committee>
@@ -311,7 +311,7 @@
          </prefatory-content>
          <doc-container id="doc000000000">
            <iso-standard>
-             <bibdata type="standard" schema-version="v1.2.1">
+             <bibdata type="standard">
                <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
                <title type="title-intro" format="text/plain" language="en">Cereals and pulses</title>
                <title type="title-main" format="text/plain" language="en">Specifications and test methods</title>
@@ -358,7 +358,7 @@
                    </organization>
                  </owner>
                </copyright>
-               <ext schema-version="v1.0.0">
+               <ext>
                  <doctype>international-standard</doctype>
                  <editorialgroup>
                    <technical-committee number="34">Food products</technical-committee>
@@ -379,7 +379,7 @@
          </doc-container>
          <doc-container id="doc000000001">
            <iso-standard>
-             <bibdata type="standard" schema-version="v1.2.1">
+             <bibdata type="standard">
                <title type="main" format="text/plain" language="en">Dummy document</title>
                <title type="title-main" format="text/plain" language="en">Dummy document</title>
                <title type="main" format="text/plain" language="fr">Dummy document</title>
@@ -417,7 +417,7 @@
                    </organization>
                  </owner>
                </copyright>
-               <ext schema-version="v1.0.0">
+               <ext>
                  <doctype>international-standard</doctype>
                  <editorialgroup>
                    <technical-committee number="34">Food products</technical-committee>
@@ -438,7 +438,7 @@
          </doc-container>
          <doc-container id="doc000000002">
            <iso-standard>
-             <bibdata type="standard" schema-version="v1.2.1">
+             <bibdata type="standard">
                <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                <title type="title-main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                <title type="main" format="text/plain" language="fr">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
@@ -480,7 +480,7 @@
                    </organization>
                  </owner>
                </copyright>
-               <ext schema-version="v1.0.0">
+               <ext>
                  <doctype>international-standard</doctype>
                  <editorialgroup>
                    <technical-committee number="34">Food products</technical-committee>
@@ -818,17 +818,17 @@
                </copyright-statement>
              </boilerplate>
              <sections>
-               <clause id="_scope_ISO__xa0_17301-1_2016" obligation="normative">
+               <clause id="_scope_ISO_17301-1_2016" obligation="normative">
                  <title>Scope</title>
                  <p id="">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
                  <p id="">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
                  <p id="">It is not applicable to cooked rice products.</p>
-                 <p id="">This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO__xa0_17301-1_2016" citeas="ISO 17301-1:2016/Amd.1:2017"/>.</p>
-                 <p id="">This document is unrelated <eref type="inline" bibitemid="StarTrek_ISO__xa0_17301-1_2016" citeas="ISO 1701:1974"/>, see e.g. <eref type="inline" bibitemid="StarTrek_ISO__xa0_17301-1_2016" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality><locality type="anchor"><referenceFrom>scope_ISO__xa0_1701_1974</referenceFrom></locality></localityStack></eref>.</p>
-                 <p id="">This document is unrelated to <eref type="inline" bibitemid="Dummy_ISO__xa0_17301-1_2016" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what_ISO__xa0_17302</referenceFrom></locality></localityStack></eref>.</p>
-                 <p id="">This document uses schemas <eref bibitemid="express-schema_E0_ISO__xa0_17301-1_2016" citeas="Missing:express-schema:E0"><locality type="anchor"><referenceFrom>A0_Missing_express-schema_E0</referenceFrom></locality>E0/A0</eref>, <eref bibitemid="express-schema_E1_ISO__xa0_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A1_ISO__xa0_17302</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO__xa0_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A2_ISO__xa0_17302</referenceFrom></locality>E2/A2</eref>.</p>
-                 <svgmap id="svg1_ISO__xa0_17301-1_2016">
-                   <figure id="fig1_ISO__xa0_17301-1_2016">
+                 <p id="">This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016" citeas="ISO 17301-1:2016/Amd.1:2017"/>.</p>
+                 <p id="">This document is unrelated <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"/>, see e.g. <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality><locality type="anchor"><referenceFrom>scope_ISO_1701_1974</referenceFrom></locality></localityStack></eref>.</p>
+                 <p id="">This document is unrelated to <eref type="inline" bibitemid="Dummy_ISO_17301-1_2016" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
+                 <p id="">This document uses schemas <eref bibitemid="express-schema_E0_ISO_17301-1_2016" citeas="Missing:express-schema:E0"><locality type="anchor"><referenceFrom>A0_Missing_express-schema_E0</referenceFrom></locality>E0/A0</eref>, <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A1_ISO_17302</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A2_ISO_17302</referenceFrom></locality>E2/A2</eref>.</p>
+                 <svgmap id="svg1_ISO_17301-1_2016">
+                   <figure id="fig1_ISO_17301-1_2016">
                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
                        <style type="text/css">
        	.st0{fill:none;stroke:#000000;stroke-miterlimit:10;}
@@ -1039,22 +1039,22 @@
                </copyright-statement>
              </boilerplate>
              <sections>
-               <clause id="_scope_ISO__xa0_1701_1974" type="scope" inline-header="false" obligation="normative">
+               <clause id="_scope_ISO_1701_1974" type="scope" inline-header="false" obligation="normative">
                  <title>Scope</title>
                  <p id="">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
                  <p id="">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
                  <p id="">It is not applicable to cooked rice products.</p>
-                 <p id="">This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO__xa0_1701_1974" citeas="ISO 17301-1:2016/Amd.1:2017"/>. It derives from <eref type="inline" bibitemid="StarTrek_ISO__xa0_1701_1974" citeas="ISO 1701:1974"/>. See e.g. <eref type="inline" bibitemid="StarTrek_ISO__xa0_1701_1974" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality><locality type="anchor"><referenceFrom>scope_ISO__xa0_1701_1974</referenceFrom></locality></localityStack></eref>.</p>
-                 <p id="">This document is unrelated to <eref type="inline" bibitemid="Dummy_ISO__xa0_1701_1974" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what_ISO__xa0_17302</referenceFrom></locality></localityStack></eref>.</p>
+                 <p id="">This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_1701_1974" citeas="ISO 17301-1:2016/Amd.1:2017"/>. It derives from <eref type="inline" bibitemid="StarTrek_ISO_1701_1974" citeas="ISO 1701:1974"/>. See e.g. <eref type="inline" bibitemid="StarTrek_ISO_1701_1974" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality><locality type="anchor"><referenceFrom>scope_ISO_1701_1974</referenceFrom></locality></localityStack></eref>.</p>
+                 <p id="">This document is unrelated to <eref type="inline" bibitemid="Dummy_ISO_1701_1974" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
                </clause>
              </sections>
              <bibliography>
-               <references id="_normref_ISO__xa0_1701_1974" normative="true" obligation="informative">
+               <references id="_normref_ISO_1701_1974" normative="true" obligation="informative">
                  <title>Normative References</title>
                </references>
-               <references id="_bibliography_ISO__xa0_1701_1974" normative="false" obligation="informative" hidden="true">
+               <references id="_bibliography_ISO_1701_1974" normative="false" obligation="informative" hidden="true">
                  <title>Bibliography</title>
-                 <bibitem type="standard" hidden="true" id="StarTrek_ISO__xa0_1701_1974">
+                 <bibitem type="standard" hidden="true" id="StarTrek_ISO_1701_1974">
                    <title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                    <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                    <title language="fr" format="text/plain" type="main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
@@ -1098,7 +1098,7 @@
                      </owner>
                    </copyright>
                  </bibitem>
-                 <bibitem type="standard" hidden="true" id="RiceAmd_ISO__xa0_1701_1974">
+                 <bibitem type="standard" hidden="true" id="RiceAmd_ISO_1701_1974">
                    <title language="en" format="text/plain" type="main">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
                    <title language="en" format="text/plain" type="title-main">Specification and test methods</title>
                    <title language="en" format="text/plain" type="title-part">Rice</title>
@@ -1150,7 +1150,7 @@
                      </owner>
                    </copyright>
                  </bibitem>
-                 <bibitem type="standard" hidden="true" id="Dummy_ISO__xa0_1701_1974">
+                 <bibitem type="standard" hidden="true" id="Dummy_ISO_1701_1974">
                    <title language="en" format="text/plain" type="main">Dummy document</title>
                    <title language="en" format="text/plain" type="title-main">Dummy document</title>
                    <title language="fr" format="text/plain" type="main">Dummy document</title>

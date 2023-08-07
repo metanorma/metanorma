@@ -5,6 +5,7 @@ require "htmlentities"
 require_relative "collection_fileprocess"
 require_relative "fontist_utils"
 require_relative "util"
+require_relative "files_lookup"
 
 module Metanorma
   # XML collection renderer
@@ -12,6 +13,7 @@ module Metanorma
     FORMATS = %i[html xml doc pdf].freeze
 
     attr_accessor :isodoc
+    attr_reader :xml, :compile, :compile_options, :documents
 
     # This is only going to render the HTML collection
     # @param xml [Metanorma::Collection] input XML collection
@@ -49,8 +51,9 @@ module Metanorma
       @c = HTMLEntities.new
 
       # list of files in the collection
-      @files = read_files folder
-      @isodoc = isodoc_populate # output processor for flavour
+      #@files = read_files folder
+      @files = Metanorma::FileLookup.new(folder, self)
+      isodoc_populate
       create_non_existing_directory(@outdir)
     end
 
@@ -100,11 +103,14 @@ module Metanorma
     def concatenate1(out, ext)
       out.directives << "documents-inline"
       out.bibdatas.each_key do |ident|
-        id = @c.decode(@isodoc.docid_prefix(nil, ident.dup))
-        @files[id][:attachment] || @files[id][:outputs].nil? and next
+        #id = @c.decode(@isodoc.docid_prefix(nil, ident.dup))
+        #@files[id][:attachment] || @files[id][:outputs].nil? and next
+        id = @isodoc.docid_prefix(nil, ident.dup)
+        @files.get(id,:attachment) || @files.get(id,:outputs).nil? and next
 
         out.documents[id] =
-          Metanorma::Document.raw_file(@files[id][:outputs][ext])
+          #Metanorma::Document.raw_file(@files[id][:outputs][ext])
+          Metanorma::Document.raw_file(@files.get(id,:outputs)[ext])
       end
       out
     end
@@ -147,16 +153,14 @@ module Metanorma
       # create the @meta class of isodoc, for populating Liquid,
       # with "navigation" set to the index bar.
       # extracted from the manifest
-      isodoc = isodoc_create
-      isodoc.meta.set(:navigation, indexfile(@xml.at(ns("//manifest"))))
-      isodoc.meta.set(:docrefs, liquid_docrefs)
-      isodoc.meta.set(:"prefatory-content",
-                      isodoc_builder(isodoc,
+      @isodoc.meta.set(:navigation, indexfile(@xml.at(ns("//manifest"))))
+      @isodoc.meta.set(:docrefs, liquid_docrefs)
+      @isodoc.meta.set(:"prefatory-content",
+                      isodoc_builder(@isodoc,
                                      @xml.at(ns("//prefatory-content"))))
-      isodoc.meta.set(:"final-content",
+      @isodoc.meta.set(:"final-content",
                       isodoc_builder(isodoc, @xml.at(ns("//final-content"))))
-      isodoc.info(@xml, nil)
-      isodoc
+      @isodoc.info(@xml, nil)
     end
 
     def isodoc_builder(isodoc, node)
@@ -229,7 +233,8 @@ module Metanorma
 
     def index_link(docref, ident)
       if docref["fileref"]
-        @files[ident][:out_path].sub(/\.xml$/, ".html")
+        #@files[ident][:out_path].sub(/\.xml$/, ".html")
+        @files.get(ident,:out_path).sub(/\.xml$/, ".html")
       else "#{docref['id']}.html"
       end
     end
