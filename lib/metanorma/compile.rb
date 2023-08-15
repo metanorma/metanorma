@@ -109,7 +109,7 @@ module Metanorma
 
     def process_exts_run(fnames, file, isodoc, extensions, options)
       Util.sort_extensions_execution(extensions).each do |ext|
-        process_ext(ext, file, isodoc, fnames, options)
+        process_ext(ext, file, isodoc, fnames, options) or break
       end
     end
 
@@ -124,7 +124,7 @@ module Metanorma
       fnames[:ext] = @processor.output_formats[ext]
       fnames[:out] = fnames[:f].sub(/\.[^.]+$/, ".#{fnames[:ext]}")
       isodoc_options = get_isodoc_options(file, options, ext)
-      thread = nil
+      thread = true
       unless process_ext_simple(ext, isodoc, fnames, options,
                                 isodoc_options)
         thread = process_exts1(ext, fnames, isodoc, options, isodoc_options)
@@ -162,28 +162,30 @@ module Metanorma
                         isodoc_options1)
       wrap_html(options1, fnames1[:ext], fnames1[:out])
     rescue StandardError => e
-      strict = ext == :presentation || isodoc_options1[:strict] == "true"
-      isodoc_error_process(e, strict)
+      strict = ext == :presentation || isodoc_options1[:strict] == true
+      isodoc_error_process(e, strict, false)
     end
 
     def process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
       @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
                         isodoc_options)
-      nil # return as Thread
+      true # return as Thread
     rescue StandardError => e
       strict = ext == :presentation || isodoc_options[:strict] == "true"
-      isodoc_error_process(e, strict)
+      isodoc_error_process(e, strict, true)
+      ext != :presentation
     end
 
     private
 
-    def isodoc_error_process(err, strict)
+    def isodoc_error_process(err, strict, must_abort)
       if strict || err.message.include?("Fatal:")
         @errors << err.message
       else
         puts err.message
       end
       puts err.backtrace.join("\n")
+      must_abort and 1
     end
 
     # @param options [Hash]
