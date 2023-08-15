@@ -518,15 +518,20 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "don't skip Presentation XML errors" do
-    exception_msg = "Anything"
     require "metanorma-iso"
-    allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert).to receive(:convert)
-      .and_raise(exception_msg)
-
+    allow_any_instance_of(IsoDoc::Iso::HtmlConvert).to receive(:convert)
+      .and_raise("Something")
     c = Metanorma::Compile.new
-    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:pdf])
+    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html], strict: true)
+    expect(c.errors).not_to include("Anything")
+    expect(c.errors).to include("Something")
 
-    expect(c.errors).to include(exception_msg)
+    allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert).to receive(:convert)
+      .and_raise("Anything")
+    c = Metanorma::Compile.new
+    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html], strict: true)
+    expect(c.errors).to include("Anything")
+    expect(c.errors).not_to include("Something") # never runs HTML
   end
 
   it "processes section split HTML" do
