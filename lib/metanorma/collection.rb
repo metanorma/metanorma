@@ -9,16 +9,11 @@ require_relative "util"
 module Metanorma
   # Metanorma collection of documents
   class Collection
-    # @return [String]
     attr_reader :file
 
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
-    attr_accessor :directives
-
-    # @return [Hash<String, Metanorma::Document>]
-    attr_accessor :documents, :bibdatas, :coverpage
-
+    attr_accessor :directives, :documents, :bibdatas, :coverpage
     attr_accessor :disambig, :manifest
 
     # @param file [String] path to source file
@@ -235,12 +230,10 @@ module Metanorma
       end
     end
 
-    # @return [String]
     def doctype
       @doctype ||= fetch_doctype || "standoc"
     end
 
-    # @return [String]
     def fetch_doctype
       docid = @bibdata.docidentifier.first
       return unless docid

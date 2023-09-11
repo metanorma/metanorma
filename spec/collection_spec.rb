@@ -319,8 +319,10 @@ RSpec.describe Metanorma::Collection do
           no_install_fonts: true,
         },
       )
+      expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+      expect(File.exist?("#{INPATH}/ISO 17301-1_2016_index.html")).to be false
       expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
