@@ -49,9 +49,9 @@ module Metanorma
       @disambig = Util::DisambigFiles.new
       @compile = Compile.new
       @c = HTMLEntities.new
+      @files_to_delete = []
 
       # list of files in the collection
-      #@files = read_files folder
       @files = Metanorma::FileLookup.new(folder, self)
       isodoc_populate
       create_non_existing_directory(@outdir)
@@ -83,7 +83,14 @@ module Metanorma
       warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.coverpage if options[:format]&.include?(:html)
       warn "\n\n\n\n\nDone: #{DateTime.now.strftime('%H:%M:%S')}"
+      cr.flush_files
       cr
+    end
+
+    def flush_files
+      warn @files.files_to_delete
+      @files.files_to_delete.each { |f| FileUtils.rm_f(f) }
+      @files_to_delete.each { |f| FileUtils.rm_f(f) }
     end
 
     def concatenate(col, options)
@@ -103,14 +110,11 @@ module Metanorma
     def concatenate1(out, ext)
       out.directives << "documents-inline"
       out.bibdatas.each_key do |ident|
-        #id = @c.decode(@isodoc.docid_prefix(nil, ident.dup))
-        #@files[id][:attachment] || @files[id][:outputs].nil? and next
         id = @isodoc.docid_prefix(nil, ident.dup)
-        @files.get(id,:attachment) || @files.get(id,:outputs).nil? and next
+        @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
 
         out.documents[id] =
-          #Metanorma::Document.raw_file(@files[id][:outputs][ext])
-          Metanorma::Document.raw_file(@files.get(id,:outputs)[ext])
+          Metanorma::Document.raw_file(@files.get(id, :outputs)[ext])
       end
       out
     end
@@ -156,10 +160,10 @@ module Metanorma
       @isodoc.meta.set(:navigation, indexfile(@xml.at(ns("//manifest"))))
       @isodoc.meta.set(:docrefs, liquid_docrefs)
       @isodoc.meta.set(:"prefatory-content",
-                      isodoc_builder(@isodoc,
-                                     @xml.at(ns("//prefatory-content"))))
+                       isodoc_builder(@isodoc,
+                                      @xml.at(ns("//prefatory-content"))))
       @isodoc.meta.set(:"final-content",
-                      isodoc_builder(isodoc, @xml.at(ns("//final-content"))))
+                       isodoc_builder(isodoc, @xml.at(ns("//final-content"))))
       @isodoc.info(@xml, nil)
     end
 
@@ -233,8 +237,7 @@ module Metanorma
 
     def index_link(docref, ident)
       if docref["fileref"]
-        #@files[ident][:out_path].sub(/\.xml$/, ".html")
-        @files.get(ident,:out_path).sub(/\.xml$/, ".html")
+        @files.get(ident, :out_path).sub(/\.xml$/, ".html")
       else "#{docref['id']}.html"
       end
     end

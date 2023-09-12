@@ -5,6 +5,8 @@ require "metanorma-utils"
 module Metanorma
   # XML collection renderer
   class FileLookup
+    attr_accessor :files_to_delete
+
     # hash for each document in collection of document identifier to:
     # document reference (fileref or id), type of document reference,
     # and bibdata entry for that file
@@ -18,6 +20,7 @@ module Metanorma
       @path = path
       @compile = parent.compile
       @documents = parent.documents
+      @files_to_delete = []
       read_files
     end
 
@@ -56,17 +59,14 @@ module Metanorma
     end
 
     def add_section_split
-        #require "debug"; binding.b
       ret = @files.keys.each_with_object({}) do |k, m|
         if @files[k][:sectionsplit] == "true" && !@files[k]["attachment"]
           s, manifest = sectionsplit(@files[k][:ref])
-          s.each_with_index do |f1, i|
-            add_section_split_instance(f1, m, k, i)
-          end
+          s.each_with_index { |f1, i| add_section_split_instance(f1, m, k, i) }
           m["#{k}:index.html"] = add_section_split_cover(manifest, k)
+          @files_to_delete << m["#{k}:index.html"][:ref]
         end
         m[k] = @files[k]
-        #require "debug"; binding.b
       end
       @files = ret
     end
@@ -101,11 +101,11 @@ module Metanorma
           rel_path: file[:url], out_path: File.basename(file[:url]),
           anchors: read_anchors(Nokogiri::XML(File.read(presfile))),
           bibdata: @files[key][:bibdata], ref: presfile }
+      @files_to_delete << file[:url]
       manifest[newkey][:bare] = true unless idx.zero?
     end
 
     def sectionsplit(file)
-      #require "debug"; binding.b
       @compile.compile(
         file, { format: :asciidoc, extension_keys: [:presentation] }
         .merge(@parent.compile_options)
