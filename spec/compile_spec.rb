@@ -522,14 +522,16 @@ RSpec.describe Metanorma::Compile do
     allow_any_instance_of(IsoDoc::Iso::HtmlConvert).to receive(:convert)
       .and_raise("Something")
     c = Metanorma::Compile.new
-    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html], strict: true)
+    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html],
+                                        strict: true)
     expect(c.errors).not_to include("Anything")
     expect(c.errors).to include("Something")
 
     allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert).to receive(:convert)
       .and_raise("Anything")
     c = Metanorma::Compile.new
-    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html], strict: true)
+    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html],
+                                        strict: true)
     expect(c.errors).to include("Anything")
     expect(c.errors).not_to include("Something") # never runs HTML
   end
@@ -550,12 +552,14 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.4.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
     f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
     expect(File.exist?("#{f}/cover.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
@@ -566,7 +570,9 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.5.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
     m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
     file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
@@ -616,41 +622,52 @@ RSpec.describe Metanorma::Compile do
         </svg>
         </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
+    expect(file2.at("//xmlns:preface")).to be_nil
+    expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
+    expect(file2.at("//xmlns:annex")).to be_nil
+    expect(file2.at("//xmlns:indexsect")).to be_nil
+    file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.5.xml"))
+    expect(file6.at("//xmlns:preface")).to be_nil
+    expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
+    expect(file6.at("//xmlns:annex")).not_to be_nil
+    expect(file6.at("//xmlns:indexsect")).to be_nil
     expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
       .to be_equivalent_to <<~OUTPUT
         ---
         directives:
-         - presentation-xml
-         - bare-after-first
-         bibdata:
-           title:
-             type: title-main
-             language:
-             content: ISO Title
-           type: collection
-           docid:
-             type: ISO
-             id: ISO 1
-         manifest:
-           level: collection
-           title: Collection
-           docref:
-           - fileref: test_sectionsplit.html.3.xml
-             identifier: "[Untitled]"
-           - fileref: test_sectionsplit.html.0.xml
-             identifier: abstract
-           - fileref: test_sectionsplit.html.1.xml
-             identifier: introduction
-           - fileref: test_sectionsplit.html.6.xml
-             identifier: Normative References
-           - fileref: test_sectionsplit.html.2.xml
-             identifier: Clause 4
-           - fileref: test_sectionsplit.html.4.xml
-             identifier: Annex (informative)
-           - fileref: test_sectionsplit.html.5.xml
-             identifier: "[Untitled]"
-           - fileref: test_sectionsplit.html.7.xml
-             identifier: Bibliography
+        - presentation-xml
+        - bare-after-first
+        bibdata:
+          title:
+            type: title-main
+            language:
+            content: ISO Title
+          type: collection
+          docid:
+            type: ISO
+            id: ISO 1
+        manifest:
+          level: collection
+          title: Collection
+          docref:
+          - fileref: test_sectionsplit.html.3.xml
+            identifier: "[Untitled]"
+          - fileref: test_sectionsplit.html.0.xml
+            identifier: abstract
+          - fileref: test_sectionsplit.html.1.xml
+            identifier: introduction
+          - fileref: test_sectionsplit.html.6.xml
+            identifier: Normative References
+          - fileref: test_sectionsplit.html.2.xml
+            identifier: Clause 4
+          - fileref: test_sectionsplit.html.4.xml
+            identifier: Annex (informative)
+          - fileref: test_sectionsplit.html.5.xml
+            identifier: Annex 2
+          - fileref: test_sectionsplit.html.7.xml
+            identifier: Bibliography
+          - fileref: test_sectionsplit.html.8.xml
+            identifier: Index
       OUTPUT
   end
 
