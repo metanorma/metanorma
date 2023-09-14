@@ -77,7 +77,7 @@ module Metanorma
       out = xml.dup
       out.xpath(
         ns("//preface | //sections | //annex | //bibliography/clause | " \
-           "//bibliography/references[not(@hidden = 'true')] | //indexsect" \
+           "//bibliography/references[not(@hidden = 'true')] | //indexsect | " \
            "//colophon"),
       ).each(&:remove)
       out

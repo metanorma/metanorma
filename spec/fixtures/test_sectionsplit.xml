@@ -47,6 +47,7 @@
        </clause>
        </annex>
        <annex id="P1" inline-header="false" obligation="normative" displayorder='6'>
+         <title>Annex 2</title>
        </annex>
         <bibliography><references id="R" obligation="informative" normative="true" displayorder='3'>
          <title>Normative References</title>
@@ -57,6 +58,7 @@
          <title>Bibliography Subsection</title>
        </references>
        </clause>
-       </bibliography>
+     </bibliography>
+     <indexsect displayorder="8"><title>Index</title></indexsect>
       </iso-standard>
 
