@@ -66,18 +66,35 @@ module Metanorma
 
     # Input XML is Semantic
     def sectionsplit(filename, basename, dir, compile_options)
-      xml = sectionsplit_prep(File.read(filename), basename, compile_options)
+      xml = sectionsplit_prep(File.read(filename), basename, dir,
+                              compile_options)
       @key = xref_preprocess(xml)
-      @splitdir = dir
       out = emptydoc(xml)
       SPLITSECTIONS.each_with_object([]) do |n, ret|
-        xml.xpath(ns(n[0])).each do |s|
+        conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
           ret << sectionfile(xml, out, "#{basename}.#{ret.size}", s, n[1])
         end
       end
     end
 
-    def sectionsplit_prep(file, filename, compile_options)
+    def block?(node)
+      %w(p table formula admonition ol ul dl figure quote sourcecode example
+         pre note pagebrreak hr bookmark requirement recommendation permission
+         svgmap inputform toc passthrough review imagemap).include?(node.name)
+    end
+
+    def conflate_floatingtitles(nodes)
+      holdover = false
+      nodes.each_with_object([]) do |x, m|
+        if holdover then m.last << x
+        else m << [x]
+        end
+        holdover = block?(x)
+      end
+    end
+
+    def sectionsplit_prep(file, filename, dir, compile_options)
+      @splitdir = dir
       xml1filename, type = sectionsplit_preprocess_semxml(file, filename)
       compile(
         xml1filename,
@@ -110,23 +127,27 @@ module Metanorma
       out
     end
 
-    def sectionfile(fulldoc, xml, file, chunk, parentnode)
-      fname = create_sectionfile(fulldoc, xml.dup, file, chunk, parentnode)
-      { order: chunk["displayorder"].to_i, url: fname,
-        title: titlerender(chunk) }
+    def sectionfile(fulldoc, xml, file, chunks, parentnode)
+      fname = create_sectionfile(fulldoc, xml.dup, file, chunks, parentnode)
+      { order: chunks.last["displayorder"].to_i, url: fname,
+        title: titlerender(chunks.last) }
     end
 
-    def create_sectionfile(xml, out, file, chunk, parentnode)
+    def create_sectionfile(xml, out, file, chunks, parentnode)
       ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
-      if parentnode
-        ins.next = "<#{parentnode}/>"
-        ins.next.add_child(chunk.dup)
-      else ins.next = chunk.dup
-      end
+      sectionfile_insert(ins, chunks, parentnode)
       xref_process(out, xml, @key)
       outname = "#{file}.xml"
       File.open(File.join(@splitdir, outname), "w:UTF-8") { |f| f.write(out) }
       outname
+    end
+
+    def sectionfile_insert(ins, chunks, parentnode)
+      if parentnode
+        ins.next = "<#{parentnode}/>"
+        chunks.each { |c| ins.next.add_child(c.dup) }
+      else chunks.each { |c| ins.next = c.dup }
+      end
     end
 
     def titlerender(section)

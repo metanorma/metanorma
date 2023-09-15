@@ -527,7 +527,8 @@ RSpec.describe Metanorma::Compile do
     expect(c.errors).not_to include("Anything")
     expect(c.errors).to include("Something")
 
-    allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert).to receive(:convert)
+    allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert)
+      .to receive(:convert)
       .and_raise("Anything")
     c = Metanorma::Compile.new
     c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html],
@@ -557,7 +558,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
     f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
@@ -570,13 +571,15 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.5.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
     m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
     file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
     file2.xpath("//xmlns:emf").each(&:remove)
+    expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
+    expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
     expect(xmlpp(file2
      .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
@@ -661,17 +664,16 @@ RSpec.describe Metanorma::Compile do
           - fileref: test_sectionsplit.html.2.xml
             identifier: introduction
           - fileref: test_sectionsplit.html.4.xml
-            identifier: "[Untitled]"
-          - fileref: test_sectionsplit.html.5.xml
             identifier: 1 Normative References
           - fileref: test_sectionsplit.html.3.xml
             identifier: 2 Clause 4
-          - fileref: test_sectionsplit.html.6.xml
+          - fileref: test_sectionsplit.html.5.xml
             identifier: Annex A <span class="obligation">(normative)</span>  Annex (informative)
-          - fileref: test_sectionsplit.html.7.xml
+          - fileref: test_sectionsplit.html.6.xml
             identifier: Annex B <span class="obligation">(normative)</span>  Annex 2
-          - fileref: test_sectionsplit.html.8.xml
+          - fileref: test_sectionsplit.html.7.xml
             identifier: Bibliography
+
       OUTPUT
   end
 
