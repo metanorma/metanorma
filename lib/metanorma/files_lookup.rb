@@ -110,6 +110,7 @@ module Metanorma
       s = @compile.sectionsplit(file, File.basename(file), File.dirname(file),
                                 @parent.compile_options)
         .sort_by { |f| f[:order] }
+      xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"))
       [s, @compile.collection_manifest(File.basename(file), s, xml, nil,
                                        File.dirname(file))]
     end

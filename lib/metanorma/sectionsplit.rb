@@ -5,15 +5,13 @@ module Metanorma
     # assume we pass in Presentation XML, but we want to recover Semantic XML
     def sectionsplit_convert(input_filename, file, output_filename = nil,
                              opts = {})
-      require "debug"
-      binding.b
       @isodoc = IsoDoc::Convert.new({})
       input_filename += ".xml" unless input_filename.match?(/\.xml$/)
       File.exist?(input_filename) or
         File.open(input_filename, "w:UTF-8") { |f| f.write(file) }
       presxml = File.read(input_filename, encoding: "utf-8")
       @openmathdelim, @closemathdelim = @isodoc.extract_delims(presxml)
-      xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
+      _xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
       build_collection(input_filename, presxml, output_filename || filename,
                        dir, opts)
     end
@@ -65,6 +63,8 @@ module Metanorma
 
     # Input XML is Semantic
     def sectionsplit(filename, basename, dir, compile_options)
+      require "debug"
+      binding.b
       xml = sectionsplit_prep(File.read(filename), basename, compile_options)
       @key = xref_preprocess(xml)
       @splitdir = dir
@@ -89,12 +89,14 @@ module Metanorma
 
     def sectionsplit_preprocess_semxml(file, filename)
       xml = Nokogiri::XML(file)
-      type = xml.root.name.sub("-standard").to_sym
-      xml1 = Tempfile.open(filename, encoding: "utf-8") do |f|
+      type = xml.root.name.sub("-standard", "").to_sym
+      xml1 = Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
         f.write(@isodoc.to_xml(svg_preprocess(xml)))
-        f.path
+        f
       end
-      [xml1, type]
+      @filecache ||= []
+      @filecache << xml1
+      [xml1.path, type]
     end
 
     def emptydoc(xml)
@@ -127,7 +129,6 @@ module Metanorma
     end
 
     def xref_preprocess(xml)
-      # svg_preprocess(xml)
       key = (0...8).map { rand(65..90).chr }.join # random string
       xml.root["type"] = key # to force recognition of internal refs
       key
@@ -152,6 +153,7 @@ module Metanorma
                "<xref target='#{a['href']}'/></target>"
         end
       end
+      xml
     end
 
     def svgmap_wrap(svg)
