@@ -61,6 +61,7 @@ module Metanorma
     def add_section_split
       ret = @files.keys.each_with_object({}) do |k, m|
         if @files[k][:sectionsplit] == "true" && !@files[k]["attachment"]
+          require "debug"; binding.b
           s, manifest = sectionsplit(@files[k][:ref])
           s.each_with_index { |f1, i| add_section_split_instance(f1, m, k, i) }
           m["#{k}:index.html"] = add_section_split_cover(manifest, k)

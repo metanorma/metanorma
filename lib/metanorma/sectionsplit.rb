@@ -5,7 +5,8 @@ module Metanorma
     # assume we pass in Presentation XML, but we want to recover Semantic XML
     def sectionsplit_convert(input_filename, file, output_filename = nil,
                              opts = {})
-      require "debug"; binding.b
+      require "debug"
+      binding.b
       @isodoc = IsoDoc::Convert.new({})
       input_filename += ".xml" unless input_filename.match?(/\.xml$/)
       File.exist?(input_filename) or
@@ -13,7 +14,8 @@ module Metanorma
       presxml = File.read(input_filename, encoding: "utf-8")
       @openmathdelim, @closemathdelim = @isodoc.extract_delims(presxml)
       xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
-      build_collection(input_filename, presxml, output_filename || filename, dir, opts)
+      build_collection(input_filename, presxml, output_filename || filename,
+                       dir, opts)
     end
 
     def ns(xpath)
@@ -74,17 +76,25 @@ module Metanorma
       end
     end
 
-    def sectionsplit_prep(xml, filename, compile_options)
+    def sectionsplit_prep(file, filename, compile_options)
+      xml1filename, type = sectionsplit_preprocess_semxml(file, filename)
+      compile(
+        xml1filename,
+        { format: :asciidoc, extension_keys: [:presentation], type: type }
+       .merge(compile_options),
+      )
+      Nokogiri::XML(File.read(xml1filename.sub(/\.xml$/, ".presentation.xml"),
+                              encoding: "utf-8"))
+    end
+
+    def sectionsplit_preprocess_semxml(file, filename)
+      xml = Nokogiri::XML(file)
+      type = xml.root.name.sub("-standard").to_sym
       xml1 = Tempfile.open(filename, encoding: "utf-8") do |f|
-        f.write(@isodoc.to_xml(svg_preprocess(Nokogiri::XML(xml))))
+        f.write(@isodoc.to_xml(svg_preprocess(xml)))
         f.path
       end
-      compile(
-        xml1, { format: :asciidoc, extension_keys: [:presentation] }
-       .merge(compile_options)
-      )
-      r = xm1.sub(/\.xml$/, ".presentation.xml")
-      Nokogiri::XML(File.read(r))
+      [xml1, type]
     end
 
     def emptydoc(xml)
