@@ -12,18 +12,19 @@ module Metanorma
       presxml = File.read(input_filename, encoding: "utf-8")
       @openmathdelim, @closemathdelim = @isodoc.extract_delims(presxml)
       _xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
-      build_collection(input_filename, presxml, output_filename || filename,
-                       dir, opts)
+      build_collection(input_filename, presxml,
+                       output_filename || filename, dir, opts)
     end
 
     def ns(xpath)
       @isodoc.ns(xpath)
     end
 
-    def build_collection(xml, presxml, filename, dir, opts = {})
+    def build_collection(input_filename, presxml, filename, dir, opts = {})
       base = File.basename(filename)
       collection_setup(base, dir)
-      files = sectionsplit(xml, base, dir, opts)
+      files = sectionsplit(input_filename, base, dir, opts)
+      xml = Nokogiri::XML(File.read(input_filename, encoding: "UTF-8"))
       collection_manifest(base, files, xml, presxml, dir).render(
         { format: %i(html), output_folder: "#{filename}_collection",
           coverpage: File.join(dir, "cover.html") }.merge(opts),
@@ -63,8 +64,6 @@ module Metanorma
 
     # Input XML is Semantic
     def sectionsplit(filename, basename, dir, compile_options)
-      require "debug"
-      binding.b
       xml = sectionsplit_prep(File.read(filename), basename, compile_options)
       @key = xref_preprocess(xml)
       @splitdir = dir
@@ -116,7 +115,7 @@ module Metanorma
     end
 
     def create_sectionfile(xml, out, file, chunk, parentnode)
-      ins = out.at(ns("//misccontainer")) || out.at(ns("//bibdata"))
+      ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
       if parentnode
         ins.next = "<#{parentnode}/>"
         ins.next.add_child(chunk.dup)
