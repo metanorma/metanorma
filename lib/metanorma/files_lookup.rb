@@ -106,16 +106,11 @@ module Metanorma
     end
 
     def sectionsplit(file)
-      @compile.compile(
-        file, { format: :asciidoc, extension_keys: [:presentation] }
-        .merge(@parent.compile_options)
-      )
-      r = file.sub(/\.xml$/, ".presentation.xml")
-      xml = Nokogiri::XML(File.read(r))
-      s = @compile.sectionsplit(xml, File.basename(r), File.dirname(r))
+      s = @compile.sectionsplit(file, File.basename(file), File.dirname(file),
+                                @parent.compile_options)
         .sort_by { |f| f[:order] }
-      [s, @compile.collection_manifest(File.basename(r), s, xml, nil,
-                                       File.dirname(r))]
+      [s, @compile.collection_manifest(File.basename(file), s, xml, nil,
+                                       File.dirname(file))]
     end
 
     # rel_path is the source file address, determined relative to the YAML.

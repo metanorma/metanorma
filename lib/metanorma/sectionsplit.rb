@@ -5,6 +5,7 @@ module Metanorma
     # assume we pass in Presentation XML, but we want to recover Semantic XML
     def sectionsplit_convert(input_filename, file, output_filename = nil,
                              opts = {})
+      require "debug"; binding.b
       @isodoc = IsoDoc::Convert.new({})
       input_filename += ".xml" unless input_filename.match?(/\.xml$/)
       File.exist?(input_filename) or
@@ -12,7 +13,7 @@ module Metanorma
       presxml = File.read(input_filename, encoding: "utf-8")
       @openmathdelim, @closemathdelim = @isodoc.extract_delims(presxml)
       xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
-      build_collection(xml, presxml, output_filename || filename, dir, opts)
+      build_collection(input_filename, presxml, output_filename || filename, dir, opts)
     end
 
     def ns(xpath)
@@ -22,7 +23,7 @@ module Metanorma
     def build_collection(xml, presxml, filename, dir, opts = {})
       base = File.basename(filename)
       collection_setup(base, dir)
-      files = sectionsplit(xml, base, dir)
+      files = sectionsplit(xml, base, dir, opts)
       collection_manifest(base, files, xml, presxml, dir).render(
         { format: %i(html), output_folder: "#{filename}_collection",
           coverpage: File.join(dir, "cover.html") }.merge(opts),
@@ -46,13 +47,11 @@ module Metanorma
 
     def coll_cover
       <<~COVER
-        <html><head/>
-            <body>
+        <html><head/><body>
               <h1>{{ doctitle }}</h1>
               <h2>{{ docnumber }}</h2>
               <nav>{{ navigation }}</nav>
-            </body>
-        </html>
+            </body></html>
       COVER
     end
 
@@ -62,15 +61,30 @@ module Metanorma
        ["//bibliography/*[not(@hidden = 'true')]", "bibliography"],
        ["//indexsect", nil], ["//colophon", nil]].freeze
 
-    def sectionsplit(xml, filename, dir)
+    # Input XML is Semantic
+    def sectionsplit(filename, basename, dir, compile_options)
+      xml = sectionsplit_prep(File.read(filename), basename, compile_options)
       @key = xref_preprocess(xml)
       @splitdir = dir
       out = emptydoc(xml)
       SPLITSECTIONS.each_with_object([]) do |n, ret|
         xml.xpath(ns(n[0])).each do |s|
-          ret << sectionfile(xml, out, "#{filename}.#{ret.size}", s, n[1])
+          ret << sectionfile(xml, out, "#{basename}.#{ret.size}", s, n[1])
         end
       end
+    end
+
+    def sectionsplit_prep(xml, filename, compile_options)
+      xml1 = Tempfile.open(filename, encoding: "utf-8") do |f|
+        f.write(@isodoc.to_xml(svg_preprocess(Nokogiri::XML(xml))))
+        f.path
+      end
+      compile(
+        xml1, { format: :asciidoc, extension_keys: [:presentation] }
+       .merge(compile_options)
+      )
+      r = xm1.sub(/\.xml$/, ".presentation.xml")
+      Nokogiri::XML(File.read(r))
     end
 
     def emptydoc(xml)
@@ -103,7 +117,7 @@ module Metanorma
     end
 
     def xref_preprocess(xml)
-      svg_preprocess(xml)
+      # svg_preprocess(xml)
       key = (0...8).map { rand(65..90).chr }.join # random string
       xml.root["type"] = key # to force recognition of internal refs
       key
