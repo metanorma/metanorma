@@ -29,6 +29,15 @@ module Metanorma
       end
     end
 
+    def self.recursive_string_keys(hash)
+      case hash
+      when Hash then hash.map { |k, v| [k.to_s, recursive_string_keys(v)] }.to_h
+      when Enumerable then hash.map { |v| recursive_string_keys(v) }
+      else
+        hash
+      end
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

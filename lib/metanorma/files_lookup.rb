@@ -81,7 +81,6 @@ module Metanorma
     def section_split_cover(col, ident)
       dir = File.dirname(col.file)
       @compile.collection_setup(nil, dir)
-      #require "debug";binding.b
       CollectionRenderer.new(col, dir,
                              output_folder: "#{ident}_collection",
                              format: %i(html),
@@ -106,16 +105,12 @@ module Metanorma
     end
 
     def sectionsplit(file)
-      @compile.compile(
-        file, { format: :asciidoc, extension_keys: [:presentation] }
-        .merge(@parent.compile_options)
-      )
-      r = file.sub(/\.xml$/, ".presentation.xml")
-      xml = Nokogiri::XML(File.read(r))
-      s = @compile.sectionsplit(xml, File.basename(r), File.dirname(r))
+      s = @compile.sectionsplit(file, File.basename(file), File.dirname(file),
+                                @parent.compile_options)
         .sort_by { |f| f[:order] }
-      [s, @compile.collection_manifest(File.basename(r), s, xml, nil,
-                                       File.dirname(r))]
+      xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"))
+      [s, @compile.collection_manifest(File.basename(file), s, xml, nil,
+                                       File.dirname(file))]
     end
 
     # rel_path is the source file address, determined relative to the YAML.

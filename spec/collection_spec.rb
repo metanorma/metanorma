@@ -338,11 +338,11 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
         .to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html"))
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.0.html"))
         .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html"))
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.1.html"))
         .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html"))
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.2.html"))
         .to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
