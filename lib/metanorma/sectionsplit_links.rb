@@ -1,6 +1,6 @@
 module Metanorma
-  class Compile
-    def xref_preprocess(xml)
+  class Sectionsplit
+    def xref_preprocess(xml, fileslookup, identifier)
       key = (0...8).map { rand(65..90).chr }.join # random string
       xml.root["type"] = key # to force recognition of internal refs
       key
@@ -56,6 +56,7 @@ module Metanorma
                                    xml).each_with_object([]) do |x, m|
         url = xml.at(ns("//bibitem[@id = '#{x}']/uri[@type = 'citation']"))
         section.xpath("//*[@bibitemid = '#{x}']").each do |e|
+          /^semantic__/.match?(e.name) and next
           id = eref_to_internal_eref1(e, key, url)
           id and m << id
         end
@@ -76,7 +77,8 @@ module Metanorma
     end
 
     def eref_to_internal_eref_select(section, xml)
-      refs = section.xpath("//*/@bibitemid").map { |x| x.text } # rubocop:disable Style/SymbolProc
+      refs = section.xpath("//*/@bibitemid")
+        .reject { |n| /^semantic__/.match?(n.name) }.map { |x| x.text } # rubocop:disable Style/SymbolProc
       refs.uniq.reject do |x|
         xml.at(ns("//bibitem[@id = '#{x}'][@type = 'internal']")) ||
           xml.at(ns("//bibitem[@id = '#{x}']" \

@@ -3,33 +3,33 @@ require_relative "util"
 require_relative "sectionsplit_links"
 
 module Metanorma
-  class Compile
-    # assume we pass in Presentation XML, but we want to recover Semantic XML
-    def sectionsplit_convert(input_filename, file, output_filename = nil,
-                             opts = {})
-      @isodoc = IsoDoc::Convert.new({})
-      input_filename += ".xml" unless input_filename.match?(/\.xml$/)
-      File.exist?(input_filename) or
-        File.open(input_filename, "w:UTF-8") { |f| f.write(file) }
-      presxml = File.read(input_filename, encoding: "utf-8")
-      @openmathdelim, @closemathdelim = @isodoc.extract_delims(presxml)
-      _xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
-      build_collection(input_filename, presxml,
-                       output_filename || filename, dir, opts)
+  class Sectionsplit
+    attr_accessor :filecache
+
+    def initialize(opts)
+      @input_filename = opts[:input]
+      @base = opts[:base]
+      @output_filename = opts[:output]
+      @xml = opts[:xml]
+      @dir = opts[:dir]
+      @compile_opts = opts[:compile_opts] || {}
+      @fileslookup = opts[:fileslookup]
+      @ident = opts[:ident]
+      @isodoc = opts[:isodoc]
     end
 
     def ns(xpath)
       @isodoc.ns(xpath)
     end
 
-    def build_collection(input_filename, presxml, filename, dir, opts = {})
-      base = File.basename(filename)
-      collection_setup(base, dir)
-      files = sectionsplit(input_filename, base, dir, opts)
-      xml = Nokogiri::XML(File.read(input_filename, encoding: "UTF-8"))
-      collection_manifest(base, files, xml, presxml, dir).render(
-        { format: %i(html), output_folder: "#{filename}_collection",
-          coverpage: File.join(dir, "cover.html") }.merge(opts),
+    def build_collection
+      collection_setup(@base, @dir)
+      files = sectionsplit #(@input_filename, @base, @dir, @compile_opts)
+      input_xml = Nokogiri::XML(File.read(@input_filename,
+                                          encoding: "UTF-8"), &:huge)
+      collection_manifest(@base, files, input_xml, @xml, @dir).render(
+        { format: %i(html), output_folder: "#{@output_filename}_collection",
+          coverpage: File.join(@dir, "cover.html") }.merge(@compile_opts),
       )
     end
 
@@ -65,14 +65,13 @@ module Metanorma
        ["//indexsect", nil], ["//colophon", nil]].freeze
 
     # Input XML is Semantic
-    def sectionsplit(filename, basename, dir, compile_options)
-      xml = sectionsplit_prep(File.read(filename), basename, dir,
-                              compile_options)
-      @key = xref_preprocess(xml)
-      out = emptydoc(xml)
+    # def sectionsplit(filename, basename, dir, compile_options, fileslookup = nil, ident = nil)
+    def sectionsplit
+      xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
+      @key = xref_preprocess(xml, @fileslookup, @ident)
       SPLITSECTIONS.each_with_object([]) do |n, ret|
         conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
-          ret << sectionfile(xml, out, "#{basename}.#{ret.size}", s, n[1])
+          ret << sectionfile(xml, emptydoc(xml), "#{@base}.#{ret.size}", s, n[1])
         end
       end
     end
@@ -93,21 +92,22 @@ module Metanorma
       end
     end
 
-    def sectionsplit_prep(file, filename, dir, compile_options)
+    def sectionsplit_prep(file, filename, dir)
       @splitdir = dir
       xml1filename, type = sectionsplit_preprocess_semxml(file, filename)
-      compile(
+      Compile.new.compile(
         xml1filename,
         { format: :asciidoc, extension_keys: [:presentation], type: type }
-       .merge(compile_options),
+       .merge(@compile_opts),
       )
       Nokogiri::XML(File.read(xml1filename.sub(/\.xml$/, ".presentation.xml"),
-                              encoding: "utf-8"))
+                              encoding: "utf-8"), &:huge)
     end
 
     def sectionsplit_preprocess_semxml(file, filename)
-      xml = Nokogiri::XML(file)
+      xml = Nokogiri::XML(file, &:huge)
       type = xml.root.name.sub("-standard", "").to_sym
+      @fileslookup&.parent&.update_xrefs(xml, @ident, {})
       xml1 = Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
         f.write(@isodoc.to_xml(svg_preprocess(xml)))
         f
@@ -138,7 +138,9 @@ module Metanorma
       sectionfile_insert(ins, chunks, parentnode)
       xref_process(out, xml, @key)
       outname = "#{file}.xml"
-      File.open(File.join(@splitdir, outname), "w:UTF-8") { |f| f.write(out) }
+      File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
+        f.write(out)
+      end
       outname
     end
 
@@ -180,6 +182,19 @@ module Metanorma
         },
       }
       Util::recursive_string_keys(ret).to_yaml
+    end
+
+    def section_split_cover(col, ident)
+      dir = File.dirname(col.file)
+      collection_setup(nil, dir)
+      CollectionRenderer.new(col, dir,
+                             output_folder: "#{ident}_collection",
+                             format: %i(html),
+                             coverpage: File.join(dir, "cover.html")).coverpage
+      FileUtils.mv "#{ident}_collection/index.html",
+                   File.join(dir, "#{ident}_index.html")
+      FileUtils.rm_rf "#{ident}_collection"
+      "#{ident}_index.html"
     end
   end
 end

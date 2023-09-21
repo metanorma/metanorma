@@ -6,13 +6,12 @@ module Metanorma
     def update_bibitem(bib, identifier)
       docid = get_bibitem_docid(bib, identifier) or return
       newbib = dup_bibitem(docid, bib)
+      _file, url = @files
+        .targetfile_id(docid, relative: true, read: false,
+                              doc: !@files.get(docid, :attachment))
+      dest = newbib.at("./docidentifier") || newbib.at(ns("./docidentifier"))
+      dest.previous = "<uri type='citation'>#{url}</uri>"
       bib.replace(newbib)
-      _file, url = @files.targetfile_id(docid, relative: true, read: false,
-                                               doc: !@files.get(docid, :attachment))
-      uri_node = Nokogiri::XML::Node.new "uri", newbib.document
-      uri_node[:type] = "citation"
-      uri_node.content = url
-      newbib.at(ns("./docidentifier")).previous = uri_node
     end
 
     def get_bibitem_docid(bib, identifier)
@@ -21,18 +20,11 @@ module Metanorma
         bib.at(ns("./docidentifier"))
       docid &&= @c.decode(@isodoc
           .docid_prefix(docid["type"], docid.children.to_xml)).gsub(/\s/, " ")
-      if @files.get(docid) || @files.get("X #{docid}") then docid
+      if @files.get(docid) then docid
       else
         fail_update_bibitem(docid, identifier)
         nil
       end
-    end
-
-    def fail_update_bibitem(docid, identifier)
-      error = "[metanorma] Cannot find crossreference to document #{docid} " \
-              "in document #{identifier}."
-      @log&.add("Cross-References", nil, error)
-      Util.log(error, :warning)
     end
 
     def dup_bibitem(docid, bib)
@@ -55,12 +47,19 @@ module Metanorma
     #   anchor to filename
     # @return [String] XML content
     def update_xrefs(file, identifier, internal_refs)
-      docxml = Nokogiri::XML(file) { |config| config.huge }
+      docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
+      @files.get(identifier, :xrefs_processed) or
+        update_xrefs1(docxml, identifier, internal_refs)
+      docxml.to_xml
+    end
+
+    def update_xrefs1(docxml, identifier, internal_refs)
+      ids = @files.get(identifier, :ids)
       supply_repo_ids(docxml)
       update_indirect_refs_to_docs(docxml, internal_refs)
       @files.add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
-      svgmap_resolve(datauri_encode(docxml))
+      svgmap_resolve(datauri_encode(docxml), ids)
       hide_refs(docxml)
       docxml.to_xml
     end
@@ -74,38 +73,31 @@ module Metanorma
 
     def supply_repo_ids(docxml)
       docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
-        next if b&.at(ns("./docidentifier[@type = 'repository']"))
-
+        b.at(ns("./docidentifier[@type = 'repository']")) and next
         b.xpath(ns("./docidentifier")).each do |docid|
           id = @isodoc
             .docid_prefix(docid["type"], docid.children.to_xml)
           @files.get(id) or next
           docid.next = "<docidentifier type='repository'>" \
-                       "current-metanorma-collection/#{id}"
+                       "current-metanorma-collection/#{id}</docidentifier>"
         end
       end
     end
 
-    def datauri_encode(docxml)
-      docxml.xpath(ns("//image")).each do |i|
-        i["src"] = Metanorma::Utils::datauri(i["src"])
-      end
-      docxml
-    end
-
-    def svgmap_resolve(docxml)
+    def svgmap_resolve(docxml, ids)
       isodoc = IsoDoc::PresentationXMLConvert.new({})
       isodoc.bibitem_lookup(docxml)
       docxml.xpath(ns("//svgmap//eref")).each do |e|
-        svgmap_resolve1(e, isodoc)
+        svgmap_resolve1(e, isodoc, docxml, ids)
       end
       Metanorma::Utils::svgmap_rewrite(docxml, "")
     end
 
-    def svgmap_resolve1(eref, isodoc)
+    def svgmap_resolve1(eref, isodoc, _docxml, ids)
       href = isodoc.eref_target(eref)
       return if href == "##{eref['bibitemid']}" ||
-        (href =~ /^#/ && !docxml.at("//*[@id = '#{href.sub(/^#/, '')}']"))
+        # (href =~ /^#/ && !docxml.at("//*[@id = '#{href.sub(/^#/, '')}']"))
+        (href =~ /^#/ && !ids[href.sub(/^#/, "")])
 
       eref["target"] = href.strip
       eref.name = "link"
@@ -156,14 +148,14 @@ module Metanorma
     def update_indirect_refs_to_docs1(docxml, schema, id, file)
       docxml.xpath(ns("//eref[@bibitemid = '#{schema}_#{id}']")).each do |e|
         e["citeas"] = file
-        if a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+        a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom")) and
           a.children = "#{a.text}_#{Metanorma::Utils::to_ncname(file)}"
-        end
       end
       docid = docxml.at(ns("//bibitem[@id = '#{schema}_#{id}']/" \
                            "docidentifier[@type = 'repository']")) or return
       docid.children = "current-metanorma-collection/#{file}"
-      docid.previous = "<docidentifier type='X'>#{file}</docidentifier>"
+      docid.previous =
+        "<docidentifier type='metanorma-collection'>#{file}</docidentifier>"
     end
 
     # update crossrefences to other documents, to include
@@ -181,9 +173,8 @@ module Metanorma
     def update_anchor_loc(bib, eref, docid)
       loc = eref.at(ns(".//locality[@type = 'anchor']")) or
         return update_anchor_create_loc(bib, eref, docid)
-      document_suffix = Metanorma::Utils::to_ncname(docid)
       ref = loc.at(ns("./referenceFrom")) or return
-      anchor = "#{ref.text}_#{document_suffix}"
+      anchor = "#{ref.text}_#{Metanorma::Utils::to_ncname(docid)}"
       return unless @files.get(docid, :anchors).inject([]) do |m, (_, x)|
         m += x.values
       end.include?(anchor)
@@ -208,23 +199,26 @@ module Metanorma
       @files.keys.each_with_object({}) do |i, refs|
         @files.get(i, :attachment) and next
         file, = @files.targetfile_id(i, read: true)
-        Nokogiri::XML(file)
-          .xpath(ns("//bibitem[@type = 'internal']/" \
-                    "docidentifier[@type = 'repository']")).each do |d|
-          a = d.text.split(%r{/}, 2)
-          a.size > 1 or next
-          refs[a[0]] ||= {}
-          refs[a[0]][a[1]] = true
-        end
+        gather_internal_refs1(file, refs)
+      end
+    end
+
+    def gather_internal_refs1(file, refs)
+      Nokogiri::XML(file, &:huge)
+        .xpath(ns("//bibitem[@type = 'internal']/" \
+                  "docidentifier[@type = 'repository']")).each do |d|
+        a = d.text.split(%r{/}, 2)
+        a.size > 1 or next
+        refs[a[0]] ||= {}
+        refs[a[0]][a[1]] = true
       end
     end
 
     # resolve file location for the target of each internal reference
     def locate_internal_refs
       refs = gather_internal_refs
-      @files.keys.reject { |k| @files.get(k, :attachment) }.each do |identifier|
-        id = @isodoc.docid_prefix("", identifier.dup)
-        locate_internal_refs1(refs, identifier, id)
+      @files.keys.reject { |k| @files.get(k, :attachment) }.each do |ident|
+        locate_internal_refs1(refs, ident, @isodoc.docid_prefix("", ident.dup))
       end
       refs.each do |schema, ids|
         ids.each do |id, key|
@@ -234,18 +228,27 @@ module Metanorma
       refs
     end
 
-    # def locate_internal_refs1(refs, identifier, filedesc)
     def locate_internal_refs1(refs, identifier, ident)
-      file, _filename = @files.targetfile_id(ident, read: true)
-      xml = Nokogiri::XML(file) { |config| config.huge }
-      t = xml.xpath("//*/@id").each_with_object({}) { |i, x| x[i.text] = true }
+      xml, t = locate_internal_refs1_prep(identifier, ident)
       refs.each do |schema, ids|
         ids.keys.select { |id| t[id] }.each do |id|
+          # TODO may need more optimisation
           n = xml.at("//*[@id = '#{id}']") and
             n.at("./ancestor-or-self::*[@type = '#{schema}']") and
             refs[schema][id] = identifier
         end
       end
+    end
+
+    def locate_internal_refs1_prep(identifier, ident)
+      file, _filename = @files.targetfile_id(ident, read: true)
+      xml = Nokogiri::XML(file, &:huge)
+      # t1 = xml.xpath("//*/@id").each_with_object({}) { |i, x| x[i.text] = true }
+      suffix = Metanorma::Utils::to_ncname(identifier)
+      transformed_keys = @files.get(ident, :ids).transform_keys do |x|
+        x&.sub(/_#{suffix}/, "")
+      end
+      [xml, transformed_keys]
     end
   end
 end
