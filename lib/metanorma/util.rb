@@ -46,6 +46,7 @@ module Metanorma
 
     def self.gather_bibitemids(xml)
       xml.xpath("//*[@bibitemid]").each_with_object({}) do |e, m|
+        /^semantic__/.match?(e.name) and next
         m[e["bibitemid"]] ||= []
         m[e["bibitemid"]] << e
       end
