@@ -38,6 +38,19 @@ module Metanorma
       end
     end
 
+    def self.gather_bibitems(xml)
+      xml.xpath("//xmlns:bibitem[@id]").each_with_object({}) do |b, m|
+        m[b["id"]] = b
+      end
+    end
+
+    def self.gather_bibitemids(xml)
+      xml.xpath("//*[@bibitemid]").each_with_object({}) do |e, m|
+        m[e["bibitemid"]] ||= []
+        m[e["bibitemid"]] << e
+      end
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

@@ -52,10 +52,12 @@ module Metanorma
     end
 
     def eref_to_internal_eref(section, xml, key)
-      eref_to_internal_eref_select(section,
-                                   xml).each_with_object([]) do |x, m|
-        url = xml.at(ns("//bibitem[@id = '#{x}']/uri[@type = 'citation']"))
-        section.xpath("//*[@bibitemid = '#{x}']").each do |e|
+      bibitems = Util::gather_bibitems(xml)
+      bibitemids = Util::gather_bibitemids(section)
+      eref_to_internal_eref_select(section, xml, bibitems)
+        .each_with_object([]) do |x, m|
+        url = bibitems[x]&.at(ns("./uri[@type = 'citation']"))
+        bibitemids[x]&.each do |e|
           id = eref_to_internal_eref1(e, key, url)
           id and m << id
         end
@@ -75,12 +77,12 @@ module Metanorma
       end
     end
 
-    def eref_to_internal_eref_select(section, xml)
-      refs = section.xpath("//*/@bibitemid").map { |x| x.text } # rubocop:disable Style/SymbolProc
+    def eref_to_internal_eref_select(section, _xml, bibitems)
+      #refs = section.xpath("//*/@bibitemid").map { |x| x.text } # rubocop:disable Style/SymbolProc
+      refs = Util::gather_bibitemids(section).keys
       refs.uniq.reject do |x|
-        xml.at(ns("//bibitem[@id = '#{x}'][@type = 'internal']")) ||
-          xml.at(ns("//bibitem[@id = '#{x}']" \
-                    "[docidentifier/@type = 'repository']"))
+        b = bibitems[x] and (b["type"] == "internal" ||
+                             b.at(ns("./docidentifier/@type = 'repository']")))
       end
     end
 
@@ -92,9 +94,11 @@ module Metanorma
     end
 
     def copy_repo_items_biblio(ins, section, xml)
+      bibitems = Util::gather_bibitems(section)
       xml.xpath(ns("//references/bibitem[docidentifier/@type = 'repository']"))
         .each_with_object([]) do |b, m|
-        section.at("//*[@bibitemid = '#{b['id']}']") or next
+        bibitems[b["id"]] or next
+        # section.at("//*[@bibitemid = '#{b['id']}']") or next
         ins << b.dup
         m << b["id"]
       end

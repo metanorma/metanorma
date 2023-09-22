@@ -21,7 +21,7 @@ module Metanorma
         bib.at(ns("./docidentifier"))
       docid &&= @c.decode(@isodoc
           .docid_prefix(docid["type"], docid.children.to_xml)).gsub(/\s/, " ")
-      if @files.get(docid) || @files.get("X #{docid}") then docid
+      if @files.get(docid) then docid
       else
         fail_update_bibitem(docid, identifier)
         nil
@@ -55,7 +55,7 @@ module Metanorma
     #   anchor to filename
     # @return [String] XML content
     def update_xrefs(file, identifier, internal_refs)
-      docxml = Nokogiri::XML(file) { |config| config.huge }
+      docxml = Nokogiri::XML(file, &:huge)
       supply_repo_ids(docxml)
       update_indirect_refs_to_docs(docxml, internal_refs)
       @files.add_document_suffix(identifier, docxml)
@@ -74,8 +74,7 @@ module Metanorma
 
     def supply_repo_ids(docxml)
       docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
-        next if b&.at(ns("./docidentifier[@type = 'repository']"))
-
+        b.at(ns("./docidentifier[@type = 'repository']")) and next
         b.xpath(ns("./docidentifier")).each do |docid|
           id = @isodoc
             .docid_prefix(docid["type"], docid.children.to_xml)
@@ -119,7 +118,7 @@ module Metanorma
     # of localities.
     def update_direct_refs_to_docs(docxml, identifier)
       erefs = collect_erefs(docxml)
-      docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
+      docxml.xpath(ns("//bibitem")).each do |b|
         docid = b.at(ns("./docidentifier[@type = 'repository']"))
         (docid && %r{^current-metanorma-collection/}.match(docid.text)) or next
         update_bibitem(b, identifier)
@@ -146,22 +145,25 @@ module Metanorma
     # Resolve erefs to a container of ids in another doc,
     # to an anchor eref (direct link)
     def update_indirect_refs_to_docs(docxml, internal_refs)
+      bibitems = Util::gather_bibitems(docxml)
+      erefs = Util::gather_bibitemids(docxml)
       internal_refs.each do |schema, ids|
         ids.each do |id, file|
-          update_indirect_refs_to_docs1(docxml, schema, id, file)
+          update_indirect_refs_to_docs1(docxml, "#{schema}_#{id}",
+                                        file, bibitems, erefs)
         end
       end
     end
 
-    def update_indirect_refs_to_docs1(docxml, schema, id, file)
-      docxml.xpath(ns("//eref[@bibitemid = '#{schema}_#{id}']")).each do |e|
+    def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
+      erefs[key]&.each do |e|
+        # docxml.xpath(ns("//eref[@bibitemid = '#{key}']")).each do |e|
         e["citeas"] = file
-        if a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+        a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom")) and
           a.children = "#{a.text}_#{Metanorma::Utils::to_ncname(file)}"
-        end
       end
-      docid = docxml.at(ns("//bibitem[@id = '#{schema}_#{id}']/" \
-                           "docidentifier[@type = 'repository']")) or return
+      docid = bibitems[key]&.at(ns("./docidentifier[@type = 'repository']")) or
+        return
       docid.children = "current-metanorma-collection/#{file}"
       docid.previous = "<docidentifier type='X'>#{file}</docidentifier>"
     end
@@ -237,12 +239,11 @@ module Metanorma
     # def locate_internal_refs1(refs, identifier, filedesc)
     def locate_internal_refs1(refs, identifier, ident)
       file, _filename = @files.targetfile_id(ident, read: true)
-      xml = Nokogiri::XML(file) { |config| config.huge }
-      t = xml.xpath("//*/@id").each_with_object({}) { |i, x| x[i.text] = true }
+      xml = Nokogiri::XML(file, &:huge)
+      t = xml.xpath("//*[@id]").each_with_object({}) { |i, x| x[i["id"]] = i }
       refs.each do |schema, ids|
         ids.keys.select { |id| t[id] }.each do |id|
-          n = xml.at("//*[@id = '#{id}']") and
-            n.at("./ancestor-or-self::*[@type = '#{schema}']") and
+          t[id].at("./ancestor-or-self::*[@type = '#{schema}']") and
             refs[schema][id] = identifier
         end
       end
