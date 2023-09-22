@@ -111,7 +111,7 @@ module Metanorma
     # of localities.
     def update_direct_refs_to_docs(docxml, identifier)
       erefs = collect_erefs(docxml)
-      docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
+      docxml.xpath(ns("//bibitem")).each do |b|
         docid = b.at(ns("./docidentifier[@type = 'repository']"))
         (docid && %r{^current-metanorma-collection/}.match(docid.text)) or next
         update_bibitem(b, identifier)
@@ -138,21 +138,25 @@ module Metanorma
     # Resolve erefs to a container of ids in another doc,
     # to an anchor eref (direct link)
     def update_indirect_refs_to_docs(docxml, internal_refs)
+      bibitems = Util::gather_bibitems(docxml)
+      erefs = Util::gather_bibitemids(docxml)
       internal_refs.each do |schema, ids|
         ids.each do |id, file|
-          update_indirect_refs_to_docs1(docxml, schema, id, file)
+          update_indirect_refs_to_docs1(docxml, "#{schema}_#{id}",
+                                        file, bibitems, erefs)
         end
       end
     end
 
-    def update_indirect_refs_to_docs1(docxml, schema, id, file)
-      docxml.xpath(ns("//eref[@bibitemid = '#{schema}_#{id}']")).each do |e|
+    def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
+      erefs[key]&.each do |e|
+        # docxml.xpath(ns("//eref[@bibitemid = '#{key}']")).each do |e|
         e["citeas"] = file
         a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom")) and
           a.children = "#{a.text}_#{Metanorma::Utils::to_ncname(file)}"
       end
-      docid = docxml.at(ns("//bibitem[@id = '#{schema}_#{id}']/" \
-                           "docidentifier[@type = 'repository']")) or return
+      docid = bibitems[key]&.at(ns("./docidentifier[@type = 'repository']")) or
+        return
       docid.children = "current-metanorma-collection/#{file}"
       docid.previous =
         "<docidentifier type='metanorma-collection'>#{file}</docidentifier>"
@@ -229,26 +233,19 @@ module Metanorma
     end
 
     def locate_internal_refs1(refs, identifier, ident)
-      xml, t = locate_internal_refs1_prep(identifier, ident)
+      t = locate_internal_refs1_prep(ident)
       refs.each do |schema, ids|
         ids.keys.select { |id| t[id] }.each do |id|
-          # TODO may need more optimisation
-          n = xml.at("//*[@id = '#{id}']") and
-            n.at("./ancestor-or-self::*[@type = '#{schema}']") and
+          t[id].at("./ancestor-or-self::*[@type = '#{schema}']") and
             refs[schema][id] = identifier
         end
       end
     end
 
-    def locate_internal_refs1_prep(identifier, ident)
+    def locate_internal_refs1_prep(ident)
       file, _filename = @files.targetfile_id(ident, read: true)
       xml = Nokogiri::XML(file, &:huge)
-      # t1 = xml.xpath("//*/@id").each_with_object({}) { |i, x| x[i.text] = true }
-      suffix = Metanorma::Utils::to_ncname(identifier)
-      transformed_keys = @files.get(ident, :ids).transform_keys do |x|
-        x&.sub(/_#{suffix}/, "")
-      end
-      [xml, transformed_keys]
+      xml.xpath("//*[@id]").each_with_object({}) { |i, x| x[i["id"]] = i }
     end
   end
 end
