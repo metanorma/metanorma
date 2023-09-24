@@ -52,6 +52,14 @@ module Metanorma
       end
     end
 
+    def self.gather_citeases(xml)
+      xml.xpath("//*[@citeas]").each_with_object({}) do |e, m|
+        /^semantic__/.match?(e.name) and next
+        m[e["citeas"]] ||= []
+        m[e["citeas"]] << e
+      end
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

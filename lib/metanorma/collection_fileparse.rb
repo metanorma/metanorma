@@ -18,13 +18,19 @@ module Metanorma
       # IDs for repo references are untyped by default
       docid = bib.at(ns("./docidentifier[not(@type)]")) ||
         bib.at(ns("./docidentifier"))
-      docid &&= @c.decode(@isodoc
-          .docid_prefix(docid["type"], docid.children.to_xml)).gsub(/\s/, " ")
+      docid &&= docid_prefix(docid)
       if @files.get(docid) then docid
       else
         fail_update_bibitem(docid, identifier)
         nil
       end
+    end
+
+    def docid_prefix(docid)
+      type = docid["type"]
+      type == "metanorma-collection" and type = nil
+      @c.decode(@isodoc
+          .docid_prefix(type, docid.children.to_xml)).gsub(/\s/, " ")
     end
 
     def dup_bibitem(docid, bib)
@@ -48,20 +54,21 @@ module Metanorma
     # @return [String] XML content
     def update_xrefs(file, identifier, internal_refs)
       docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
-      @files.get(identifier, :xrefs_processed) or
-        update_xrefs1(docxml, identifier, internal_refs)
+      supply_repo_ids(docxml)
+      update_indirect_refs_to_docs(docxml, internal_refs)
+      ids = @files.get(identifier, :ids)
+      @files.add_document_suffix(identifier, docxml)
+      svgmap_resolve(datauri_encode(docxml), ids)
+      update_direct_refs_to_docs(docxml, identifier)
+      hide_refs(docxml)
+      @files.get(identifier, :sectionsplit_output) and eref2link(docxml)
       docxml.to_xml
     end
 
-    def update_xrefs1(docxml, identifier, internal_refs)
-      ids = @files.get(identifier, :ids)
-      supply_repo_ids(docxml)
-      update_indirect_refs_to_docs(docxml, internal_refs)
-      @files.add_document_suffix(identifier, docxml)
-      update_direct_refs_to_docs(docxml, identifier)
-      svgmap_resolve(datauri_encode(docxml), ids)
-      hide_refs(docxml)
-      docxml.to_xml
+    def eref2link(docxml)
+      isodoc = IsoDoc::PresentationXMLConvert.new({})
+      isodoc.bibitem_lookup(docxml)
+      isodoc.eref2link(docxml)
     end
 
     def hide_refs(docxml)
@@ -110,21 +117,21 @@ module Metanorma
     # Preferably with anchor, and is a job to realise dynamic lookup
     # of localities.
     def update_direct_refs_to_docs(docxml, identifier)
-      erefs = collect_erefs(docxml)
+      @ncnames = {}
+      erefs = Util::gather_citeases(docxml)
       docxml.xpath(ns("//bibitem")).each do |b|
         docid = b.at(ns("./docidentifier[@type = 'repository']"))
         (docid && %r{^current-metanorma-collection/}.match(docid.text)) or next
         update_bibitem(b, identifier)
         docid = docid_to_citeas(b) or next
-        erefs[:citeas][docid] and update_anchors(b, docxml, docid)
+        erefs[docid] and update_anchors(b, docid, erefs[docid])
       end
     end
 
     def docid_to_citeas(bib)
       docid = bib.at(ns("./docidentifier[@primary = 'true']")) ||
         bib.at(ns("./docidentifier")) or return
-      @c.decode(@isodoc
-          .docid_prefix(docid["type"], docid.children.to_xml))
+      docid_prefix(docid)
     end
 
     def collect_erefs(docxml)
@@ -164,8 +171,9 @@ module Metanorma
 
     # update crossrefences to other documents, to include
     # disambiguating document suffix on id
-    def update_anchors(bib, docxml, docid) # rubocop:disable Metrics/AbcSize
-      docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
+    def update_anchors(bib, docid, erefs)
+      #docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
+      erefs.each do |e|
         if @files.get(docid) then update_anchor_loc(bib, e, docid)
         else
           e << "<strong>** Unresolved reference to document #{docid} " \
@@ -175,10 +183,11 @@ module Metanorma
     end
 
     def update_anchor_loc(bib, eref, docid)
-      loc = eref.at(ns(".//locality[@type = 'anchor']")) or
+      loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
         return update_anchor_create_loc(bib, eref, docid)
-      ref = loc.at(ns("./referenceFrom")) or return
-      anchor = "#{ref.text}_#{Metanorma::Utils::to_ncname(docid)}"
+      @ncnames[docid] ||= Metanorma::Utils::to_ncname(docid)
+      ref = loc.at("./xmlns:referenceFrom") or return
+      anchor = "#{ref.text}_#{@ncnames[docid]}"
       return unless @files.get(docid, :anchors).inject([]) do |m, (_, x)|
         m += x.values
       end.include?(anchor)

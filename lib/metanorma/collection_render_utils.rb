@@ -105,7 +105,7 @@ module Metanorma
     end
 
     def ns(xpath)
-      IsoDoc::Convert.new({}).ns(xpath)
+      @isodoc.ns(xpath)
     end
   end
 end

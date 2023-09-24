@@ -86,7 +86,7 @@ module Metanorma
         { parentid: key, presentationxml: true, type: "fileref",
           rel_path: file[:url], out_path: File.basename(file[:url]),
           anchors: read_anchors(xml), ids: read_ids(xml),
-          xrefs_processed: true,
+          sectionsplit_output: true,
           bibdata: @files[key][:bibdata], ref: presfile }
       @files_to_delete << file[:url]
       manifest[newkey][:bare] = true unless idx.zero?

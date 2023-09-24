@@ -29,9 +29,9 @@ module Metanorma
     def initialize(collection, folder, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       check_options options
       @xml = Nokogiri::XML collection.to_xml # @xml is the collection manifest
-      @lang = @xml.at(ns("//bibdata/language"))&.text || "en"
-      @script = @xml.at(ns("//bibdata/script"))&.text || "Latn"
-      @locale = @xml.at(ns("//bibdata/locale"))&.text
+      @lang = @xml.at("//xmlns:bibdata/xmlns:language")&.text || "en"
+      @script = @xml.at("//xmlns:bibdata/xmlns:script")&.text || "Latn"
+      @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
       @doctype = doctype
       require "metanorma-#{@doctype}"
 
@@ -110,9 +110,9 @@ module Metanorma
 
     # infer the flavour from the first document identifier; relaton does that
     def doctype
-      if (docid = @xml.at(ns("//bibdata/docidentifier/@type"))&.text)
+      if (docid = @xml.at("//xmlns:bibdata/xmlns:docidentifier/@type")&.text)
         dt = docid.downcase
-      elsif (docid = @xml.at(ns("//bibdata/docidentifier"))&.text)
+      elsif (docid = @xml.at("//xmlns:bibdata/xmlns:docidentifier")&.text)
         dt = docid.sub(/\s.*$/, "").lowercase
       else return "standoc"
       end
