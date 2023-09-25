@@ -18,6 +18,8 @@ module Metanorma
         output_dir: @outdir,
       }.merge(compile_options_update(identifier))
 
+      p "CollectionRenderer::file_compile opts=#{opts}"
+
       @compile.compile file, opts
       @files.set(identifier, :outputs, {})
       file_compile_formats(filename, identifier)
@@ -25,6 +27,7 @@ module Metanorma
 
     def compile_options_update(identifier)
       ret = @compile_options.dup
+      p "CollectionRenderer::compile_options_update ret=#{ret}"
       Array(@directives).include?("presentation-xml") ||
         @files.get(identifier, :presentationxml) and
         ret.merge!(passthrough_presentation_xml: true)

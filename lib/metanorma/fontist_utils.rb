@@ -86,6 +86,9 @@ module Metanorma
     end
 
     def self.install_fonts(processor, options)
+      p caller
+      p "options=#{options}"
+
       return unless validate_install_fonts(processor, options)
 
       @@updated_formulas_repo = false
