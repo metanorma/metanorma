@@ -46,7 +46,7 @@ jobs:
 
       - uses: metanorma/ci/inkscape-setup-action@main
 
-      - run: bundle exec rspec spec/collection_spec.rb:256
+      - run: bundle exec rspec spec/collection_spec.rb:256:308
 
       - if: needs.prepare.outputs.public == 'true' && matrix.os == 'ubuntu-latest' && matrix.ruby.version == needs.prepare.outputs.default-ruby-version
         uses: codecov/codecov-action@v3
