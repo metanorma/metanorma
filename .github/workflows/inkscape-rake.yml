@@ -44,7 +44,7 @@ jobs:
           bundler-cache: true
           rubygems: ${{ matrix.ruby.rubygems }}
 
-      # - uses: metanorma/ci/inkscape-setup-action@main
+      - uses: metanorma/ci/inkscape-setup-action@main
 
       - run: bundle exec rspec spec/collection_spec.rb:256
 
