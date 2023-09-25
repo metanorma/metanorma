@@ -41,14 +41,19 @@ module Metanorma
         if agree
           no_license_log
         else
-          Fontist.log_level = :info
+          Fontist.log_level = :debug
         end
 
-        Fontist::Manifest::Install.from_hash(
+        puts manifest.inspect
+        result = Fontist::Manifest::Install.from_hash(
           manifest,
           confirmation: agree ? "yes" : "no",
           no_progress: no_progress,
         )
+
+        puts result.inspect
+
+        result
       end
 
       def license_error_log(continue)
