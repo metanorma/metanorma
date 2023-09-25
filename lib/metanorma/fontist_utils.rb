@@ -45,6 +45,7 @@ module Metanorma
         end
 
         puts manifest.inspect
+        puts "agree var: #{agree.inspect}"
         result = Fontist::Manifest::Install.from_hash(
           manifest,
           confirmation: agree ? "yes" : "no",
