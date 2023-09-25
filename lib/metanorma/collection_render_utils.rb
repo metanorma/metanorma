@@ -39,6 +39,20 @@ module Metanorma
                                                    @compile_options))
     end
 
+    def fail_update_bibitem(docid, identifier)
+      error = "[metanorma] Cannot find crossreference to document #{docid} " \
+              "in document #{identifier}."
+      @log&.add("Cross-References", nil, error)
+      Util.log(error, :warning)
+    end
+
+    def datauri_encode(docxml)
+      docxml.xpath(ns("//image")).each do |i|
+        i["src"] = Metanorma::Utils::datauri(i["src"])
+      end
+      docxml
+    end
+
     class PdfOptionsNode
       def initialize(doctype, options)
         docproc = Metanorma::Registry.instance.find_processor(doctype)
@@ -91,7 +105,7 @@ module Metanorma
     end
 
     def ns(xpath)
-      IsoDoc::Convert.new({}).ns(xpath)
+      @isodoc.ns(xpath)
     end
   end
 end

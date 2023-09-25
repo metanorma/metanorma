@@ -87,8 +87,7 @@ module Metanorma
         elem.each_with_object([]) do |(k, v), m|
           m << "<#{k}>#{obj_to_xml(v)}</#{k}>"
         end.join
-      else elem
-      end
+      else elem end
     end
 
     def render(opts)
@@ -110,7 +109,7 @@ module Metanorma
       private
 
       def parse_xml(file)
-        xml = Nokogiri::XML File.read(file, encoding: "UTF-8") { |c| c.huge }
+        xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)
         (b = xml.at("/xmlns:metanorma-collection/xmlns:bibdata")) and
           bd = Relaton::Cli.parse_xml(b)
         mnf_xml = xml.at("/xmlns:metanorma-collection/xmlns:manifest")
@@ -128,15 +127,14 @@ module Metanorma
       # TODO refine
       def directives_from_xml(dir)
         dir.each_with_object([]) do |d, m|
-          if d.at("./xmlns:value")
-            m << x.xpath("./xmlns:value").map(&:text)
-          elsif d.at("./*")
-            out = d.elements.each_with_object({}) do |e, ret|
-              ret[e.name] = e.children.to_xml
-            end
-            m << out
-          else m << d.children.to_xml
-          end
+          m << if d.at("./xmlns:value")
+                 x.xpath("./xmlns:value").map(&:text)
+               elsif d.at("./*")
+                 d.elements.each_with_object({}) do |e, ret|
+                   ret[e.name] = e.children.to_xml
+                 end
+               else d.children.to_xml
+               end
         end
       end
 
@@ -169,8 +167,7 @@ module Metanorma
       # @param xml [Nokogiri::XML::Element, nil]
       # @return [String, nil]
       def pref_final_content(xml)
-        return unless xml
-
+        xml or return
         <<~CONT
 
             == #{xml.at('title')&.text}
@@ -207,13 +204,12 @@ module Metanorma
     # @return [String] XML
     def sections(cnt)
       c = Asciidoctor.convert(cnt, backend: doctype.to_sym, header_footer: true)
-      Nokogiri::XML(c).at("//xmlns:sections").children.to_xml
+      Nokogiri::XML(c, &:huge).at("//xmlns:sections").children.to_xml
     end
 
     # @param builder [Nokogiri::XML::Builder]
     def doccontainer(builder)
-      return unless Array(@directives).include? "documents-inline"
-
+      Array(@directives).include? "documents-inline" or return
       documents.each_with_index do |(_, d), i|
         doccontainer1(builder, d, i)
       end
@@ -236,8 +232,7 @@ module Metanorma
 
     def fetch_doctype
       docid = @bibdata.docidentifier.first
-      return unless docid
-
+      docid or return
       docid.type&.downcase || docid.id&.sub(/\s.*$/, "")&.downcase
     end
   end
