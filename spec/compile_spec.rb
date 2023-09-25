@@ -115,7 +115,7 @@ RSpec.describe Metanorma::Compile do
     expect(Metanorma::FontistUtils).to receive(:fontist_install).once
 
     compile.compile("spec/assets/test.adoc", type: "iso",
-                                             continue_without_fonts: true)
+                                             no_install_fonts: true)
   end
 
   it "exit on license error" do
@@ -152,7 +152,7 @@ RSpec.describe Metanorma::Compile do
     expect(Metanorma::FontistUtils).to receive(:fontist_install).once
 
     compile.compile("spec/assets/test.adoc", type: "iso",
-                                             continue_without_fonts: true)
+                                             no_install_fonts: true)
   end
 
   it "handle missing fontist index" do
@@ -169,7 +169,7 @@ RSpec.describe Metanorma::Compile do
     expect(Metanorma::FontistUtils).to receive(:fontist_install).twice
 
     compile.compile("spec/assets/test.adoc", type: "iso",
-                                             continue_without_fonts: true)
+                                             no_install_fonts: true)
   end
 
   it "exit on twice missing fontist index" do
@@ -216,7 +216,7 @@ RSpec.describe Metanorma::Compile do
     expect(Metanorma::FontistUtils).to receive(:fontist_install).twice
 
     compile.compile("spec/assets/test.adoc", type: "iso",
-                                             continue_without_fonts: true)
+                                             no_install_fonts: true)
   end
 
   it "handle no_progress" do
