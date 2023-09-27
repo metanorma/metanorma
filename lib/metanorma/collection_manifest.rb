@@ -108,9 +108,7 @@ module Metanorma
       @disambig = Util::DisambigFiles.new
       @docref.each do |dr|
         drf = builder.docref do |b|
-          b.identifier do |i|
-            i << dr["identifier"]
-          end
+          b.identifier { |i| i << dr["identifier"] }
           !dr["attachment"] && !dr["sectionsplit"] &&
             d = @collection.bibdatas[dr["identifier"]] and
             b.parent.add_child(d.bibitem.to_xml(bibdata: true))

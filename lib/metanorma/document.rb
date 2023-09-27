@@ -87,7 +87,7 @@ module Metanorma
         else
           case format(file)
           when :xml
-            from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8"))
+            from_xml (Nokogiri::XML(File.read(file, encoding: "UTF-8")) { |x| x.huge })
           when :yaml
             yaml = File.read(file, encoding: "UTF-8")
             Relaton::Cli::YAMLConvertor.convert_single_file(yaml)

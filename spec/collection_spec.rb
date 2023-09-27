@@ -92,7 +92,7 @@ RSpec.describe Metanorma::Collection do
       end
       expect(concat_text_doc_xml.at("//xmlns:xref/@target").text)
         .to be_equivalent_to "_scope"
-      expect(conact_file_doc_xml.at("//i:xref/@target", "i" => "https://www.metanorma.org/ns/iso").text)
+      expect(conact_file_doc_xml.xpath("//i:xref/@target", "i" => "https://www.metanorma.org/ns/iso")[-1].text)
         .to be_equivalent_to "_scope_ISO_17301-1_2016"
       expect(concat_text_doc_xml.at("//xmlns:strong/@style").text)
         .to be_equivalent_to "background: url(#svg1); foreground: url(_001); middleground: url(#fig1);"
@@ -318,8 +318,10 @@ RSpec.describe Metanorma::Collection do
           no_install_fonts: true,
         },
       )
+      expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+      expect(File.exist?("#{INPATH}/ISO 17301-1_2016_index.html")).to be false
       expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
@@ -335,16 +337,24 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
         .to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html"))
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.0.html"))
         .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html"))
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.1.html"))
         .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html"))
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.2.html"))
         .to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
         .to be true
+      expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
+        .to include "This document is updated in <a href"
+      xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
+      p = xml.xpath("//xmlns:sections//xmlns:p")[4]
+      p.delete("id")
+      expect(p.to_xml).to be_equivalent_to <<~OUTPUT
+        <p>This document is updated in <link target="rice-amd.final.html"><span class="stdpublisher">ISO</span> <span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</link>.</p>
+      OUTPUT
       FileUtils.rm_rf of
     end
 
@@ -440,6 +450,8 @@ RSpec.describe Metanorma::Collection do
     # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
     FileUtils.rm_rf of
   end
+
+  private
 
   def read_and_cleanup(file)
     content = File.read(file, encoding: "UTF-8").gsub(

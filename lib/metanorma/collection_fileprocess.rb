@@ -41,9 +41,8 @@ module Metanorma
       @format.each do |e|
         ext = @compile.processor.output_formats[e]
         fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)
-        unless /html$/.match?(ext) && @files.get(identifier, :sectionsplit)
+        (/html$/.match?(ext) && @files.get(identifier, :sectionsplit)) or
           f[e] = File.join(@outdir, fn)
-        end
       end
       @files.set(identifier, :outputs, f)
     end
@@ -59,20 +58,19 @@ module Metanorma
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
       internal_refs = locate_internal_refs
-      @files.keys.each_with_index do |identifier, i|
+      @files.keys.each_with_index do |ident, i|
         i.positive? && Array(@directives).include?("bare-after-first") and
           @compile_options.merge!(bare: true)
-        if @files.get(identifier, :attachment)
-          copy_file_to_dest(identifier)
+        if @files.get(ident, :attachment) then copy_file_to_dest(ident)
         else
-          file, filename = @files.targetfile_id(identifier, read: true)
+          file, filename = @files.targetfile_id(ident, read: true)
           warn "\n\n\n\n\nProcess #{filename}: #{DateTime.now.strftime('%H:%M:%S')}"
-          collection_xml = update_xrefs(file, identifier, internal_refs)
+          collection_xml = update_xrefs(file, ident, internal_refs)
           collection_filename = File.basename(filename, File.extname(filename))
           collection_xml_path = File.join(Dir.tmpdir,
                                           "#{collection_filename}.xml")
           File.write collection_xml_path, collection_xml, encoding: "UTF-8"
-          file_compile(collection_xml_path, filename, identifier)
+          file_compile(collection_xml_path, filename, ident)
           FileUtils.rm(collection_xml_path)
         end
       end

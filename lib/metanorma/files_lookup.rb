@@ -5,6 +5,8 @@ require "metanorma-utils"
 module Metanorma
   # XML collection renderer
   class FileLookup
+    attr_accessor :files_to_delete, :parent
+
     # hash for each document in collection of document identifier to:
     # document reference (fileref or id), type of document reference,
     # and bibdata entry for that file
@@ -18,12 +20,12 @@ module Metanorma
       @path = path
       @compile = parent.compile
       @documents = parent.documents
+      @files_to_delete = []
       read_files
     end
 
     def read_files
       @xml.xpath(ns("//docref")).each { |d| read_file(d) }
-      add_section_split
     end
 
     def read_file(docref)
@@ -41,9 +43,10 @@ module Metanorma
           .attachment_bibitem(identifier).root
       else
         file, _filename = targetfile(entry, read: true)
-        xml = Nokogiri::XML(file)
+        xml = Nokogiri::XML(file, &:huge)
         add_document_suffix(identifier, xml)
         entry[:anchors] = read_anchors(xml)
+        entry[:ids] = read_ids(xml)
         entry[:bibdata] = xml.at(ns("//bibdata"))
       end
     end
@@ -58,11 +61,10 @@ module Metanorma
     def add_section_split
       ret = @files.keys.each_with_object({}) do |k, m|
         if @files[k][:sectionsplit] == "true" && !@files[k]["attachment"]
-          s, manifest = sectionsplit(@files[k][:ref])
-          s.each_with_index do |f1, i|
-            add_section_split_instance(f1, m, k, i)
-          end
+          s, manifest = sectionsplit(@files[k][:ref], k)
+          s.each_with_index { |f1, i| add_section_split_instance(f1, m, k, i) }
           m["#{k}:index.html"] = add_section_split_cover(manifest, k)
+          @files_to_delete << m["#{k}:index.html"][:ref]
         end
         m[k] = @files[k]
       end
@@ -70,7 +72,8 @@ module Metanorma
     end
 
     def add_section_split_cover(manifest, ident)
-      cover = section_split_cover(manifest, @parent.dir_name_cleanse(ident))
+      cover = @sectionsplit.section_split_cover(manifest,
+                                                @parent.dir_name_cleanse(ident))
       @files[ident][:out_path] = cover
       { attachment: true, index: false, out_path: cover,
         ref: File.join(File.dirname(manifest.file), cover) }
@@ -100,28 +103,40 @@ module Metanorma
     end
 
     def add_section_split_instance(file, manifest, key, idx)
-      presfile = File.join(File.dirname(@files[key][:ref]),
-                           File.basename(file[:url]))
-      newkey = key("#{key.strip} #{file[:title]}")
+      presfile, newkey, xml =
+        add_section_split_instance_prep(file, key)
       manifest[newkey] =
         { parentid: key, presentationxml: true, type: "fileref",
           rel_path: file[:url], out_path: File.basename(file[:url]),
-          anchors: read_anchors(Nokogiri::XML(File.read(presfile))),
+          anchors: read_anchors(xml), ids: read_ids(xml),
+          sectionsplit_output: true,
           bibdata: @files[key][:bibdata], ref: presfile }
+      @files_to_delete << file[:url]
       manifest[newkey][:bare] = true unless idx.zero?
     end
 
-    def sectionsplit(file)
-      @compile.compile(
-        file, { format: :asciidoc, extension_keys: [:presentation] }
-        .merge(@parent.compile_options)
-      )
-      r = file.sub(/\.xml$/, ".presentation.xml")
-      xml = Nokogiri::XML(File.read(r))
-      s = @compile.sectionsplit(xml, File.basename(r), File.dirname(r))
-        .sort_by { |f| f[:order] }
-      [s, @compile.collection_manifest(File.basename(r), s, xml, nil,
-                                       File.dirname(r))]
+    def add_section_split_instance_prep(file, key)
+      presfile = File.join(File.dirname(@files[key][:ref]),
+                           File.basename(file[:url]))
+      newkey = key("#{key.strip} #{file[:title]}")
+      xml = Nokogiri::XML(File.read(presfile), &:huge)
+      [presfile, newkey, xml]
+    end
+
+    def sectionsplit(file, ident)
+      @sectionsplit =
+        Sectionsplit.new(input: file, base: File.basename(file), dir: File.dirname(file),
+                         output: file, compile_options: @parent.compile_options,
+                         fileslookup: self, ident: ident, isodoc: @isodoc)
+      coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
+      # s = @compile.sectionsplit(file, File.basename(file), File.dirname(file),
+      # @parent.compile_options, self, ident)
+      # .sort_by { |f| f[:order] }
+      # xml = Nokogiri::XML(File.read(file, encoding: "UTF-8")) { |x| x.huge }
+      xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)
+      [coll, @sectionsplit
+        .collection_manifest(File.basename(file), coll, xml, nil,
+                             File.dirname(file))]
     end
 
     # rel_path is the source file address, determined relative to the YAML.
@@ -226,8 +241,19 @@ module Metanorma
       ret[val[:type]][val[:value]] = key if val[:value]
     end
 
+    # Also parse all ids in doc (including ones which won't be xref targets)
+    def read_ids(xml)
+      ret = {}
+      xml.traverse do |x|
+        x.text? and next
+        /^semantic__/.match?(x.name) and next
+        x["id"] and ret[x["id"]] = true
+      end
+      ret
+    end
+
     def key(ident)
-      @c.decode(ident).gsub(/(\s|[ ])+/, " ")
+      @c.decode(ident).gsub(/(\p{Zs})+/, " ").sub(/^metanorma-collection /, "")
     end
 
     def keys
@@ -235,10 +261,8 @@ module Metanorma
     end
 
     def get(ident, attr = nil)
-      if attr
-        @files[key(ident)][attr]
-      else
-        @files[key(ident)]
+      if attr then @files[key(ident)][attr]
+      else @files[key(ident)]
       end
     end
 

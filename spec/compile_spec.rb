@@ -527,7 +527,8 @@ RSpec.describe Metanorma::Compile do
     expect(c.errors).not_to include("Anything")
     expect(c.errors).to include("Something")
 
-    allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert).to receive(:convert)
+    allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert)
+      .to receive(:convert)
       .and_raise("Anything")
     c = Metanorma::Compile.new
     c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html],
@@ -557,7 +558,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
     f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
@@ -570,12 +571,15 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.5.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
     m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
-    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
+    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
+    file2.xpath("//xmlns:emf").each(&:remove)
+    expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
+    expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
     expect(xmlpp(file2
      .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
@@ -584,7 +588,7 @@ RSpec.describe Metanorma::Compile do
     expect(xmlpp(file2
      .at("//xmlns:eref[@bibitemid = '#{m[1]}_R1']").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>#{m[1]}_R1</referenceFrom></locality></localityStack></eref>
+        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
       OUTPUT
     expect(xmlpp(file2
      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
@@ -601,32 +605,35 @@ RSpec.describe Metanorma::Compile do
         </bibitem>
       OUTPUT
     expect(xmlpp(file2
-     .at("//xmlns:svgmap[1]").to_xml))
+     .at("//xmlns:figure[1]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <svgmap>
         <figure>
+        <image src="" mimetype="image/svg+xml" height="" width="">
           <svg xmlns="http://www.w3.org/2000/svg">
             <a href="A">A</a>
             <a href="B">B</a>
           </svg>
-          <target href="B"><eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>#{m[1]}_R1</referenceFrom></locality></localityStack></eref></target>
+          </image>
+          <target href="B"><eref bibitemid="#{m[1]}_R1" type="#{m[1]}">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref></target>
         </figure>
-        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
+        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target>
       OUTPUT
     expect(xmlpp(file2
-     .at("//xmlns:svgmap[2]").to_xml))
+     .at("//xmlns:figure[2]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <svgmap><figure>
+        <figure>
+        <image src="" mimetype="image/svg+xml" height="" width="">
         <svg xmlns="http://www.w3.org/2000/svg">
           <a href="P">P</a>
         </svg>
-        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
+        </image>
+        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target>
       OUTPUT
     expect(file2.at("//xmlns:preface")).to be_nil
     expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
     expect(file2.at("//xmlns:annex")).to be_nil
     expect(file2.at("//xmlns:indexsect")).to be_nil
-    file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.5.xml"))
+    file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.6.xml"))
     expect(file6.at("//xmlns:preface")).to be_nil
     expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
     expect(file6.at("//xmlns:annex")).not_to be_nil
@@ -650,24 +657,23 @@ RSpec.describe Metanorma::Compile do
           level: collection
           title: Collection
           docref:
-          - fileref: test_sectionsplit.html.3.xml
-            identifier: "[Untitled]"
           - fileref: test_sectionsplit.html.0.xml
-            identifier: abstract
+            identifier: Contents
           - fileref: test_sectionsplit.html.1.xml
-            identifier: introduction
-          - fileref: test_sectionsplit.html.6.xml
-            identifier: Normative References
+            identifier: abstract
           - fileref: test_sectionsplit.html.2.xml
-            identifier: Clause 4
+            identifier: introduction
           - fileref: test_sectionsplit.html.4.xml
-            identifier: Annex (informative)
+            identifier: 1 Normative References
+          - fileref: test_sectionsplit.html.3.xml
+            identifier: 2 Clause 4
           - fileref: test_sectionsplit.html.5.xml
-            identifier: Annex 2
+            identifier: Annex A <span class="obligation">(normative)</span>  Annex (informative)
+          - fileref: test_sectionsplit.html.6.xml
+            identifier: Annex B <span class="obligation">(normative)</span>  Annex 2
           - fileref: test_sectionsplit.html.7.xml
             identifier: Bibliography
-          - fileref: test_sectionsplit.html.8.xml
-            identifier: Index
+
       OUTPUT
   end
 
