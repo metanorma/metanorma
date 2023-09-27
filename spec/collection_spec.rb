@@ -69,10 +69,10 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
-      expect(xmlpp(concat_file.gsub(/></, ">\n<"))
+      expect(xmlpp(concat_file.gsub("><", ">\n<"))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^']*'},
              "xlink:href='data:image/gif;base64,_'"))
-        .to be_equivalent_to xmlpp(concat_text.gsub(/></, ">\n<"))
+        .to be_equivalent_to xmlpp(concat_text.gsub("><", ">\n<"))
           .sub(%r{xlink:href=['"]data:image/gif;base64[^']*'},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
@@ -305,10 +305,9 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "YAML collection with sectionsplit" do # rubocop:disable metrics/blocklength
+    it "YAML collection with multiple documents sectionsplit" do # rubocop:disable metrics/blocklength
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg", "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_sectionsplit.yml"
-      # xml = file.read file, encoding: "utf-8"
       of = OUTPATH.to_s
       col = Metanorma::Collection.parse file
       col.render(
@@ -345,6 +344,39 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
+        .to be true
+      FileUtils.rm_rf of
+    end
+
+    it "YAML collection with single document sectionsplit" do # rubocop:disable metrics/blocklength
+      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
+                   "action_schemaexpg1.svg"
+      file = "#{INPATH}/collection_sectionsplit_solo.yml"
+      of = OUTPATH.to_s
+      col = Metanorma::Collection.parse file
+      col.render(
+        format: %i[presentation html xml],
+        output_folder: of,
+        coverpage: "#{INPATH}/collection_cover.html",
+        compile: {
+          no_install_fonts: true,
+        },
+      )
+      expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be false
+      expect(File.exist?("#{OUTPATH}/index.html")).to be true
+      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
+        .to include "ISO Collection 1"
+      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
+        .to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html"))
         .to be true
       FileUtils.rm_rf of
     end

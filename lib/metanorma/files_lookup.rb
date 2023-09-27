@@ -56,7 +56,6 @@ module Metanorma
     end
 
     def add_section_split
-        #require "debug"; binding.b
       ret = @files.keys.each_with_object({}) do |k, m|
         if @files[k][:sectionsplit] == "true" && !@files[k]["attachment"]
           s, manifest = sectionsplit(@files[k][:ref])
@@ -66,7 +65,6 @@ module Metanorma
           m["#{k}:index.html"] = add_section_split_cover(manifest, k)
         end
         m[k] = @files[k]
-        #require "debug"; binding.b
       end
       @files = ret
     end
@@ -81,15 +79,24 @@ module Metanorma
     def section_split_cover(col, ident)
       dir = File.dirname(col.file)
       @compile.collection_setup(nil, dir)
-      #require "debug";binding.b
       CollectionRenderer.new(col, dir,
                              output_folder: "#{ident}_collection",
                              format: %i(html),
                              coverpage: File.join(dir, "cover.html")).coverpage
-      FileUtils.mv "#{ident}_collection/index.html",
-                   File.join(dir, "#{ident}_index.html")
+      filename = one_doc_collection? ? "#{ident}_index.html" : "index.html"
+      FileUtils.mv "#{ident}_collection/index.html", File.join(dir, filename)
       FileUtils.rm_rf "#{ident}_collection"
-      "#{ident}_index.html"
+      filename
+    end
+
+    def one_doc_collection?
+      docs = 0
+      @files.each_value do |v|
+        v[:attachment] and next
+        v[:presentationxml] and next
+        docs += 1
+      end
+      docs > 1
     end
 
     def add_section_split_instance(file, manifest, key, idx)
@@ -105,7 +112,6 @@ module Metanorma
     end
 
     def sectionsplit(file)
-      #require "debug"; binding.b
       @compile.compile(
         file, { format: :asciidoc, extension_keys: [:presentation] }
         .merge(@parent.compile_options)
