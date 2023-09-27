@@ -103,7 +103,7 @@ module Metanorma
     def sectionsplit(file, ident)
       @sectionsplit =
         Sectionsplit.new(input: file, base: File.basename(file), dir: File.dirname(file),
-                         output: file, compile_options: @parent.compile_options,
+                         output: file, compile_opts: @parent.compile_options,
                          fileslookup: self, ident: ident, isodoc: @isodoc)
       coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
       # s = @compile.sectionsplit(file, File.basename(file), File.dirname(file),
