@@ -1,4 +1,5 @@
-       <metanorma-collection xmlns="http://metanorma.org">
+
+      <metanorma-collection xmlns="http://metanorma.org">
          <bibdata type="collection">
            <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
            <docidentifier type="iso">ISO 12345</docidentifier>
@@ -827,13 +828,12 @@
                  <p id="">This document is unrelated <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"/>, see e.g. <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality><locality type="anchor"><referenceFrom>scope_ISO_1701_1974</referenceFrom></locality></localityStack></eref>.</p>
                  <p id="">This document is unrelated to <eref type="inline" bibitemid="Dummy_ISO_17301-1_2016" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
                  <p id="">This document uses schemas <eref bibitemid="express-schema_E0_ISO_17301-1_2016" citeas="Missing:express-schema:E0"><locality type="anchor"><referenceFrom>A0_Missing_express-schema_E0</referenceFrom></locality>E0/A0<strong>** Unresolved reference to document Missing:express-schema:E0 from eref</strong></eref>, <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A1_ISO_17302</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A2_ISO_17302</referenceFrom></locality>E2/A2</eref>.</p>
-                 <svgmap id="svg1_ISO_17301-1_2016">
-                   <figure id="fig1_ISO_17301-1_2016">
-                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
-                       <style type="text/css">
+                 <figure id="fig1_ISO_17301-1_2016">
+                   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+                     <style type="text/css">
        	.st0{fill:none;stroke:#000000;stroke-miterlimit:10;}
        </style>
-                       <image style="overflow:visible;" width="368" height="315" xlink:href='data:image/gif;base64,_'s manifest
+                     <image style="overflow:visible;" width="368" height="315" xlink:href='data:image/gif;base64,_'s manifest
          class CollectionManifest
            # @return [Metanorma::Collection]
            attr_reader :collection

@@ -1,12 +1,13 @@
 module Metanorma
   class Sectionsplit
-    def xref_preprocess(xml, fileslookup, identifier)
+    def xref_preprocess(xml, _fileslookup, _identifier)
       key = (0...8).map { rand(65..90).chr }.join # random string
       xml.root["type"] = key # to force recognition of internal refs
       key
     end
 
     def xref_process(section, xml, key)
+      svg_preprocess(section, Metanorma::Utils::to_ncname(@ident))
       refs = eref_to_internal_eref(section, xml, key)
       refs += xref_to_internal_eref(section, key)
       ins = new_hidden_ref(section)
@@ -14,15 +15,14 @@ module Metanorma
       insert_indirect_biblio(ins, refs - copied_refs, key)
     end
 
-    def svg_preprocess(xml)
+    def svg_preprocess(xml, document_suffix)
       xml.xpath("//m:svg", "m" => "http://www.w3.org/2000/svg").each do |s|
         m = svgmap_wrap(s)
         s.xpath(".//m:a", "m" => "http://www.w3.org/2000/svg").each do |a|
-          next unless /^#/.match? a["href"]
-
+          /^#/.match? a["href"] or next
           a["href"] = a["href"].sub(/^#/, "")
           m << "<target href='#{a['href']}'>" \
-               "<xref target='#{a['href']}'/></target>"
+               "<xref target='#{a['href']}_#{document_suffix}'/></target>"
         end
       end
       xml
