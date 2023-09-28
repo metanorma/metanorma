@@ -109,7 +109,8 @@ module Metanorma
       type = xml.root.name.sub("-standard", "").to_sym
       @fileslookup&.parent&.update_xrefs(xml, @ident, {})
       xml1 = Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
-        f.write(@isodoc.to_xml(svg_preprocess(xml)))
+        #f.write(@isodoc.to_xml(svg_preprocess(xml)))
+        f.write(@isodoc.to_xml((xml)))
         f
       end
       @filecache ||= []

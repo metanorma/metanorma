@@ -101,15 +101,11 @@ module Metanorma
     end
 
     def sectionsplit(file, ident)
-      @sectionsplit =
-        Sectionsplit.new(input: file, base: File.basename(file), dir: File.dirname(file),
-                         output: file, compile_opts: @parent.compile_options,
-                         fileslookup: self, ident: ident, isodoc: @isodoc)
+      @sectionsplit = Sectionsplit
+        .new(input: file, base: File.basename(file), dir: File.dirname(file),
+             output: file, compile_opts: @parent.compile_options,
+             fileslookup: self, ident: ident, isodoc: @isodoc)
       coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
-      # s = @compile.sectionsplit(file, File.basename(file), File.dirname(file),
-      # @parent.compile_options, self, ident)
-      # .sort_by { |f| f[:order] }
-      # xml = Nokogiri::XML(File.read(file, encoding: "UTF-8")) { |x| x.huge }
       xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)
       [coll, @sectionsplit
         .collection_manifest(File.basename(file), coll, xml, nil,

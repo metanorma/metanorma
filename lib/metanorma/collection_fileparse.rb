@@ -58,10 +58,10 @@ module Metanorma
       update_indirect_refs_to_docs(docxml, internal_refs)
       ids = @files.get(identifier, :ids)
       @files.add_document_suffix(identifier, docxml)
-      svgmap_resolve(datauri_encode(docxml), ids)
       update_direct_refs_to_docs(docxml, identifier)
       hide_refs(docxml)
       @files.get(identifier, :sectionsplit_output) and eref2link(docxml)
+      svgmap_resolve(datauri_encode(docxml), ids)
       docxml.to_xml
     end
 
@@ -98,12 +98,12 @@ module Metanorma
         svgmap_resolve1(e, isodoc, docxml, ids)
       end
       Metanorma::Utils::svgmap_rewrite(docxml, "")
+      docxml.xpath(ns("//svgmap")).each { |s| isodoc.svgmap_extract(s) }
     end
 
     def svgmap_resolve1(eref, isodoc, _docxml, ids)
       href = isodoc.eref_target(eref)
       return if href == "##{eref['bibitemid']}" ||
-        # (href =~ /^#/ && !docxml.at("//*[@id = '#{href.sub(/^#/, '')}']"))
         (href =~ /^#/ && !ids[href.sub(/^#/, "")])
 
       eref["target"] = href.strip
@@ -157,7 +157,6 @@ module Metanorma
 
     def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
       erefs[key]&.each do |e|
-        # docxml.xpath(ns("//eref[@bibitemid = '#{key}']")).each do |e|
         e["citeas"] = file
         a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom")) and
           a.children = "#{a.text}_#{Metanorma::Utils::to_ncname(file)}"
@@ -172,7 +171,6 @@ module Metanorma
     # update crossrefences to other documents, to include
     # disambiguating document suffix on id
     def update_anchors(bib, docid, erefs)
-      #docxml.xpath("//xmlns:eref[@citeas = '#{docid}']").each do |e|
       erefs.each do |e|
         if @files.get(docid) then update_anchor_loc(bib, e, docid)
         else
