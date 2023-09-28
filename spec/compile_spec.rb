@@ -605,9 +605,9 @@ RSpec.describe Metanorma::Compile do
         </bibitem>
       OUTPUT
     expect(xmlpp(file2
-     .at("//xmlns:figure[1]").to_xml))
+     .at("//xmlns:svgmap[1]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <figure>
+        <svgmap><figure>
         <image src="" mimetype="image/svg+xml" height="" width="">
           <svg xmlns="http://www.w3.org/2000/svg">
             <a href="A">A</a>
@@ -616,18 +616,16 @@ RSpec.describe Metanorma::Compile do
           </image>
           <target href="B"><eref bibitemid="#{m[1]}_R1" type="#{m[1]}">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref></target>
         </figure>
-        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target>
+        <target href="A"><eref bibitemid="#{m[1]}_A_" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A_</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B_" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B_</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
     expect(xmlpp(file2
-     .at("//xmlns:figure[2]").to_xml))
+     .at("//xmlns:svgmap[2]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <figure>
-        <image src="" mimetype="image/svg+xml" height="" width="">
-        <svg xmlns="http://www.w3.org/2000/svg">
-          <a href="P">P</a>
-        </svg>
-        </image>
-        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target>
+             <svgmap><figure>
+         <image src="" mimetype="image/svg+xml" height="" width=""><svg xmlns="http://www.w3.org/2000/svg">
+           <a href="P">P</a>
+         </svg></img>
+        </figure><target href="P"><eref bibitemid="#{m[1]}_P_" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P_</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
     expect(file2.at("//xmlns:preface")).to be_nil
     expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
