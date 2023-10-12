@@ -183,9 +183,9 @@ RSpec.describe Metanorma::Collection do
       expect(cr.isodoc.meta.get[:navigation])
         .to be_equivalent_to <<~OUTPUT
           <ul>
-          <li>Collection: ISO Collection</li>
+          <li>ISO Collection</li>
           <ul>
-          <li>Subcollection: Standards</li>
+          <li>Standards</li>
           <ul>
           <li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li>
           <li><a href="dummy.html">ISO&nbsp;17302</a></li>
@@ -193,11 +193,11 @@ RSpec.describe Metanorma::Collection do
           </ul>
           </ul>
           <ul>
-          <li>Subcollection: Amendments</li>
+          <li>Amendments</li>
           <ul><li><a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a></li></ul>
           </ul>
           <ul>
-          <li>Attachments: Attachments</li>
+          <li>Attachments</li>
           <ul>
           <li><a href="pics/action_schemaexpg1.svg">action_schemaexpg1.svg</a></li>
           <li><a href="assets/rice_image1.png">rice_image1.png</a></li>
@@ -225,6 +225,16 @@ RSpec.describe Metanorma::Collection do
           </div>
           </div>
         OUTPUT
+      expect(cr.isodoc.meta.get[:nav_object])
+        .to be_equivalent_to ({ title: "ISO Collection",
+                                children: [
+                                  { title: "Standards",
+                                    docrefs: "<ul>\n<li><a href=\"rice-en.final.html\">ISO&nbsp;17301-1:2016</a></li>\n<li><a href=\"dummy.html\">ISO&nbsp;17302</a></li>\n<li><a href=\"rice1-en.final.html\">ISO&nbsp;1701:1974</a></li>\n</ul>" },
+                                  { title: "Amendments",
+                                    docrefs: "<ul><li><a href=\"rice-amd.final.html\">ISO 17301-1:2016/Amd.1:2017</a></li></ul>" },
+                                  { title: "Attachments",
+                                    docrefs: "<ul>\n<li><a href=\"pics/action_schemaexpg1.svg\">action_schemaexpg1.svg</a></li>\n<li><a href=\"assets/rice_image1.png\">rice_image1.png</a></li>\n</ul>" },
+                                ] })
     end
 
     it "uses presentation XML directive, markup in identifiers" do # rubocop:disable metrics/blocklength
@@ -398,7 +408,6 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
   end
-
   it "disambiguates destination filenames" do
     file = "#{INPATH}/collection.dup.yml"
     of = OUTPATH
