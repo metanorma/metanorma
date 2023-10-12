@@ -65,8 +65,12 @@ module Metanorma
         @seen_filenames = []
       end
 
+      def strip_root(name)
+        name.sub(%r{^(\./)?(\.\./)+}, "")
+      end
+
       def source2dest_filename(name, disambig = true)
-        n = name.sub(%r{^(\./)?(\.\./)+}, "")
+        n = strip_root(name)
         dir = File.dirname(n)
         base = File.basename(n)
         if disambig && @seen_filenames.include?(base)

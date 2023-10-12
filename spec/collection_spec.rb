@@ -355,6 +355,13 @@ RSpec.describe Metanorma::Collection do
       expect(p.to_xml).to be_equivalent_to <<~OUTPUT
         <p>This document is updated in <link target="rice-amd.final.html"><span class="stdpublisher">ISO</span> <span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</link>.</p>
       OUTPUT
+      p = xml.xpath("//xmlns:sections//xmlns:p")[7]
+      p.delete("id")
+      # demonstrate that erefs are removed if they point to another document in the repository,
+      # but that document is not supplied
+      expect(p.to_xml).to be_equivalent_to <<~OUTPUT
+        <p>This document uses schemas E0/A0, E1/A1 and E2/A2.</p>
+      OUTPUT
       FileUtils.rm_rf of
     end
 

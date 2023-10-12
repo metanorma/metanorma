@@ -4,7 +4,7 @@ module Metanorma
     def add_section_split
       ret = @files.keys.each_with_object({}) do |k, m|
         if @files[k][:sectionsplit] == "true" && !@files[k]["attachment"]
-          s, manifest = sectionsplit(@files[k][:ref], k)
+          s, manifest = sectionsplit(@files[k][:ref], @files[k][:out_path], k)
           s.each_with_index { |f1, i| add_section_split_instance(f1, m, k, i) }
           m["#{k}:index.html"] = add_section_split_cover(manifest, k)
           @files_to_delete << m["#{k}:index.html"][:ref]
@@ -54,10 +54,10 @@ module Metanorma
       [presfile, newkey, xml]
     end
 
-    def sectionsplit(file, ident)
+    def sectionsplit(file, outfile, ident)
       @sectionsplit = Sectionsplit
-        .new(input: file, base: File.basename(file), dir: File.dirname(file),
-             output: file, compile_options: @parent.compile_options,
+        .new(input: file, base: outfile, dir: File.dirname(file),
+             output: outfile, compile_options: @parent.compile_options,
              fileslookup: self, ident: ident, isodoc: @isodoc)
       coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
       xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)

@@ -26,6 +26,7 @@ module Metanorma
     end
 
     def read_files
+      @disambig = Util::DisambigFiles.new
       @xml.xpath(ns("//docref")).each { |d| read_file(d) }
     end
 
@@ -65,15 +66,22 @@ module Metanorma
     # identifier is the id with only spaces, no nbsp
     def file_entry(ref, identifier)
       out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
+      out1 = @disambig.source2dest_filename(out)
       ret = if ref["fileref"]
               { type: "fileref", ref: @documents[identifier].file,
-                rel_path: ref["fileref"], out_path: out }
-            else { type: "id", ref: ref["id"] } end
+                rel_path: ref["fileref"],
+                out_path: out1 } # @disambig.source2dest_filename(out) }
+            else { type: "id", ref: ref["id"] }
+            end
+      file_entry_copy(ref, ret)
+      ret.compact
+    end
+
+    def file_entry_copy(ref, ret)
       %w(attachment sectionsplit index presentation-xml
          bare-after-first).each do |s|
         ret[s.gsub("-", "").to_sym] = ref[s] if ref[s]
       end
-      ret.compact
     end
 
     def add_suffix_to_attributes(doc, suffix, tag_name, attribute_name)

@@ -118,7 +118,7 @@ module Metanorma
     end
 
     def docref_to_xml_attrs(elem, docref)
-      elem[:fileref] = @disambig.source2dest_filename(docref["fileref"])
+      elem[:fileref] = @disambig.strip_root(docref["fileref"])
       %i(attachment sectionsplit).each do |i|
         elem[i] = docref[i.to_s] if docref[i.to_s]
       end
