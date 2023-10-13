@@ -106,7 +106,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "<h1>Cereals and pulses"
+        .to include "<h1>ISO Collection 1"
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO 17301-1:2016/Amd.1:2017"
       expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
@@ -282,7 +282,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "<h1>Cereals and pulses"
+        .to include "<h1>ISO Collection 1"
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
       # expect(File.exist?("#{OUTPATH}/dummy.doc")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be true
