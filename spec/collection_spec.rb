@@ -229,11 +229,11 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to ({ title: "ISO Collection",
                                 children: [
                                   { title: "Standards",
-                                    docrefs: "<ul>\n<li><a href=\"rice-en.final.html\">ISO&nbsp;17301-1:2016</a></li>\n<li><a href=\"dummy.html\">ISO&nbsp;17302</a></li>\n<li><a href=\"rice1-en.final.html\">ISO&nbsp;1701:1974</a></li>\n</ul>" },
+                                    docrefs: "<ul><li><a href=\"rice-en.final.html\">ISO&nbsp;17301-1:2016</a></li><li><a href=\"dummy.html\">ISO&nbsp;17302</a></li><li><a href=\"rice1-en.final.html\">ISO&nbsp;1701:1974</a></li></ul>" },
                                   { title: "Amendments",
                                     docrefs: "<ul><li><a href=\"rice-amd.final.html\">ISO 17301-1:2016/Amd.1:2017</a></li></ul>" },
                                   { title: "Attachments",
-                                    docrefs: "<ul>\n<li><a href=\"pics/action_schemaexpg1.svg\">action_schemaexpg1.svg</a></li>\n<li><a href=\"assets/rice_image1.png\">rice_image1.png</a></li>\n</ul>" },
+                                    docrefs: "<ul><li><a href=\"pics/action_schemaexpg1.svg\">action_schemaexpg1.svg</a></li><li><a href=\"assets/rice_image1.png\">rice_image1.png</a></li></ul>" },
                                 ] })
     end
 

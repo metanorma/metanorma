@@ -81,26 +81,25 @@ module Metanorma
       isodoc
     end
 
+    # create the @meta class of isodoc, for populating Liquid,
+    # with "navigation" set to the index bar.
+    # extracted from the manifest
     def isodoc_populate
-      # create the @meta class of isodoc, for populating Liquid,
-      # with "navigation" set to the index bar.
-      # extracted from the manifest
-      @isodoc.meta.set(:navigation, indexfile(@xml.at(ns("//manifest"))))
-      @isodoc.meta.set(:nav_object, index_object(@xml.at(ns("//manifest"))))
-      @isodoc.meta.set(:docrefs, liquid_docrefs)
-      @isodoc.meta.set(:"prefatory-content",
-                       isodoc_builder(@isodoc,
-                                      @xml.at(ns("//prefatory-content"))))
-      @isodoc.meta.set(:"final-content",
-                       isodoc_builder(isodoc,
-                                      @xml.at(ns("//final-content"))))
       @isodoc.info(@xml, nil)
+      m = @xml.at(ns("//manifest"))
+      { navigation: indexfile(m), nav_object: index_object(m),
+        docrefs: liquid_docrefs,
+        "prefatory-content": isodoc_builder(@xml.at(ns("//prefatory-content"))),
+        "final-content": isodoc_builder(@xml.at(ns("//final-content"))),
+        doctitle: m.at(ns("../bibdata/title"))&.text,
+        docnumber: m.at(ns("../bibdata/docidentifier"))&.text
+      }.each { |k, v| v and @isodoc.meta.set(k, v) }
     end
 
-    def isodoc_builder(isodoc, node)
+    def isodoc_builder(node)
       Nokogiri::HTML::Builder.new(encoding: "UTF-8") do |b|
         b.div do |div|
-          node&.children&.each { |n| isodoc.parse(n, div) }
+          node&.children&.each { |n| @isodoc.parse(n, div) }
         end
       end.doc.root.to_html
     end
