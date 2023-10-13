@@ -190,12 +190,13 @@ module Metanorma
       c = elm.xpath(ns("./manifest")).each_with_object([]) do |d, b|
         b << index_object(d)
       end
+      c.empty? and c = nil
       r = Nokogiri::HTML::Builder.new do |b|
         indexfile_docref(elm, b)
       end
+      r &&= r.doc.root&.to_html&.gsub("\n", " ")
       { title: indexfile_title(elm),
-        docrefs: r&.doc&.root&.to_html,
-        children: c.empty? ? nil : c }.compact
+        docrefs: r, children: c }.compact
     end
 
     def liquid_docrefs
