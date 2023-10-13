@@ -102,7 +102,7 @@ module Metanorma
     end
 
     def svgmap_resolve1(eref, isodoc, _docxml, ids)
-      href = isodoc.eref_target(eref)
+      href = isodoc.eref_target(eref) or return
       return if href == "##{eref['bibitemid']}" ||
         (href =~ /^#/ && !ids[href.sub(/^#/, "")])
 
@@ -119,13 +119,22 @@ module Metanorma
     def update_direct_refs_to_docs(docxml, identifier)
       @ncnames = {}
       erefs = Util::gather_citeases(docxml)
+      erefs1 = Util::gather_bibitemids(docxml)
       docxml.xpath(ns("//bibitem")).each do |b|
-        docid = b.at(ns("./docidentifier[@type = 'repository']"))
-        (docid && %r{^current-metanorma-collection/}.match(docid.text)) or next
+        docid = b.at(ns("./docidentifier[@type = 'repository']")) or next
+        unless %r{^current-metanorma-collection/}.match(docid.text)
+          erefs1[b["id"]]&.each { |x| strip_eref(x) }
+          next
+        end
         update_bibitem(b, identifier)
         docid = docid_to_citeas(b) or next
         erefs[docid] and update_anchors(b, docid, erefs[docid])
       end
+    end
+
+    def strip_eref(eref)
+      eref.xpath(ns("./locality | ./localityStack")).each(&:remove)
+      eref.replace(eref.children)
     end
 
     def docid_to_citeas(bib)

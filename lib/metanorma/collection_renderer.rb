@@ -132,9 +132,7 @@ module Metanorma
     # @param elm [Nokogiri::XML::Element]
     # @return [String]
     def indexfile_title(elm)
-      lvl = elm.at(ns("./level"))&.text&.capitalize
-      lbl = elm.at(ns("./title"))&.text
-      "#{lvl}#{lvl && lbl ? ': ' : ''}#{lbl}"
+      elm.at(ns("./title"))&.text
     end
 
     # uses the identifier to label documents; other attributes (title) can be
@@ -172,10 +170,6 @@ module Metanorma
     end
 
     # single level navigation list, with hierarchical nesting
-    # if multiple lists are needed as separate HTML fragments, multiple
-    # instances of this function will be needed,
-    # and associated to different variables in the call to @isodoc.metadata_init
-    # (including possibly an array of HTML fragments)
     #
     # @param elm [Nokogiri::XML::Element]
     # @return [String] XML
@@ -189,6 +183,19 @@ module Metanorma
           end
         end
       end.doc.root.to_html
+    end
+
+    # object to construct navigation out of in Liquid
+    def index_object(elm)
+      c = elm.xpath(ns("./manifest")).each_with_object([]) do |d, b|
+        b << index_object(d)
+      end
+      r = Nokogiri::HTML::Builder.new do |b|
+        indexfile_docref(elm, b)
+      end
+      { title: indexfile_title(elm),
+        docrefs: r&.doc&.root&.to_html,
+        children: c.empty? ? nil : c }.compact
     end
 
     def liquid_docrefs

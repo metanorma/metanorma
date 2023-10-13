@@ -86,6 +86,7 @@ module Metanorma
       # with "navigation" set to the index bar.
       # extracted from the manifest
       @isodoc.meta.set(:navigation, indexfile(@xml.at(ns("//manifest"))))
+      @isodoc.meta.set(:nav_object, index_object(@xml.at(ns("//manifest"))))
       @isodoc.meta.set(:docrefs, liquid_docrefs)
       @isodoc.meta.set(:"prefatory-content",
                        isodoc_builder(@isodoc,
