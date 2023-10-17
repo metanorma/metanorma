@@ -18,7 +18,8 @@ module Metanorma
     end
 
     def input_to_isodoc(file, filename, options = {})
-      Metanorma::Input::Asciidoc.new.process(file, filename, @asciidoctor_backend, options)
+      Metanorma::Input::Asciidoc.new.process(file, filename,
+                                             @asciidoctor_backend, options)
     end
 
     # def input_to_isodoc(file, filename)
@@ -33,12 +34,17 @@ module Metanorma
       end
     end
 
+    def options_preprocess(options)
+      options[:output_formats] = output_formats
+    end
+
     def output(isodoc_node, _inname, outname, _format, _options = {})
       File.open(outname, "w:UTF-8") { |f| f.write(isodoc_node) }
     end
 
     def extract_options(file)
       Metanorma::Input::Asciidoc.new.extract_options(file)
+        .merge(output_formats: output_formats)
     end
 
     def extract_metanorma_options(file)
