@@ -39,6 +39,7 @@ module Metanorma
 
     def extract_options(file)
       Metanorma::Input::Asciidoc.new.extract_options(file)
+        .merge(output_formats: output_formats)
     end
 
     def extract_metanorma_options(file)

@@ -41,6 +41,15 @@ RSpec.describe Metanorma::Compile do
         tocfigures: true,
         toctables: true,
         tocrecommendations: true,
+        output_formats: { doc: "doc",
+                          html: "html",
+                          html_alt: "alt.html",
+                          isosts: "iso.sts.xml",
+                          pdf: "pdf",
+                          presentation: "presentation.xml",
+                          rxl: "rxl",
+                          sts: "sts.xml",
+                          xml: "xml" },
       },
     )
     Metanorma::Compile.new.compile("spec/assets/test2.adoc",
@@ -55,7 +64,16 @@ RSpec.describe Metanorma::Compile do
                                    tocfigures: true,
                                    toctables: true,
                                    tocrecommendations: true,
-                                   agree_to_terms: true)
+                                   agree_to_terms: true,
+                                   output_formats: { doc: "doc",
+                                                     html: "html",
+                                                     html_alt: "alt.html",
+                                                     isosts: "iso.sts.xml",
+                                                     pdf: "pdf",
+                                                     presentation: "presentation.xml",
+                                                     rxl: "rxl",
+                                                     sts: "sts.xml",
+                                                     xml: "xml" })
   end
 
   it "fontist_install called" do
