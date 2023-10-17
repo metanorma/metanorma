@@ -18,7 +18,8 @@ module Metanorma
     end
 
     def input_to_isodoc(file, filename, options = {})
-      Metanorma::Input::Asciidoc.new.process(file, filename, @asciidoctor_backend, options)
+      Metanorma::Input::Asciidoc.new.process(file, filename,
+                                             @asciidoctor_backend, options)
     end
 
     # def input_to_isodoc(file, filename)
@@ -31,6 +32,10 @@ module Metanorma
       else
         false
       end
+    end
+
+    def options_preprocess(options)
+      options[:output_formats] = output_formats
     end
 
     def output(isodoc_node, _inname, outname, _format, _options = {})
