@@ -66,15 +66,19 @@ module Metanorma
     # @return [Hash<String, Metanorma::Document>]
     def documents(dir = "")
       docs = @docref.each_with_object({}) do |dr, m|
-        next m unless dr["fileref"]
-
+        dr["fileref"] or next m
         m[dr["identifier"]] = Document.parse_file(
-          File.join(dir, dr["fileref"]),
+          rel_path_resolve(dir, dr["fileref"]),
           dr["attachment"], dr["identifier"], dr["index"]
         )
         m
       end
       @manifest.reduce(docs) { |mem, mnf| mem.merge mnf.documents(dir) }
+    end
+
+    def rel_path_resolve(dir, path)
+      p = Pathname.new(path)
+      p.absolute? ? path : File.join(dir, path)
     end
 
     # @param builder [Nokogiri::XML::Builder]
