@@ -57,7 +57,7 @@ module Metanorma
     def sectionsplit(file, outfile, ident)
       @sectionsplit = Sectionsplit
         .new(input: file, base: outfile, dir: File.dirname(file),
-             output: outfile, compile_options: @parent.compile_options,
+             output: outfile, compile_opts: @parent.compile_options,
              fileslookup: self, ident: ident, isodoc: @isodoc)
       coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
       xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)
