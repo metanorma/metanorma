@@ -50,7 +50,7 @@ module Metanorma
 
     def coll_cover
       <<~COVER
-        <html><head/><body>
+        <html><head><meta charset="UTF-8"/></head><body>
               <h1>{{ doctitle }}</h1>
               <h2>{{ docnumber }}</h2>
               <nav>{{ navigation }}</nav>
