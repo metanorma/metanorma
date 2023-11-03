@@ -57,6 +57,7 @@ module Metanorma
     # files are held in memory, and altered as postprocessing
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
+      require "debug"; binding.b
       internal_refs = locate_internal_refs
       @files.keys.each_with_index do |ident, i|
         i.positive? && Array(@directives).include?("bare-after-first") and

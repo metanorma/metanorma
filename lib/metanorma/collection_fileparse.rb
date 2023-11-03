@@ -24,6 +24,8 @@ module Metanorma
     # @return [String] XML content
     def update_xrefs(file, identifier, internal_refs)
       docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
+      require "debug"
+      binding.b
       supply_repo_ids(docxml)
       update_indirect_refs_to_docs(docxml, identifier, internal_refs)
       ids = @files.get(identifier, :ids)
@@ -185,14 +187,21 @@ module Metanorma
       @files.keys.each_with_object({}) do |i, refs|
         @files.get(i, :attachment) and next
         file, = @files.targetfile_id(i, read: true)
-        gather_internal_refs1(file, refs)
+        gather_internal_refs1(file, i, refs)
       end
     end
 
-    def gather_internal_refs1(file, refs)
-      Nokogiri::XML(file, &:huge)
-        .xpath(ns("//bibitem[@type = 'internal']/" \
-                  "docidentifier[@type = 'repository']")).each do |d|
+    def gather_internal_refs1(file, ident, refs)
+      f = Nokogiri::XML(file, &:huge)
+      !@files.get(ident, :sectionsplit) and
+        gather_internal_refs_indirect(f, refs)
+      key = @files.get(ident, :indirect_key) and
+        gather_internal_refs_sectionsplit(f, ident, key, refs)
+    end
+
+    def gather_internal_refs_indirect(doc, refs)
+      doc.xpath(ns("//bibitem[@type = 'internal']/" \
+                   "docidentifier[@type = 'repository']")).each do |d|
         a = d.text.split(%r{/}, 2)
         a.size > 1 or next
         refs[a[0]] ||= {}
@@ -200,12 +209,27 @@ module Metanorma
       end
     end
 
-    # resolve file location for the target of each internal reference
-    def locate_internal_refs
-      refs = gather_internal_refs
-      @files.keys.reject { |k| @files.get(k, :attachment) }.each do |ident|
+    def gather_internal_refs_sectionsplit(_doc, ident, key, refs)
+      refs[key] ||= {}
+      @files.get(ident, :ids).each_key do |k|
+        refs[key][k] = false
+      end
+    end
+
+    def populate_internal_refs(refs)
+      @files.keys.reject do |k|
+        @files.get(k, :attachment) || @files.get(k, :sectionsplit)
+      end.each do |ident|
+        warn ident
+        require "debug"; binding.b
         locate_internal_refs1(refs, ident, @isodoc.docid_prefix("", ident.dup))
       end
+      refs
+    end
+
+    # resolve file location for the target of each internal reference
+    def locate_internal_refs
+      refs = populate_internal_refs(gather_internal_refs)
       refs.each do |schema, ids|
         ids.each do |id, key|
           key and next
@@ -227,9 +251,14 @@ module Metanorma
     end
 
     def locate_internal_refs1_prep(ident)
-      file, _filename = @files.targetfile_id(ident, read: true)
+      file, = @files.targetfile_id(ident, read: true)
       xml = Nokogiri::XML(file, &:huge)
-      xml.xpath("//*[@id]").each_with_object({}) { |i, x| x[i["id"]] = i }
+      r = xml.root["document_suffix"]
+      xml.xpath("//*[@id]").each_with_object({}) do |i, x|
+        /^semantic_/.match?(i.name) and next
+        x[i["id"]] = i
+        r and x[i["id"].sub(/_#{r}$/, "")] = i
+      end
     end
   end
 end

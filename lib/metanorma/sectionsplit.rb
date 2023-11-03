@@ -4,7 +4,7 @@ require_relative "sectionsplit_links"
 
 module Metanorma
   class Sectionsplit
-    attr_accessor :filecache
+    attr_accessor :filecache, :key
 
     def initialize(opts)
       @input_filename = opts[:input]
