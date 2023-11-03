@@ -1,8 +1,6 @@
 module Metanorma
   # XML collection renderer
   class CollectionRenderer
-    # @param bib [Nokogiri::XML::Element]
-    # @param identifier [String]
     def update_bibitem(bib, identifier)
       docid = get_bibitem_docid(bib, identifier) or return
       newbib = dup_bibitem(docid, bib)
@@ -12,34 +10,6 @@ module Metanorma
       dest = newbib.at("./docidentifier") || newbib.at(ns("./docidentifier"))
       dest.previous = "<uri type='citation'>#{url}</uri>"
       bib.replace(newbib)
-    end
-
-    def get_bibitem_docid(bib, identifier)
-      # IDs for repo references are untyped by default
-      docid = bib.at(ns("./docidentifier[not(@type)]")) ||
-        bib.at(ns("./docidentifier"))
-      docid &&= docid_prefix(docid)
-      if @files.get(docid) then docid
-      else
-        fail_update_bibitem(docid, identifier)
-        nil
-      end
-    end
-
-    def docid_prefix(docid)
-      type = docid["type"]
-      type == "metanorma-collection" and type = nil
-      @c.decode(@isodoc
-          .docid_prefix(type, docid.children.to_xml)).gsub(/\s/, " ")
-    end
-
-    def dup_bibitem(docid, bib)
-      newbib = @files.get(docid, :bibdata).dup
-      newbib.name = "bibitem"
-      newbib["hidden"] = "true"
-      newbib&.at("./*[local-name() = 'ext']")&.remove
-      newbib["id"] = bib["id"]
-      newbib
     end
 
     # Resolves direct links to other files in collection
@@ -55,7 +25,7 @@ module Metanorma
     def update_xrefs(file, identifier, internal_refs)
       docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
       supply_repo_ids(docxml)
-      update_indirect_refs_to_docs(docxml, internal_refs)
+      update_indirect_refs_to_docs(docxml, identifier, internal_refs)
       ids = @files.get(identifier, :ids)
       @files.add_document_suffix(identifier, docxml)
       update_direct_refs_to_docs(docxml, identifier)
@@ -71,19 +41,11 @@ module Metanorma
       isodoc.eref2link(docxml)
     end
 
-    def hide_refs(docxml)
-      docxml.xpath(ns("//references[bibitem][not(./bibitem[not(@hidden) or " \
-                      "@hidden = 'false'])]")).each do |f|
-        f["hidden"] = "true"
-      end
-    end
-
-    def supply_repo_ids(docxml)
-      docxml.xpath(ns("//bibitem[not(ancestor::bibitem)]")).each do |b|
-        b.at(ns("./docidentifier[@type = 'repository']")) and next
+    def supply_repo_ids(doc)
+      doc.xpath(ns("//bibitem[not(ancestor::bibitem)]" \
+                   "[not(./docidentifier[@type = 'repository'])]")).each do |b|
         b.xpath(ns("./docidentifier")).each do |docid|
-          id = @isodoc
-            .docid_prefix(docid["type"], docid.children.to_xml)
+          id = @isodoc.docid_prefix(docid["type"], docid.children.to_xml)
           @files.get(id) or next
           docid.next = "<docidentifier type='repository'>" \
                        "current-metanorma-collection/#{id}</docidentifier>"
@@ -103,12 +65,11 @@ module Metanorma
 
     def svgmap_resolve1(eref, isodoc, _docxml, ids)
       href = isodoc.eref_target(eref) or return
-      return if href == "##{eref['bibitemid']}" ||
-        (href =~ /^#/ && !ids[href.sub(/^#/, "")])
-
+      href == "##{eref['bibitemid']}" ||
+        (href =~ /^#/ && !ids[href.sub(/^#/, "")]) and return
       eref["target"] = href.strip
       eref.name = "link"
-      eref&.elements&.remove
+      eref.elements&.remove
     end
 
     # repo(current-metanorma-collection/ISO 17301-1:2016)
@@ -117,51 +78,55 @@ module Metanorma
     # Preferably with anchor, and is a job to realise dynamic lookup
     # of localities.
     def update_direct_refs_to_docs(docxml, identifier)
-      @ncnames = {}
-      erefs = Util::gather_citeases(docxml)
-      erefs1 = Util::gather_bibitemids(docxml)
+      erefs, erefs1 = update_direct_refs_to_docs_prep(docxml)
       docxml.xpath(ns("//bibitem")).each do |b|
         docid = b.at(ns("./docidentifier[@type = 'repository']")) or next
-        unless %r{^current-metanorma-collection/}.match(docid.text)
-          erefs1[b["id"]]&.each { |x| strip_eref(x) }
-          next
-        end
+        strip_unresolved_repo_erefs(identifier, docid, erefs1, b) or next
         update_bibitem(b, identifier)
         docid = docid_to_citeas(b) or next
         erefs[docid] and update_anchors(b, docid, erefs[docid])
       end
     end
 
-    def strip_eref(eref)
-      eref.xpath(ns("./locality | ./localityStack")).each(&:remove)
-      eref.replace(eref.children)
+    def update_direct_refs_to_docs_prep(docxml)
+      @ncnames = {}
+      [Util::gather_citeases(docxml), Util::gather_bibitemids(docxml)]
     end
 
-    def docid_to_citeas(bib)
-      docid = bib.at(ns("./docidentifier[@primary = 'true']")) ||
-        bib.at(ns("./docidentifier")) or return
-      docid_prefix(docid)
-    end
-
-    def collect_erefs(docxml)
-      docxml.xpath(ns("//eref"))
-        .each_with_object({ citeas: {}, bibitemid: {} }) do |i, m|
-        m[:citeas][i["citeas"]] = true
-        m[:bibitemid][i["bibitemid"]] = true
-      end
+    # strip erefs if they are repository erefs, but do not point to a document
+    # within the current collection. This can happen if a collection consists
+    # of many documents, but not all are included in the current collection.
+    # Do not do this if this is a sectionsplit collection or a nested manifest.
+    # Return false if bibitem is not to be further processed
+    def strip_unresolved_repo_erefs(_document_id, bib_docid, erefs, bibitem)
+      %r{^current-metanorma-collection/}.match?(bib_docid.text) &&
+        !%r{^current-metanorma-collection/Missing:}.match?(bib_docid.text) and
+        return true
+      @nested and return false
+      erefs[bibitem["id"]]&.each { |x| strip_eref(x) }
+      false
     end
 
     # Resolve erefs to a container of ids in another doc,
     # to an anchor eref (direct link)
-    def update_indirect_refs_to_docs(docxml, internal_refs)
+    def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
+      @nested and return
       bibitems = Util::gather_bibitems(docxml)
       erefs = Util::gather_bibitemids(docxml)
       internal_refs.each do |schema, ids|
         ids.each do |id, file|
-          update_indirect_refs_to_docs1(docxml, "#{schema}_#{id}",
+          k = indirect_ref_key(schema, id, docxml)
+          update_indirect_refs_to_docs1(docxml, k,
                                         file, bibitems, erefs)
         end
       end
+    end
+
+    def indirect_ref_key(schema, id, docxml)
+      ret = "#{schema}_#{id}"
+      k = docxml.root["type"] and
+        ret = "#{k}_#{ret}_#{docxml.root['document_suffix']}"
+      ret
     end
 
     def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
@@ -183,8 +148,10 @@ module Metanorma
       erefs.each do |e|
         if @files.get(docid) then update_anchor_loc(bib, e, docid)
         else
-          e << "<strong>** Unresolved reference to document #{docid} " \
-               "from eref</strong>"
+          msg = "<strong>** Unresolved reference to document #{docid} " \
+                "from eref</strong>"
+          @log&.add("Cross-References", e, msg)
+          e << msg
         end
       end
     end
@@ -195,10 +162,9 @@ module Metanorma
       @ncnames[docid] ||= Metanorma::Utils::to_ncname(docid)
       ref = loc.at("./xmlns:referenceFrom") or return
       anchor = "#{ref.text}_#{@ncnames[docid]}"
-      return unless @files.get(docid, :anchors).inject([]) do |m, (_, x)|
+      @files.get(docid, :anchors).inject([]) do |m, (_, x)|
         m += x.values
-      end.include?(anchor)
-
+      end.include?(anchor) or return
       ref.content = anchor
     end
 
@@ -230,7 +196,7 @@ module Metanorma
         a = d.text.split(%r{/}, 2)
         a.size > 1 or next
         refs[a[0]] ||= {}
-        refs[a[0]][a[1]] = true
+        refs[a[0]][a[1]] = false
       end
     end
 
@@ -242,7 +208,9 @@ module Metanorma
       end
       refs.each do |schema, ids|
         ids.each do |id, key|
-          key == true and refs[schema][id] = "Missing:#{schema}:#{id}"
+          key and next
+          refs[schema][id] = "Missing:#{schema}:#{id}"
+          @log&.add("Cross-References", nil, refs[schema][id])
         end
       end
       refs

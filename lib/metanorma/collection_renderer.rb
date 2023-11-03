@@ -11,7 +11,7 @@ module Metanorma
   class CollectionRenderer
     FORMATS = %i[html xml doc pdf].freeze
 
-    attr_accessor :isodoc
+    attr_accessor :isodoc, :nested
     attr_reader :xml, :compile, :compile_options, :documents
 
     # This is only going to render the HTML collection
@@ -49,6 +49,9 @@ module Metanorma
       @compile = Compile.new
       @c = HTMLEntities.new
       @files_to_delete = []
+      @nested = options[:nested] # if false, this is the root instance of Renderer
+      # if true, then this is not the last time Renderer will be run
+      # (e.g. this is sectionsplit)
 
       # list of files in the collection
       @files = Metanorma::FileLookup.new(folder, self)

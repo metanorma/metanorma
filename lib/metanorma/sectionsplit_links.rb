@@ -12,7 +12,7 @@ module Metanorma
       refs += xref_to_internal_eref(section, key)
       ins = new_hidden_ref(section)
       copied_refs = copy_repo_items_biblio(ins, section, xml)
-      insert_indirect_biblio(ins, refs - copied_refs, key)
+      insert_indirect_biblio(ins, refs - copied_refs, key, xml)
     end
 
     def svg_preprocess(xml, document_suffix)
@@ -53,13 +53,13 @@ module Metanorma
 
     def eref_to_internal_eref(section, xml, key)
       bibitems = Util::gather_bibitems(xml)
+        .delete_if { |_, v| v["type"] == "internal" }
       bibitemids = Util::gather_bibitemids(section)
       eref_to_internal_eref_select(section, xml, bibitems)
         .each_with_object([]) do |x, m|
         url = bibitems[x]&.at(ns("./uri[@type = 'citation']"))
         bibitemids[x]&.each do |e|
-          id = eref_to_internal_eref1(e, key, url)
-          id and m << id
+          id = eref_to_internal_eref1(e, key, url) and m << id
         end
       end
     end
@@ -103,14 +103,23 @@ module Metanorma
       end
     end
 
-    def insert_indirect_biblio(ins, refs, prefix)
+    def insert_indirect_biblio(ins, refs, prefix, xml)
+      bibitems = Util::gather_bibitems(xml)
+        .delete_if { |_, v| v["type"] != "internal" }
       refs.each do |x|
-        ins << <<~BIBENTRY
-          <bibitem id="#{x}" type="internal">
-          <docidentifier type="repository">#{x.sub(/^#{prefix}_/, "#{prefix}/")}</docidentifier>
-          </bibitem>
-        BIBENTRY
+        ins << if b = bibitems[x.sub(/^#{prefix}_/, "")]
+                 b.dup.tap { |m| m["id"] = x }
+               else new_indirect_bibitem(x, prefix)
+               end
       end
+    end
+
+    def new_indirect_bibitem(ident, prefix)
+      <<~BIBENTRY
+        <bibitem id="#{ident}" type="internal">
+        <docidentifier type="repository">#{ident.sub(/^#{prefix}_/, "#{prefix}/")}</docidentifier>
+        </bibitem>
+      BIBENTRY
     end
   end
 end
