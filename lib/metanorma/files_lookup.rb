@@ -39,17 +39,16 @@ module Metanorma
       @files[i] = entry
     end
 
-    def bibdata_process(entry, identifier)
+    def bibdata_process(entry, ident)
       if entry[:attachment]
-        entry[:bibdata] = Metanorma::Document
-          .attachment_bibitem(identifier).root
+        entry[:bibdata] = Metanorma::Document.attachment_bibitem(ident).root
       else
         file, _filename = targetfile(entry, read: true)
         xml = Nokogiri::XML(file, &:huge)
-        add_document_suffix(identifier, xml)
-        entry[:anchors] = read_anchors(xml)
-        entry[:ids] = read_ids(xml)
-        entry[:bibdata] = xml.at(ns("//bibdata"))
+        add_document_suffix(ident, xml)
+        entry.merge!(anchors: read_anchors(xml), ids: read_ids(xml),
+                     bibdata: xml.at(ns("//bibdata")),
+                     document_suffix: xml.root["document_suffix"])
       end
     end
 

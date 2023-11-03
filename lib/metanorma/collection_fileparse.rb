@@ -12,11 +12,14 @@ module Metanorma
       bib.replace(newbib)
     end
 
-    # Resolves direct links to other files in collection
-    # (repo(current-metanorma-collection/x),
-    # and indirect links to other files in collection
-    # (bibitem[@type = 'internal'] pointing to a file anchor
-    # in another file in the collection)
+    # Resolves references to other files in the collection. Three routines:
+    # 1. Eref to a document that has been split into multiple documents
+    # (sectionsplit) are resolved to direct eref to the split document
+    # 2. Indirect erefs to a file anchor in an unknwon file in the collection
+    # (bibitem[@type = 'internal'] ) are resolved to direct eref to the
+    # containing document
+    # 3. Direct erefs to other files in collection
+    # (repo(current-metanorma-collection/x) are resolved to hyperlinks
     # @param file [String] XML content
     # @param identifier [String] docid
     # @param internal_refs [Hash{String=>Hash{String=>String}] schema name to
@@ -24,17 +27,58 @@ module Metanorma
     # @return [String] XML content
     def update_xrefs(file, identifier, internal_refs)
       docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
-      require "debug"
-      binding.b
       supply_repo_ids(docxml)
       update_indirect_refs_to_docs(docxml, identifier, internal_refs)
-      ids = @files.get(identifier, :ids)
       @files.add_document_suffix(identifier, docxml)
+      update_sectionsplit_refs_to_docs(docxml, internal_refs)
       update_direct_refs_to_docs(docxml, identifier)
       hide_refs(docxml)
       @files.get(identifier, :sectionsplit_output) and eref2link(docxml)
-      svgmap_resolve(datauri_encode(docxml), ids)
+      svgmap_resolve(datauri_encode(docxml), @files.get(identifier, :ids))
       docxml.to_xml
+    end
+
+    def update_sectionsplit_refs_to_docs(docxml, internal_refs)
+      Util::gather_citeases(docxml).each do |k, v|
+        (@files.get(k) && @files.get(k, :sectionsplit)) or next
+        opts = { key: @files.get(k, :indirect_key),
+                 source_suffix: docxml.root["document_suffix"],
+                 target_suffix: @files.get(k, :document_suffix) }
+        refs = v.each_with_object({}) do |eref, m|
+          update_sectionsplit_eref_to_doc(eref, internal_refs, m, opts)
+        end
+        add_hidden_bibliography(docxml, refs)
+      end
+    end
+
+    def update_sectionsplit_eref_to_doc(eref, internal_refs, doclist, opts)
+      a = eref.at(ns("./localityStack/locality[@type = 'anchor']/" \
+                     "referenceFrom")) or return
+      doc = internal_refs[opts[:key]]["#{a.text}_#{opts[:target_suffix]}"]
+      bibitemid = Metanorma::Utils::to_ncname("#{doc}_#{opts[:source_suffix]}")
+      eref["bibitemid"] = bibitemid
+      doclist[bibitemid] ||= doc
+      doclist
+    end
+
+    def new_hidden_ref(xmldoc)
+      ins = xmldoc.at(ns("bibliography")) or
+        xmldoc.root << "<bibliography/>" and ins = xmldoc.at(ns("bibliography"))
+      ins.at(ns("./referenced[@hidden = 'true']")) or
+        ins.add_child("<references hidden='true' normative='false'/>").first
+    end
+
+    def add_hidden_bibliography(xmldoc, refs)
+      ins = new_hidden_ref(xmldoc)
+      refs.each do |k, v|
+        _, url = @files.targetfile_id(v, {})
+        ins << <<~XML
+          <bibitem id="#{k}">
+            <docidentifier type="repository">current-metanorma-collection/#{v}</docidentifier>
+            <uri type='citation'>#{url}</uri>
+          </bibitem>
+        XML
+      end
     end
 
     def eref2link(docxml)
@@ -44,13 +88,16 @@ module Metanorma
     end
 
     def supply_repo_ids(doc)
-      doc.xpath(ns("//bibitem[not(ancestor::bibitem)]" \
-                   "[not(./docidentifier[@type = 'repository'])]")).each do |b|
+      doc.xpath(
+        ns("//bibitem[not(ancestor::bibitem)]" \
+           "[not(./docidentifier[@type = 'repository'])]"),
+      ).each do |b|
         b.xpath(ns("./docidentifier")).each do |docid|
           id = @isodoc.docid_prefix(docid["type"], docid.children.to_xml)
           @files.get(id) or next
+          @files.get(id, :indirect_key) and next # will resolve as indirect key
           docid.next = "<docidentifier type='repository'>" \
-                       "current-metanorma-collection/#{id}</docidentifier>"
+            "current-metanorma-collection/#{id}</docidentifier>"
         end
       end
     end
@@ -151,7 +198,7 @@ module Metanorma
         if @files.get(docid) then update_anchor_loc(bib, e, docid)
         else
           msg = "<strong>** Unresolved reference to document #{docid} " \
-                "from eref</strong>"
+            "from eref</strong>"
           @log&.add("Cross-References", e, msg)
           e << msg
         end
@@ -179,86 +226,7 @@ module Metanorma
       ref = ins.at(ns("./locality/referenceFrom"))&.text
       anchor = @files.get(docid, :anchors).dig(type, ref) or return
       ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}" \
-             "</referenceFrom></locality>"
-    end
-
-    # gather internal bibitem references
-    def gather_internal_refs
-      @files.keys.each_with_object({}) do |i, refs|
-        @files.get(i, :attachment) and next
-        file, = @files.targetfile_id(i, read: true)
-        gather_internal_refs1(file, i, refs)
-      end
-    end
-
-    def gather_internal_refs1(file, ident, refs)
-      f = Nokogiri::XML(file, &:huge)
-      !@files.get(ident, :sectionsplit) and
-        gather_internal_refs_indirect(f, refs)
-      key = @files.get(ident, :indirect_key) and
-        gather_internal_refs_sectionsplit(f, ident, key, refs)
-    end
-
-    def gather_internal_refs_indirect(doc, refs)
-      doc.xpath(ns("//bibitem[@type = 'internal']/" \
-                   "docidentifier[@type = 'repository']")).each do |d|
-        a = d.text.split(%r{/}, 2)
-        a.size > 1 or next
-        refs[a[0]] ||= {}
-        refs[a[0]][a[1]] = false
-      end
-    end
-
-    def gather_internal_refs_sectionsplit(_doc, ident, key, refs)
-      refs[key] ||= {}
-      @files.get(ident, :ids).each_key do |k|
-        refs[key][k] = false
-      end
-    end
-
-    def populate_internal_refs(refs)
-      @files.keys.reject do |k|
-        @files.get(k, :attachment) || @files.get(k, :sectionsplit)
-      end.each do |ident|
-        warn ident
-        require "debug"; binding.b
-        locate_internal_refs1(refs, ident, @isodoc.docid_prefix("", ident.dup))
-      end
-      refs
-    end
-
-    # resolve file location for the target of each internal reference
-    def locate_internal_refs
-      refs = populate_internal_refs(gather_internal_refs)
-      refs.each do |schema, ids|
-        ids.each do |id, key|
-          key and next
-          refs[schema][id] = "Missing:#{schema}:#{id}"
-          @log&.add("Cross-References", nil, refs[schema][id])
-        end
-      end
-      refs
-    end
-
-    def locate_internal_refs1(refs, identifier, ident)
-      t = locate_internal_refs1_prep(ident)
-      refs.each do |schema, ids|
-        ids.keys.select { |id| t[id] }.each do |id|
-          t[id].at("./ancestor-or-self::*[@type = '#{schema}']") and
-            refs[schema][id] = identifier
-        end
-      end
-    end
-
-    def locate_internal_refs1_prep(ident)
-      file, = @files.targetfile_id(ident, read: true)
-      xml = Nokogiri::XML(file, &:huge)
-      r = xml.root["document_suffix"]
-      xml.xpath("//*[@id]").each_with_object({}) do |i, x|
-        /^semantic_/.match?(i.name) and next
-        x[i["id"]] = i
-        r and x[i["id"].sub(/_#{r}$/, "")] = i
-      end
+        "</referenceFrom></locality>"
     end
   end
 end

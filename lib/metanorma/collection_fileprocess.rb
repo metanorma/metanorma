@@ -57,7 +57,6 @@ module Metanorma
     # files are held in memory, and altered as postprocessing
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
-      require "debug"; binding.b
       internal_refs = locate_internal_refs
       @files.keys.each_with_index do |ident, i|
         i.positive? && Array(@directives).include?("bare-after-first") and
@@ -74,6 +73,83 @@ module Metanorma
           file_compile(collection_xml_path, filename, ident)
           FileUtils.rm(collection_xml_path)
         end
+      end
+    end
+
+    # gather internal bibitem references
+    def gather_internal_refs
+      @files.keys.each_with_object({}) do |i, refs|
+        @files.get(i, :attachment) and next
+        file, = @files.targetfile_id(i, read: true)
+        gather_internal_refs1(file, i, refs)
+      end
+    end
+
+    def gather_internal_refs1(file, ident, refs)
+      f = Nokogiri::XML(file, &:huge)
+      !@files.get(ident, :sectionsplit) and
+        gather_internal_refs_indirect(f, refs)
+      key = @files.get(ident, :indirect_key) and
+        gather_internal_refs_sectionsplit(f, ident, key, refs)
+    end
+
+    def gather_internal_refs_indirect(doc, refs)
+      doc.xpath(ns("//bibitem[@type = 'internal']/" \
+                   "docidentifier[@type = 'repository']")).each do |d|
+                     a = d.text.split(%r{/}, 2)
+                     a.size > 1 or next
+                     refs[a[0]] ||= {}
+                     refs[a[0]][a[1]] = false
+                   end
+    end
+
+    def gather_internal_refs_sectionsplit(_doc, ident, key, refs)
+      refs[key] ||= {}
+      @files.get(ident, :ids).each_key do |k|
+        refs[key][k] = false
+      end
+    end
+
+    def populate_internal_refs(refs)
+      @files.keys.reject do |k|
+        @files.get(k, :attachment) || @files.get(k, :sectionsplit)
+      end.each do |ident|
+        locate_internal_refs1(refs, ident, @isodoc.docid_prefix("", ident.dup))
+      end
+      refs
+    end
+
+    # resolve file location for the target of each internal reference
+    def locate_internal_refs
+      refs = populate_internal_refs(gather_internal_refs)
+      refs.each do |schema, ids|
+        ids.each do |id, key|
+          key and next
+          refs[schema][id] = "Missing:#{schema}:#{id}"
+          @log&.add("Cross-References", nil, refs[schema][id])
+        end
+      end
+      refs
+    end
+
+    def locate_internal_refs1(refs, identifier, ident)
+      t = locate_internal_refs1_prep(ident)
+      refs.each do |schema, ids|
+        ids.keys.select { |id| t[id] }.each do |id|
+          t[id].at("./ancestor-or-self::*[@type = '#{schema}']") and
+            refs[schema][id] = identifier
+        end
+      end
+    end
+
+    def locate_internal_refs1_prep(ident)
+      file, = @files.targetfile_id(ident, read: true)
+      xml = Nokogiri::XML(file, &:huge)
+      r = xml.root["document_suffix"]
+      xml.xpath("//*[@id]").each_with_object({}) do |i, x|
+        /^semantic_/.match?(i.name) and next
+        x[i["id"]] = i
+        r and x[i["id"].sub(/_#{r}$/, "")] = i
       end
     end
   end
