@@ -71,7 +71,6 @@ module Metanorma
       @key = xref_preprocess(xml, @fileslookup, @ident)
       SPLITSECTIONS.each_with_object([]) do |n, ret|
         conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
-          warn s.map(&:to_xml)
           ret << sectionfile(xml, emptydoc(xml), "#{@base}.#{ret.size}", s,
                              n[1])
         end
