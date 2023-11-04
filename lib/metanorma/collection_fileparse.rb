@@ -161,8 +161,7 @@ module Metanorma
     # to an anchor eref (direct link)
     def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
       @nested and return
-      bibitems = Util::gather_bibitems(docxml)
-      erefs = Util::gather_bibitemids(docxml)
+      bibitems, erefs = update_indirect_refs_to_docs_prep(docxml)
       internal_refs.each do |schema, ids|
         ids.each do |id, file|
           k = indirect_ref_key(schema, id, docxml)
@@ -170,6 +169,13 @@ module Metanorma
                                         file, bibitems, erefs)
         end
       end
+    end
+
+    def update_indirect_refs_to_docs_prep(docxml)
+      bibitems = Util::gather_bibitems(docxml)
+      erefs = Util::gather_bibitemids(docxml)
+      @updated_anchors = {}
+      [bibitems, erefs]
     end
 
     def indirect_ref_key(schema, id, docxml)
@@ -183,13 +189,19 @@ module Metanorma
     def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
       erefs[key]&.each do |e|
         e["citeas"] = file
-        a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom")) or next
-        suffix = file
-        @files.get(file) && p = @files.get(file, :parentid) and
-          suffix = "#{p}_#{suffix}"
-        a.children = Metanorma::Utils::to_ncname("#{a.text}_#{suffix}")
+        update_indirect_refs_to_docs_anchor(e, file)
       end
       update_indirect_refs_to_docs_docid(bibitems[key], file)
+    end
+
+    def update_indirect_refs_to_docs_anchor(eref, file)
+      a = eref.at(ns(".//locality[@type = 'anchor']/referenceFrom")) or return
+      suffix = file
+      @files.get(file) && p = @files.get(file, :parentid) and
+        suffix = "#{p}_#{suffix}"
+      anchor = Metanorma::Utils::to_ncname("#{a.text}_#{suffix}")
+      @updated_anchors[anchor] or a.children = anchor
+      @updated_anchors[anchor] = true
     end
 
     def update_indirect_refs_to_docs_docid(bibitem, file)
@@ -207,7 +219,7 @@ module Metanorma
         if @files.get(docid) then update_anchor_loc(bib, e, docid)
         else
           msg = "<strong>** Unresolved reference to document #{docid} " \
-                "from eref</strong>"
+            "from eref</strong>"
           @log&.add("Cross-References", e, msg)
           e << msg
         end
@@ -235,7 +247,7 @@ module Metanorma
       ref = ins.at(ns("./locality/referenceFrom"))&.text
       anchor = @files.get(docid, :anchors).dig(type, ref) or return
       ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}" \
-             "</referenceFrom></locality>"
+        "</referenceFrom></locality>"
     end
   end
 end
