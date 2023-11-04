@@ -41,27 +41,42 @@ module Metanorma
     end
 
     def xref_to_internal_eref(xml, key)
+      bibitems = Util::gather_bibitems(xml)
       xml.xpath(ns("//xref")).each_with_object({}) do |x, m|
         x["bibitemid"] = "#{key}_#{x['target']}"
-        x << make_anchor(x["target"])
         m[x["bibitemid"]] = true
-        x.delete("target")
+        xref_to_internal_eref_anchor(x, bibitems)
         x["type"] = key
         x.name = "eref"
       end.keys
     end
 
+    def xref_to_internal_eref_anchor(xref, bibitems)
+      t = xref["target"]
+      if d = bibitems[t]&.at(ns("./docidentifier[@type = 'repository']"))
+        m = %r{^([^/]+)}.match(d.text) and
+          t.sub!(%r(#{m[0]}), "")
+      end
+      xref << make_anchor(t)
+      xref.delete("target")
+    end
+
     def eref_to_internal_eref(section, xml, key)
+      bibitems, bibitemids = eref_to_internal_eref_prep(section, xml)
+      eref_to_internal_eref_select(section, xml, bibitems)
+        .each_with_object([]) do |x, m|
+          url = bibitems[x]&.at(ns("./uri[@type = 'citation']"))
+          bibitemids[x]&.each do |e|
+            id = eref_to_internal_eref1(e, key, url) and m << id
+          end
+        end
+    end
+
+    def eref_to_internal_eref_prep(section, xml)
       bibitems = Util::gather_bibitems(xml)
         .delete_if { |_, v| v["type"] == "internal" }
       bibitemids = Util::gather_bibitemids(section)
-      eref_to_internal_eref_select(section, xml, bibitems)
-        .each_with_object([]) do |x, m|
-        url = bibitems[x]&.at(ns("./uri[@type = 'citation']"))
-        bibitemids[x]&.each do |e|
-          id = eref_to_internal_eref1(e, key, url) and m << id
-        end
-      end
+      [bibitems, bibitemids]
     end
 
     def eref_to_internal_eref1(elem, key, url)
@@ -96,11 +111,11 @@ module Metanorma
       bibitems = Util::gather_bibitems(section)
       xml.xpath(ns("//references/bibitem[docidentifier/@type = 'repository']"))
         .each_with_object([]) do |b, m|
-        bibitems[b["id"]] or next
-        # section.at("//*[@bibitemid = '#{b['id']}']") or next
-        ins << b.dup
-        m << b["id"]
-      end
+          bibitems[b["id"]] or next
+          # section.at("//*[@bibitemid = '#{b['id']}']") or next
+          ins << b.dup
+          m << b["id"]
+        end
     end
 
     def insert_indirect_biblio(ins, refs, prefix, xml)
@@ -109,8 +124,8 @@ module Metanorma
       refs.each do |x|
         ins << if b = bibitems[x.sub(/^#{prefix}_/, "")]
                  b.dup.tap { |m| m["id"] = x }
-               else new_indirect_bibitem(x, prefix)
-               end
+        else new_indirect_bibitem(x, prefix)
+        end
       end
     end
 

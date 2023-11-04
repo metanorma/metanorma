@@ -39,6 +39,7 @@ module Metanorma
     end
 
     def update_sectionsplit_refs_to_docs(docxml, internal_refs)
+      @nested and return
       Util::gather_citeases(docxml).each do |k, v|
         (@files.get(k) && @files.get(k, :sectionsplit)) or next
         opts = { key: @files.get(k, :indirect_key),
