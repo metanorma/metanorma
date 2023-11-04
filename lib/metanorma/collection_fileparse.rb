@@ -183,10 +183,17 @@ module Metanorma
     def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
       erefs[key]&.each do |e|
         e["citeas"] = file
-        a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom")) and
-          a.children = "#{a.text}_#{Metanorma::Utils::to_ncname(file)}"
+        a = e.at(ns(".//locality[@type = 'anchor']/referenceFrom")) or next
+        suffix = file
+        @files.get(file) && p = @files.get(file, :parentid) and
+          suffix = "#{p}_#{suffix}"
+        a.children = Metanorma::Utils::to_ncname("#{a.text}_#{suffix}")
       end
-      docid = bibitems[key]&.at(ns("./docidentifier[@type = 'repository']")) or
+      update_indirect_refs_to_docs_docid(bibitems[key], file)
+    end
+
+    def update_indirect_refs_to_docs_docid(bibitem, file)
+      docid = bibitem&.at(ns("./docidentifier[@type = 'repository']")) or
         return
       docid.children = "current-metanorma-collection/#{file}"
       docid.previous =
