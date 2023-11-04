@@ -99,7 +99,7 @@ at the address below or ISO’s member body in the country of the requester.
 </boilerplate>
 <sections><clause id="_scope" obligation="normative"><title>Scope</title><p id="_03729c28-015a-466b-85e9-3fce1ad0e18f">This document specifies minimum requirements and test methods for rice (<em>Oryza sativa L.</em>).</p>
 <p id="_3e4442b8-a93b-45c7-b947-f7c9af3449a5">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
-<p id="_f4a2f165-3713-40be-992c-a01835f953d3">It is not applicable to cooked rice products.</p>
+<p id="_f4a2f165-3713-40be-992c-a01835f953d3">It is not applicable to cooked rice products, which are not discussed in <xref target="anotherclause"/> or <xref target="thirdclause"/>.</p>
 <p id="_b9d7b0c0-ff21-4205-b5b5-8435634a0c95">This document is updated in <eref type="inline" bibitemid="RiceAmd" citeas="ISO 17301-1:2016/Amd.1:2017"/>.</p>
 <p id="_50a0e498-4b20-401c-ab99-fed8d11e266b">This document is unrelated <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"/>, see e.g. <eref type="inline" bibitemid="StarTrek" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality></localityStack></eref>.</p>
 <p id="_60bc26a9-2eaa-4f54-97f6-b58af731babb">This document is also unrelated to <eref type="inline" bibitemid="Dummy" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
@@ -132,6 +132,8 @@ at the address below or ISO’s member body in the country of the requester.
   </svgmap>
   <p>You can also download the svg image at: <eref type="inline" bibitemid="action_schemaexpg1.svg" citeas="action_schemaexpg1.svg"/>. See <xref target="_scope"/> and <strong style="background: url(#svg1); foreground: url(_001); middleground: url(#fig1);">scope</strong></p>
 </clause>
+<clause id="anotherclause" type="express"><title>This is another clause</title></clause>
+<clause id="thirdclause"><title>This is another clause</title></clause>
 </sections><bibliography><references id="_normative_references" normative="true" obligation="informative"><title>Normative References</title><p id="_27effc86-b49a-4ba4-a19a-8b03fad45c58">The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</p>
 <bibitem id="RiceAmd"><formattedref format="application/x-isodoc+xml"/><docidentifier type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier><docidentifier type="repository">current-metanorma-collection/rice</docidentifier><docnumber>17301-1:2016/Amd.1:2017</docnumber></bibitem><bibitem id="StarTrek"><formattedref format="application/x-isodoc+xml"/><docidentifier type="ISO">ISO 1701:1974</docidentifier><docidentifier type="repository">current-metanorma-collection/rice</docidentifier><docnumber>1701:1974</docnumber></bibitem></references>
 <references id="_bibliography" normative="false" obligation="informative"><title>Bibliography</title>

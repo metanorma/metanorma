@@ -45,20 +45,20 @@ module Metanorma
       xml.xpath(ns("//xref")).each_with_object({}) do |x, m|
         x["bibitemid"] = "#{key}_#{x['target']}"
         m[x["bibitemid"]] = true
-        xref_to_internal_eref_anchor(x, bibitems)
+        xref_to_internal_eref_anchor(x, bibitems, xml.root["document_suffix"])
         x["type"] = key
-        x.name = "eref"
       end.keys
     end
 
-    def xref_to_internal_eref_anchor(xref, bibitems)
+    def xref_to_internal_eref_anchor(xref, bibitems, document_suffix)
       t = xref["target"]
       if d = bibitems[t]&.at(ns("./docidentifier[@type = 'repository']"))
         m = %r{^([^/]+)}.match(d.text) and
           t.sub!(%r(#{m[0]}_), "")
       end
-      xref << make_anchor(t)
+      xref << make_anchor(t.sub(%r(_#{document_suffix}$), ""))
       xref.delete("target")
+      xref.name = "eref"
     end
 
     def eref_to_internal_eref(section, xml, key)
@@ -119,14 +119,22 @@ module Metanorma
     end
 
     def insert_indirect_biblio(ins, refs, prefix, xml)
-      bibitems = Util::gather_bibitems(xml)
-        .delete_if { |_, v| v["type"] != "internal" }
-      refs.each do |x|
-        ins << if b = bibitems[x.sub(/^#{prefix}_/, "")]
+      internal_bibitems, external_bibitems = insert_indirect_biblio_prep(xml)
+      refs.reject do |x|
+        external_bibitems[x.sub(/^#{prefix}_/, "")]
+      end.each do |x|
+        ins << if b = internal_bibitems[x.sub(/^#{prefix}_/, "")]
                  b.dup.tap { |m| m["id"] = x }
-        else new_indirect_bibitem(x, prefix)
-        end
+               else new_indirect_bibitem(x, prefix)
+               end
       end
+    end
+
+    def insert_indirect_biblio_prep(xml)
+      bibitems = Util::gather_bibitems(xml)
+      internal_bibitems = bibitems.select { |_, v| v["type"] == "internal" }
+      external_bibitems = bibitems.reject { |_, v| v["type"] == "internal" }
+      [internal_bibitems, external_bibitems]
     end
 
     def new_indirect_bibitem(ident, prefix)

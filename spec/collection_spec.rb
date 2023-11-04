@@ -90,7 +90,7 @@ RSpec.describe Metanorma::Collection do
         expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
           .ns("//*[@id='#{id}']")).length).to_not be_zero
       end
-      expect(concat_text_doc_xml.at("//xmlns:xref/@target").text)
+      expect(concat_text_doc_xml.xpath("//xmlns:xref/@target")[-1].text)
         .to be_equivalent_to "_scope"
       expect(conact_file_doc_xml.xpath("//i:xref/@target", "i" => "https://www.metanorma.org/ns/iso")[-1].text)
         .to be_equivalent_to "_scope_ISO_17301-1_2016"
@@ -371,6 +371,8 @@ RSpec.describe Metanorma::Collection do
         .to be true
       expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
         .to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO</span> <span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+      expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
+        .to include %(It is not applicable to cooked rice products, which are not discussed in <a href="rice-en.final.xml.2.html#anotherclause_ISO_17301-1_2016_2_This_is_another_clause"><span class="citesec">Clause 2</span></a> or <a href="rice-en.final.xml.3.html#thirdclause_ISO_17301-1_2016_3_This_is_another_clause"><span class="citesec">Clause 3</span></a>.</p>)
       # demonstrate that erefs are removed if they point to another document in the repository,
       # but that document is not supplied
       expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
@@ -431,6 +433,8 @@ RSpec.describe Metanorma::Collection do
         .to be true
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
         .to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO</span> <span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+      expect(File.read("#{OUTPATH}/rice-en.final.html"))
+        .to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
       # demonstrate that erefs are removed if they point to another document in the repository,
       # and point to the right sectionsplit file
       expect(File.read("#{OUTPATH}/rice-en.final.html"))

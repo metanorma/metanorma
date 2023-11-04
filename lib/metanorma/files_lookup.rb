@@ -96,7 +96,8 @@ module Metanorma
         add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
       end
       url_in_css_styles(doc, document_suffix)
-      doc.root["document_suffix"] = document_suffix
+      doc.root["document_suffix"] ||= ""
+      doc.root["document_suffix"] += document_suffix
     end
 
     # update relative URLs, url(#...), in CSS in @style attrs (including SVG)

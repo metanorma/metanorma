@@ -98,7 +98,7 @@ module Metanorma
           @files.get(id) or next
           @files.get(id, :indirect_key) and next # will resolve as indirect key
           docid.next = "<docidentifier type='repository'>" \
-            "current-metanorma-collection/#{id}</docidentifier>"
+                       "current-metanorma-collection/#{id}</docidentifier>"
         end
       end
     end
@@ -173,8 +173,9 @@ module Metanorma
     end
 
     def indirect_ref_key(schema, id, docxml)
+      /^#{schema}_/.match?(id) and return id
       ret = "#{schema}_#{id}"
-      k = docxml.root["type"] and
+      (k = docxml.root["type"]) && k != schema and
         ret = "#{k}_#{ret}_#{docxml.root['document_suffix']}"
       ret
     end
@@ -199,7 +200,7 @@ module Metanorma
         if @files.get(docid) then update_anchor_loc(bib, e, docid)
         else
           msg = "<strong>** Unresolved reference to document #{docid} " \
-            "from eref</strong>"
+                "from eref</strong>"
           @log&.add("Cross-References", e, msg)
           e << msg
         end
@@ -227,7 +228,7 @@ module Metanorma
       ref = ins.at(ns("./locality/referenceFrom"))&.text
       anchor = @files.get(docid, :anchors).dig(type, ref) or return
       ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}" \
-        "</referenceFrom></locality>"
+             "</referenceFrom></locality>"
     end
   end
 end
