@@ -55,7 +55,7 @@ module Metanorma
       t = xref["target"]
       if d = bibitems[t]&.at(ns("./docidentifier[@type = 'repository']"))
         m = %r{^([^/]+)}.match(d.text) and
-          t.sub!(%r(#{m[0]}), "")
+          t.sub!(%r(#{m[0]}_), "")
       end
       xref << make_anchor(t)
       xref.delete("target")
