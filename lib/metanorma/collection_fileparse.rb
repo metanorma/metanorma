@@ -202,7 +202,7 @@ module Metanorma
       existing = a.text
       anchor = Metanorma::Utils::to_ncname("#{existing}_#{suffix}")
       @updated_anchors[existing] or a.children = anchor
-      @updated_anchors[existing] = true
+      @updated_anchors[anchor] = true
     end
 
     def update_indirect_refs_to_docs_docid(bibitem, file)
