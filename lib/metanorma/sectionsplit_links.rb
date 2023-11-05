@@ -64,7 +64,7 @@ module Metanorma
     def xref_to_internal_eref_prep(section, xml)
       bibitems = Util::gather_bibitems(section)
       indirect_bibitems = Util::gather_bibitems(xml)
-        .reject { |_, v| indirect_bib?(v) }
+        .select { |_, v| indirect_bib?(v) }
       [bibitems, indirect_bibitems]
     end
 
@@ -81,7 +81,10 @@ module Metanorma
     end
 
     def xref_prefix_key(xref, key, indirect)
-      unless indirect[xref["target"]]
+      if b = indirect[xref["target"]]
+        t = b.at(ns("./docidentifier[@type = 'repository']"))
+        xref["type"] = t.text.sub(%r{/.*$}, "")
+      else
         xref["target"] = "#{key}_#{xref['target']}"
         xref["type"] = key
       end
@@ -155,15 +158,15 @@ module Metanorma
         end
     end
 
-    def insert_indirect_biblio(ins, refs, prefix, xml)
+    def insert_indirect_biblio(ins, refs, key, xml)
       refs.empty? and return
       internal_bibitems, external_bibitems = insert_indirect_biblio_prep(xml)
       refs.compact.reject do |x|
-        external_bibitems[x.sub(/^#{prefix}_/, "")]
+        #external_bibitems[x.sub(/^#{key}_/, "")]
       end.each do |x|
-        ins << if b = internal_bibitems[x.sub(/^#{prefix}_/, "")]
+        ins << if b = internal_bibitems[x.sub(/^#{key}_/, "")]
                  b.dup.tap { |m| m["id"] = x }
-               else new_indirect_bibitem(x, prefix)
+               else new_indirect_bibitem(x, key)
                end
       end
     end

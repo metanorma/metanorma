@@ -182,7 +182,7 @@ module Metanorma
       /^#{schema}_/.match?(id) and return id
       ret = "#{schema}_#{id}"
       (k = docxml.root["type"]) && k != schema and
-        ret = "#{k}_#{ret}_#{docxml.root['document_suffix']}"
+        ret = "#{ret}_#{docxml.root['document_suffix']}"
       ret
     end
 

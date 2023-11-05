@@ -376,7 +376,7 @@ RSpec.describe Metanorma::Collection do
       # demonstrate that erefs are removed if they point to another document in the repository,
       # but that document is not supplied
       expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
-        .to match %r{This document uses schemas E0/A0, <a href="#.{8}_express-schema_E1_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope">E1/A1</a> and <a href="#.{8}_express-schema_E2_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope">E2/A2</a>\.}
+        .to match %r{This document uses schemas E0/A0, <a href="#express-schema_E1_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope">E1/A1</a> and <a href="#express-schema_E2_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope">E2/A2</a>.</p>}
       expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
         .to include %(This document is also unrelated to <a href="dummy.html#what">)
       xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
