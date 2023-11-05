@@ -220,9 +220,10 @@ module Metanorma
         if @files.get(docid) then update_anchor_loc(bib, e, docid)
         else
           msg = "<strong>** Unresolved reference to document #{docid} " \
-            "from eref</strong>"
-          @log&.add("Cross-References", e, msg)
+                "from eref</strong>"
           e << msg
+          strip_eref(e)
+          @log&.add("Cross-References", e, msg)
         end
       end
     end
@@ -248,7 +249,7 @@ module Metanorma
       ref = ins.at(ns("./locality/referenceFrom"))&.text
       anchor = @files.get(docid, :anchors).dig(type, ref) or return
       ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/, '')}" \
-        "</referenceFrom></locality>"
+             "</referenceFrom></locality>"
     end
   end
 end

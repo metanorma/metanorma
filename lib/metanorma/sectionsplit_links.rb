@@ -25,12 +25,7 @@ module Metanorma
       suffix = doc_suffix.nil? || doc_suffix.blank? ? "" : "_#{doc_suffix}"
       xml.xpath("//m:svg", "m" => "http://www.w3.org/2000/svg").each do |s|
         m = svgmap_wrap(s)
-        s.xpath(".//m:a", "m" => "http://www.w3.org/2000/svg").each do |a|
-          /^#/.match? a["href"] or next
-          a["href"] = a["href"].sub(/^#/, "")
-          m << "<target href='#{a['href']}'>" \
-               "<xref target='#{a['href']}#{suffix}'/></target>"
-        end
+        svg_xrefs(s, m, suffix)
       end
       xml
     end
@@ -42,40 +37,54 @@ module Metanorma
       svg.at("./ancestor::xmlns:svgmap")
     end
 
+    def svg_xrefs(svg, svgmap, suffix)
+      svg.xpath(".//m:a", "m" => "http://www.w3.org/2000/svg").each do |a|
+        /^#/.match? a["href"] or next
+        a["href"] = a["href"].sub(/^#/, "")
+        svgmap << "<target href='#{a['href']}'>" \
+                  "<xref target='#{a['href']}#{suffix}'/></target>"
+      end
+    end
+
     def make_anchor(anchor)
       "<localityStack><locality type='anchor'><referenceFrom>" \
         "#{anchor}</referenceFrom></locality></localityStack>"
     end
 
     def xref_to_internal_eref(section, xml, key)
-      bibitems, external_bibitems = xref_to_internal_eref_prep(section, xml)
+      bibitems, indirect = xref_to_internal_eref_prep(section, xml)
       section.xpath(ns("//xref")).each_with_object({}) do |x, m|
+        xref_prefix_key(x, key, indirect)
         x["bibitemid"] = x["target"]
-        unless external_bibitems[x["target"]]
-        x["bibitemid"] = "#{key}_#{x['bibitemid']}"
-        x["type"] = key
-        end
         m[x["bibitemid"]] = true
-        xref_to_internal_eref_anchor(x, bibitems, xml.root["document_suffix"])
+        xref_to_internal_eref_anchor(x, key, bibitems, xml.root["document_suffix"])
       end.keys
     end
 
     def xref_to_internal_eref_prep(section, xml)
       bibitems = Util::gather_bibitems(section)
-      external_bibitems = Util::gather_bibitems(xml)
-        .reject { |_, v| internal_bib?(v) }
-      [bibitems, external_bibitems]
+      indirect_bibitems = Util::gather_bibitems(xml)
+        .reject { |_, v| indirect_bib?(v) }
+      [bibitems, indirect_bibitems]
     end
 
-    def xref_to_internal_eref_anchor(xref, bibitems, document_suffix)
+    def xref_to_internal_eref_anchor(xref, key, bibitems, document_suffix)
       t = xref["target"]
       if d = bibitems[t]&.at(ns("./docidentifier[@type = 'repository']"))
         m = %r{^([^/]+)}.match(d.text) and
           t.sub!(%r(#{m[0]}_), "")
       end
+      t.sub!(%r{^#{key}_}, "")
       xref << make_anchor(t.sub(%r(_#{document_suffix}$), ""))
       xref.delete("target")
       xref.name = "eref"
+    end
+
+    def xref_prefix_key(xref, key, indirect)
+      unless indirect[xref["target"]]
+        xref["target"] = "#{key}_#{xref['target']}"
+        xref["type"] = key
+      end
     end
 
     def eref_to_internal_eref(section, xml, key)
@@ -112,13 +121,20 @@ module Metanorma
     def eref_to_internal_eref_select(section, _xml, bibitems)
       refs = Util::gather_bibitemids(section).keys
       refs.uniq.reject do |x|
-        b = bibitems[x] and internal_bib?(b)
+        b = bibitems[x] and ( indirect_bib?(b) || internal_bib?(b) )
       end
     end
 
     def internal_bib?(bibitem)
       bibitem["type"] == "internal" ||
         bibitem.at(ns("./docidentifier[@type = 'repository']"))
+    end
+
+    def indirect_bib?(bibitem)
+      a = bibitem.at(ns("./docidentifier[@type = 'repository']")) or
+        return false
+      %r{^current-metanorma-collection/}.match?(a.text) and return false
+      a.text.include?("/")
     end
 
     # from standoc
@@ -147,8 +163,8 @@ module Metanorma
       end.each do |x|
         ins << if b = internal_bibitems[x.sub(/^#{prefix}_/, "")]
                  b.dup.tap { |m| m["id"] = x }
-        else new_indirect_bibitem(x, prefix)
-        end
+               else new_indirect_bibitem(x, prefix)
+               end
       end
     end
 
