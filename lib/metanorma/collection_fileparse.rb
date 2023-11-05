@@ -25,21 +25,20 @@ module Metanorma
     # @param internal_refs [Hash{String=>Hash{String=>String}] schema name to
     #   anchor to filename
     # @return [String] XML content
-    def update_xrefs(file, identifier, internal_refs)
+    def update_xrefs(file, docid, internal_refs)
       docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
       supply_repo_ids(docxml)
-      update_indirect_refs_to_docs(docxml, identifier, internal_refs)
-      @files.add_document_suffix(identifier, docxml)
-      update_sectionsplit_refs_to_docs(docxml, internal_refs)
-      update_direct_refs_to_docs(docxml, identifier)
+      @nested or update_indirect_refs_to_docs(docxml, docid, internal_refs)
+      @files.add_document_suffix(docid, docxml)
+      @nested or update_sectionsplit_refs_to_docs(docxml, internal_refs)
+      update_direct_refs_to_docs(docxml, docid)
       hide_refs(docxml)
-      @files.get(identifier, :sectionsplit_output) and eref2link(docxml)
-      svgmap_resolve(datauri_encode(docxml), @files.get(identifier, :ids))
+      @files.get(docid, :sectionsplit_output) and eref2link(docxml)
+      svgmap_resolve(datauri_encode(docxml), @files.get(docid, :ids))
       docxml.to_xml
     end
 
     def update_sectionsplit_refs_to_docs(docxml, internal_refs)
-      @nested and return
       Util::gather_citeases(docxml).each do |k, v|
         (@files.get(k) && @files.get(k, :sectionsplit)) or next
         opts = { key: @files.get(k, :indirect_key),
@@ -149,18 +148,16 @@ module Metanorma
     # Do not do this if this is a sectionsplit collection or a nested manifest.
     # Return false if bibitem is not to be further processed
     def strip_unresolved_repo_erefs(_document_id, bib_docid, erefs, bibitem)
-      %r{^current-metanorma-collection/}.match?(bib_docid.text) &&
-        !%r{^current-metanorma-collection/Missing:}.match?(bib_docid.text) and
+      %r{^current-metanorma-collection/(?!Missing:)}.match?(bib_docid.text) and
         return true
       @nested and return false
-      erefs[bibitem["id"]]&.each { |x| strip_eref(x) }
+      erefs[bibitem["id"]]&.each { |x| x.parent and strip_eref(x) }
       false
     end
 
     # Resolve erefs to a container of ids in another doc,
     # to an anchor eref (direct link)
     def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
-      @nested and return
       bibitems, erefs = update_indirect_refs_to_docs_prep(docxml)
       internal_refs.each do |schema, ids|
         ids.each do |id, file|
