@@ -199,9 +199,10 @@ module Metanorma
       suffix = file
       @files.get(file) && p = @files.get(file, :parentid) and
         suffix = "#{p}_#{suffix}"
-      anchor = Metanorma::Utils::to_ncname("#{a.text}_#{suffix}")
-      @updated_anchors[anchor] or a.children = anchor
-      @updated_anchors[anchor] = true
+      existing = a.text
+      anchor = Metanorma::Utils::to_ncname("#{existing}_#{suffix}")
+      @updated_anchors[existing] or a.children = anchor
+      @updated_anchors[existing] = true
     end
 
     def update_indirect_refs_to_docs_docid(bibitem, file)
