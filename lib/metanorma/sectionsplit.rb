@@ -4,7 +4,7 @@ require_relative "sectionsplit_links"
 
 module Metanorma
   class Sectionsplit
-    attr_accessor :filecache
+    attr_accessor :filecache, :key
 
     def initialize(opts)
       @input_filename = opts[:input]
@@ -24,7 +24,7 @@ module Metanorma
 
     def build_collection
       collection_setup(@base, @dir)
-      files = sectionsplit #(@input_filename, @base, @dir, @compile_opts)
+      files = sectionsplit # (@input_filename, @base, @dir, @compile_opts)
       input_xml = Nokogiri::XML(File.read(@input_filename,
                                           encoding: "UTF-8"), &:huge)
       collection_manifest(@base, files, input_xml, @xml, @dir).render(
@@ -71,7 +71,8 @@ module Metanorma
       @key = xref_preprocess(xml, @fileslookup, @ident)
       SPLITSECTIONS.each_with_object([]) do |n, ret|
         conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
-          ret << sectionfile(xml, emptydoc(xml), "#{@base}.#{ret.size}", s, n[1])
+          ret << sectionfile(xml, emptydoc(xml), "#{@base}.#{ret.size}", s,
+                             n[1])
         end
       end
     end
@@ -107,15 +108,28 @@ module Metanorma
     def sectionsplit_preprocess_semxml(file, filename)
       xml = Nokogiri::XML(file, &:huge)
       type = xml.root.name.sub("-standard", "").to_sym
-      @fileslookup&.parent&.update_xrefs(xml, @ident, {})
-      xml1 = Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
-        #f.write(@isodoc.to_xml(svg_preprocess(xml)))
-        f.write(@isodoc.to_xml((xml)))
-        f
-      end
+      sectionsplit_update_xrefs(xml)
+      xml1 = sectionsplit_write_semxml(filename, xml)
       @filecache ||= []
       @filecache << xml1
       [xml1.path, type]
+    end
+
+    def sectionsplit_update_xrefs(xml)
+      if c = @fileslookup&.parent
+        n = c.nested
+        c.nested = true # so unresolved erefs are not deleted
+        c.update_xrefs(xml, @ident, {})
+        c.nested = n
+      end
+    end
+
+    def sectionsplit_write_semxml(filename, xml)
+      Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
+        # f.write(@isodoc.to_xml(svg_preprocess(xml)))
+        f.write(@isodoc.to_xml(xml))
+        f
+      end
     end
 
     def emptydoc(xml)

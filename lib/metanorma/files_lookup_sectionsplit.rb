@@ -4,14 +4,28 @@ module Metanorma
     def add_section_split
       ret = @files.keys.each_with_object({}) do |k, m|
         if @files[k][:sectionsplit] == "true" && !@files[k]["attachment"]
-          s, manifest = sectionsplit(@files[k][:ref], @files[k][:out_path], k)
-          s.each_with_index { |f1, i| add_section_split_instance(f1, m, k, i) }
-          m["#{k}:index.html"] = add_section_split_cover(manifest, k)
-          @files_to_delete << m["#{k}:index.html"][:ref]
+          process_section_split_instance(k, m)
+          cleanup_section_split_instance(k, m)
         end
         m[k] = @files[k]
       end
       @files = ret
+    end
+
+    def process_section_split_instance(key, manifest)
+      s, sectionsplit_manifest = sectionsplit(@files[key][:ref],
+                                              @files[key][:out_path], key)
+      s.each_with_index do |f1, i|
+        add_section_split_instance(f1, manifest, key, i)
+      end
+      manifest["#{key}:index.html"] =
+        add_section_split_cover(sectionsplit_manifest, key)
+    end
+
+    def cleanup_section_split_instance(key, manifest)
+      @files_to_delete << manifest["#{key}:index.html"][:ref]
+      #@files[key].delete(:ids).delete(:anchors)
+      @files[key][:indirect_key] = @sectionsplit.key
     end
 
     def add_section_split_cover(manifest, ident)

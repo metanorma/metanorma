@@ -10,7 +10,61 @@ module Metanorma
                 path.basename.to_s.gsub(clean_regex, fallback_sym))
     end
 
+    def dup_bibitem(docid, bib)
+      newbib = @files.get(docid, :bibdata).dup
+      newbib.name = "bibitem"
+      newbib["hidden"] = "true"
+      newbib&.at("./*[local-name() = 'ext']")&.remove
+      newbib["id"] = bib["id"]
+      newbib
+    end
+
+    def get_bibitem_docid(bib, identifier)
+      # IDs for repo references are untyped by default
+      docid = bib.at(ns("./docidentifier[not(@type)]")) ||
+        bib.at(ns("./docidentifier"))
+      docid &&= docid_prefix(docid)
+      if @files.get(docid) then docid
+      else
+        fail_update_bibitem(docid, identifier)
+        nil
+      end
+    end
+
+    def hide_refs(docxml)
+      docxml.xpath(ns("//references[bibitem][not(./bibitem[not(@hidden) or " \
+                      "@hidden = 'false'])]")).each do |f|
+        f["hidden"] = "true"
+      end
+    end
+
+    def strip_eref(eref)
+      eref.xpath(ns("./locality | ./localityStack")).each(&:remove)
+      eref.replace(eref.children)
+    end
+
+    def docid_to_citeas(bib)
+      docid = bib.at(ns("./docidentifier[@primary = 'true']")) ||
+        bib.at(ns("./docidentifier")) or return
+      docid_prefix(docid)
+    end
+
+    def collect_erefs(docxml)
+      docxml.xpath(ns("//eref"))
+        .each_with_object({ citeas: {}, bibitemid: {} }) do |i, m|
+        m[:citeas][i["citeas"]] = true
+        m[:bibitemid][i["bibitemid"]] = true
+      end
+    end
+
     private
+
+    def docid_prefix(docid)
+      type = docid["type"]
+      type == "metanorma-collection" and type = nil
+      @c.decode(@isodoc
+          .docid_prefix(type, docid.children.to_xml)).gsub(/\s/, " ")
+    end
 
     def create_non_existing_directory(output_directory)
       !File.exist?(output_directory) and
@@ -92,8 +146,11 @@ module Metanorma
         "prefatory-content": isodoc_builder(@xml.at(ns("//prefatory-content"))),
         "final-content": isodoc_builder(@xml.at(ns("//final-content"))),
         doctitle: m.at(ns("../bibdata/title"))&.text,
-        docnumber: m.at(ns("../bibdata/docidentifier"))&.text
-      }.each { |k, v| v and @isodoc.meta.set(k, v) }
+        docnumber: m.at(ns("../bibdata/docidentifier"))&.text }.each do |k, v|
+        v and @isodoc.meta.set(
+          k, v
+        )
+      end
     end
 
     def isodoc_builder(node)

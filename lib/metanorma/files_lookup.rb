@@ -39,17 +39,16 @@ module Metanorma
       @files[i] = entry
     end
 
-    def bibdata_process(entry, identifier)
+    def bibdata_process(entry, ident)
       if entry[:attachment]
-        entry[:bibdata] = Metanorma::Document
-          .attachment_bibitem(identifier).root
+        entry[:bibdata] = Metanorma::Document.attachment_bibitem(ident).root
       else
         file, _filename = targetfile(entry, read: true)
         xml = Nokogiri::XML(file, &:huge)
-        add_document_suffix(identifier, xml)
-        entry[:anchors] = read_anchors(xml)
-        entry[:ids] = read_ids(xml)
-        entry[:bibdata] = xml.at(ns("//bibdata"))
+        add_document_suffix(ident, xml)
+        entry.merge!(anchors: read_anchors(xml), ids: read_ids(xml),
+                     bibdata: xml.at(ns("//bibdata")),
+                     document_suffix: xml.root["document_suffix"])
       end
     end
 
@@ -84,19 +83,15 @@ module Metanorma
       end
     end
 
-    def add_suffix_to_attributes(doc, suffix, tag_name, attribute_name)
-      doc.xpath(ns("//#{tag_name}[@#{attribute_name}]")).each do |elem|
-        elem.attributes[attribute_name].value =
-          "#{elem.attributes[attribute_name].value}_#{suffix}"
-      end
-    end
-
     def add_document_suffix(identifier, doc)
       document_suffix = Metanorma::Utils::to_ncname(identifier)
       Metanorma::Utils::anchor_attributes.each do |(tag_name, attribute_name)|
-        add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
+        Util::add_suffix_to_attributes(doc, document_suffix, tag_name,
+                                       attribute_name, @isodoc)
       end
       url_in_css_styles(doc, document_suffix)
+      doc.root["document_suffix"] ||= ""
+      doc.root["document_suffix"] += document_suffix
     end
 
     # update relative URLs, url(#...), in CSS in @style attrs (including SVG)

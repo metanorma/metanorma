@@ -60,6 +60,15 @@ module Metanorma
       end
     end
 
+    def self.add_suffix_to_attributes(doc, suffix, tag_name, attr_name, isodoc)
+      (suffix.nil? || suffix.empty?) and return
+      doc.xpath(isodoc.ns("//#{tag_name}[@#{attr_name}]")).each do |elem|
+        a = elem.attributes[attr_name].value
+        /_#{suffix}$/.match?(a) or
+          elem.attributes[attr_name].value = "#{a}_#{suffix}"
+      end
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

@@ -608,18 +608,21 @@ RSpec.describe Metanorma::Compile do
       .to be_equivalent_to xmlpp(<<~OUTPUT)
         <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
       OUTPUT
-    expect(xmlpp(file2
-     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <bibitem id="#{m[1]}_R1" type="internal">
-        <docidentifier type="repository">#{m[1]}/R1</docidentifier>
-        </bibitem>
-      OUTPUT
+    expect(file2
+     .at("//xmlns:bibitem[@id = 'R1']"))
+      .to be_nil
     expect(xmlpp(file2
      .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
         <bibitem id="#{m[1]}_A" type="internal">
         <docidentifier type="repository">#{m[1]}/A</docidentifier>
+        </bibitem>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <bibitem id="#{m[1]}_R1" type="internal">
+        <docidentifier type="repository">#{m[1]}/R1</docidentifier>
         </bibitem>
       OUTPUT
     expect(xmlpp(file2
@@ -632,9 +635,11 @@ RSpec.describe Metanorma::Compile do
             <a href="B">B</a>
           </svg>
           </image>
-          <target href="B"><eref bibitemid="#{m[1]}_R1" type="#{m[1]}">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref></target>
+          <target href="B">
+            <eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+          </target>
         </figure>
-        <target href="A"><eref bibitemid="#{m[1]}_A_" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A_</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B_" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B_</referenceFrom></locality></localityStack></eref></target></svgmap>
+        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
     expect(xmlpp(file2
      .at("//xmlns:svgmap[2]").to_xml))
@@ -643,12 +648,24 @@ RSpec.describe Metanorma::Compile do
          <image src="" mimetype="image/svg+xml" height="" width=""><svg xmlns="http://www.w3.org/2000/svg">
            <a href="P">P</a>
          </svg></img>
-        </figure><target href="P"><eref bibitemid="#{m[1]}_P_" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P_</referenceFrom></locality></localityStack></eref></target></svgmap>
+        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
     expect(file2.at("//xmlns:preface")).to be_nil
     expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
     expect(file2.at("//xmlns:annex")).to be_nil
     expect(file2.at("//xmlns:indexsect")).to be_nil
+=begin
+    file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
+    expect(xmlpp(file4
+     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+<bibitem id="#{m[1]}_R1">
+  <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
+  <docidentifier>R1</docidentifier>
+  <biblio-tag>R1, </biblio-tag>
+</bibitem>
+      OUTPUT
+=end
     file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.6.xml"))
     expect(file6.at("//xmlns:preface")).to be_nil
     expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
