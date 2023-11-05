@@ -3,26 +3,33 @@ module Metanorma
     def xref_preprocess(xml, _fileslookup, _identifier)
       key = (0...8).map { rand(65..90).chr }.join # random string
       xml.root["type"] = key # to force recognition of internal refs
+      # bookmarks etc as new id elements introduced in Presentation XML:
+      # add doc suffix
+      Metanorma::Utils::anchor_attributes.each do |(tag_name, attribute_name)|
+        Util::add_suffix_to_attributes(xml, xml.root["document_suffix"],
+                                       tag_name, attribute_name, @isodoc)
+      end
       key
     end
 
     def xref_process(section, xml, key)
       svg_preprocess(section, Metanorma::Utils::to_ncname(@ident))
       refs = eref_to_internal_eref(section, xml, key)
-      refs += xref_to_internal_eref(section, key)
+      refs += xref_to_internal_eref(section, xml, key)
       ins = new_hidden_ref(section)
       copied_refs = copy_repo_items_biblio(ins, section, xml)
       insert_indirect_biblio(ins, refs - copied_refs, key, xml)
     end
 
-    def svg_preprocess(xml, document_suffix)
+    def svg_preprocess(xml, doc_suffix)
+      suffix = doc_suffix.nil? || doc_suffix.blank? ? "" : "_#{doc_suffix}"
       xml.xpath("//m:svg", "m" => "http://www.w3.org/2000/svg").each do |s|
         m = svgmap_wrap(s)
         s.xpath(".//m:a", "m" => "http://www.w3.org/2000/svg").each do |a|
           /^#/.match? a["href"] or next
           a["href"] = a["href"].sub(/^#/, "")
           m << "<target href='#{a['href']}'>" \
-               "<xref target='#{a['href']}_#{document_suffix}'/></target>"
+               "<xref target='#{a['href']}#{suffix}'/></target>"
         end
       end
       xml
@@ -40,14 +47,24 @@ module Metanorma
         "#{anchor}</referenceFrom></locality></localityStack>"
     end
 
-    def xref_to_internal_eref(xml, key)
-      bibitems = Util::gather_bibitems(xml)
-      xml.xpath(ns("//xref")).each_with_object({}) do |x, m|
-        x["bibitemid"] = "#{key}_#{x['target']}"
+    def xref_to_internal_eref(section, xml, key)
+      bibitems, external_bibitems = xref_to_internal_eref_prep(section, xml)
+      section.xpath(ns("//xref")).each_with_object({}) do |x, m|
+        x["bibitemid"] = x["target"]
+        unless external_bibitems[x["target"]]
+        x["bibitemid"] = "#{key}_#{x['bibitemid']}"
+        x["type"] = key
+        end
         m[x["bibitemid"]] = true
         xref_to_internal_eref_anchor(x, bibitems, xml.root["document_suffix"])
-        x["type"] = key
       end.keys
+    end
+
+    def xref_to_internal_eref_prep(section, xml)
+      bibitems = Util::gather_bibitems(section)
+      external_bibitems = Util::gather_bibitems(xml)
+        .reject { |_, v| internal_bib?(v) }
+      [bibitems, external_bibitems]
     end
 
     def xref_to_internal_eref_anchor(xref, bibitems, document_suffix)
@@ -74,7 +91,7 @@ module Metanorma
 
     def eref_to_internal_eref_prep(section, xml)
       bibitems = Util::gather_bibitems(xml)
-        .delete_if { |_, v| v["type"] == "internal" }
+        .delete_if { |_, v| internal_bib?(v) }
       bibitemids = Util::gather_bibitemids(section)
       [bibitems, bibitemids]
     end
@@ -95,9 +112,13 @@ module Metanorma
     def eref_to_internal_eref_select(section, _xml, bibitems)
       refs = Util::gather_bibitemids(section).keys
       refs.uniq.reject do |x|
-        b = bibitems[x] and (b["type"] == "internal" ||
-                             b.at(ns("./docidentifier/@type = 'repository']")))
+        b = bibitems[x] and internal_bib?(b)
       end
+    end
+
+    def internal_bib?(bibitem)
+      bibitem["type"] == "internal" ||
+        bibitem.at(ns("./docidentifier[@type = 'repository']"))
     end
 
     # from standoc
@@ -119,21 +140,22 @@ module Metanorma
     end
 
     def insert_indirect_biblio(ins, refs, prefix, xml)
+      refs.empty? and return
       internal_bibitems, external_bibitems = insert_indirect_biblio_prep(xml)
-      refs.reject do |x|
+      refs.compact.reject do |x|
         external_bibitems[x.sub(/^#{prefix}_/, "")]
       end.each do |x|
         ins << if b = internal_bibitems[x.sub(/^#{prefix}_/, "")]
                  b.dup.tap { |m| m["id"] = x }
-               else new_indirect_bibitem(x, prefix)
-               end
+        else new_indirect_bibitem(x, prefix)
+        end
       end
     end
 
     def insert_indirect_biblio_prep(xml)
       bibitems = Util::gather_bibitems(xml)
-      internal_bibitems = bibitems.select { |_, v| v["type"] == "internal" }
-      external_bibitems = bibitems.reject { |_, v| v["type"] == "internal" }
+      internal_bibitems = bibitems.select { |_, v| internal_bib?(v) }
+      external_bibitems = bibitems.reject { |_, v| internal_bib?(v) }
       [internal_bibitems, external_bibitems]
     end
 

@@ -83,17 +83,11 @@ module Metanorma
       end
     end
 
-    def add_suffix_to_attributes(doc, suffix, tag_name, attribute_name)
-      doc.xpath(ns("//#{tag_name}[@#{attribute_name}]")).each do |elem|
-        elem.attributes[attribute_name].value =
-          "#{elem.attributes[attribute_name].value}_#{suffix}"
-      end
-    end
-
     def add_document_suffix(identifier, doc)
       document_suffix = Metanorma::Utils::to_ncname(identifier)
       Metanorma::Utils::anchor_attributes.each do |(tag_name, attribute_name)|
-        add_suffix_to_attributes(doc, document_suffix, tag_name, attribute_name)
+        Util::add_suffix_to_attributes(doc, document_suffix, tag_name,
+                                       attribute_name, @isodoc)
       end
       url_in_css_styles(doc, document_suffix)
       doc.root["document_suffix"] ||= ""
