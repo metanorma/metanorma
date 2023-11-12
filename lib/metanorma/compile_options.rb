@@ -72,7 +72,8 @@ module Metanorma
       %i(bare sectionsplit no_install_fonts baseassetpath aligncrosselements
          tocfigures toctables tocrecommendations strict)
         .each { |x| ret[x] ||= options[x] }
-      ext == :pdf && FontistUtils.has_custom_fonts?(@processor, options, ret) and
+      custom_fonts = FontistUtils.has_custom_fonts?(@processor, options, ret)
+      ext == :pdf && custom_fonts &&
         ret[:mn2pdf] =
           { font_manifest: FontistUtils.location_manifest(@processor, ret) }
       ret

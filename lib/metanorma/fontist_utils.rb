@@ -109,11 +109,13 @@ module Metanorma
     end
 
     def self.location_manifest(processor, source_attributes)
-      Fontist::Manifest::Locations.from_hash(append_source_fonts(processor.fonts_manifest.dup, source_attributes))
+      Fontist::Manifest::Locations.from_hash(
+        append_source_fonts(processor.fonts_manifest.dup, source_attributes),
+      )
     end
 
     def self.append_source_fonts(manifest, source_attributes)
-      source_attributes[:fonts]&.split(';')&.each { |f| manifest[f] = nil }
+      source_attributes[:fonts]&.split(";")&.each { |f| manifest[f] = nil }
       manifest
     end
   end
