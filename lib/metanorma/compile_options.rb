@@ -61,19 +61,6 @@ module Metanorma
     def font_install(opt)
       FontistUtils.install_fonts(@processor, opt) unless @fontist_installed
       @fontist_installed = true
-      !opt[:fonts] ||
-        opt[:fontlicenseagreement] == "continue-without-fonts" and return
-      @font_overrides ||= []
-      font_install_override(opt)
-    end
-
-    def font_install_override(opt)
-      confirm = opt[:fontlicenseagreement] == "no-install-fonts" ? "no" : "yes"
-      CSV.parse_line(opt[:fonts], col_sep: ";").map(&:strip).each do |f|
-        @font_overrides.include?(f) and next
-        Fontist::Font.install(f, confirmation: confirm)
-        @font_overrides << f
-      end
     end
 
     private
@@ -85,9 +72,9 @@ module Metanorma
       %i(bare sectionsplit no_install_fonts baseassetpath aligncrosselements
          tocfigures toctables tocrecommendations strict)
         .each { |x| ret[x] ||= options[x] }
-      ext == :pdf && FontistUtils.has_fonts_manifest?(@processor, options) and
+      ext == :pdf && FontistUtils.has_custom_fonts?(@processor, options, ret) and
         ret[:mn2pdf] =
-          { font_manifest: FontistUtils.location_manifest(@processor) }
+          { font_manifest: FontistUtils.location_manifest(@processor, ret) }
       ret
     end
   end

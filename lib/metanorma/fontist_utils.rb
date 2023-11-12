@@ -16,7 +16,7 @@ module Metanorma
           Util.log("[fontist] Skip font installation because" \
                    " --no-install-fonts argument passed", :debug)
           return false
-        elsif !has_fonts_manifest?(processor)
+        elsif !has_custom_fonts?(processor, options, options)
           Util.log("[fontist] Skip font installation because "\
                    "fonts_manifest is missing", :debug)
           return false
@@ -89,7 +89,8 @@ module Metanorma
       return unless validate_install_fonts(processor, options)
 
       @@updated_formulas_repo = false
-      manifest = processor.fonts_manifest
+      manifest = processor.fonts_manifest.dup
+      append_source_fonts(manifest, options)
       agree_to_terms, can_without_fonts, no_progress = validate_options(options)
 
       install_fonts_safe(
@@ -100,14 +101,20 @@ module Metanorma
       )
     end
 
-    def self.has_fonts_manifest?(processor, options = {})
+    def self.has_custom_fonts?(processor, options, source_attributes)
       !options[:no_install_fonts] \
         && processor.respond_to?(:fonts_manifest) \
-        && !processor.fonts_manifest.nil?
+        && !processor.fonts_manifest.nil? \
+        || source_attributes[:fonts]
     end
 
-    def self.location_manifest(processor)
-      Fontist::Manifest::Locations.from_hash(processor.fonts_manifest)
+    def self.location_manifest(processor, source_attributes)
+      Fontist::Manifest::Locations.from_hash(append_source_fonts(processor.fonts_manifest.dup, source_attributes))
+    end
+
+    def self.append_source_fonts(manifest, source_attributes)
+      source_attributes[:fonts]&.split(';')&.each { |f| manifest[f] = nil }
+      manifest
     end
   end
 end
