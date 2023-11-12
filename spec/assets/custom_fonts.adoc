@@ -1,0 +1,11 @@
+= Custom Fonts Document title
+Author
+:docfile: test.adoc
+:nodoc:
+:novalid:
+:no-isobib:
+:fonts: MS Gothic
+
+== Some title
+
+Some text
