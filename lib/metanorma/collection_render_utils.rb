@@ -110,8 +110,8 @@ module Metanorma
     class PdfOptionsNode
       def initialize(doctype, options)
         docproc = Metanorma::Registry.instance.find_processor(doctype)
-        if FontistUtils.has_fonts_manifest?(docproc, options)
-          @fonts_manifest = FontistUtils.location_manifest(docproc)
+        if FontistUtils.has_custom_fonts?(docproc, options, {})
+          @fonts_manifest = FontistUtils.location_manifest(docproc, options)
         end
       end
 

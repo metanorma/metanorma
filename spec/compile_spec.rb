@@ -248,6 +248,22 @@ RSpec.describe Metanorma::Compile do
     compile.compile("spec/assets/test.adoc", type: "iso", no_progress: true)
   end
 
+  it "handle :fonts attribute in adoc" do
+    mock_pdf
+    mock_sts
+    compile = Metanorma::Compile.new
+
+    allow(Metanorma::FontistUtils).to receive(:install_fonts_safe)
+      .with(hash_including("MS Gothic"), false, false, false)
+      .and_return(nil)
+
+    allow(Metanorma::FontistUtils).to receive(:location_manifest)
+      .with(anything, anything)
+      .and_return({})
+
+    compile.compile("spec/assets/custom_fonts.adoc", type: "iso")
+  end
+
   it "processes metanorma options inside Asciidoc" do
     Metanorma::Compile.new.compile("spec/assets/test1.adoc",
                                    agree_to_terms: true)
