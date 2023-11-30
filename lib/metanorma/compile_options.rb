@@ -7,7 +7,7 @@ module Metanorma
     end
 
     def xml_options_extract(file)
-      xml = Nokogiri::XML(file) { |config| config.huge }
+      xml = Nokogiri::XML(file, &:huge)
       if xml.root
         @registry.root_tags.each do |k, v|
           return { type: k } if v == xml.root.name
@@ -36,15 +36,7 @@ module Metanorma
     def get_extensions(options)
       options[:extension_keys] ||=
         @processor.output_formats.reduce([]) { |memo, (k, _)| memo << k }
-      extensions = options[:extension_keys].reduce([]) do |memo, e|
-        if @processor.output_formats[e] then memo << e
-        else
-          message = "[metanorma] Error: #{e} format is not supported for this standard."
-          @errors << message
-          Util.log(message, :error)
-          memo
-        end
-      end
+      extensions = extract_extensions(options)
       if !extensions.include?(:presentation) && extensions.any? do |e|
         @processor.use_presentation_xml(e)
       end
@@ -53,16 +45,22 @@ module Metanorma
       extensions
     end
 
+    def extract_extensions(options)
+      options[:extension_keys].reduce([]) do |memo, e|
+        if @processor.output_formats[e] then memo << e
+        else
+          message = "[metanorma] Error: #{e} format is not supported " \
+                    "for this standard."
+          @errors << message
+          Util.log(message, :error)
+          memo
+        end
+      end
+    end
+
     def font_install(opt)
       FontistUtils.install_fonts(@processor, opt) unless @fontist_installed
       @fontist_installed = true
-      return if !opt[:fonts] ||
-        opt[:fontlicenseagreement] == "continue-without-fonts"
-
-      confirm = opt[:fontlicenseagreement] == "no-install-fonts" ? "no" : "yes"
-      CSV.parse_line(opt[:fonts], col_sep: ";").map(&:strip).each do |f|
-        Fontist::Font.install(f, confirmation: confirm)
-      end
     end
 
     private
@@ -74,9 +72,10 @@ module Metanorma
       %i(bare sectionsplit no_install_fonts baseassetpath aligncrosselements
          tocfigures toctables tocrecommendations strict)
         .each { |x| ret[x] ||= options[x] }
-      ext == :pdf && FontistUtils.has_fonts_manifest?(@processor, options) and
+      custom_fonts = FontistUtils.has_custom_fonts?(@processor, options, ret)
+      ext == :pdf && custom_fonts &&
         ret[:mn2pdf] =
-          { font_manifest: FontistUtils.location_manifest(@processor) }
+          { font_manifest: FontistUtils.location_manifest(@processor, ret) }
       ret
     end
   end

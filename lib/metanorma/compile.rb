@@ -33,7 +33,6 @@ module Metanorma
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
-      font_install(options)
       process_exts(filename, extensions, file, isodoc, options)
     end
 
@@ -103,17 +102,29 @@ module Metanorma
                  presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
       @queue = ::Metanorma::WorkersPool
         .new(ENV["METANORMA_PARALLEL"]&.to_i || 3)
-      Util.sort_extensions_execution(extensions).each do |ext|
-        process_ext(ext, file, isodoc, fnames, options)
-      end
+      gather_and_install_fonts(file, options.dup, extensions)
+      process_exts_run(fnames, file, isodoc, extensions, options)
       @queue.shutdown
+    end
+
+    def process_exts_run(fnames, file, isodoc, extensions, options)
+      Util.sort_extensions_execution(extensions).each do |ext|
+        process_ext(ext, file, isodoc, fnames, options) or break
+      end
+    end
+
+    def gather_and_install_fonts(file, options, extensions)
+      Util.sort_extensions_execution(extensions).each do |ext|
+        isodoc_options = get_isodoc_options(file, options, ext)
+        font_install(isodoc_options.merge(options))
+      end
     end
 
     def process_ext(ext, file, isodoc, fnames, options)
       fnames[:ext] = @processor.output_formats[ext]
       fnames[:out] = fnames[:f].sub(/\.[^.]+$/, ".#{fnames[:ext]}")
       isodoc_options = get_isodoc_options(file, options, ext)
-      thread = nil
+      thread = true
       unless process_ext_simple(ext, isodoc, fnames, options,
                                 isodoc_options)
         thread = process_exts1(ext, fnames, isodoc, options, isodoc_options)
@@ -151,28 +162,45 @@ module Metanorma
                         isodoc_options1)
       wrap_html(options1, fnames1[:ext], fnames1[:out])
     rescue StandardError => e
-      strict = ext == :presentation || isodoc_options1[:strict] == "true"
-      isodoc_error_process(e, strict)
+      strict = ext == :presentation || isodoc_options1[:strict] == true
+      isodoc_error_process(e, strict, false)
     end
 
     def process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
       @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
                         isodoc_options)
-      nil # return as Thread
+      true # return as Thread
     rescue StandardError => e
       strict = ext == :presentation || isodoc_options[:strict] == "true"
-      isodoc_error_process(e, strict)
+      isodoc_error_process(e, strict, true)
+      ext != :presentation
+    end
+
+     # assume we pass in Presentation XML, but we want to recover Semantic XML
+    def sectionsplit_convert(input_filename, file, output_filename = nil,
+                             opts = {})
+      @isodoc ||= IsoDoc::PresentationXMLConvert.new({})
+      input_filename += ".xml" unless input_filename.match?(/\.xml$/)
+      File.exist?(input_filename) or
+        File.open(input_filename, "w:UTF-8") { |f| f.write(file) }
+      presxml = File.read(input_filename, encoding: "utf-8")
+      _xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
+      Sectionsplit.new(input: input_filename, isodoc: @isodoc, xml: presxml,
+                       base: File.basename(output_filename || filename),
+                       output: output_filename || filename,
+                       dir: dir, compile_opts: opts).build_collection
     end
 
     private
 
-    def isodoc_error_process(err, strict)
+    def isodoc_error_process(err, strict, must_abort)
       if strict || err.message.include?("Fatal:")
         @errors << err.message
       else
         puts err.message
       end
       puts err.backtrace.join("\n")
+      must_abort and 1
     end
 
     # @param options [Hash]

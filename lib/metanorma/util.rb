@@ -29,13 +29,57 @@ module Metanorma
       end
     end
 
+    def self.recursive_string_keys(hash)
+      case hash
+      when Hash then hash.map { |k, v| [k.to_s, recursive_string_keys(v)] }.to_h
+      when Enumerable then hash.map { |v| recursive_string_keys(v) }
+      else
+        hash
+      end
+    end
+
+    def self.gather_bibitems(xml)
+      xml.xpath("//xmlns:bibitem[@id]").each_with_object({}) do |b, m|
+        m[b["id"]] = b
+      end
+    end
+
+    def self.gather_bibitemids(xml)
+      xml.xpath("//*[@bibitemid]").each_with_object({}) do |e, m|
+        /^semantic__/.match?(e.name) and next
+        m[e["bibitemid"]] ||= []
+        m[e["bibitemid"]] << e
+      end
+    end
+
+    def self.gather_citeases(xml)
+      xml.xpath("//*[@citeas]").each_with_object({}) do |e, m|
+        /^semantic__/.match?(e.name) and next
+        m[e["citeas"]] ||= []
+        m[e["citeas"]] << e
+      end
+    end
+
+    def self.add_suffix_to_attributes(doc, suffix, tag_name, attr_name, isodoc)
+      (suffix.nil? || suffix.empty?) and return
+      doc.xpath(isodoc.ns("//#{tag_name}[@#{attr_name}]")).each do |elem|
+        a = elem.attributes[attr_name].value
+        /_#{suffix}$/.match?(a) or
+          elem.attributes[attr_name].value = "#{a}_#{suffix}"
+      end
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []
       end
 
+      def strip_root(name)
+        name.sub(%r{^(\./)?(\.\./)+}, "")
+      end
+
       def source2dest_filename(name, disambig = true)
-        n = name.sub(%r{^(\./)?(\.\./)+}, "")
+        n = strip_root(name)
         dir = File.dirname(n)
         base = File.basename(n)
         if disambig && @seen_filenames.include?(base)

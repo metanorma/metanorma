@@ -41,6 +41,15 @@ RSpec.describe Metanorma::Compile do
         tocfigures: true,
         toctables: true,
         tocrecommendations: true,
+        output_formats: { doc: "doc",
+                          html: "html",
+                          html_alt: "alt.html",
+                          isosts: "iso.sts.xml",
+                          pdf: "pdf",
+                          presentation: "presentation.xml",
+                          rxl: "rxl",
+                          sts: "sts.xml",
+                          xml: "xml" },
       },
     )
     Metanorma::Compile.new.compile("spec/assets/test2.adoc",
@@ -55,7 +64,16 @@ RSpec.describe Metanorma::Compile do
                                    tocfigures: true,
                                    toctables: true,
                                    tocrecommendations: true,
-                                   agree_to_terms: true)
+                                   agree_to_terms: true,
+                                   output_formats: { doc: "doc",
+                                                     html: "html",
+                                                     html_alt: "alt.html",
+                                                     isosts: "iso.sts.xml",
+                                                     pdf: "pdf",
+                                                     presentation: "presentation.xml",
+                                                     rxl: "rxl",
+                                                     sts: "sts.xml",
+                                                     xml: "xml" })
   end
 
   it "fontist_install called" do
@@ -230,6 +248,22 @@ RSpec.describe Metanorma::Compile do
     compile.compile("spec/assets/test.adoc", type: "iso", no_progress: true)
   end
 
+  it "handle :fonts attribute in adoc" do
+    mock_pdf
+    mock_sts
+    compile = Metanorma::Compile.new
+
+    allow(Metanorma::FontistUtils).to receive(:install_fonts_safe)
+      .with(hash_including("MS Gothic"), false, false, false)
+      .and_return(nil)
+
+    allow(Metanorma::FontistUtils).to receive(:location_manifest)
+      .with(anything, anything)
+      .and_return({})
+
+    compile.compile("spec/assets/custom_fonts.adoc", type: "iso")
+  end
+
   it "processes metanorma options inside Asciidoc" do
     Metanorma::Compile.new.compile("spec/assets/test1.adoc",
                                    agree_to_terms: true)
@@ -376,17 +410,6 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include %(<bibdata type="standard">)
   end
 
-  it "keeps asciimath" do
-    Metanorma::Compile.new.compile("spec/assets/test1.adoc",
-                                   type: "iso",
-                                   extension_keys: [:xml],
-                                   agree_to_terms: true)
-    expect(File.exist?("spec/assets/test1.xml")).to be true
-    xml = File.read("spec/assets/test1.xml", encoding: "utf-8")
-    expect(xml).not_to include %(<stem type="MathML">)
-    expect(xml).to include %(<stem type="AsciiMath">)
-  end
-
   it "exports assets" do
     sourcecode = "spec/assets/extract/sourcecode"
     %w(sourcecode-0000.txt sourcecode-0001.txt a.html).each do |w|
@@ -498,7 +521,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("spec/assets/test2.xml")).to be true
     xml = File.read("spec/assets/test2.xml", encoding: "utf-8")
     expect(xml).to include "ABC"
-    expect(xml).to include "ruby"
+    expect(xml).to include "<stem"
   end
 
   it "processes a Metanorma XML ISO document with CRLF line endings" do
@@ -529,15 +552,23 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "don't skip Presentation XML errors" do
-    exception_msg = "Anything"
     require "metanorma-iso"
-    allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert).to receive(:convert)
-      .and_raise(exception_msg)
-
+    allow_any_instance_of(IsoDoc::Iso::HtmlConvert).to receive(:convert)
+      .and_raise("Something")
     c = Metanorma::Compile.new
-    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:pdf])
+    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html],
+                                        strict: true)
+    expect(c.errors).not_to include("Anything")
+    expect(c.errors).to include("Something")
 
-    expect(c.errors).to include(exception_msg)
+    allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert)
+      .to receive(:convert)
+      .and_raise("Anything")
+    c = Metanorma::Compile.new
+    c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html],
+                                        strict: true)
+    expect(c.errors).to include("Anything")
+    expect(c.errors).not_to include("Something") # never runs HTML
   end
 
   it "processes section split HTML" do
@@ -556,12 +587,14 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.4.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
     f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
     expect(File.exist?("#{f}/cover.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
@@ -573,9 +606,14 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
     m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
-    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
+    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
+    file2.xpath("//xmlns:emf").each(&:remove)
+    expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
+    expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
     expect(xmlpp(file2
      .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
@@ -584,7 +622,17 @@ RSpec.describe Metanorma::Compile do
     expect(xmlpp(file2
      .at("//xmlns:eref[@bibitemid = '#{m[1]}_R1']").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>#{m[1]}_R1</referenceFrom></locality></localityStack></eref>
+        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+      OUTPUT
+    expect(file2
+     .at("//xmlns:bibitem[@id = 'R1']"))
+      .to be_nil
+    expect(xmlpp(file2
+     .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <bibitem id="#{m[1]}_A" type="internal">
+        <docidentifier type="repository">#{m[1]}/A</docidentifier>
+        </bibitem>
       OUTPUT
     expect(xmlpp(file2
      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
@@ -594,69 +642,87 @@ RSpec.describe Metanorma::Compile do
         </bibitem>
       OUTPUT
     expect(xmlpp(file2
-     .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <bibitem id="#{m[1]}_A" type="internal">
-        <docidentifier type="repository">#{m[1]}/A</docidentifier>
-        </bibitem>
-      OUTPUT
-    expect(xmlpp(file2
      .at("//xmlns:svgmap[1]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <svgmap>
-        <figure>
+        <svgmap><figure>
+        <image src="" mimetype="image/svg+xml" height="" width="">
           <svg xmlns="http://www.w3.org/2000/svg">
             <a href="A">A</a>
             <a href="B">B</a>
           </svg>
-          <target href="B"><eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>#{m[1]}_R1</referenceFrom></locality></localityStack></eref></target>
+          </image>
+          <target href="B">
+            <eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+          </target>
         </figure>
         <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
     expect(xmlpp(file2
      .at("//xmlns:svgmap[2]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <svgmap><figure>
-        <svg xmlns="http://www.w3.org/2000/svg">
-          <a href="P">P</a>
-        </svg>
+             <svgmap><figure>
+         <image src="" mimetype="image/svg+xml" height="" width=""><svg xmlns="http://www.w3.org/2000/svg">
+           <a href="P">P</a>
+         </svg></img>
         </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
+    expect(file2.at("//xmlns:preface")).to be_nil
+    expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
+    expect(file2.at("//xmlns:annex")).to be_nil
+    expect(file2.at("//xmlns:indexsect")).to be_nil
+=begin
+    file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
+    expect(xmlpp(file4
+     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+<bibitem id="#{m[1]}_R1">
+  <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
+  <docidentifier>R1</docidentifier>
+  <biblio-tag>R1, </biblio-tag>
+</bibitem>
+      OUTPUT
+=end
+    file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.6.xml"))
+    expect(file6.at("//xmlns:preface")).to be_nil
+    expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
+    expect(file6.at("//xmlns:annex")).not_to be_nil
+    expect(file6.at("//xmlns:indexsect")).to be_nil
     expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
       .to be_equivalent_to <<~OUTPUT
         ---
         directives:
-         - presentation-xml
-         - bare-after-first
-         bibdata:
-           title:
-             type: title-main
-             language:
-             content: ISO Title
-           type: collection
-           docid:
-             type: ISO
-             id: ISO 1
-         manifest:
-           level: collection
-           title: Collection
-           docref:
-           - fileref: test_sectionsplit.html.3.xml
-             identifier: "[Untitled]"
-           - fileref: test_sectionsplit.html.0.xml
-             identifier: abstract
-           - fileref: test_sectionsplit.html.1.xml
-             identifier: introduction
-           - fileref: test_sectionsplit.html.6.xml
-             identifier: Normative References
-           - fileref: test_sectionsplit.html.2.xml
-             identifier: Clause 4
-           - fileref: test_sectionsplit.html.4.xml
-             identifier: Annex (informative)
-           - fileref: test_sectionsplit.html.5.xml
-             identifier: "[Untitled]"
-           - fileref: test_sectionsplit.html.7.xml
-             identifier: Bibliography
+        - presentation-xml
+        - bare-after-first
+        bibdata:
+          title:
+            type: title-main
+            language:
+            content: ISO Title
+          type: collection
+          docid:
+            type: ISO
+            id: ISO 1
+        manifest:
+          level: collection
+          title: Collection
+          docref:
+          - fileref: test_sectionsplit.html.0.xml
+            identifier: Contents
+          - fileref: test_sectionsplit.html.1.xml
+            identifier: abstract
+          - fileref: test_sectionsplit.html.2.xml
+            identifier: introduction
+          - fileref: test_sectionsplit.html.4.xml
+            identifier: 1 Normative References
+          - fileref: test_sectionsplit.html.3.xml
+            identifier: 2 Clause 4
+          - fileref: test_sectionsplit.html.5.xml
+            identifier: Annex A <span class="obligation">(normative)</span>  Annex (informative)
+          - fileref: test_sectionsplit.html.6.xml
+            identifier: Annex B <span class="obligation">(normative)</span>  Annex 2
+          - fileref: test_sectionsplit.html.7.xml
+            identifier: Bibliography
+
       OUTPUT
   end
 

@@ -8,7 +8,9 @@
       <introduction id="B" displayorder='2'><title>introduction</title></introduction>
       </preface>
       <sections>
-       <clause id="M" inline-header="false" obligation="normative" displayorder='4'>
+        <p id="middletitle" displayorder="3">Title</p>
+        <note id="middlenote" displayorder="4">Title</p>
+       <clause id="M" inline-header="false" obligation="normative" displayorder='6'>
          <title>Clause 4</title>
          <clause id="N" inline-header="false" obligation="normative">
          <title>Introduction</title>
@@ -34,7 +36,7 @@
        </clause></clause>
        <admonition id="L" type="caution"><p>admonition</p></admonition>
        </sections>
-       <annex id="P" inline-header="false" obligation="normative" displayorder='5'>
+       <annex id="P" inline-header="false" obligation="normative" displayorder='7'>
          <title><strong>Annex</strong><br/>(informative)</title>
          <clause id="Q" inline-header="false" obligation="normative">
          <title>Annex A.1</title>
@@ -46,17 +48,19 @@
         </references>
        </clause>
        </annex>
-       <annex id="P1" inline-header="false" obligation="normative" displayorder='6'>
+       <annex id="P1" inline-header="false" obligation="normative" displayorder='8'>
+         <title>Annex 2</title>
        </annex>
-        <bibliography><references id="R" obligation="informative" normative="true" displayorder='3'>
+        <bibliography><references id="R" obligation="informative" normative="true" displayorder='5'>
          <title>Normative References</title>
          <bibitem id="R1"><docidentifier>R1</docidentifier><title>Hello</title></bibitem>
-       </references><clause id="S" obligation="informative" displayorder='7'>
+       </references><clause id="S" obligation="informative" displayorder='9'>
          <title>Bibliography</title>
          <references id="T" obligation="informative" normative="false">
          <title>Bibliography Subsection</title>
        </references>
        </clause>
-       </bibliography>
+     </bibliography>
+     <indexsect displayorder="10"><title>Index</title></indexsect>
       </iso-standard>
 

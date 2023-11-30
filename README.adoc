@@ -19,235 +19,26 @@ Metanorma is composed of a number of specifications and software
 implementations. The Metanorma document model is based on the SecureDoc
 document model.
 
-Metanorma includes the following sub-projects:
-
-* The https://github.com/metanorma/metanorma-model-standoc[Metanorma Standard Document model]
-
-* IETF Internet-Drafts and RFCs: the https://datatracker.ietf.org/doc/draft-ribose-asciirfc/[AsciiRFC syntax],
-the https://github.com/metanorma/asciidoctor-rfc/[asciidoctor-rfc RFC XML v2 and v3 implementations]
-
-* ISO Standards: the AsciiISO syntax,
-the https://github.com/metanorma/metanorma-model-iso/[Metanorma ISO model],
-the https://github.com/metanorma/metanorma-iso/[metanorma-iso IsoDoc implementation]
-
-* CalConnect Standard Documents (CSD): the AsciiCSD syntax,
-https://github.com/metanorma/metanorma-model-csd[Metanorma CSD model],
-the https://github.com/metanorma/metanorma-csd/[metanorma-csd implementation]
-
-* Chinese GuoBiao (GB) Standards: the AsciiGB syntax,
-https://github.com/metanorma/metanorma-model-gb[Metanorma GB models, for Chinese standards],
-the https://github.com/metanorma/metanorma-gb/[metanorma-gb implementation]
-
-* Cloud Security Alliance Normal Documents (CSAND): the AsciiCSAND syntax,
-https://github.com/metanorma/metanorma-model-csand[Metanorma CSAND model],
-the https://github.com/metanorma/metanorma-csand/[metanorma-csand implementation]
-
-* M3AAWG Documents (M3D): the AsciiM3D syntax,
-https://github.com/metanorma/metanorma-model-m3d[Metanorma M3D model],
-the https://github.com/metanorma/metanorma-m3d/[metanorma-m3d implementation]
-
-* Ribose Specification Documents (RSD): AsciiRSD, RSD XML schema, and the https://github.com/metanorma/metanorma-rsd[metanorma-rsd implementation]
-
-* Mandatory Provident Fund Schemes Authority of Hong Kong Documents (MPFD): https://github.com/metanorma/metanorma-mpfd[metanorma-mpfd implementation] (still at proof-of-concept stage)
-
-* United Nations Economic Commision for Europe Documents (UNECE): https://github.com/metanorma/metanorma-unece[metanorma-unece implementation]
-
+For more on Metanorma and who uses it, refer to https://www.metanorma.org[]
 
 == Installation on supported platforms
 
-=== MacOS
-
-We recommend macOS users to directly run the Metanorma setup script
-located here:
-https://github.com/metanorma/metanorma-macos-setup
-
-This is a one-stop installation script that setups Ruby, Node
-and all necessary parts for running Metanorma.
-
-Alternatively, you can also use the Metanorma Docker container (see below).
-
-=== Linux
-
-Please see: https://github.com/metanorma/metanorma-linux-setup
-
-Alternatively, you can also use the Metanorma Docker container (see below).
-
-=== Docker: Windows and other platforms
-
-Please use the Metanorma Docker container: https://github.com/metanorma/metanorma-docker
-
-
-////
-If you want to run Ubuntu on MacOS, you should do the following beforehand:
-
-[source,sh]
-----
-# Setup docker through dinghy on MacOS:
-brew tap codekitchen/dinghy
-brew install dinghy
-brew install docker docker-machine
-dinghy create --provider virtualbox
-
-# Run the Ubuntu container:
-dinghy up
-eval $(dinghy env)
-docker run -it ubuntu:18.10 bash
-----
-////
+See https://www.metanorma.org/install/[]
 
 === Installing individual components
 
-The Metanorma workflow can be utilized via the `metanorma` Ruby gem.
+The Metanorma workflow can be utilized via the `metanorma-cli` Ruby gem.
 
 [source,sh]
 ----
 gem install metanorma-cli
 ----
 
-If you are going to generate PDFs from HTML (which applies to CSD), you will also need to install
-the node library https://github.com/GoogleChrome/puppeteer:
-
-* Install Node, with at least version 7.6.0: https://nodejs.org/en/download/,
-https://nodejs.org/en/download/package-manager/ . (For macOS, `brew install node`)
-* Install npm: https://docs.npmjs.com/getting-started/installing-node
-* Install puppeteer: `npm install -g --save --save-exact puppeteer`
-
-
 == Usage
 
-Help command:
+Refer to https://www.metanorma.org/install/man/[Metanorma man page] and https://www.metanorma.org/install/usage/[Metanorma usage]
 
-[source,sh]
-----
-$ metanorma -h
-Usage: metanorma [options] <file>
-  -t, --type TYPE                       Type of standard to generate: rfc2, rfc3, iso, gb, csd, csand, m3d
-  -x, --extensions EXT1,EXT2,... | all  Type of extension to generate per type:
-  {
-    :rfc2=>{:xmlrfc=>"v2.xml"},
-    :rfc3=>{:xmlrfc=>"v3.xml"},
-    :iso=>{:html=>"html", :html_alt=>"alt.html", :doc=>"doc"},
-    :gb=>{:html=>"html", :compliant_html => "compliant_html", :doc=>"doc"},
-    :csd=>{:html=>"html", :pdf=>"pdf", :doc => "doc"},
-    :csand=>{:html=>"html"},
-    :m3d=>{:html=>"html", :doc=>"doc", :pdf => "pdf"},
-    :rsd=>{:html=>"html", :doc=>"doc", :pdf => "pdf"}
-    :acme=>{:html=>"html", :doc=>"doc", :pdf => "pdf"}
-    :mpdf=>{:html=>"html", :doc=>"doc", :pdf => "pdf"}
-    :unece=>{:html=>"html", :doc=>"doc"}
-  }
-  In addition, xml (outside of rfc2, rfc3) generates IsoDoc XML. If the argument is "all" or the option is
-  missing, all available extensions are generated.
-  -f, --format FORMAT                   Format of source file: asciidoc (current default, only format supported)
-  -r, --require LIBRARY                 Require LIBRARY prior to execution
-  -w, --wrapper                         Create wrapper folder for HTML output
-  -d, --data-uri-image                  Encode HTML output images as data URIs
-  -a, --asciimath                       Preserve AsciiMath in Metanorma XML, instead of transforming it into MathML
-  -R, --relaton FILENAME                Export Relaton XML (bibdata) for this document to FILENAME
-      (Also triggered through -x rxl)
-  -e, --extract DIR(,ASSET1,ASSET2...)  Extract assets from this document to directory DIR. If ASSET1,ASSET2 are named, only those types of asset are extracted.
-  -h, --help                            Show this message
-----
-
-Basically it is used like this:
-
-[source,sh]
-----
-$ metanorma --type <chosen-type> [--format input-format] [--extensions EXT1,EXT2...] iso-my-standard-document.adoc
-----
-
-Options:
-
-`type`:: (mandatory, specified via `--type` or `-t`) takes one of the following types:
-`rfc2`, `rfc3`, `iso`, `gb`, `csd`, `csand`, `m3d`, `rsd`. Each of these corresponds to a
-standards class and a Metanorma gem; the list of standards classes supported by the script
-by default will grow (see also `require`).
-
-`extension`:: (optional) specifies the output formats to be generated. If not specified,
-all possible output formats are generated. The output formats generated are constrained by
-what has been defined for each standard type. All standards can generate Metanorma XML (`xml`),
-and at least one of HTML (`html`), DOC (`doc`), PDF (`pdf`). Some standards generate alternative
-HTML renderings (e.g. `html_alt` for ISO).
-
-`wrapper`:: create a separate folder for each instance of HTML output generated; the folder is named
-the same as the output file, without the `.html` suffix. Used to make distribution of HTML outputs
-more straightforward.
-
-`datauriimage`:: Encode all images as data URIs.
-
-`relaton`:: exports the bibdata Relaton XML description of the document (which is part of its Metanorma XML)
-to the nominated directory. The filename is the document identifier, if present, else the document filename.
-
-`asciimath`:: Preserve AsciiMath in Metanorma XML, instead of transforming it into MathML (which is the default).
-
-`extract`:: export assets found in the document to the nominated directory. If no other arguments are given,
-then all asset classes are exported, each to its own subdirectory. If trailing arguments are given, they
-are taken as naming which asset classes to extract from the document. Three asset classes are recognised:
-`sourcecode`, `image`, and `requirement` (which includes `recommendation` and `permission` elements).
-The assets are given autonumbered names, unless they were given a `filename` attribute in the source
-Metanorma XML, which is used instead.
-
-`format`:: (optional, specified via `--format` or `-f`) only accepts `asciidoc` for now,
-defaults to `asciidoc`
-
-As the `--format` argument is (currently) optional, so:
-
-[source,sh]
-----
-$ metanorma --type iso -x html iso-my-standard-document.adoc
-----
-
-`require`:: If you wish to use metanorma with a document class which has not been included in the types recognised
-by the metanorma script, you will need to name the corresponding Metnorma gem explicitly with the `-r`
-option; e.g.
-
-[source,sh]
-----
-$ metanorma -t mpfd mpfd-bpn.adoc
-
-[metanorma] Error: mpfd is not a supported standard type.
-
-$ metanorma -t mpfd -r metanorma-mpfd mpfd-bpn.adoc
-----
-
-The `asciimath`, `type`, `extension` and `relaton` options can be omitted if the corresponding metanorma directives
-are included in the document as Metanorma directives; for Asciidoctor input, these take the form
-of document attributes `mn-keep-asciimath:`, `mn-document-class:`, `:mn-output-extensions:` 
-and `:mn-relaton-output-file:`, e.g.
-
-[source,asciidoctor]
-----
-= My ISO document
-:mn-keep-asciimath:
-:mn-document-class: iso
-:mn-output-extensions: html,xml,pdf
-:mn-relaton-output-file: test.xml
-
-.Foreword
-----
-
-Metanorma can also be invoked within Ruby, through the metanorma gem:
-
-[source,asciidoctor]
-----
-require "metanorma"
-
-Metanorma::Compile.new().compile(filename, options)
-----
-
-The options hash has the same structure it does when invoked in metanorma-cli:
-
-`:type`:: one of `"iso"`, `"csd"`, `"rsd"`, etc. (mandatory)
-`:format`:: `:asciidoc` is only value currently allowed
-`:extension_keys`:: array of symbols: `:all`, `:xml`:, `:doc` etc.
-`:wrapper`: true/false
-`:datauriimage`: true/false
-`:asciimath`: true/false
-`:require`: array of libraries to require
-`:relaton`: exports the bibdata Relaton XML description of the document (which is part of its Metanorma XML)
-to the nominated directory
-
-== Threaded execution
+=== Threaded execution
 
 Metanorma has threaded execution, to generate output documents from the same Presentation XML input more quickly.
 Similar to https://github.com/relaton/relaton[relaton], the `METANORMA_PARALLEL` environment variable 

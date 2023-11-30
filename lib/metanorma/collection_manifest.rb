@@ -66,15 +66,19 @@ module Metanorma
     # @return [Hash<String, Metanorma::Document>]
     def documents(dir = "")
       docs = @docref.each_with_object({}) do |dr, m|
-        next m unless dr["fileref"]
-
+        dr["fileref"] or next m
         m[dr["identifier"]] = Document.parse_file(
-          File.join(dir, dr["fileref"]),
+          rel_path_resolve(dir, dr["fileref"]),
           dr["attachment"], dr["identifier"], dr["index"]
         )
         m
       end
       @manifest.reduce(docs) { |mem, mnf| mem.merge mnf.documents(dir) }
+    end
+
+    def rel_path_resolve(dir, path)
+      p = Pathname.new(path)
+      p.absolute? ? path : File.join(dir, path)
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -108,9 +112,7 @@ module Metanorma
       @disambig = Util::DisambigFiles.new
       @docref.each do |dr|
         drf = builder.docref do |b|
-          b.identifier do |i|
-            i << dr["identifier"]
-          end
+          b.identifier { |i| i << dr["identifier"] }
           !dr["attachment"] && !dr["sectionsplit"] &&
             d = @collection.bibdatas[dr["identifier"]] and
             b.parent.add_child(d.bibitem.to_xml(bibdata: true))
@@ -120,7 +122,7 @@ module Metanorma
     end
 
     def docref_to_xml_attrs(elem, docref)
-      elem[:fileref] = @disambig.source2dest_filename(docref["fileref"])
+      elem[:fileref] = @disambig.strip_root(docref["fileref"])
       %i(attachment sectionsplit).each do |i|
         elem[i] = docref[i.to_s] if docref[i.to_s]
       end

@@ -1,6 +1,7 @@
 = Document title
 Author
 :docfile: test2.adoc
+:imagesdir: spec/assets
 
-embed::test.adoc[]
+embed::test1.adoc[]
 include::test3.adoc[]

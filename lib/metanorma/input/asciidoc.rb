@@ -7,8 +7,7 @@ module Metanorma
         require "asciidoctor"
         out_opts = {
           to_file: false, safe: :safe, backend: type, header_footer: true,
-          attributes: ["nodoc", "stem", "xrefstyle=short",
-                       "docfile=#{filename}",
+          attributes: ["nodoc", "stem", "docfile=#{filename}",
                        "output_dir=#{options[:output_dir]}"]
         }
         unless asciidoctor_validate(file, filename, out_opts)
@@ -70,7 +69,8 @@ module Metanorma
            pdf-allow-print pdf-allow-print-hq pdf-allow-fill-in-forms
            fonts font-license-agreement pdf-allow-access-content
            pdf-encrypt-metadata iso-word-template document-scheme
-           localize-number iso-word-bg-strip-color modspec-identifier-base).freeze
+           localize-number iso-word-bg-strip-color modspec-identifier-base)
+          .freeze
 
       EMPTY_ADOC_OPTIONS_DEFAULT_TRUE =
         %w(data-uri-image suppress-asciimath-dup use-xinclude
@@ -81,7 +81,7 @@ module Metanorma
            toc-tables toc-recommendations).freeze
 
       def attr_name_normalise(name)
-        name.gsub(/-/, "").sub(/override$/, "_override").sub(/pdf$/, "_pdf")
+        name.gsub("-", "").sub(/override$/, "_override").sub(/pdf$/, "_pdf")
           .to_sym
       end
 
