@@ -3,6 +3,7 @@ require "htmlentities"
 require_relative "collection_fileprocess"
 require_relative "fontist_utils"
 require_relative "util"
+require_relative "bilingual"
 require_relative "files_lookup"
 require_relative "collection_render_utils"
 
@@ -88,19 +89,43 @@ module Metanorma
 
     def concatenate(col, options)
       options[:format] << :presentation if options[:format].include?(:pdf)
+      concatenate_xml(col, options)
+      presxml = File.join(@outdir, "collection.presentation.xml")
+      concatenate_pdf(col, options, presxml)
+      concatenate_html(col, options, presxml)
+    end
+
+    def concatenate_xml(col, options)
       options[:format].uniq.each do |e|
         %i(presentation xml).include?(e) or next
         ext = e == :presentation ? "presentation.xml" : e.to_s
         File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") do |f|
-          f.write(concatenate1(col.clone, e).to_xml)
+          out = concatenate1(col.clone, e).to_xml
+          col.directives.include?("bilingual") and
+            out = Metanorma::BilingualDoc
+              .new({ align_cross_elements: %w(p note) }).to_bilingual(out)
+          f.write(out)
         end
       end
-      options[:format].include?(:pdf) and
-        pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))
+    end
+
+    def concatenate_pdf(_col, options, presxml)
+      options[:format].include?(:pdf) and pdfconv.convert(presxml)
+    end
+
+    def concatenate_html(col, options, presxml)
+      (col.directives.include?("bilingual") &&
+       options[:format].include?(:html)) or return
+      Metanorma::BilingualDoc.new(
+        { doctype: doctype.to_sym,
+          converter_options: PdfOptionsNode.new(doctype, @compile_options),
+          outdir: @outdir },
+      ).to_html(presxml)
     end
 
     def concatenate1(out, ext)
       out.directives << "documents-inline"
+      out.documents = {} # avoid dupe entries
       out.bibdatas.each_key do |ident|
         id = @isodoc.docid_prefix(nil, ident.dup)
         @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
