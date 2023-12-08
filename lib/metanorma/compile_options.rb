@@ -67,16 +67,27 @@ module Metanorma
 
     def get_isodoc_options(file, options, ext)
       ret = @processor.extract_options(file)
+      copy_isodoc_options_attrs(options, ret)
+      font_manifest_mn2pdf(options, ret, ext)
+      ret[:output_formats].select! do |k, _|
+        options[:extension_keys].include?(k)
+      end
+      ret
+    end
+
+    def copy_isodoc_options_attrs(options, ret)
       ret[:datauriimage] = true if options[:datauriimage]
       ret[:sourcefilename] = options[:filename]
       %i(bare sectionsplit no_install_fonts baseassetpath aligncrosselements
          tocfigures toctables tocrecommendations strict)
         .each { |x| ret[x] ||= options[x] }
+    end
+
+    def font_manifest_mn2pdf(options, ret, ext)
       custom_fonts = FontistUtils.has_custom_fonts?(@processor, options, ret)
-      ext == :pdf && custom_fonts &&
-        ret[:mn2pdf] =
-          { font_manifest: FontistUtils.location_manifest(@processor, ret) }
-      ret
+      ext == :pdf && custom_fonts and
+        ret[:mn2pdf] = { font_manifest: FontistUtils
+          .location_manifest(@processor, ret) }
     end
   end
 end
