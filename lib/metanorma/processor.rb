@@ -35,7 +35,7 @@ module Metanorma
     end
 
     def options_preprocess(options)
-      options[:output_formats] = output_formats
+      options[:output_formats] ||= output_formats
     end
 
     def output(isodoc_node, _inname, outname, _format, _options = {})
