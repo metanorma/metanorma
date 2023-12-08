@@ -639,7 +639,7 @@ RSpec.describe Metanorma::Compile do
      .at("//xmlns:svgmap[1]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
         <svgmap><figure>
-        <image src="" mimetype="image/svg+xml" height="" width="">
+        <image src="" mimetype="image/svg+xml" height="auto" width="auto">
           <svg xmlns="http://www.w3.org/2000/svg">
             <a href="A">A</a>
             <a href="B">B</a>
@@ -655,7 +655,7 @@ RSpec.describe Metanorma::Compile do
      .at("//xmlns:svgmap[2]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
              <svgmap><figure>
-         <image src="" mimetype="image/svg+xml" height="" width=""><svg xmlns="http://www.w3.org/2000/svg">
+         <image src="" mimetype="image/svg+xml" height="auto" width="auto"><svg xmlns="http://www.w3.org/2000/svg">
            <a href="P">P</a>
          </svg></img>
         </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
