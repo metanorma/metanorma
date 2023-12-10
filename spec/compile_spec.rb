@@ -41,15 +41,9 @@ RSpec.describe Metanorma::Compile do
         tocfigures: true,
         toctables: true,
         tocrecommendations: true,
-        output_formats: { doc: "doc",
-                          html: "html",
-                          html_alt: "alt.html",
-                          isosts: "iso.sts.xml",
-                          pdf: "pdf",
-                          presentation: "presentation.xml",
-                          rxl: "rxl",
-                          sts: "sts.xml",
-                          xml: "xml" },
+        output_formats: {
+          presentation: "presentation.xml",
+        },
       },
     )
     Metanorma::Compile.new.compile("spec/assets/test2.adoc",
@@ -645,7 +639,7 @@ RSpec.describe Metanorma::Compile do
      .at("//xmlns:svgmap[1]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
         <svgmap><figure>
-        <image src="" mimetype="image/svg+xml" height="" width="">
+        <image src="" mimetype="image/svg+xml" height="auto" width="auto">
           <svg xmlns="http://www.w3.org/2000/svg">
             <a href="A">A</a>
             <a href="B">B</a>
@@ -661,7 +655,7 @@ RSpec.describe Metanorma::Compile do
      .at("//xmlns:svgmap[2]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
              <svgmap><figure>
-         <image src="" mimetype="image/svg+xml" height="" width=""><svg xmlns="http://www.w3.org/2000/svg">
+         <image src="" mimetype="image/svg+xml" height="auto" width="auto"><svg xmlns="http://www.w3.org/2000/svg">
            <a href="P">P</a>
          </svg></img>
         </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
@@ -670,18 +664,16 @@ RSpec.describe Metanorma::Compile do
     expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
     expect(file2.at("//xmlns:annex")).to be_nil
     expect(file2.at("//xmlns:indexsect")).to be_nil
-=begin
-    file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
-    expect(xmlpp(file4
-     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-<bibitem id="#{m[1]}_R1">
-  <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
-  <docidentifier>R1</docidentifier>
-  <biblio-tag>R1, </biblio-tag>
-</bibitem>
-      OUTPUT
-=end
+    #     file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
+    #     expect(xmlpp(file4
+    #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+    #       .to be_equivalent_to xmlpp(<<~OUTPUT)
+    # <bibitem id="#{m[1]}_R1">
+    #   <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
+    #   <docidentifier>R1</docidentifier>
+    #   <biblio-tag>R1, </biblio-tag>
+    # </bibitem>
+    #       OUTPUT
     file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.6.xml"))
     expect(file6.at("//xmlns:preface")).to be_nil
     expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
