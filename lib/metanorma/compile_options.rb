@@ -69,7 +69,7 @@ module Metanorma
       ret = @processor.extract_options(file)
       copy_isodoc_options_attrs(options, ret)
       font_manifest_mn2pdf(options, ret, ext)
-      ret[:output_formats].select! do |k, _|
+      ret[:output_formats]&.select! do |k, _|
         options[:extension_keys].include?(k)
       end
       ret
