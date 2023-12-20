@@ -41,7 +41,8 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby.version }}
-          bundler-cache: false
+          bundler-cache: true
+          cache-version: 1
           rubygems: ${{ matrix.ruby.rubygems }}
 
       - uses: metanorma/ci/inkscape-setup-action@main
