@@ -1,0 +1,76 @@
+name: rake
+
+on:
+  workflow_call:
+    secrets:
+      pat_token:
+        required: false
+
+jobs:
+  prepare:
+    uses: metanorma/ci/.github/workflows/prepare-rake.yml@main
+
+  rake:
+    name: Test on Ruby ${{ matrix.ruby.version }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    needs: prepare
+    if: needs.prepare.outputs.push-for-tag != 'true'
+
+    concurrency:
+      group: '${{ github.workflow }}-${{ matrix.os }}-${{ matrix.ruby.version }}-${{ github.head_ref || github.ref_name }}'
+      cancel-in-progress: true
+
+    continue-on-error: ${{ matrix.ruby.experimental }}
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      # workaround for https://github.com/actions/runner-images/issues/37
+      - if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install libcurl4-openssl-dev
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby.version }}
+          bundler-cache: false
+          rubygems: ${{ matrix.ruby.rubygems }}
+
+      - uses: metanorma/ci/inkscape-setup-action@main
+
+      - uses: metanorma/ci/ghostscript-setup-action@main
+
+      - run: bundle exec rake
+
+      - if: needs.prepare.outputs.public == 'true' && matrix.os == 'ubuntu-latest' && matrix.ruby.version == needs.prepare.outputs.default-ruby-version
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverage/.resultset.json
+
+  tests-passed:
+    needs: rake
+    runs-on: ubuntu-latest
+    steps:
+      - uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.pat_token || github.token }}
+          repository: ${{ github.repository }}
+          event-type: tests-passed
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "type": "tests-passed"}'
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Repository ready for release
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.pat_token || github.token }}
+          repository: ${{ github.repository }}
+          event-type: do-release
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "type": "do-release"}'

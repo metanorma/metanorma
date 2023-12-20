@@ -10,6 +10,6 @@ on:
 
 jobs:
   rake:
-    uses: metanorma/ci/.github/workflows/inkscape-rake.yml@main
+    uses: ./.github/workflows/inkscape-rake.yml
     secrets:
       pat_token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
