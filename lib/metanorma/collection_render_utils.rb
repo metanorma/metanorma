@@ -102,7 +102,7 @@ module Metanorma
 
     def datauri_encode(docxml)
       docxml.xpath(ns("//image")).each do |i|
-        i["src"] = Metanorma::Utils::datauri(i["src"])
+        i["src"] = Vectory::Utils::datauri(i["src"])
       end
       docxml
     end

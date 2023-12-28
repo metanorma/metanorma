@@ -220,7 +220,7 @@ module Metanorma
       builder.send(:"doc-container", id: id) do |b|
         if doc.attachment
           doc.bibitem and b << doc.bibitem.root.to_xml
-          b.attachment Metanorma::Utils::datauri(doc.file)
+          b.attachment Vectory::Utils::datauri(doc.file)
         else doc.to_xml b
         end
       end

@@ -12,6 +12,7 @@ require "metanorma/compile"
 require "metanorma/collection"
 require "metanorma/collection_renderer"
 require "metanorma/document"
+require "vectory"
 
 # Metanorma module
 module Metanorma
