@@ -108,7 +108,7 @@ module Metanorma
       docxml.xpath(ns("//svgmap//eref")).each do |e|
         svgmap_resolve1(e, isodoc, docxml, ids)
       end
-      Metanorma::Utils::svgmap_rewrite(docxml, "")
+      Vectory::SvgMapping.new(docxml, "").call
       docxml.xpath(ns("//svgmap")).each { |s| isodoc.svgmap_extract(s) }
     end
 
