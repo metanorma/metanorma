@@ -99,8 +99,8 @@ RSpec.describe Metanorma::Collection do
       expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/iso").text)
         .to be_equivalent_to "background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);"
 
-      expect(File.exist?("#{INPATH}/collection1.err")).to be true
-      expect(File.read("#{INPATH}/collection1.err", encoding: "utf-8"))
+      expect(File.exist?("#{INPATH}/collection1.err.html")).to be true
+      expect(File.read("#{INPATH}/collection1.err.html", encoding: "utf-8"))
         .to include "Missing:​express-schema:​E0"
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.pdf")).to be true

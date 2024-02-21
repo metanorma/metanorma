@@ -30,6 +30,7 @@ module Metanorma
       options[:format] ||= :asciidoc
       options[:filename] = filename
       options[:fontlicenseagreement] ||= "no-install-fonts"
+      options[:novalid] = o[:novalid] if o[:novalid]
       options
     end
 
