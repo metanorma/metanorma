@@ -7,6 +7,7 @@ module Metanorma
         require "asciidoctor"
         out_opts = { to_file: false, safe: :safe, backend: type,
                      header_footer: true, log: options[:log],
+                     novalid: options[:novalid],
                      attributes: ["nodoc", "stem", "docfile=#{filename}",
                                   "output_dir=#{options[:output_dir]}"] }
         unless asciidoctor_validate(file, filename, out_opts)
