@@ -50,8 +50,8 @@ RSpec.describe Metanorma::Collection do
   context "render html & build doc, pdf, xml files from" do
     it "YAML collection" do # rubocop:disable metrics/blocklength
       mock_pdf
-      FileUtils.rm_f "#{OUTPATH}/collection.err"
-      FileUtils.rm_f "#{OUTPATH}/collection1.err"
+      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
+      FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection1.yml"
@@ -139,7 +139,7 @@ RSpec.describe Metanorma::Collection do
 
     it "extracts metadata from collection for Liquid" do
       mock_pdf
-      FileUtils.rm_f "#{OUTPATH}/collection.err"
+      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection1.yml"
@@ -250,7 +250,7 @@ RSpec.describe Metanorma::Collection do
 
     it "uses presentation XML directive, markup in identifiers" do # rubocop:disable metrics/blocklength
       mock_pdf
-      FileUtils.rm_f "#{OUTPATH}/collection.err"
+      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection2.yml"
