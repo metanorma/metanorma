@@ -52,7 +52,7 @@ module Metanorma
     # rubocop:enable Metrics/AbcSize,Metrics/MethodLength
     def clean_exit
       @log.write(File.join(File.dirname(@file),
-                           "#{File.basename(@file, '.*')}.err"))
+                           "#{File.basename(@file, '.*')}.err.html"))
     end
 
     # @return [String] XML
