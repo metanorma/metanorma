@@ -9,7 +9,7 @@
 <title language="fr" format="text/plain" type="title-intro">Céréales et légumineuses</title>
 <title language="fr" format="text/plain" type="title-main">Spécification et méthodes d’essai</title>
 <title language="fr" format="text/plain" type="title-part">Riz (Final)</title>
-<docidentifier type="ISO">ISO 17301-1:2016</docidentifier>
+<docidentifier primary="true" type="ISO">ISO 17301-1:2016</docidentifier>
 <docidentifier type="iso-with-lang">ISO 17301-1:2016(E)</docidentifier>
 <docidentifier type="iso-reference">ISO 17301-1:2016(E)</docidentifier>
 <docidentifier type="iso-tc">17301</docidentifier>

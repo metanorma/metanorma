@@ -40,7 +40,7 @@
          <title type="title-intro" format="text/plain" language="fr">C&#xE9;r&#xE9;ales et l&#xE9;gumineuses</title>
          <title type="title-main" format="text/plain" language="fr">Sp&#xE9;cification et m&#xE9;thodes d&#x2019;essai</title>
          <title type="title-part" format="text/plain" language="fr">Riz (Final)</title>
-         <docidentifier type="ISO">ISO 17301-1:2016</docidentifier>
+         <docidentifier primary="true" type="ISO">ISO 17301-1:2016</docidentifier>
          <docidentifier type="iso-with-lang">ISO 17301-1:2016(E)</docidentifier>
          <docidentifier type="iso-reference">ISO 17301-1:2016(E)</docidentifier>
          <docidentifier type="iso-tc">17301</docidentifier>
@@ -103,7 +103,7 @@
          <title type="title-main" format="text/plain" language="en">Dummy document</title>
          <title type="main" format="text/plain" language="fr">Dummy document</title>
          <title type="title-main" format="text/plain" language="fr">Dummy document</title>
-         <docidentifier type="ISO">ISO 17302:2016</docidentifier>
+         <docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
          <docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
          <docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
          <docnumber>17302</docnumber>
@@ -161,7 +161,7 @@
          <title type="title-main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
          <title type="main" format="text/plain" language="fr">Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0; table de hauteur variable, &#xE0; broche horizontale ou verticale</title>
          <title type="title-main" format="text/plain" language="fr">Conditions d&#x2019;essais des machines &#xE0; fraiser &#xE0; table de hauteur variable, &#xE0; broche horizontale ou verticale</title>
-         <docidentifier type="ISO">ISO 1701:1974</docidentifier>
+         <docidentifier primary="true" type="ISO">ISO 1701:1974</docidentifier>
          <docidentifier type="iso-with-lang">ISO 1701:1974(E)</docidentifier>
          <docidentifier type="iso-reference">ISO 1701:1974(E)</docidentifier>
          <docnumber>1701</docnumber>
@@ -231,7 +231,7 @@
          <title type="title-main" format="text/plain" language="fr">Sp&#xE9;cification et m&#xE9;thodes d&#x2019;essai</title>
          <title type="title-part" format="text/plain" language="fr">Riz</title>
          <title type="title-amd" format="text/plain" language="fr">Fraction massique de mati&#xE8;re &#xE9;trang&#xE8;re, riz usin&#xE9; (non gluant), diviseurs d&#x2019;&#xE9;chantillon et recommandations relatives aux conditions d&#x2019;entreposage et de transport</title>
-         <docidentifier type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier>
+         <docidentifier primary="true" type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier>
          <docidentifier type="iso-with-lang">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
          <docidentifier type="iso-reference">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
          <docnumber>17301</docnumber>
