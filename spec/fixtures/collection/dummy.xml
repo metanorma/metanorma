@@ -5,7 +5,7 @@
 <title language="en" format="text/plain" type="title-main">Dummy document</title>
 <title language="fr" format="text/plain" type="main">Dummy document</title>
 <title language="fr" format="text/plain" type="title-main">Dummy document</title>
-<docidentifier type="ISO">ISO 17302:2016</docidentifier>
+<docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
 <docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
 <docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
 <docnumber>17302</docnumber>

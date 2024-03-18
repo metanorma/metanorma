@@ -357,6 +357,25 @@ RSpec.describe Metanorma::Compile do
     expect(html).to include "font-family: monospace-font;"
   end
 
+  it "inserts RXL extension key" do
+    FileUtils.rm_f("spec/assets/test.rxl")
+    Metanorma::Compile.new.compile(
+      "spec/assets/test.adoc",
+      type: "iso",
+      extension_keys: [:html],
+      agree_to_terms: true,
+    )
+    expect(File.exist?("spec/assets/test.rxl")).to be false
+    Metanorma::Compile.new.compile(
+      "spec/assets/test.adoc",
+      type: "iso",
+      extension_keys: [:html],
+      agree_to_terms: true,
+      site_generate: true,
+    )
+    expect(File.exist?("spec/assets/test.rxl")).to be true
+  end
+
   it "wraps HTML output" do
     Metanorma::Compile.new.compile(
       "spec/assets/test.adoc",

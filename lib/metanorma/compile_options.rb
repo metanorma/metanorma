@@ -34,25 +34,22 @@ module Metanorma
     end
 
     def get_extensions(options)
-      options[:extension_keys] ||=
-        @processor.output_formats.reduce([]) { |memo, (k, _)| memo << k }
-      extensions = extract_extensions(options)
-      if !extensions.include?(:presentation) && extensions.any? do |e|
+      ext = extract_extensions(options)
+      !ext.include?(:presentation) && ext.any? do |e|
         @processor.use_presentation_xml(e)
-      end
-        extensions << :presentation
-      end
-      extensions
+      end and ext << :presentation
+      !ext.include?(:rxl) && options[:site_generate] and
+        ext << :rxl
+      ext
     end
 
     def extract_extensions(options)
+      options[:extension_keys] ||=
+        @processor.output_formats.reduce([]) { |memo, (k, _)| memo << k }
       options[:extension_keys].reduce([]) do |memo, e|
         if @processor.output_formats[e] then memo << e
         else
-          message = "[metanorma] Error: #{e} format is not supported " \
-                    "for this standard."
-          @errors << message
-          Util.log(message, :error)
+          unsupported_format_error(e)
           memo
         end
       end
@@ -64,6 +61,13 @@ module Metanorma
     end
 
     private
+
+    def unsupported_format_error(ext)
+      message = "[metanorma] Error: #{ext} format is not supported " \
+                "for this standard."
+      @errors << message
+      Util.log(message, :error)
+    end
 
     def get_isodoc_options(file, options, ext)
       ret = @processor.extract_options(file)
