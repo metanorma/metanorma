@@ -1,0 +1,2 @@
+gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "main"
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "main"
