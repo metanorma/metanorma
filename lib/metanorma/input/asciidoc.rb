@@ -5,11 +5,11 @@ module Metanorma
     class Asciidoc < Base
       def process(file, filename, type, options = {})
         require "asciidoctor"
-        out_opts = {
-          to_file: false, safe: :safe, backend: type, header_footer: true,
-          attributes: ["nodoc", "stem", "docfile=#{filename}",
-                       "output_dir=#{options[:output_dir]}"]
-        }
+        out_opts = { to_file: false, safe: :safe, backend: type,
+                     header_footer: true, log: options[:log],
+                     novalid: options[:novalid],
+                     attributes: ["nodoc", "stem", "docfile=#{filename}",
+                                  "output_dir=#{options[:output_dir]}"] }
         unless asciidoctor_validate(file, filename, out_opts)
           warn "Cannot continue compiling Asciidoctor document"
           abort
@@ -24,7 +24,7 @@ module Metanorma
           $stderr = StringIO.new
           ::Asciidoctor.load(file, options)
           %r{(\n|^)asciidoctor: ERROR: ['"]?#{Regexp.escape(filename ||
-            "<empty>")}['"]?: line \d+: include file not found: }
+            '<empty>')}['"]?: line \d+: include file not found: }
             .match($stderr.string) and err = $stderr.string
         ensure
           $stderr = previous_stderr
@@ -39,15 +39,16 @@ module Metanorma
         /\n:mn-output-extensions:\s+(?<extensions>[^\n]+)\n/ =~ headerextract
         /\n:mn-relaton-output-file:\s+(?<relaton>[^\n]+)\n/ =~ headerextract
         /\n(?<asciimath>:mn-keep-asciimath:[^\n]*)\n/ =~ headerextract
+        /\n(?<novalid>:novalid:[^\n]*)\n/ =~ headerextract
         asciimath = if defined?(asciimath)
-                      (!asciimath.nil? && asciimath != ":mn-keep-asciimath: false")
+                      !asciimath.nil? && asciimath != ":mn-keep-asciimath: false"
                     end
         asciimath = nil if asciimath == false
         {
           type: defined?(type) ? type&.strip : nil,
           extensions: defined?(extensions) ? extensions&.strip : nil,
           relaton: defined?(relaton) ? relaton&.strip : nil,
-          asciimath: asciimath,
+          asciimath: asciimath, novalid: !novalid.nil? || nil
         }.compact
       end
 

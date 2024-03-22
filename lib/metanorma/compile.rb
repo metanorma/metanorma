@@ -22,18 +22,31 @@ module Metanorma
       @errors = []
       @isodoc = IsoDoc::Convert.new({})
       @fontist_installed = false
+      @log = Metanorma::Utils::Log.new
     end
 
     def compile(filename, options = {})
-      require_libraries(options)
-      options = options_extract(filename, options)
-      validate_options(options)
+      options_process(filename, options)
       @processor = @registry.find_processor(options[:type].to_sym)
       extensions = get_extensions(options) or return nil
       (file, isodoc = process_input(filename, options)) or return nil
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
       process_exts(filename, extensions, file, isodoc, options)
+      clean_exit(options)
+    end
+
+    def options_process(filename, options)
+      require_libraries(options)
+      options = options_extract(filename, options)
+      validate_options(options)
+      @log.save_to(filename, options[:output_dir])
+      options[:log] = @log
+    end
+
+    def clean_exit(options)
+      options[:novalid] and return
+      @log.write
     end
 
     def process_input(filename, options)

@@ -196,9 +196,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :mn-output-extensions: b
       :mn-relaton-output-file: c
       :mn-keep-asciimath:
+      :novalid:
     INPUT
     output = <<~OUTPUT
-      {:asciimath=>true, :extensions=>"b", :relaton=>"c", :type=>"a"}
+      {:asciimath=>true, :extensions=>"b", :novalid=>true, :relaton=>"c", :type=>"a"}
     OUTPUT
     expect(Metanorma::Input::Asciidoc.new
       .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq output
@@ -206,13 +207,9 @@ RSpec.describe Metanorma::Input::Asciidoc do
     input = <<~INPUT
       = Document title
       Author
-      :mn-document-class:  a
-      :mn-output-extensions:  b
-      :mn-relaton-output-file:  c
-      :mn-keep-asciimath:
     INPUT
     expect(Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq output
+      .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq "{}\n"
   end
 
   it "extracts Asciidoctor document attributes for Metanorma" do

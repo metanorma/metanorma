@@ -1,0 +1,2 @@
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "main"
+gem "metanorma-utils", git: "https://github.com/metanorma/metanorma-utils", branch: "features/late-filename-set"
