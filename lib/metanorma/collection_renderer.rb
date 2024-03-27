@@ -61,6 +61,7 @@ module Metanorma
     end
 
     def flush_files
+      warn "\n\n\n\n\nDone: #{DateTime.now.strftime('%H:%M:%S')}"
       warn @files.files_to_delete
       @files.files_to_delete.each { |f| FileUtils.rm_f(f) }
       @files_to_delete.each { |f| FileUtils.rm_f(f) }
@@ -72,31 +73,33 @@ module Metanorma
     # @option options [Array<Symbol>] :format list of formats
     # @option options [Strong] :ourput_folder output directory
     def self.render(col, options = {})
-      folder = File.dirname col.file
       warn "\n\n\n\n\nRender Init: #{DateTime.now.strftime('%H:%M:%S')}"
-      cr = new(col, folder, options)
-      warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
+      cr = new(col, File.dirname(col.file), options)
       cr.files
-      warn "\n\n\n\n\nConcatenate: #{DateTime.now.strftime('%H:%M:%S')}"
       cr.concatenate(col, options)
-      warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
-      cr.coverpage if options[:format]&.include?(:html)
-      warn "\n\n\n\n\nDone: #{DateTime.now.strftime('%H:%M:%S')}"
+      options[:format]&.include?(:html) and cr.coverpage
       cr.flush_files
       cr
     end
 
     def concatenate(col, options)
-      options[:format] << :presentation if options[:format].include?(:pdf)
-      options[:format].uniq.each do |e|
-        %i(presentation xml).include?(e) or next
+      warn "\n\n\n\n\nConcatenate: #{DateTime.now.strftime('%H:%M:%S')}"
+      options[:format] & %i(pdf doc) and options[:format] << :presentation
+      concatenate_prep(col, options)
+      options[:format].include?(:pdf) and
+        pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))
+      options[:format].include?(:doc) and
+        docconv_convert(File.join(@outdir, "collection.presentation.xml"))
+    end
+
+    def concatenate_prep(col, options)
+      %i(xml presentation).each do |e|
+        options[:format].include?(e) or next
         ext = e == :presentation ? "presentation.xml" : e.to_s
         File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") do |f|
           f.write(concatenate1(col.clone, e).to_xml)
         end
       end
-      options[:format].include?(:pdf) and
-        pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))
     end
 
     def concatenate1(out, ext)
@@ -104,7 +107,6 @@ module Metanorma
       out.bibdatas.each_key do |ident|
         id = @isodoc.docid_prefix(nil, ident.dup)
         @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
-
         out.documents[id] =
           Metanorma::Document.raw_file(@files.get(id, :outputs)[ext])
       end
@@ -127,6 +129,7 @@ module Metanorma
     # collection manifest
     def coverpage
       @coverpage or return
+      warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
       File.open(File.join(@outdir, "index.html"), "w:UTF-8") do |f|
         f.write @isodoc.populate_template(File.read(@coverpage))
       end
