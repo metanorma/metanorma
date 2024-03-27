@@ -93,6 +93,46 @@ module Metanorma
                                                    @compile_options))
     end
 
+    def docconv
+      doctype = @doctype.to_sym
+      x = Asciidoctor.load nil, backend: doctype
+      x.converter.doc_converter(DocOptionsNode.new(@directives))
+    end
+
+    # This may be redundant, may already have done this
+    def concat_extract_files(filename)
+      xml = Nokogiri::XML(File.read(filename, encoding: "UTF-8"), &:huge)
+      docs = xml.xpath("//xmlns:doc-container").each_with_object([]) do |x, m|
+        n = Nokogiri::XML::Document.new
+        n.add_child(x.elements.first.remove)
+        m << n
+      end
+      pref_file = docs.first.dup
+      pref_file.at("//xmlns:bibdata").replace(xml.at("//xmlns:bibdata").to_xml)
+      [pref_file, docs]
+    end
+
+    def docconv_convert(filename)
+      pref_file, docs = concat_extract_files(filename)
+      conv = docconv
+      collection_conv = conv.dup
+      body = docs.each_with_object([]) do |d, m|
+        conv.convert_init(d.to_xml, "xxxx", false)
+        html = conv.convert1(d, "xxx", ".")
+        m << Nokogiri::XML(html).at("//body").children
+      end
+      collection_conv.options[:collection_doc] = body.map(&:to_xml).join
+
+      def collection_conv.convert1(docxml, filename, dir)
+        ret = Nokogiri::XML(super, &:huge)
+        b = ret.at("//body")
+        b.children = @options[:collection_doc]
+        ret.to_xml
+      end
+
+      collection_conv.convert(filename, pref_file.to_xml, false)
+    end
+
     def fail_update_bibitem(docid, identifier)
       error = "[metanorma] Cannot find crossreference to document #{docid} " \
               "in document #{identifier}."
@@ -122,6 +162,22 @@ module Metanorma
       end
     end
 
+    class DocOptionsNode
+      def initialize(directives)
+        c = directives.detect { |x| x.is_a?(Hash) && x["word-coverpage"] }
+        c and @wordcoverpage = c["word-coverpage"]
+        c = directives.detect { |x| x.is_a?(Hash) && x["word-intropage"] }
+        c and @wordcoverpage = c["word-intropage"]
+      end
+
+      def attr(key)
+        case key
+        when "wordcoverpage" then @wordcoverpage
+        when "wordintropage" then @wordintropage
+        end
+      end
+    end
+
     class Dummy
       def attr(_key); end
     end
@@ -147,10 +203,10 @@ module Metanorma
         "final-content": isodoc_builder(@xml.at(ns("//final-content"))),
         doctitle: m.at(ns("../bibdata/title"))&.text,
         docnumber: m.at(ns("../bibdata/docidentifier"))&.text }.each do |k, v|
-        v and @isodoc.meta.set(
-          k, v
-        )
-      end
+          v and @isodoc.meta.set(
+            k, v
+          )
+        end
     end
 
     def isodoc_builder(node)
