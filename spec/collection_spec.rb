@@ -94,7 +94,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         # coverpage: "#{INPATH}/collection_cover.html",
         compile: {
-          no_install_fonts: true,
+          install_fonts: false,
         },
       )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
@@ -190,7 +190,7 @@ RSpec.describe Metanorma::Collection do
                 output_folder: of,
                 coverpage: "#{INPATH}/collection_cover.html",
                 compile: {
-                  no_install_fonts: true,
+                  install_fonts: false,
                 })
       expect(cr.isodoc.meta.get[:docrefs])
         .to be_equivalent_to [
@@ -299,7 +299,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "#{INPATH}/collection_cover.html",
         compile: {
-          no_install_fonts: true,
+          install_fonts: false,
         },
       )
       expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
@@ -324,7 +324,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "#{INPATH}/collection_cover.html",
         compile: {
-          no_install_fonts: true,
+          install_fonts: false,
         },
       )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
@@ -375,7 +375,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "#{INPATH}/collection_cover.html",
         compile: {
-          no_install_fonts: true,
+          install_fonts: false,
         },
       )
       expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
@@ -434,7 +434,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "#{INPATH}/collection_cover.html",
         compile: {
-          no_install_fonts: true,
+          install_fonts: false,
         },
       )
       expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
@@ -490,7 +490,7 @@ RSpec.describe Metanorma::Collection do
         output_folder: of,
         coverpage: "#{INPATH}/collection_cover.html",
         compile: {
-          no_install_fonts: true,
+          install_fonts: false,
         },
       )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
@@ -528,7 +528,7 @@ RSpec.describe Metanorma::Collection do
       output_folder: of,
       coverpage: "#{INPATH}/collection_cover.html",
       compile: {
-        no_install_fonts: true,
+        install_fonts: false,
       },
     )
     expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
@@ -546,7 +546,7 @@ RSpec.describe Metanorma::Collection do
       output_folder: of,
       coverpage: "#{INPATH}/collection_cover.html",
       compile: {
-        no_install_fonts: true,
+        install_fonts: false,
       },
     )
     index = File.read("#{OUTPATH}/index.html")
@@ -565,7 +565,7 @@ RSpec.describe Metanorma::Collection do
       output_folder: of,
       coverpage: "#{INPATH}/collection_cover.html",
       compile: {
-        no_install_fonts: true,
+        install_fonts: false,
       },
     )
     index = File.read("#{OUTPATH}/rice-en.final.norepo.xml")

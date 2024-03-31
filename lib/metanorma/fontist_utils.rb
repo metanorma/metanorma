@@ -6,17 +6,18 @@ module Metanorma
       def validate_options(options)
         agree_to_terms = options[:agree_to_terms] || false
         continue_without_fonts = options[:continue_without_fonts] || false
-        no_progress = options[:no_progress] || false
+        no_progress = !options[:progress]
 
         [agree_to_terms, continue_without_fonts, no_progress]
       end
 
       def validate_install_fonts(processor, options)
-        if options[:no_install_fonts]
+        unless install_fonts?(options)
           Util.log("[fontist] Skip font installation because" \
                    " --no-install-fonts argument passed", :debug)
           return false
-        elsif !has_custom_fonts?(processor, options, options)
+        end
+        unless has_custom_fonts?(processor, options, options)
           Util.log("[fontist] Skip font installation because "\
                    "fonts_manifest is missing", :debug)
           return false
@@ -102,7 +103,7 @@ module Metanorma
     end
 
     def self.has_custom_fonts?(processor, options, source_attributes)
-      !options[:no_install_fonts] \
+      install_fonts?(options) \
         && processor.respond_to?(:fonts_manifest) \
         && !processor.fonts_manifest.nil? \
         || source_attributes[:fonts]
@@ -117,6 +118,10 @@ module Metanorma
     def self.append_source_fonts(manifest, source_attributes)
       source_attributes[:fonts]&.split(";")&.each { |f| manifest[f] = nil }
       manifest
+    end
+
+    def self.install_fonts?(options)
+      options[:install_fonts].nil? || options[:install_fonts]
     end
   end
 end

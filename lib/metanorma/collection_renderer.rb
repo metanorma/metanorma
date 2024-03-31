@@ -42,7 +42,7 @@ module Metanorma
       @coverpage = options[:coverpage] || collection.coverpage
       @format = Util.sort_extensions_execution(options[:format])
       @compile_options = options[:compile] || {}
-      @compile_options[:no_install_fonts] = true if options[:no_install_fonts]
+      @compile_options[:install_fonts] = true if options[:install_fonts]
       @log = options[:log]
       @documents = collection.documents
       @bibdata = collection.documents
