@@ -14,11 +14,11 @@ module Metanorma
 
     def initialize
       @processors = {}
-      @aliases = { csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa }
+      @aliases = { csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa, jcgm: :bipm }
     end
 
-    def alias(x)
-      @aliases[x]
+    def alias(term)
+      @aliases[term]
     end
 
     def register(processor)
