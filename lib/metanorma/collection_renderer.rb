@@ -5,6 +5,7 @@ require_relative "fontist_utils"
 require_relative "util"
 require_relative "files_lookup"
 require_relative "collection_render_utils"
+require_relative "collection_render_word"
 
 module Metanorma
   # XML collection renderer
@@ -105,7 +106,7 @@ module Metanorma
     def concatenate1(out, ext)
       out.directives << "documents-inline"
       out.bibdatas.each_key do |ident|
-        id = @isodoc.docid_prefix(nil, ident.dup)
+        id = @c.decode(@isodoc.docid_prefix(nil, ident.dup)).gsub(/\p{Zs}+/, " ")
         @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
         out.documents[id] =
           Metanorma::Document.raw_file(@files.get(id, :outputs)[ext])

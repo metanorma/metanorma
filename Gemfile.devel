@@ -1,3 +1,4 @@
 gem "metanorma-cli"
-gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "main"
+gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "fix/refactor-toWord"
 gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "main"
+gem "metanorma-itu", git: "https://github.com/metanorma/metanorma-itu", branch: "fix/refactor-toWord"
