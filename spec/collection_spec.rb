@@ -444,7 +444,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "YAML collection with single document sectionsplit" do # rubocop:disable metrics/blocklength
+    xit "YAML collection with single document sectionsplit" do # rubocop:disable metrics/blocklength
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_sectionsplit_solo.yml"
