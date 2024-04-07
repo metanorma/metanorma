@@ -20,8 +20,9 @@ module Metanorma
     end
 
     def get_bibitem_docid(bib, identifier)
-      # IDs for repo references are untyped by default
-      docid = bib.at(ns("./docidentifier[not(@type)]")) ||
+      docid =
+        bib.at(ns("./docidentifier[@type = 'metanorma-collection']")) ||
+        bib.at(ns("./docidentifier[not(@type)]")) ||
         bib.at(ns("./docidentifier"))
       docid &&= docid_prefix(docid)
       if @files.get(docid) then docid
