@@ -45,6 +45,7 @@ module Metanorma
       @bibdatas.merge! @manifest.documents(File.dirname(@file))
       @prefatory = args[:prefatory]
       @final = args[:final]
+      @compile = Metanorma::Compile.new
       @log = Metanorma::Utils::Log.new
       @disambig = Util::DisambigFiles.new
     end
@@ -195,7 +196,7 @@ module Metanorma
     def content_to_xml(elm, builder)
       return unless (cnt = send(elm))
 
-      require "metanorma-#{doctype}"
+      @compile.load_flavor(doctype)
       out = sections(dummy_header + cnt.strip)
       builder.send("#{elm}-content") { |b| b << out }
     end
