@@ -206,7 +206,8 @@ module Metanorma
                              output_folder: "#{ident}_collection",
                              format: %i(html),
                              coverpage: File.join(dir, "cover.html")).coverpage
-      filename = one_doc_coll ? "#{ident}_index.html" : "index.html"
+      #filename = one_doc_coll ? "#{ident}_index.html" : "index.html"
+      filename = "#{ident}_index.html"
       FileUtils.mv "#{ident}_collection/index.html", File.join(dir, filename)
       FileUtils.rm_rf "#{ident}_collection"
       filename

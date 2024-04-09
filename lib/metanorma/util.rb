@@ -40,7 +40,12 @@ module Metanorma
 
     def self.gather_bibitems(xml)
       xml.xpath("//xmlns:bibitem[@id]").each_with_object({}) do |b, m|
-        m[b["id"]] = b
+        if m[b["id"]]
+          b.remove
+          next # we can't update duplicate bibitem, processing updates wrong one
+        else
+          m[b["id"]] = b
+        end
       end
     end
 
