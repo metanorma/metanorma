@@ -86,12 +86,10 @@ module Metanorma
 
     def concatenate(col, options)
       warn "\n\n\n\n\nConcatenate: #{DateTime.now.strftime('%H:%M:%S')}"
-      options[:format] & %i(pdf doc) and options[:format] << :presentation
+      (options[:format] & %i(pdf doc)).empty? or
+        options[:format] << :presentation
       concatenate_prep(col, options)
-      options[:format].include?(:pdf) and
-        pdfconv.convert(File.join(@outdir, "collection.presentation.xml"))
-      options[:format].include?(:doc) and
-        docconv_convert(File.join(@outdir, "collection.presentation.xml"))
+      concatenate_outputs(options)
     end
 
     def concatenate_prep(col, options)
@@ -104,10 +102,17 @@ module Metanorma
       end
     end
 
+    def concatenate_outputs(options)
+      pres = File.join(@outdir, "collection.presentation.xml")
+      options[:format].include?(:pdf) and pdfconv.convert(pres)
+      options[:format].include?(:doc) and docconv_convert(pres)
+    end
+
     def concatenate1(out, ext)
       out.directives << "documents-inline"
       out.bibdatas.each_key do |ident|
-        id = @c.decode(@isodoc.docid_prefix(nil, ident.dup)).gsub(/\p{Zs}+/, " ")
+        id = @c.decode(@isodoc.docid_prefix(nil, ident.dup))
+          .gsub(/\p{Zs}+/, " ")
         @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
         out.documents[id] =
           Metanorma::Document.raw_file(@files.get(id, :outputs)[ext])
@@ -158,8 +163,7 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def docrefs(elm, builder)
       elm.xpath(ns("./docref[@index = 'true']")).each do |d|
-        ident = d.at(ns("./identifier")).children.to_xml
-        ident = @c.decode(@isodoc.docid_prefix(nil, ident))
+        ident = docref_ident(d)
         builder.li do |li|
           li.a href: index_link(d, ident) do |a|
             a << ident.split(/([<>&])/).map do |x|
@@ -168,6 +172,11 @@ module Metanorma
           end
         end
       end
+    end
+
+    def docref_ident(docref)
+      ident = docref.at(ns("./identifier")).children.to_xml
+      @c.decode(@isodoc.docid_prefix(nil, ident))
     end
 
     def index_link(docref, ident)

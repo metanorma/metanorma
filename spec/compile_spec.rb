@@ -20,7 +20,6 @@ RSpec.describe Metanorma::Compile do
     fail "Unexpected exit encountered"
   end
 
-=begin
   it "passes asciidoc options onto isodoc" do
     mock_iso_processor_output(
       File.expand_path("spec/assets/test2.xml"),
@@ -584,7 +583,7 @@ RSpec.describe Metanorma::Compile do
     expect(c.errors).to include("Anything")
     expect(c.errors).not_to include("Something") # never runs HTML
   end
-=end
+
   it "processes section split HTML" do
     FileUtils.rm_rf "test_collection"
     FileUtils.rm_rf "test_files"
