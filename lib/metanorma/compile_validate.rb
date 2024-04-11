@@ -21,19 +21,25 @@ module Metanorma
       end
     end
 
-    private
-
     def load_flavor(stdtype)
-      flavor = "metanorma-#{stdtype}"
-      unless @registry.supported_backends.include? stdtype
+      stdtype = stdtype.to_sym
+      flavor = stdtype2flavor(stdtype)
+      @registry.supported_backends.include? stdtype or
         Util.log("[metanorma] Info: Loading `#{flavor}` gem "\
                  "for standard type `#{stdtype}`.", :info)
-      end
       require_flavor(flavor)
-      unless @registry.supported_backends.include? stdtype
+      @registry.supported_backends.include? stdtype or
         Util.log("[metanorma] Error: The `#{flavor}` gem does not "\
                  "support the standard type #{stdtype}. Exiting.", :fatal)
-      end
+    end
+
+    private
+
+    STDTYPE2FLAVOR = { plateau: "jis" }.freeze
+
+    def stdtype2flavor(stdtype)
+      flavor = STDTYPE2FLAVOR[stdtype] || stdtype
+      "metanorma-#{flavor}"
     end
 
     def require_flavor(flavor)
