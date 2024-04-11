@@ -32,10 +32,9 @@ module Metanorma
       @bibdata = args[:bibdata]
       @manifest = args[:manifest]
       @manifest.collection = self
-      c = @directives.detect { |x| x.is_a?(Hash) && x["coverpage"] }
-      c and @coverpage = c["coverpage"]
-      c = @directives.detect { |x| x.is_a?(Hash) && x["coverpage-style"] }
-      c and @coverpage_style = c["coverpage-style"]
+      @coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
+      @coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
+                                               @coverpage_style)
       @documents = args[:documents] || {}
       @bibdatas = args[:documents] || {}
       if @documents.any? && !@directives.include?("documents-inline")

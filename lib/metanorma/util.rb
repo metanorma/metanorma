@@ -74,6 +74,12 @@ module Metanorma
       end
     end
 
+    def self.hash_key_detect(directives, key, variable)
+      c = directives.detect { |x| x.is_a?(Hash) && x.has_key?(key) } or
+        return variable
+      c[key]
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

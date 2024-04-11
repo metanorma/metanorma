@@ -62,17 +62,15 @@ module Metanorma
       pref_file, docs = concat_extract_files(filename)
       body = docconv_convert1(docs)
       collection_conv = overall_docconv_converter(body)
-      body = collection_coverpages(collection_conv, body)
+      collection_coverpages(collection_conv, body)
       collection_conv.convert(filename, pref_file.to_xml, false)
     end
 
     def overall_docconv_cover(collection_conv)
-      collection_conv.wordcoverpage = nil
-      collection_conv.wordintropage = nil
-      c = @directives.detect { |x| x.is_a?(Hash) && x["collection-word-coverpage"] }
-      c and collection_conv.wordcoverpage = c["collection-word-coverpage"]
-      c = @directives.detect { |x| x.is_a?(Hash) && x["collection-word-intropage"] }
-      c and collection_conv.wordintropage = c["collection-word-intropage"]
+      collection_conv.wordcoverpage =
+        Util::hash_key_detect(@directives, "collection-word-coverpage", nil)
+      collection_conv.wordintropage =
+        Util::hash_key_detect(@directives, "collection-word-intropage", nil)
     end
 
     def overall_docconv_converter(body)
@@ -92,10 +90,12 @@ module Metanorma
 
     class DocOptionsNode
       def initialize(directives)
-        c = directives.detect { |x| x.is_a?(Hash) && x["document-word-coverpage"] }
-        c and @wordcoverpage = c["document-word-coverpage"]
-        c = directives.detect { |x| x.is_a?(Hash) && x["document-word-intropage"] }
-        c and @wordintropage = c["document-word-intropage"]
+        @wordcoverpage =
+          Util::hash_key_detect(directives, "document-word-coverpage",
+                                @wordcoverpage)
+        @wordintropage =
+          Util::hash_key_detect(directives, "document-word-intropage",
+                                @wordintropage)
       end
 
       def attr(key)
