@@ -67,7 +67,7 @@ module Metanorma
     def documents(dir = "")
       docs = @docref.each_with_object({}) do |dr, m|
         dr["fileref"] or next m
-        m[dr["identifier"]] = Document.parse_file(
+        m[Util::key dr["identifier"]] = Document.parse_file(
           Util::rel_path_resolve(dir, dr["fileref"]),
           dr["attachment"], dr["identifier"], dr["index"]
         )
@@ -109,7 +109,7 @@ module Metanorma
         drf = builder.docref do |b|
           b.identifier { |i| i << dr["identifier"] }
           !dr["attachment"] && !dr["sectionsplit"] &&
-            d = @collection.bibdatas[dr["identifier"]] and
+            d = @collection.bibdatas[Util::key dr["identifier"]] and
             b.parent.add_child(d.bibitem.to_xml(bibdata: true))
         end
         docref_to_xml_attrs(drf, dr)

@@ -87,6 +87,11 @@ module Metanorma
       p.absolute? ? path : File.join(dir, path)
     end
 
+    def self.key(ident)
+      @c ||= HTMLEntities.new
+      @c.decode(ident).gsub(/(\p{Zs})+/, " ")
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

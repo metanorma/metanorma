@@ -67,7 +67,7 @@ module Metanorma
       out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
       out1 = @disambig.source2dest_filename(out)
       ret = if ref["fileref"]
-              { type: "fileref", ref: @documents[identifier].file,
+              { type: "fileref", ref: @documents[Util::key identifier].file,
                 rel_path: ref["fileref"],
                 out_path: out1 } # @disambig.source2dest_filename(out) }
             else { type: "id", ref: ref["id"] }

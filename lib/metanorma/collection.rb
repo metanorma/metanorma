@@ -44,6 +44,8 @@ module Metanorma
       end
       @documents.merge! @manifest.documents(@dirname)
       @bibdatas.merge! @manifest.documents(@dirname)
+      @documents.transform_keys { |k| Util::key(k) }
+      @bibdatas.transform_keys { |k| Util::key(k) }
       @prefatory = args[:prefatory]
       @final = args[:final]
       @log = Metanorma::Utils::Log.new

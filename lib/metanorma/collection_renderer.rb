@@ -111,10 +111,9 @@ module Metanorma
     def concatenate1(out, ext)
       out.directives << "documents-inline"
       out.bibdatas.each_key do |ident|
-        id = @c.decode(@isodoc.docid_prefix(nil, ident.dup))
-          .gsub(/\p{Zs}+/, " ")
+        id = @isodoc.docid_prefix(nil, ident.dup)
         @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
-        out.documents[id] =
+        out.documents[Util::key id] =
           Metanorma::Document.raw_file(@files.get(id, :outputs)[ext])
       end
       out
