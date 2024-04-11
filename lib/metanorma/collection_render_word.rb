@@ -4,12 +4,12 @@ module Metanorma
       @tempfile_cache ||= []
       doctype = @doctype.to_sym
       x = Asciidoctor.load nil, backend: doctype
-      x.converter.doc_converter(DocOptionsNode.new(@directives))
+      x.converter.doc_converter(DocOptionsNode.new(@directives, @dirname))
     end
 
     def concat_extract_files(filename)
       xml = Nokogiri::XML(File.read(filename, encoding: "UTF-8"), &:huge)
-      docs = xml.xpath("//xmlns:doc-container").each_with_object([]) do |x, m|
+      docs = xml.xpath(ns("//doc-container")).each_with_object([]) do |x, m|
         n = Nokogiri::XML::Document.new
         n.add_child(x.elements.first.remove)
         m << n
@@ -18,20 +18,39 @@ module Metanorma
     end
 
     def wrapping_doc(doc, xml)
-      b = doc.at("//xmlns:bibdata")
-      b.replace(xml.at("//xmlns:bibdata").to_xml)
-      doc.xpath("//xmlns:annex | //xmlns:preface | //xmlns:bibliography").each(&:remove)
-      s = doc.at("//xmlns:sections")
-      s.replace("<sections><clause id='_collection_placeholder'><p>PLACEHOLDER</p></clause></sections>")
-      p = xml.at("//xmlns:prefatory-content") and s.previous = "<preface>#{p.children.to_xml}</preface>"
-      p = xml.at("//xmlns:final-content") and s.previous = "<annex>#{p.children.to_xml}</annex>"
-      doc.xpath("//xmlns:preface/* | //xmlns:sections/* | //xmlns:annex").each_with_index do |x, i|
+      doc.at(ns("//bibdata")).replace(xml.at(ns("//bibdata")).to_xml)
+      sections = wrapping_doc_body(doc)
+      wrapping_doc_intro_outro(xml, sections)
+      set_displayorder_wrapping_doc(doc)
+    end
+
+    def wrapping_doc_intro_outro(xml, sections)
+      p = xml.at(ns("//prefatory-content")) and
+        sections.previous = "<preface>#{p.children.to_xml}</preface>"
+      p = xml.at(ns("//final-content")) and
+        sections.next = "<annex>#{p.children.to_xml}</annex>"
+    end
+
+    def wrapping_doc_body(doc)
+      doc.xpath(ns("//annex | //preface | //bibliography")).each(&:remove)
+      s = doc.at(ns("//sections"))
+      repl = <<~BODY
+        <sections><clause id='_collection_placeholder'><p>PLACEHOLDER</p></clause></sections>
+      BODY
+      s.replace(repl)
+      doc.at(ns("//sections"))
+    end
+
+    def set_displayorder_wrapping_doc(doc)
+      doc.xpath(ns("//preface/* | //sections/* | //annex"))
+        .each_with_index do |x, i|
         x["displayorder"] = i + 1
       end
       doc
     end
 
-    SECTION_BREAK = '<p class="MsoNormal"><br clear="all" class="section"/></p>'.freeze
+    SECTION_BREAK = '<p class="MsoNormal"><br clear="all" class="section"/></p>'
+      .freeze
     DIV1 = '<div class="WordSection1">&#xa0;</div>'.freeze
     DIV2 = '<div class="WordSection2">&#xa0;</div>'.freeze
 
@@ -67,10 +86,12 @@ module Metanorma
     end
 
     def overall_docconv_cover(collection_conv)
+      p = Util::hash_key_detect(@directives, "collection-word-coverpage", nil)
       collection_conv.wordcoverpage =
-        Util::hash_key_detect(@directives, "collection-word-coverpage", nil)
+        Util::rel_path_resolve(@dirname, p)
+      p = Util::hash_key_detect(@directives, "collection-word-intropage", nil)
       collection_conv.wordintropage =
-        Util::hash_key_detect(@directives, "collection-word-intropage", nil)
+        Util::rel_path_resolve(@dirname, p)
     end
 
     def overall_docconv_converter(body)
@@ -89,7 +110,8 @@ module Metanorma
     end
 
     class DocOptionsNode
-      def initialize(directives)
+      def initialize(directives, dir)
+        @dir = dir
         @wordcoverpage =
           Util::hash_key_detect(directives, "document-word-coverpage",
                                 @wordcoverpage)
@@ -100,8 +122,8 @@ module Metanorma
 
       def attr(key)
         case key
-        when "wordcoverpage" then @wordcoverpage
-        when "wordintropage" then @wordintropage
+        when "wordcoverpage" then Util::rel_path_resolve(@dir, @wordcoverpage)
+        when "wordintropage" then Util::rel_path_resolve(@dir, @wordintropage)
         end
       end
     end

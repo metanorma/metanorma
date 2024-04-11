@@ -46,6 +46,7 @@ module Metanorma
       @documents = collection.documents
       @bibdata = collection.documents
       @directives = collection.directives
+      @dirname = collection.dirname
       @disambig = Util::DisambigFiles.new
       @compile = Compile.new
       @c = HTMLEntities.new

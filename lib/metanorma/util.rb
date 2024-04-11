@@ -80,6 +80,13 @@ module Metanorma
       c[key]
     end
 
+    def self.rel_path_resolve(dir, path)
+      path.nil? and return path
+      path.empty? and return path
+      p = Pathname.new(path)
+      p.absolute? ? path : File.join(dir, path)
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

@@ -543,7 +543,64 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
+  context "Word collection" do
+    it "builds Word collection, no coverpages" do
+      file = "#{INPATH}/wordcollection.yml"
+      of = OUTPATH
+      col = Metanorma::Collection.parse file
+      col.render(
+        format: %i[presentation doc],
+        output_folder: of,
+        compile: {
+          no_install_fonts: true,
+        },
+      )
+      output = File.read("#{OUTPATH}/collection.doc")
+      expected = File.read("#{INPATH}/collection.doc")
+      # the two images made it into the document
+      expect(output).to include "iVBORw0KGgoAAAANSUhEUgAAAaQAAAJnCAYAAADY2CeyAAAAAXNSR0IArs4c6QAAAARnQU1BAACx" 
+      expect(output).to include "CCQAQAoEEgAgBQIJAJACgQQASIFAAgCkQCABAFIgkAAAKRBIAIAUCCQAQAoEEgAgBQIJAJACgQQA"
+      expect(output).to include "mIAkDAAAYAKSMAAAgAlIwgAAACYgCQMAAJiAJAwAAGACkjAAAIAJSMIAAAAmIAkDAACYgCQMAABg"
+      expect(output).to include "Content-Type: image/png"
+      output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
+        .sub!(%r{<style>.+</style>}m, "<style/>")
+      expect(cleanup_guid(cleanup_id(output)))
+        .to be_equivalent_to cleanup_guid(expected)
+      FileUtils.rm_rf of
+    end
+
+    it "builds Word collection, coverpages" do
+      file = "#{INPATH}/wordcollection_cover.yml"
+      of = OUTPATH
+      col = Metanorma::Collection.parse file
+      col.render(
+        format: %i[presentation doc],
+        output_folder: of,
+        compile: {
+          no_install_fonts: true,
+        },
+      )
+      output = File.read("#{OUTPATH}/collection.doc")
+      expected = File.read("#{INPATH}/collection1.doc")
+      output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
+        .sub!(%r{<style>.+</style>}m, "<style/>")
+      expect(cleanup_guid(cleanup_id(output)))
+        .to be_equivalent_to cleanup_guid(expected)
+      FileUtils.rm_rf of
+    end
+  end
+
   private
+
+  GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+
+  def cleanup_guid(content)
+    content
+      .gsub(%r{cid:#{GUID}}o, "cid:_")
+      .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
+      .gsub(%r{ name="_#{GUID}"}o, ' name="_"')
+      .gsub(%r{_Toc[0-9]{9}}o, "_Toc")
+  end
 
   def read_and_cleanup(file)
     content = File.read(file, encoding: "UTF-8").gsub(
@@ -552,8 +609,6 @@ RSpec.describe Metanorma::Collection do
     cleanup_id content
   end
 
-  # @param content [String]
-  # @return [String]
   def cleanup_id(content)
     content.gsub(/(?<=<p id=")[^"]+/, "")
       .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
