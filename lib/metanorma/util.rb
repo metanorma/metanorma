@@ -74,8 +74,23 @@ module Metanorma
       end
     end
 
+    def self.hash_key_detect(directives, key, variable)
+      c = directives.detect { |x| x.is_a?(Hash) && x.has_key?(key) } or
+        return variable
+      c[key]
+    end
 
+    def self.rel_path_resolve(dir, path)
+      path.nil? and return path
+      path.empty? and return path
+      p = Pathname.new(path)
+      p.absolute? ? path : File.join(dir, path)
+    end
 
+    def self.key(ident)
+      @c ||= HTMLEntities.new
+      @c.decode(ident).gsub(/(\p{Zs})+/, " ")
+    end
 
     class DisambigFiles
       def initialize

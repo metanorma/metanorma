@@ -56,7 +56,7 @@ module Metanorma
     # process each file in the collection
     # files are held in memory, and altered as postprocessing
     def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
+      warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
       internal_refs = locate_internal_refs
       @files.keys.each_with_index do |ident, i|
         i.positive? && Array(@directives).include?("bare-after-first") and
@@ -121,6 +121,7 @@ module Metanorma
 
     # resolve file location for the target of each internal reference
     def locate_internal_refs
+      warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
       refs = populate_internal_refs(gather_internal_refs)
       refs.each do |schema, ids|
         ids.each do |id, key|

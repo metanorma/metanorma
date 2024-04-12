@@ -148,10 +148,10 @@ module Metanorma
         "final-content": isodoc_builder(@xml.at(ns("//final-content"))),
         doctitle: m.at(ns("../bibdata/title"))&.text,
         docnumber: m.at(ns("../bibdata/docidentifier"))&.text }.each do |k, v|
-        v and @isodoc.meta.set(
-          k, v
-        )
-      end
+          v and @isodoc.meta.set(
+            k, v
+          )
+        end
     end
 
     def isodoc_builder(node)

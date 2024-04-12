@@ -13,10 +13,11 @@ module Metanorma
 
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
-    attr_accessor :directives, :documents, :bibdatas, :coverpage
+    attr_accessor :directives, :documents, :bibdatas, :coverpage, :dirname
     attr_accessor :disambig, :manifest
 
     # @param file [String] path to source file
+    # @param dirname [String] directory of source file
     # @param directives [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
     # @param bibdata [RelatonBib::BibliographicItem]
@@ -28,21 +29,23 @@ module Metanorma
     # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     def initialize(**args)
       @file = args[:file]
+      @dirname = File.dirname(@file)
       @directives = args[:directives] || []
       @bibdata = args[:bibdata]
       @manifest = args[:manifest]
       @manifest.collection = self
-      c = @directives.detect { |x| x.is_a?(Hash) && x["coverpage"] }
-      c and @coverpage = c["coverpage"]
-      c = @directives.detect { |x| x.is_a?(Hash) && x["coverpage-style"] }
-      c and @coverpage_style = c["coverpage-style"]
+      @coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
+      @coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
+                                               @coverpage_style)
       @documents = args[:documents] || {}
       @bibdatas = args[:documents] || {}
       if @documents.any? && !@directives.include?("documents-inline")
         @directives << "documents-inline"
       end
-      @documents.merge! @manifest.documents(File.dirname(@file))
-      @bibdatas.merge! @manifest.documents(File.dirname(@file))
+      @documents.merge! @manifest.documents(@dirname)
+      @bibdatas.merge! @manifest.documents(@dirname)
+      @documents.transform_keys { |k| Util::key(k) }
+      @bibdatas.transform_keys { |k| Util::key(k) }
       @prefatory = args[:prefatory]
       @final = args[:final]
       @compile = Metanorma::Compile.new
@@ -52,7 +55,7 @@ module Metanorma
 
     # rubocop:enable Metrics/AbcSize,Metrics/MethodLength
     def clean_exit
-      @log.write(File.join(File.dirname(@file),
+      @log.write(File.join(@dirname,
                            "#{File.basename(@file, '.*')}.err.html"))
     end
 
