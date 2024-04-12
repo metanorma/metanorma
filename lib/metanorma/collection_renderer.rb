@@ -34,7 +34,8 @@ module Metanorma
       @script = @xml.at("//xmlns:bibdata/xmlns:script")&.text || "Latn"
       @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
       @doctype = doctype
-      require "metanorma-#{@doctype}"
+      @compile = Compile.new
+      @compile.load_flavor(@doctype)
 
       @isodoc = isodoc_create # output processor for flavour
       @outdir = dir_name_cleanse(options[:output_folder])
@@ -48,7 +49,6 @@ module Metanorma
       @directives = collection.directives
       @dirname = collection.dirname
       @disambig = Util::DisambigFiles.new
-      @compile = Compile.new
       @c = HTMLEntities.new
       @files_to_delete = []
       @nested = options[:nested] # if false, this is the root instance of Renderer
