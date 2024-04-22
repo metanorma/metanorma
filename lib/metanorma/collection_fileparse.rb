@@ -8,6 +8,7 @@ module Metanorma
         .targetfile_id(docid, relative: true, read: false,
                               doc: !@files.get(docid, :attachment))
       dest = newbib.at("./docidentifier") || newbib.at(ns("./docidentifier"))
+      dest or dest = newbib.elements[-1]
       dest.previous = "<uri type='citation'>#{url}</uri>"
       bib.replace(newbib)
     end
@@ -178,8 +179,9 @@ module Metanorma
     def indirect_ref_key(schema, id, docxml)
       /^#{schema}_/.match?(id) and return id
       ret = "#{schema}_#{id}"
-      (k = docxml.root["type"]) && k != schema and
-        ret = "#{ret}_#{docxml.root['document_suffix']}"
+      suffix = docxml.root['document_suffix']
+      (k = docxml.root["type"]) && k != schema && suffix and 
+        ret = "#{ret}_#{suffix}"
       ret
     end
 
