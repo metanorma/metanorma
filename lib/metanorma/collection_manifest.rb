@@ -49,7 +49,7 @@ module Metanorma
             UUIDTools::UUID.random_create.to_s
           dr["manifest"] and h["manifest"] = from_yaml(dr["manifest"].first)
           %w(fileref attachment sectionsplit index presentation-xml).each do |k|
-            dr[k] and h[k] = dr[k]
+            dr.has_key?(k) and h[k] = dr[k]
           end
           h
         end
