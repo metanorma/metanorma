@@ -33,21 +33,21 @@ manifest:
     - fileref: rice-en.final.xml
       identifier: ISO 17301-1:2016
     - manifest:
-      level: amendments
-      title: Amendments
-      docref:
-        - fileref: rice-amd.final.xml
-          identifier: ISO 17301-1:2016/Amd.1:2017
-        - manifest:
-          level: attachments
-          title: Attachments
+        - level: amendments
+          title: Amendments
           docref:
-            - fileref: pics/action_schemaexpg1.svg
-              identifier: action_schemaexpg1.svg
-              attachment: true
-            - fileref: ../../assets/rice_image1.png
-              identifier: rice_image1.png
-              attachment: true
+            - fileref: rice-amd.final.xml
+              identifier: ISO 17301-1:2016/Amd.1:2017
+            - manifest:
+              - level: attachments
+                title: Attachments
+                docref:
+                  - fileref: pics/action_schemaexpg1.svg
+                    identifier: action_schemaexpg1.svg
+                    attachment: true
+                  - fileref: ../../assets/rice_image1.png
+                    identifier: rice_image1.png
+                    attachment: true
     - fileref: dummy.xml
       identifier: ISO 17302
     - fileref: rice1-en.final.xml

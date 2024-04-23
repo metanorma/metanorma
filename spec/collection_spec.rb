@@ -634,5 +634,6 @@ RSpec.describe Metanorma::Collection do
       .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
       .gsub(%r{data:image/png[^<"']+}, "data:image/png")
       .gsub(/ schema-version="[^"]+"/, "")
+      .gsub(%r{<identifier>#{GUID}</identifier>}o, "<identifier>_</identifier>")
   end
 end
