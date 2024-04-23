@@ -39,7 +39,8 @@ module Metanorma
                                                @coverpage_style)
       @documents = args[:documents] || {}
       @bibdatas = args[:documents] || {}
-      if @documents.any? && !@directives.include?("documents-inline")
+      if (@documents.any? || @manifest) &&
+          (%w(documents-inline documents-external) & @directives).empty?
         @directives << "documents-inline"
       end
       @documents.merge! @manifest.documents(@dirname)

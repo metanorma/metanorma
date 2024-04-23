@@ -26,11 +26,42 @@ RSpec.describe Metanorma::Collection do
       expect(mc).to be_instance_of Metanorma::Collection
       expect(xmlpp(cleanup_id(xml)))
         .to be_equivalent_to xmlpp(read_and_cleanup(xml_file))
+
+      newyaml = "#{INPATH}/collection_docinline1.yml"
+      File.open newyaml, "w" do |f|
+        f.write(File.read("#{INPATH}/collection_docinline.yml")
+          .sub(/- documents-inline/, ""))
+      end
+      mc = Metanorma::Collection.parse(newyaml)
+      xml = mc.to_xml
+      FileUtils.rm_rf newyaml
+      expect(xmlpp(cleanup_id(xml)))
+        .to be_equivalent_to xmlpp(read_and_cleanup(xml_file))
+    end
+
+    it "YAML collection with interleaved documents and manifests" do
+      mock_pdf
+      xml_file = "#{INPATH}/collection1nested.xml"
+      mc = Metanorma::Collection.parse "#{INPATH}/collection1nested.yml"
+      xml = mc.to_xml
+      File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
+      expect(mc).to be_instance_of Metanorma::Collection
+      xml_content = read_and_cleanup(xml_file)
+      expect(cleanup_id(xml)).to be_equivalent_to xml_content
     end
 
     it "XML collection" do
       mock_pdf
       file = "#{INPATH}/collection1.xml"
+      mc = Metanorma::Collection.parse file
+      expect(mc).to be_instance_of Metanorma::Collection
+      xml = cleanup_id File.read(file, encoding: "UTF-8")
+      expect(cleanup_id(mc.to_xml)).to be_equivalent_to xml
+    end
+
+    it "XML collection with interleaved documents and manifests" do
+      mock_pdf
+      file = "#{INPATH}/collection1nested.xml"
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
@@ -558,7 +589,7 @@ RSpec.describe Metanorma::Collection do
       output = File.read("#{OUTPATH}/collection.doc")
       expected = File.read("#{INPATH}/collection.doc")
       # the two images made it into the document
-      expect(output).to include "iVBORw0KGgoAAAANSUhEUgAAAaQAAAJnCAYAAADY2CeyAAAAAXNSR0IArs4c6QAAAARnQU1BAACx" 
+      expect(output).to include "iVBORw0KGgoAAAANSUhEUgAAAaQAAAJnCAYAAADY2CeyAAAAAXNSR0IArs4c6QAAAARnQU1BAACx"
       expect(output).to include "CCQAQAoEEgAgBQIJAJACgQQASIFAAgCkQCABAFIgkAAAKRBIAIAUCCQAQAoEEgAgBQIJAJACgQQA"
       expect(output).to include "mIAkDAAAYAKSMAAAgAlIwgAAACYgCQMAAJiAJAwAAGACkjAAAIAJSMIAAAAmIAkDAACYgCQMAABg"
       expect(output).to include "Content-Type: image/png"
@@ -614,5 +645,6 @@ RSpec.describe Metanorma::Collection do
       .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
       .gsub(%r{data:image/png[^<"']+}, "data:image/png")
       .gsub(/ schema-version="[^"]+"/, "")
+      .gsub(%r{<identifier>#{GUID}</identifier>}o, "<identifier>_</identifier>")
   end
 end

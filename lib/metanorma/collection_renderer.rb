@@ -162,6 +162,9 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def docrefs(elm, builder)
       elm.xpath(ns("./docref[@index = 'true']")).each do |d|
+        if m = d.at(ns("./manifest"))
+          builder << indexfile(m, ul: false)
+        else
         ident = docref_ident(d)
         builder.li do |li|
           li.a href: index_link(d, ident) do |a|
@@ -170,6 +173,7 @@ module Metanorma
             end.join
           end
         end
+      end
       end
     end
 
@@ -189,8 +193,8 @@ module Metanorma
     #
     # @param elm [Nokogiri::XML::Element]
     # @return [String] XML
-    def indexfile(elm)
-      Nokogiri::HTML::Builder.new do |b|
+    def indexfile(elm, ul: true)
+      ret = Nokogiri::HTML::Builder.new do |b|
         b.ul do
           b.li indexfile_title(elm)
           indexfile_docref(elm, b)
@@ -198,7 +202,10 @@ module Metanorma
             b << indexfile(d)
           end
         end
-      end.doc.root.to_html
+      end
+      ret = ret.doc.root
+      ul or ret = ret.children
+        ret.to_html
     end
 
     # object to construct navigation out of in Liquid

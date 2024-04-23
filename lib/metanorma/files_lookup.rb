@@ -33,7 +33,7 @@ module Metanorma
     def read_file(docref)
       ident = docref.at(ns("./identifier"))
       i = key(@isodoc.docid_prefix(ident["type"], ident.children.to_xml))
-      entry = file_entry(docref, ident.children.to_xml)
+      entry = file_entry(docref, ident.children.to_xml) or return
       bibdata_process(entry, i)
       bibitem_process(entry)
       @files[i] = entry
@@ -64,6 +64,7 @@ module Metanorma
     # the working directory (../../...) truncated
     # identifier is the id with only spaces, no nbsp
     def file_entry(ref, identifier)
+      ref["fileref"] or return
       out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
       out1 = @disambig.source2dest_filename(out)
       ret = if ref["fileref"]
