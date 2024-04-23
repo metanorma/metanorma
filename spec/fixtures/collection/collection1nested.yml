@@ -1,0 +1,54 @@
+# directives are YAML-specific instructions
+directives:
+  # - documents-inline
+  # to inject the XML into the collection manifest; 
+  - documents-external 
+  # keeps them outside
+  - coverpage: spec/fixtures/collection/collection_cover.html
+bibdata:
+  title:
+    type: title-main
+    language: en
+    content: ISO Collection 1
+  type: collection
+  docid:
+    type: iso
+    id: ISO 12345
+  edition:
+    content: 1
+  date:
+    - type: created
+      value: "2020"
+    - type: issued
+      value: "2020"
+  copyright:
+    owner:
+      name: International Organization for Standardization
+      abbreviation: ISO
+    from: "2020"
+manifest:
+  level: collection
+  title: ISO Collection 
+  docref:
+    - fileref: rice-en.final.xml
+      identifier: ISO 17301-1:2016
+    - manifest:
+      level: amendments
+      title: Amendments
+      docref:
+        - fileref: rice-amd.final.xml
+          identifier: ISO 17301-1:2016/Amd.1:2017
+        - manifest:
+          level: attachments
+          title: Attachments
+          docref:
+            - fileref: pics/action_schemaexpg1.svg
+              identifier: action_schemaexpg1.svg
+              attachment: true
+            - fileref: ../../assets/rice_image1.png
+              identifier: rice_image1.png
+              attachment: true
+    - fileref: dummy.xml
+      identifier: ISO 17302
+    - fileref: rice1-en.final.xml
+      identifier: ISO 1701:1974

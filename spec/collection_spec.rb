@@ -28,9 +28,29 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to xmlpp(read_and_cleanup(xml_file))
     end
 
+    it "YAML collection with interleaved documents and manifests" do
+      mock_pdf
+      xml_file = "#{INPATH}/collection1nested.xml"
+      mc = Metanorma::Collection.parse "#{INPATH}/collection1nested.yml"
+      xml = mc.to_xml
+      File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
+      expect(mc).to be_instance_of Metanorma::Collection
+      xml_content = read_and_cleanup(xml_file)
+      expect(cleanup_id(xml)).to be_equivalent_to xml_content
+    end
+
     it "XML collection" do
       mock_pdf
       file = "#{INPATH}/collection1.xml"
+      mc = Metanorma::Collection.parse file
+      expect(mc).to be_instance_of Metanorma::Collection
+      xml = cleanup_id File.read(file, encoding: "UTF-8")
+      expect(cleanup_id(mc.to_xml)).to be_equivalent_to xml
+    end
+
+    it "XML collection with interleaved documents and manifests" do
+      mock_pdf
+      file = "#{INPATH}/collection1nested.xml"
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")

@@ -58,7 +58,7 @@ module Metanorma
       # TODO
       # @param mnf [Nokogiri::XML::Element]
       # @return [Hash{String=>String}]
-      def parse_docref_xml(mnf)
+      def parse_docrefs_xml(mnf)
         mnf.xpath("xmlns:docref").map do |dr|
           h = {}
           h["identifier"] = if i = dr.at("identifier")
