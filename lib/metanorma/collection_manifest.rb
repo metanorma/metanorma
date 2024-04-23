@@ -31,7 +31,6 @@ module Metanorma
         new(mnf["level"], mnf["title"], parse_docrefs_yaml(docref), manifest)
       end
 
-      # TODO add docref/manifest
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
       def from_xml(mnf)
@@ -46,7 +45,8 @@ module Metanorma
       def parse_docrefs_yaml(docrefs)
         docrefs.map do |dr|
           h = {}
-          h["identifier"] = dr["identifier"] || UUIDTools::UUID.random_create.to_s
+          h["identifier"] = dr["identifier"] ||
+            UUIDTools::UUID.random_create.to_s
           dr["manifest"] and h["manifest"] = from_yaml(dr["manifest"].first)
           %w(fileref attachment sectionsplit index presentation-xml).each do |k|
             dr[k] and h[k] = dr[k]
@@ -55,22 +55,24 @@ module Metanorma
         end
       end
 
-      # TODO
       # @param mnf [Nokogiri::XML::Element]
       # @return [Hash{String=>String}]
       def parse_docrefs_xml(mnf)
         mnf.xpath("xmlns:docref").map do |dr|
-          h = {}
-          h["identifier"] = if i = dr.at("identifier")
-                              i.children.to_xml
-                            else UUIDTools::UUID.random_create
-                            end
+          h = { "identifier" => parse_docrefs_xml_id(dr) }
           %i(fileref attachment sectionsplit index).each do |s|
             h[s.to_s] = dr[s] if dr[s]
           end
-          m = dr[:manifest] and h["manifest"] = from_xml(m)
+          m = dr.at("manifest") and h["manifest"] = from_xml(m)
           h["presentation-xml"] = dr[:presentationxml] if dr[:presentationxml]
           h
+        end
+      end
+
+      def parse_docrefs_xml_id(docref)
+        if i = docref.at("identifier")
+          i.children.to_xml
+        else UUIDTools::UUID.random_create
         end
       end
     end
@@ -85,18 +87,21 @@ module Metanorma
     # @return [Hash<String, Metanorma::Document>]
     def documents(dir = "")
       docs = @docref.each_with_object({}) do |dr, m|
-        # dr["fileref"] or next m
         if dr["fileref"]
-          m[Util::key dr["identifier"]] = Document.parse_file(
-            Util::rel_path_resolve(dir, dr["fileref"]),
-            dr["attachment"], dr["identifier"], dr["index"]
-          )
+          m[Util::key dr["identifier"]] = documents_add(dir, dr)
         elsif dr["manifest"]
           m.merge! dr["manifest"].documents(dir)
         end
         m
       end
       @manifest.reduce(docs) { |mem, mnf| mem.merge mnf.documents(dir) }
+    end
+
+    def documents_add(dir, docref)
+      Document.parse_file(
+        Util::rel_path_resolve(dir, docref["fileref"]),
+        docref["attachment"], docref["identifier"], docref["index"]
+      )
     end
 
     # @param builder [Nokogiri::XML::Builder]
