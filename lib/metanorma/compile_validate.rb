@@ -35,7 +35,7 @@ module Metanorma
 
     private
 
-    STDTYPE2FLAVOR = { plateau: "jis" }.freeze
+    STDTYPE2FLAVOR = { }.freeze
 
     def stdtype2flavor(stdtype)
       flavor = STDTYPE2FLAVOR[stdtype] || stdtype

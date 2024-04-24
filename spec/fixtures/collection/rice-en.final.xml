@@ -133,7 +133,8 @@ at the address below or ISO’s member body in the country of the requester.
   <p>You can also download the svg image at: <eref type="inline" bibitemid="action_schemaexpg1.svg" citeas="action_schemaexpg1.svg"/>. See <xref target="_scope"/> and <strong style="background: url(#svg1); foreground: url(_001); middleground: url(#fig1);">scope</strong></p>
 </clause>
 <clause id="anotherclause" type="express"><title>This is another clause</title>
-  <p><eref bibitemid="Nowhere"/>Links nowhere</p>
+  <p><eref bibitemid="Nowhere"/>Direct links nowhere</p>
+  <p><eref bibitemid="express-schema_E2"/>Indirect links nowhere</p>
 </clause>
 <clause id="thirdclause"><title>This is another clause</title></clause>
 </sections><bibliography><references id="_normative_references" normative="true" obligation="informative"><title>Normative References</title><p id="_27effc86-b49a-4ba4-a19a-8b03fad45c58">The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</p>
