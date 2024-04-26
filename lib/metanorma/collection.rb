@@ -111,6 +111,31 @@ module Metanorma
         end
       end
 
+      # @param file [String]
+      # @param collection_model [Hash]
+      # @return [Metanorma::Collection]
+      def parse_model(file, collection_model)
+        if collection_model["bibdata"]
+          bd = Relaton::Cli::YAMLConvertor.convert_single_file(
+            collection_model["bibdata"]
+          )
+        end
+
+        mnf  = CollectionManifest.from_yaml collection_model["manifest"]
+        dirs = collection_model["directives"]
+        pref = collection_model["prefatory-content"]
+        fnl  = collection_model["final-content"]
+
+        new(
+          file: file,
+          directives: dirs,
+          bibdata: bd,
+          manifest: mnf,
+          prefatory: pref,
+          final: fnl,
+        )
+      end
+
       private
 
       def parse_xml(file)
@@ -145,15 +170,7 @@ module Metanorma
 
       def parse_yaml(file)
         yaml = YAML.load_file file
-        if yaml["bibdata"]
-          bd = Relaton::Cli::YAMLConvertor.convert_single_file yaml["bibdata"]
-        end
-        mnf = CollectionManifest.from_yaml yaml["manifest"]
-        dirs = yaml["directives"]
-        pref = yaml["prefatory-content"]
-        fnl = yaml["final-content"]
-        new(file: file, directives: dirs, bibdata: bd, manifest: mnf,
-            prefatory: pref, final: fnl)
+        parse_model(file, yaml)
       end
 
       # @param xml [Nokogiri::XML::Document]
