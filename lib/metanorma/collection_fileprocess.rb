@@ -134,7 +134,8 @@ module Metanorma
     end
 
     def locate_internal_refs1(refs, identifier, ident)
-      t = locate_internal_refs1_prep(ident)
+      file, = @files.targetfile_id(ident, read: true)
+      t = locate_internal_refs1_prep(file)
       refs.each do |schema, ids|
         ids.keys.select { |id| t[id] }.each do |id|
           t[id].at("./ancestor-or-self::*[@type = '#{schema}']") and
@@ -143,8 +144,7 @@ module Metanorma
       end
     end
 
-    def locate_internal_refs1_prep(ident)
-      file, = @files.targetfile_id(ident, read: true)
+    def locate_internal_refs1_prep(file)
       xml = Nokogiri::XML(file, &:huge)
       r = xml.root["document_suffix"]
       xml.xpath("//*[@id]").each_with_object({}) do |i, x|
@@ -152,6 +152,17 @@ module Metanorma
         x[i["id"]] = i
         r and x[i["id"].sub(/_#{r}$/, "")] = i
       end
+    end
+
+    def update_bibitem(bib, identifier)
+      docid = get_bibitem_docid(bib, identifier) or return
+      newbib = dup_bibitem(docid, bib)
+      url = @files.url(docid, relative: true,
+                              doc: !@files.get(docid, :attachment))
+      dest = newbib.at("./docidentifier") || newbib.at(ns("./docidentifier"))
+      dest or dest = newbib.elements[-1]
+      dest.previous = "<uri type='citation'>#{url}</uri>"
+      bib.replace(newbib)
     end
   end
 end

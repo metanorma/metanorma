@@ -96,7 +96,7 @@
          </ext>
        </bibdata>
              </docref>
-             <docref fileref="dummy.xml" index="true">
+             <docref fileref="dummy.xml" index="true" url="example/url">
                <identifier>ISO 17302</identifier>
                <bibdata type="standard" schema-version="v1.2.1">
          <title type="main" format="text/plain" language="en">Dummy document</title>

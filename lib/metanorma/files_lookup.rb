@@ -69,7 +69,7 @@ module Metanorma
       out1 = @disambig.source2dest_filename(out)
       ret = if ref["fileref"]
               { type: "fileref", ref: @documents[Util::key identifier].file,
-                rel_path: ref["fileref"],
+                rel_path: ref["fileref"], url: ref["url"],
                 out_path: out1 } # @disambig.source2dest_filename(out) }
             else { type: "id", ref: ref["id"] }
             end
@@ -78,7 +78,7 @@ module Metanorma
     end
 
     def file_entry_copy(ref, ret)
-      %w(attachment sectionsplit index presentation-xml
+      %w(attachment sectionsplit index presentation-xml url
          bare-after-first).each do |s|
         ret[s.gsub("-", "").to_sym] = ref[s] if ref[s]
       end
@@ -101,6 +101,21 @@ module Metanorma
         s["style"] = s["style"]
           .gsub(%r{url\(#([^)]+)\)}, "url(#\\1_#{document_suffix})")
       end
+    end
+
+    # return citation url for file
+    # @param doc [Boolean] I am a Metanorma document,
+    # so my URL should end with html or pdf or whatever
+    def url(ident, options)
+      data = get(ident)
+      data[:url] || targetfile(data, options)[1]
+    end
+
+    # are references to the file to be linked to a file in the collection,
+    # or externally? Determines whether file suffix anchors are to be used
+    def url?(ident)
+      data = get(ident) or return false
+      data[:url]
     end
 
     # return file contents + output filename for each file in the collection,
