@@ -184,9 +184,8 @@ module Metanorma
                 )
                 Metanorma::Compile.new.compile(
                   fileref,
-                  compile: {
-                    no_install_fonts: true,
-                  }
+                  agree_to_terms: true,
+                  no_install_fonts: true
                 )
                 Util.log(
                   "[metanorma] Info: Compiling #{fileref}...done!", :info
