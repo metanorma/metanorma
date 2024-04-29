@@ -115,6 +115,14 @@ module Metanorma
       # @param collection_model [Hash]
       # @return [Metanorma::Collection]
       def parse_model(file, collection_model)
+        collection_model = construct_collection_manifest(collection_model)
+
+        # run user-specific proc before parse model
+        pre_parse_model(collection_model)
+
+        # compile adoc documents
+        compile_adoc_documents(collection_model)
+
         if collection_model["bibdata"]
           bd = Relaton::Cli::YAMLConvertor.convert_single_file(
             collection_model["bibdata"]
@@ -136,7 +144,162 @@ module Metanorma
         )
       end
 
+      # @parma Block [Proc]
+      # @note allow user-specific function to run in pre-parse model stage
+      def set_pre_parse_model(&block)
+        @pre_parse_model_proc = block
+      end
+
+      # @parma Block [Proc]
+      # @note allow user-specific function to resolve indentifier
+      def set_indentifier_resolver(&block)
+        @indentifier_resolver = block
+      end
+
+      # @parma Block [Proc]
+      # @note allow user-specific function to resolve fileref
+      def set_fileref_resolver(&block)
+        @fileref_resolver = block
+      end
+
       private
+
+      # @parma collection_model [Hash{String=>String}]
+      def compile_adoc_documents(collection_model)
+        mnf = collection_model["manifest"]["manifest"]
+        return unless mnf
+
+        mnf.each do |doc|
+          if doc['level'] == 'document'
+            doc['docref'].each do |dr|
+              fileref  = dr['fileref']
+
+              Util.log(
+                "[metanorma] Error: #{fileref} not found!", :error
+              ) unless File.exist?(fileref)
+
+              if File.extname(fileref) == ".adoc"
+                Util.log(
+                  "[metanorma] Info: Compiling #{fileref}...", :info
+                )
+                Metanorma::Compile.new.compile(
+                  fileref,
+                  compile: {
+                    no_install_fonts: true,
+                  }
+                )
+                Util.log(
+                  "[metanorma] Info: Compiling #{fileref}...done!", :info
+                )
+              end
+
+              # set fileref to xml file after compilation
+              dr['fileref'] = "#{File.dirname(fileref)}/#{File.basename(
+                                fileref,
+                                File.extname(fileref)
+                              )}.xml"
+            end
+          end
+        end
+      end
+
+      # @parma collection_model [Hash{String=>String}]
+      def pre_parse_model(collection_model)
+        return unless @pre_parse_model_proc
+        @pre_parse_model_proc.call(collection_model)
+      end
+
+      # @parma identifier [String]
+      # @return [String]
+      def resolve_indentifier(identifier)
+        return identifier unless @indentifier_resolver
+        @indentifier_resolver.call(identifier)
+      end
+
+      # @parma fileref [String]
+      # @return [String]
+      def resolve_fileref(ref_folder, fileref)
+        return fileref unless @fileref_resolver
+        @fileref_resolver.call(ref_folder, fileref)
+      end
+
+      # @parma collection_model [Hash{String=>String}]
+      # @return [Hash{String=>String}]
+      def construct_collection_manifest(collection_model)
+        mnf = collection_model["manifest"]
+
+        # return if collection yaml is not the new format
+        if mnf["docref"].nil? || mnf["docref"].empty? ||
+           !mnf["docref"].first.has_key?('file')
+
+          return collection_model
+        end
+
+        mnf["docref"].each do |dr|
+          # check file existance
+          unless File.exist?(dr['file'])
+            Util.log(
+              "[metanorma] Error: #{dr['file']} not found!", :error
+            )
+          end
+
+          # set default manifest
+          mnf["manifest"] ||= [
+            {
+              "level"  => "document",
+              "title"  => "Document",
+              "docref" => []
+            },
+            {
+              "level"  => "attachments",
+              "title"  => "Attachments",
+              "docref" => []
+            }
+          ]
+
+          ref_folder = File.dirname(dr['file'])
+          identifier = resolve_indentifier(ref_folder)
+          doc_col    = YAML.load_file dr['file']
+
+          # append documents or attachments into docref[] of manifest
+          doc_col['manifest']['manifest'].each do |m|
+            m['docref'].each do |doc_dr|
+              resolved_fileref = resolve_fileref(
+                                    ref_folder,
+                                    doc_dr['fileref']
+                                  )
+
+              case m['level']
+              when 'document', 'attachments'
+                dr_arr = mnf["manifest"].select do |i|
+                  i['level'] == m['level']
+                end
+
+                doc_ref_hash = {
+                                  "fileref"      => resolved_fileref,
+                                  "identifier"   => doc_dr['identifier'] ||
+                                                    identifier,
+                                  "sectionsplit" => doc_dr['sectionsplit'] ||
+                                                    mnf['sectionsplit'],
+                                }
+
+                if doc_dr['attachment']
+                  doc_ref_hash.merge!({"attachment" => doc_dr['attachment']})
+                  doc_ref_hash.delete('sectionsplit')
+                end
+
+                dr_arr.first['docref'].append(doc_ref_hash)
+              end
+            end
+          end
+        end
+
+        # remove keys in upper level
+        mnf.delete("docref")
+        mnf.delete("sectionsplit")
+
+        return collection_model
+      end
 
       def parse_xml(file)
         xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)
