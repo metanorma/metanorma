@@ -165,6 +165,14 @@ RSpec.describe Metanorma::Collection do
         .to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
         .to be true
+      rice = File.read("#{OUTPATH}/rice-en.final.html")
+      require "debug"; binding.b
+      expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+      expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
+      # demonstrate that erefs are removed if they point to another document in the repository,
+      # but that document is not supplied
+      expect(rice).to include %{This document uses schemas E0/A0, <a href="example/url.html#A1">E1/A1</a> and <a href="example/url.html#A2">E2/A2</a>.}
+      expect(rice).to include %(This document is also unrelated to <a href="example/url.html#what">)
       FileUtils.rm_rf of
     end
 
@@ -407,7 +415,6 @@ RSpec.describe Metanorma::Collection do
       # but that document is not supplied
       expect(rice).to match %r{This document uses schemas E0/A0, <a href="dummy.html#express-schema_E1_ISO_17302">E1/A1</a> and <a href="dummy.html#express-schema_E2_ISO_17302">E2/A2</a>.}
       expect(rice).to include %(This document is also unrelated to <a href="dummy.html#what">)
-      require "debug"; binding.b
       xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
       p = xml.xpath("//xmlns:sections//xmlns:p")[4]
       p.delete("id")

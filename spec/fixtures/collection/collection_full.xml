@@ -97,7 +97,7 @@
                  </ext>
                </bibdata>
              </docref>
-             <docref fileref="dummy.xml" index="true" id="doc000000001">
+             <docref fileref="dummy.xml" index="true" id="doc000000001" url="example/url">
                <identifier>ISO 17302</identifier>
                <bibdata type="standard">
                  <title type="main" format="text/plain" language="en">Dummy document</title>
@@ -412,7 +412,7 @@
                  <p id="">This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016" citeas="ISO 17301-1:2016/Amd.1:2017"/>.</p>
                  <p id="">This document is unrelated <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"/>, see e.g. <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality><locality type="anchor"><referenceFrom>scope_ISO_1701_1974</referenceFrom></locality></localityStack></eref>.</p>
                  <p id="">This document is also unrelated to <eref type="inline" bibitemid="Dummy_ISO_17301-1_2016" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
-                 <p id="">This document uses schemas E0/A0, <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A1_ISO_17302</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A2_ISO_17302</referenceFrom></locality>E2/A2</eref>.</p>
+                 <p id="">This document uses schemas E0/A0, <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A1</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A2</referenceFrom></locality>E2/A2</eref>.</p>
                  <figure id="fig1_ISO_17301-1_2016">
                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
                      <style type="text/css">
@@ -740,7 +740,7 @@
                    <title language="en" format="text/plain" type="title-main">Dummy document</title>
                    <title language="fr" format="text/plain" type="main">Dummy document</title>
                    <title language="fr" format="text/plain" type="title-main">Dummy document</title>
-                   <uri type="citation">dummy.html</uri>
+                   <uri type="citation">example/url</uri>
                    <docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
                    <docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
                    <docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
