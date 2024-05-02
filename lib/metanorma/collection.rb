@@ -165,6 +165,7 @@ module Metanorma
       private
 
       # @parma collection_model [Hash{String=>String}]
+      # @raise [Exception]
       def compile_adoc_documents(collection_model)
         mnf = collection_model["manifest"]["manifest"]
         return unless mnf
@@ -173,24 +174,26 @@ module Metanorma
           if doc['level'] == 'document'
             doc['docref'].each do |dr|
               fileref  = dr['fileref']
+              next unless File.extname(fileref) == ".adoc"
+
+              unless File.exist?(fileref)
+                Util.log(
+                  "[metanorma] Error: #{fileref} not found!", :error
+                ) 
+                raise Exception.new "#{fileref} not found!"
+              end
 
               Util.log(
-                "[metanorma] Error: #{fileref} not found!", :error
-              ) unless File.exist?(fileref)
-
-              if File.extname(fileref) == ".adoc"
-                Util.log(
-                  "[metanorma] Info: Compiling #{fileref}...", :info
-                )
-                Metanorma::Compile.new.compile(
-                  fileref,
-                  agree_to_terms: true,
-                  no_install_fonts: true
-                )
-                Util.log(
-                  "[metanorma] Info: Compiling #{fileref}...done!", :info
-                )
-              end
+                "[metanorma] Info: Compiling #{fileref}...", :info
+              )
+              Metanorma::Compile.new.compile(
+                fileref,
+                agree_to_terms: true,
+                no_install_fonts: true
+              )
+              Util.log(
+                "[metanorma] Info: Compiling #{fileref}...done!", :info
+              )
 
               # set fileref to xml file after compilation
               dr['fileref'] = "#{File.dirname(fileref)}/#{File.basename(
