@@ -179,17 +179,58 @@ RSpec.describe Metanorma::Collection do
               else
                 expect(
                   dr['fileref']
-                ).to match(/^spec\/fixtures\/collection\/.*/)
+                ).to match(/^document-[1,2].*/)
               end
             end
           end
         end
       end
 
-      describe "when parsing model" do
+      describe "when parsing and rendering model" do
         let(:parse_model) {
           Metanorma::Collection.parse_model(yaml_file, collection_model)
         }
+        let(:collection_opts) {
+          {
+            format: [:html],
+            output_folder: OUTPATH,
+            compile: {
+              no_install_fonts: true
+            },
+            coverpage: "#{INPATH}/cover1.html"
+          }
+        }
+        let(:compile_adoc) {
+          Metanorma::Collection.send(
+            :compile_adoc_documents,
+            collection_model
+          )
+        }
+
+        before do
+          my_identifier_proc = Proc.new do |identifier|
+            identifier = case identifier
+                         when /^spec\/fixtures\/collection\//
+                           identifier.gsub('spec/fixtures/collection/', '')
+                         else
+                           identifier
+                         end
+            next identifier
+          end
+
+          my_fileref_proc = Proc.new do |ref_folder, fileref|
+            if File.extname(fileref) == '.adoc'
+              fileref = fileref.gsub(
+                /^document/,
+                "#{ref_folder}/document"
+              )
+            end
+            next fileref
+          end
+
+          Metanorma::Collection.set_indentifier_resolver(&my_identifier_proc)
+          Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
+        end
 
         it "should allow user to define a proc to run" do
           my_proc = Proc.new do |collection_model|
@@ -198,6 +239,12 @@ RSpec.describe Metanorma::Collection do
           Metanorma::Collection.set_pre_parse_model(&my_proc)
           printed = capture_stdout { parse_model }
           expect(printed).to include("Test Proc!")
+        end
+
+        it "should raise error if adoc files not found" do
+          my_fileref_proc = nil
+          Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
+          expect{ parse_model }.to raise_error
         end
 
         it "should compile adoc files and return Metanorma::Collection" do
@@ -211,6 +258,24 @@ RSpec.describe Metanorma::Collection do
           expect(parse_model).to be_instance_of Metanorma::Collection
           xml_paths.each do |x|
             expect(File.exist?(x)).to be_truthy
+          end
+        end
+
+        it "should render output" do
+          parse_model.render(collection_opts)
+
+          expected_output = {
+            'index.html'            => 'Cover bibdata - Test Title 12345',
+            'document-1_index.html' => 'ISO 12345-1:2024',
+            'document-2_index.html' => 'ISO 12345-2:2024',
+          }
+          generated_files = Dir["#{OUTPATH}/*"]
+
+          expected_output.each do |k, v|
+            expect(generated_files).to include("#{OUTPATH}/#{k}")
+            expect(
+              File.read("#{OUTPATH}/#{k}", encoding: "utf-8")
+            ).to include(v)
           end
         end
       end
