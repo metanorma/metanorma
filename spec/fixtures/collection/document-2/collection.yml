@@ -21,7 +21,7 @@ manifest:
       title: Document
       sectionsplit: true
       docref:
-        - fileref: spec/fixtures/collection/document-1/document-1.adoc
+        - fileref: document-2.adoc
     - level: attachments
       title: Attachments
       docref:
