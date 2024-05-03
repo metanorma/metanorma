@@ -7,6 +7,9 @@ require "metanorma-utils"
 require_relative "util"
 
 module Metanorma
+  class FileNotFoundException < StandardError; end
+  class AdocFileNotFoundException < StandardError; end
+
   # Metanorma collection of documents
   class Collection
     attr_reader :file
@@ -165,7 +168,7 @@ module Metanorma
       private
 
       # @parma collection_model [Hash{String=>String}]
-      # @raise [Exception]
+      # @raise [AdocFileNotFoundException]
       def compile_adoc_documents(collection_model)
         mnf = collection_model["manifest"]["manifest"]
         return unless mnf
@@ -176,10 +179,11 @@ module Metanorma
             next unless File.extname(fileref) == ".adoc"
 
             unless File.exist?(fileref)
+              error_message = "#{fileref} not found!"
               Util.log(
-                "[metanorma] Error: #{fileref} not found!", :error
+                "[metanorma] Error: #{error_message}", :error
               ) 
-              raise Exception.new "#{fileref} not found!"
+              raise AdocFileNotFoundException.new "#{error_message}"
             end
 
             Util.log(
@@ -225,6 +229,7 @@ module Metanorma
 
       # @parma collection_model [Hash{String=>String}]
       # @return [Hash{String=>String}]
+      # @raise [FileNotFoundException]
       def construct_collection_manifest(collection_model)
         mnf = collection_model["manifest"]
 
@@ -238,9 +243,11 @@ module Metanorma
         mnf["docref"].each do |dr|
           # check file existance
           unless File.exist?(dr['file'])
+            error_message = "#{dr['file']} not found!"
             Util.log(
-              "[metanorma] Error: #{dr['file']} not found!", :error
-            )
+              "[metanorma] Error: #{error_message}", :error
+            ) 
+            raise FileNotFoundException.new "#{error_message}"
           end
 
           # set default manifest
@@ -265,9 +272,9 @@ module Metanorma
           doc_col['manifest']['manifest'].each do |m|
             m['docref'].each do |doc_dr|
               resolved_fileref = resolve_fileref(
-                                    ref_folder,
-                                    doc_dr['fileref']
-                                  )
+                                   ref_folder,
+                                   doc_dr['fileref']
+                                 )
 
               case m['level']
               when 'document', 'attachments'
