@@ -1,6 +1,6 @@
 require "yaml"
 require_relative "util"
-require_relative "sectionsplit_links"
+require_relative "collection_xref_process"
 
 module Metanorma
   class Sectionsplit
@@ -68,7 +68,7 @@ module Metanorma
     # def sectionsplit(filename, basename, dir, compile_options, fileslookup = nil, ident = nil)
     def sectionsplit
       xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
-      @key = xref_preprocess(xml, @fileslookup, @ident)
+      @key = Metanorma::XrefProcess::xref_preprocess(xml, @isodoc)
       SPLITSECTIONS.each_with_object([]) do |n, ret|
         conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
           ret << sectionfile(xml, emptydoc(xml), "#{@base}.#{ret.size}", s,
@@ -151,7 +151,7 @@ module Metanorma
     def create_sectionfile(xml, out, file, chunks, parentnode)
       ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
       sectionfile_insert(ins, chunks, parentnode)
-      xref_process(out, xml, @key)
+      Metanorma::XrefProcess::xref_process(out, xml, @key, @ident, @isodoc)
       outname = "#{file}.xml"
       File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
         f.write(out)

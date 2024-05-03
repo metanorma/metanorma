@@ -15,16 +15,23 @@ module Metanorma
     #   anchor to filename
     # @return [String] XML content
     def update_xrefs(file, docid, internal_refs)
+      xml, sso = update_xrefs_prep(file, docid)
+      @nested || sso or Metanorma::XrefProcess::xref_process(xml, xml, nil, docid, @isodoc)
+      @nested or update_indirect_refs_to_docs(xml, docid, internal_refs)
+      @files.add_document_suffix(docid, xml)
+      @nested or update_sectionsplit_refs_to_docs(xml, internal_refs)
+      update_direct_refs_to_docs(xml, docid)
+      hide_refs(xml)
+      sso and eref2link(xml)
+      svgmap_resolve(datauri_encode(xml), @files.get(docid, :ids))
+      xml.to_xml
+    end
+
+    def update_xrefs_prep(file, docid)
       docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
       supply_repo_ids(docxml)
-      @nested or update_indirect_refs_to_docs(docxml, docid, internal_refs)
-      @files.add_document_suffix(docid, docxml)
-      @nested or update_sectionsplit_refs_to_docs(docxml, internal_refs)
-      update_direct_refs_to_docs(docxml, docid)
-      hide_refs(docxml)
-      @files.get(docid, :sectionsplit_output) and eref2link(docxml)
-      svgmap_resolve(datauri_encode(docxml), @files.get(docid, :ids))
-      docxml.to_xml
+      sso = @files.get(docid, :sectionsplit_output)
+      [docxml, sso]
     end
 
     def update_sectionsplit_refs_to_docs(docxml, internal_refs)
@@ -221,7 +228,8 @@ module Metanorma
         return update_anchor_create_loc(bib, eref, docid)
       ref = loc.at("./xmlns:referenceFrom") or return
       anchor = suffix_anchor(ref, docid)
-      @files.get(docid, :anchors).inject([]) do |m, (_, x)|
+      a = @files.get(docid, :anchors) or return
+      a.inject([]) do |m, (_, x)|
         m += x.values
       end.include?(anchor) or return
       ref.content = anchor
