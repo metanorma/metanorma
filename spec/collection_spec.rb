@@ -244,7 +244,9 @@ RSpec.describe Metanorma::Collection do
         it "should raise error if adoc files not found" do
           my_fileref_proc = nil
           Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
-          expect{ parse_model }.to raise_error
+          expect{ parse_model }.to raise_error(
+            Metanorma::AdocFileNotFoundException, 'document-1.adoc not found!'
+          )
         end
 
         it "should compile adoc files and return Metanorma::Collection" do
