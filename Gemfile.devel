@@ -1,2 +1,0 @@
-gem "metanorma-cli"
-gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "main"

@@ -668,7 +668,7 @@ RSpec.describe Metanorma::Compile do
             <eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
           </target>
         </figure>
-        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
+        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}">A<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
     expect(xmlpp(file2
      .at("//xmlns:svgmap[2]").to_xml))
@@ -677,7 +677,7 @@ RSpec.describe Metanorma::Compile do
          <image src="" mimetype="image/svg+xml" height="auto" width="auto"><svg xmlns="http://www.w3.org/2000/svg">
            <a href="P">P</a>
          </svg></img>
-        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}"><localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
+        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}">P<localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
     expect(file2.at("//xmlns:preface")).to be_nil
     expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
