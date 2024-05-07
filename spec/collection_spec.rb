@@ -1,10 +1,11 @@
 # frozen_string_literal: true
-require 'stringio'
 
-def capture_stdout(&blk)
+require "stringio"
+
+def capture_stdout
   old = $stdout
   $stdout = fake = StringIO.new
-  blk.call
+  yield
   fake.string
 ensure
   $stdout = old
@@ -61,61 +62,59 @@ RSpec.describe Metanorma::Collection do
     end
 
     context "YAML collection with new format" do
-      let(:yaml_file) { "collection_new.yml" }
-      let(:collection_model) { YAML.load_file "#{INPATH}/#{yaml_file}" }
-      let(:ccm) {
+      let(:yaml_file) { "#{INPATH}/collection_new.yml" }
+      let(:collection_model) { YAML.load_file yaml_file }
+      let(:ccm) do
         Metanorma::Collection.send(
           :construct_collection_manifest,
-          collection_model
+          collection_model,
         )
-      }
+      end
 
       describe "when loading new collection yaml file" do
         it "should conform to new format" do
-          expect(collection_model).to include('manifest')
-          expect(
-            collection_model['manifest']
-          ).to include('level' => 'collection')
-          expect(collection_model['manifest']).to include('docref')
-          expect(
-            collection_model['manifest']['docref']
-          ).to be_an_instance_of(Array)
-          collection_model['manifest']['docref'].each do |i|
-            expect(i).to include('file')
+          expect(collection_model).to include("manifest")
+          expect(collection_model["manifest"])
+            .to include("level" => "collection")
+          expect(collection_model["manifest"]).to include("docref")
+          expect(collection_model["manifest"]["docref"])
+            .to be_an_instance_of(Array)
+          collection_model["manifest"]["docref"].each do |i|
+            expect(i).to include("file")
           end
         end
       end
 
       describe "when constructing collection manifest" do
         it "should inherit sectionsplit and have correct format" do
-          expect(collection_model).to include('manifest')
-          expect(collection_model['manifest']).to include('sectionsplit')
+          expect(collection_model).to include("manifest")
+          expect(collection_model["manifest"]).to include("sectionsplit")
 
           # get sectionsplit from source collection model
-          sectionsplit = collection_model['manifest']['sectionsplit']
+          sectionsplit = collection_model["manifest"]["sectionsplit"]
 
-          expect(ccm).to include('manifest')
-          expect(ccm['manifest']).to include('manifest')
-          expect(ccm['manifest']).not_to include('docref')
-          expect(ccm['manifest']).not_to include('sectionsplit')
-          expect(ccm['manifest']['manifest']).to be_an_instance_of(Array)
-          ccm['manifest']['manifest'].each do |i|
-            expect(i).to include('level')
-            expect(i).to include('title')
-            expect(i).to include('docref')
-            expect(i['level']).to eq('document').or eq('attachments')
-            i['docref'].each do |dr|
-              expect(dr).to include('fileref')
-              expect(dr).to include('identifier')
-              expect(File.extname(dr['fileref'])).to eq('.adoc').or eq('.svg')
-              if File.extname(dr['fileref']) == '.adoc'
+          expect(ccm).to include("manifest")
+          expect(ccm["manifest"]).to include("manifest")
+          expect(ccm["manifest"]).not_to include("docref")
+          expect(ccm["manifest"]).not_to include("sectionsplit")
+          expect(ccm["manifest"]["manifest"]).to be_an_instance_of(Array)
+          ccm["manifest"]["manifest"].each do |i|
+            expect(i).to include("level")
+            expect(i).to include("title")
+            expect(i).to include("docref")
+            expect(i["level"]).to eq("document").or eq("attachments")
+            i["docref"].each do |dr|
+              expect(dr).to include("fileref")
+              expect(dr).to include("identifier")
+              expect(File.extname(dr["fileref"])).to eq(".adoc").or eq(".svg")
+              if File.extname(dr["fileref"]) == ".adoc"
                 # check sectionsplit inheritance
-                expect(dr).to include('sectionsplit')
-                expect(dr['sectionsplit']).to eq(sectionsplit)
+                expect(dr).to include("sectionsplit")
+                expect(dr["sectionsplit"]).to eq(sectionsplit)
               else
-                expect(dr).to include('attachment')
-                expect(dr).not_to include('sectionsplit')
-                expect(dr['attachment']).to eq(true)
+                expect(dr).to include("attachment")
+                expect(dr).not_to include("sectionsplit")
+                expect(dr["attachment"]).to eq(true)
               end
             end
           end
@@ -125,7 +124,7 @@ RSpec.describe Metanorma::Collection do
           my_identifier_proc = Proc.new do |identifier|
             identifier = case identifier
                          when /^spec\/fixtures\/collection\//
-                           identifier.gsub('spec/fixtures/collection/', '')
+                           identifier.gsub("spec/fixtures/collection/", "")
                          else
                            identifier
                          end
@@ -133,53 +132,51 @@ RSpec.describe Metanorma::Collection do
           end
           Metanorma::Collection.set_indentifier_resolver(&my_identifier_proc)
 
-          expect(ccm).to include('manifest')
-          expect(ccm['manifest']).to include('manifest')
-          expect(ccm['manifest']['manifest']).to be_an_instance_of(Array)
-          ccm['manifest']['manifest'].each do |i|
-            expect(i).to include('docref')
-            i['docref'].each do |dr|
-              expect(dr).to include('identifier')
-              expect(File.extname(dr['fileref'])).to eq('.adoc').or eq('.svg')
-              if File.extname(dr['fileref']) == '.adoc'
+          expect(ccm).to include("manifest")
+          expect(ccm["manifest"]).to include("manifest")
+          expect(ccm["manifest"]["manifest"]).to be_an_instance_of(Array)
+          ccm["manifest"]["manifest"].each do |i|
+            expect(i).to include("docref")
+            i["docref"].each do |dr|
+              expect(dr).to include("identifier")
+              expect(File.extname(dr["fileref"])).to eq(".adoc").or eq(".svg")
+              if File.extname(dr["fileref"]) == ".adoc"
                 # set new identifier value if not present
-                expect(dr['identifier']).to match(/^document-[1,2]/)
+                expect(dr["identifier"]).to match(/^document-[1,2]/)
               else
                 # follow original identifier value if present
-                expect(dr['identifier']).to eq('action_schemaexpg1.svg')
+                expect(dr["identifier"]).to eq("action_schemaexpg1.svg")
               end
             end
           end
         end
 
         it "should allow user to point fileref to new location conditionally" do
-          my_fileref_proc = Proc.new do |ref_folder, fileref|
-            if File.extname(fileref) == '.svg'
+          my_fileref_proc = Proc.new do |_ref_folder, fileref|
+            if File.extname(fileref) == ".svg"
               fileref = fileref.gsub(
-                'spec/fixtures/collection',
-                'new/location'
+                "spec/fixtures/collection",
+                "new/location",
               )
             end
             next fileref
           end
           Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
 
-          expect(ccm).to include('manifest')
-          expect(ccm['manifest']).to include('manifest')
-          expect(ccm['manifest']['manifest']).to be_an_instance_of(Array)
-          ccm['manifest']['manifest'].each do |i|
-            expect(i).to include('docref')
-            i['docref'].each do |dr|
-              expect(dr).to include('fileref')
-              expect(File.extname(dr['fileref'])).to eq('.adoc').or eq('.svg')
-              if File.extname(dr['fileref']) == '.svg'
-                expect(
-                  dr['fileref']
-                ).to match(/^new\/location\/.*/)
+          expect(ccm).to include("manifest")
+          expect(ccm["manifest"]).to include("manifest")
+          expect(ccm["manifest"]["manifest"]).to be_an_instance_of(Array)
+          ccm["manifest"]["manifest"].each do |i|
+            expect(i).to include("docref")
+            i["docref"].each do |dr|
+              expect(dr).to include("fileref")
+              expect(File.extname(dr["fileref"])).to eq(".adoc").or eq(".svg")
+              if File.extname(dr["fileref"]) == ".svg"
+                expect(dr["fileref"])
+                  .to match(/^new\/location\/.*/)
               else
-                expect(
-                  dr['fileref']
-                ).to match(/^document-[1,2].*/)
+                expect(dr["fileref"])
+                  .to match(/^document-[1,2].*/)
               end
             end
           end
@@ -187,31 +184,30 @@ RSpec.describe Metanorma::Collection do
       end
 
       describe "when parsing and rendering model" do
-        let(:parse_model) {
-          Metanorma::Collection.parse_model(yaml_file, collection_model)
-        }
-        let(:collection_opts) {
+        let(:parse_model) { Metanorma::Collection.parse(yaml_file) }
+        let(:collection_opts) do
           {
             format: [:html],
             output_folder: OUTPATH,
             compile: {
-              no_install_fonts: true
+              no_install_fonts: true,
             },
-            coverpage: "#{INPATH}/cover1.html"
+            coverpage: "#{INPATH}/cover1.html",
           }
-        }
-        let(:compile_adoc) {
+        end
+
+        let(:compile_adoc) do
           Metanorma::Collection.send(
             :compile_adoc_documents,
-            collection_model
+            collection_model,
           )
-        }
+        end
 
         before do
           my_identifier_proc = Proc.new do |identifier|
             identifier = case identifier
                          when /^spec\/fixtures\/collection\//
-                           identifier.gsub('spec/fixtures/collection/', '')
+                           identifier.gsub("spec/fixtures/collection/", "")
                          else
                            identifier
                          end
@@ -219,10 +215,10 @@ RSpec.describe Metanorma::Collection do
           end
 
           my_fileref_proc = Proc.new do |ref_folder, fileref|
-            if File.extname(fileref) == '.adoc'
+            if File.extname(fileref) == ".adoc"
               fileref = fileref.gsub(
                 /^document/,
-                "#{ref_folder}/document"
+                "#{ref_folder}/document",
               )
             end
             next fileref
@@ -233,19 +229,19 @@ RSpec.describe Metanorma::Collection do
         end
 
         it "should allow user to define a proc to run" do
-          my_proc = Proc.new do |collection_model|
-            puts "Test Proc!"
-          end
+          my_proc = Proc.new { puts "Test Proc!" }
           Metanorma::Collection.set_pre_parse_model(&my_proc)
-          printed = capture_stdout { parse_model }
+          printed = capture_stdout do
+            Metanorma::Collection.send(:pre_parse_model, collection_model)
+          end
           expect(printed).to include("Test Proc!")
         end
 
         it "should raise error if adoc files not found" do
-          my_fileref_proc = nil
-          Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
-          expect{ parse_model }.to raise_error(
-            Metanorma::AdocFileNotFoundException, 'document-1.adoc not found!'
+          my_nil_fileref_proc = nil
+          Metanorma::Collection.set_fileref_resolver(&my_nil_fileref_proc)
+          expect { parse_model }.to raise_error(
+            Metanorma::AdocFileNotFoundException, "document-1.adoc not found!"
           )
         end
 
@@ -267,17 +263,16 @@ RSpec.describe Metanorma::Collection do
           parse_model.render(collection_opts)
 
           expected_output = {
-            'index.html'            => 'Cover bibdata - Test Title 12345',
-            'document-1_index.html' => 'ISO 12345-1:2024',
-            'document-2_index.html' => 'ISO 12345-2:2024',
+            "index.html" => "Cover bibdata - Test Title",
+            "document-1_index.html" => "ISO 12345-1:2024",
+            "document-2_index.html" => "ISO 12345-2:2024",
           }
           generated_files = Dir["#{OUTPATH}/*"]
 
           expected_output.each do |k, v|
             expect(generated_files).to include("#{OUTPATH}/#{k}")
-            expect(
-              File.read("#{OUTPATH}/#{k}", encoding: "utf-8")
-            ).to include(v)
+            expect(File.read("#{OUTPATH}/#{k}", encoding: "utf-8"))
+              .to include(v)
           end
         end
       end

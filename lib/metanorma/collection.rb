@@ -8,6 +8,7 @@ require_relative "util"
 
 module Metanorma
   class FileNotFoundException < StandardError; end
+
   class AdocFileNotFoundException < StandardError; end
 
   # Metanorma collection of documents
@@ -118,18 +119,9 @@ module Metanorma
       # @param collection_model [Hash]
       # @return [Metanorma::Collection]
       def parse_model(file, collection_model)
-        collection_model = construct_collection_manifest(collection_model)
-
-        # run user-specific proc before parse model
-        pre_parse_model(collection_model)
-
-        # compile adoc documents
-        compile_adoc_documents(collection_model)
-
         if collection_model["bibdata"]
-          bd = Relaton::Cli::YAMLConvertor.convert_single_file(
-            collection_model["bibdata"]
-          )
+          bd = Relaton::Cli::YAMLConvertor
+            .convert_single_file(collection_model["bibdata"])
         end
 
         mnf  = CollectionManifest.from_yaml collection_model["manifest"]
@@ -137,29 +129,23 @@ module Metanorma
         pref = collection_model["prefatory-content"]
         fnl  = collection_model["final-content"]
 
-        new(
-          file: file,
-          directives: dirs,
-          bibdata: bd,
-          manifest: mnf,
-          prefatory: pref,
-          final: fnl,
-        )
+        new(file: file, directives: dirs, bibdata: bd, manifest: mnf,
+            prefatory: pref, final: fnl)
       end
 
-      # @parma Block [Proc]
+      # @param Block [Proc]
       # @note allow user-specific function to run in pre-parse model stage
       def set_pre_parse_model(&block)
         @pre_parse_model_proc = block
       end
 
-      # @parma Block [Proc]
+      # @param Block [Proc]
       # @note allow user-specific function to resolve indentifier
       def set_indentifier_resolver(&block)
         @indentifier_resolver = block
       end
 
-      # @parma Block [Proc]
+      # @param Block [Proc]
       # @note allow user-specific function to resolve fileref
       def set_fileref_resolver(&block)
         @fileref_resolver = block
@@ -167,145 +153,186 @@ module Metanorma
 
       private
 
-      # @parma collection_model [Hash{String=>String}]
-      # @raise [AdocFileNotFoundException]
+      # @param collection_model [Hash{String=>String}]
       def compile_adoc_documents(collection_model)
-        mnf = collection_model["manifest"]["manifest"]
-        return unless mnf
+        documents = select_documents(collection_model)
+        return unless documents
 
-        mnf.select { |k, v| k['level'] == 'document' }.each do |doc|
-          doc['docref'].each do |dr|
-            fileref  = dr['fileref']
-            next unless File.extname(fileref) == ".adoc"
-
-            unless File.exist?(fileref)
-              error_message = "#{fileref} not found!"
-              Util.log(
-                "[metanorma] Error: #{error_message}", :error
-              ) 
-              raise AdocFileNotFoundException.new "#{error_message}"
-            end
-
-            Util.log(
-              "[metanorma] Info: Compiling #{fileref}...", :info
-            )
-            Metanorma::Compile.new.compile(
-              fileref,
-              agree_to_terms: true,
-              no_install_fonts: true
-            )
-            Util.log(
-              "[metanorma] Info: Compiling #{fileref}...done!", :info
-            )
-
-            # set fileref to xml file after compilation
-            dr['fileref'] = "#{File.dirname(fileref)}/#{File.basename(
-                              fileref,
-                              File.extname(fileref)
-                            )}.xml"
-          end
+        documents["docref"]
+          .select { |k, _v| File.extname(k["fileref"]) == ".adoc" }
+          .each do |dr|
+          compile_adoc_file(dr["fileref"])
+          dr["fileref"] = set_adoc2xml(dr["fileref"])
         end
       end
 
-      # @parma collection_model [Hash{String=>String}]
+      # @param collection_model [Hash{String=>String}]
+      def select_documents(collection_model)
+        collection_model["manifest"]["manifest"]
+          .select { |k, _v| k["level"] == "document" }.first
+      end
+
+      # @param fileref [String]
+      def set_adoc2xml(fileref)
+        File.join(
+          File.dirname(fileref),
+          File.basename(fileref).gsub(/.adoc$/, ".xml"),
+        )
+      end
+
+      # param filepath [String]
+      # @raise [AdocFileNotFoundException]
+      def compile_adoc_file(filepath)
+        unless File.exist? filepath
+          raise AdocFileNotFoundException.new "#{filepath} not found!"
+        end
+
+        Util.log("[metanorma] Info: Compiling #{filepath}...", :info)
+
+        Metanorma::Compile.new.compile(filepath,
+                                       agree_to_terms: true,
+                                       no_install_fonts: true)
+
+        Util.log("[metanorma] Info: Compiling #{filepath}...done!", :info)
+      end
+
+      # @param collection_model [Hash{String=>String}]
       def pre_parse_model(collection_model)
         return unless @pre_parse_model_proc
+
         @pre_parse_model_proc.call(collection_model)
       end
 
-      # @parma identifier [String]
+      # @param identifier [String]
       # @return [String]
       def resolve_indentifier(identifier)
         return identifier unless @indentifier_resolver
+
         @indentifier_resolver.call(identifier)
       end
 
-      # @parma fileref [String]
+      # @param fileref [String]
       # @return [String]
       def resolve_fileref(ref_folder, fileref)
         return fileref unless @fileref_resolver
+
         @fileref_resolver.call(ref_folder, fileref)
       end
 
-      # @parma collection_model [Hash{String=>String}]
+      # @param collection_model [Hash{String=>String}]
       # @return [Hash{String=>String}]
-      # @raise [FileNotFoundException]
       def construct_collection_manifest(collection_model)
         mnf = collection_model["manifest"]
 
-        # return if collection yaml is not the new format
-        if mnf["docref"].nil? || mnf["docref"].empty? ||
-           !mnf["docref"].first.has_key?('file')
-
-          return collection_model
-        end
-
         mnf["docref"].each do |dr|
-          # check file existance
-          unless File.exist?(dr['file'])
-            error_message = "#{dr['file']} not found!"
-            Util.log(
-              "[metanorma] Error: #{error_message}", :error
-            ) 
-            raise FileNotFoundException.new "#{error_message}"
-          end
-
-          # set default manifest
-          mnf["manifest"] ||= [
-            {
-              "level"  => "document",
-              "title"  => "Document",
-              "docref" => []
-            },
-            {
-              "level"  => "attachments",
-              "title"  => "Attachments",
-              "docref" => []
-            }
-          ]
-
-          ref_folder = File.dirname(dr['file'])
-          identifier = resolve_indentifier(ref_folder)
-          doc_col    = YAML.load_file dr['file']
-
-          # append documents or attachments into docref[] of manifest
-          doc_col['manifest']['manifest'].each do |m|
-            m['docref'].each do |doc_dr|
-              resolved_fileref = resolve_fileref(
-                                   ref_folder,
-                                   doc_dr['fileref']
-                                 )
-
-              case m['level']
-              when 'document', 'attachments'
-                dr_arr = mnf["manifest"].select do |i|
-                  i['level'] == m['level']
-                end
-
-                doc_ref_hash = {
-                                  "fileref"      => resolved_fileref,
-                                  "identifier"   => doc_dr['identifier'] ||
-                                                    identifier,
-                                  "sectionsplit" => doc_dr['sectionsplit'] ||
-                                                    mnf['sectionsplit'],
-                                }
-
-                if doc_dr['attachment']
-                  doc_ref_hash.merge!({"attachment" => doc_dr['attachment']})
-                  doc_ref_hash.delete('sectionsplit')
-                end
-
-                dr_arr.first['docref'].append(doc_ref_hash)
-              end
-            end
-          end
+          check_file_existance(dr["file"])
+          set_default_manifest(mnf)
+          construct_docref(mnf, dr)
         end
 
         # remove keys in upper level
         mnf.delete("docref")
         mnf.delete("sectionsplit")
 
-        return collection_model
+        collection_model
+      end
+
+      # @param filepath
+      # @raise [FileNotFoundException]
+      def check_file_existance(filepath)
+        unless File.exist?(filepath)
+          error_message = "#{filepath} not found!"
+          Util.log(
+            "[metanorma] Error: #{error_message}", :error
+          )
+          raise FileNotFoundException.new error_message.to_s
+        end
+      end
+
+      # @param manifest [Hash{String=>String}]
+      def set_default_manifest(manifest)
+        manifest["manifest"] ||= [
+          {
+            "level" => "document",
+            "title" => "Document",
+            "docref" => [],
+          },
+          {
+            "level" => "attachments",
+            "title" => "Attachments",
+            "docref" => [],
+          },
+        ]
+      end
+
+      # @param collection_model [Hash{String=>String}]
+      # @return [Bool]
+      def new_yaml_format?(collection_model)
+        mnf = collection_model["manifest"]
+        # return if collection yaml is not the new format
+        if mnf["docref"].nil? || mnf["docref"].empty? ||
+            !mnf["docref"].first.has_key?("file")
+          return false
+        end
+
+        true
+      end
+
+      # @param mnf [Hash{String=>String}]
+      # @param docref [Hash{String=>String}]
+      def construct_docref(mnf, docref)
+        ref_folder = File.dirname(docref["file"])
+        identifier = resolve_indentifier(ref_folder)
+        doc_col    = YAML.load_file docref["file"]
+
+        docref_from_document_and_attaments(doc_col).each do |m|
+          m["docref"].each do |doc_dr|
+            resolved_fileref = resolve_fileref(ref_folder, doc_dr["fileref"])
+            append_docref(resolved_fileref, identifier, mnf, doc_dr, m["level"])
+          end
+        end
+      end
+
+      # @param doc_col [Hash{String=>String}]
+      def docref_from_document_and_attaments(doc_col)
+        doc_col["manifest"]["manifest"].select do |m|
+          m["level"] == "document" || m["level"] == "attachments"
+        end
+      end
+
+      # @param fileref [String]
+      # @param identifier [String]
+      # @param mnf [Hash{String=>String}]
+      # @param doc_dr [Hash{String=>String}]
+      # @param level [String]
+      def append_docref(fileref, identifier, mnf, doc_dr, level)
+        dr_arr = mnf["manifest"].select { |i| i["level"] == level }
+        doc_ref_hash = set_doc_ref_hash(
+          doc_dr["attachment"],
+          fileref,
+          doc_dr["identifier"] || identifier,
+          doc_dr["sectionsplit"] || mnf["sectionsplit"],
+        )
+        dr_arr.first["docref"].append(doc_ref_hash)
+      end
+
+      # @param is_attachment [String]
+      # @param fileref [String]
+      # @param identifier [String]
+      # @param sectionsplit [Bool]
+      def set_doc_ref_hash(is_attachment, fileref, identifier, sectionsplit)
+        doc_ref_hash = {
+          "fileref" => fileref,
+          "identifier" => identifier,
+          "sectionsplit" => sectionsplit,
+        }
+
+        if is_attachment
+          doc_ref_hash["attachment"] = is_attachment
+          doc_ref_hash.delete("sectionsplit")
+        end
+
+        doc_ref_hash
       end
 
       def parse_xml(file)
@@ -339,12 +366,20 @@ module Metanorma
       end
 
       def parse_yaml(file)
-        yaml = YAML.load_file file
-        parse_model(file, yaml)
+        collection_model = YAML.load_file file
+        if new_yaml_format?(collection_model)
+          collection_model = construct_collection_manifest(collection_model)
+          file = File.basename(file)
+        end
+        pre_parse_model(collection_model)
+        if collection_model["manifest"]["manifest"]
+          compile_adoc_documents(collection_model)
+        end
+        parse_model(file, collection_model)
       end
 
       # @param xml [Nokogiri::XML::Document]
-      # @parma mnf [Metanorma::CollectionManifest]
+      # @param mnf [Metanorma::CollectionManifest]
       # @return [Hash{String=>Metanorma::Document}]
       def docs_from_xml(xml, mnf)
         xml.xpath("//xmlns:doc-container//xmlns:bibdata")
