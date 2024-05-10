@@ -1,6 +1,13 @@
 module Metanorma
   class Collection
     class << self
+      DEFAULT_MANIFEST = [{ "level" => "document",
+                            "title" => "Document",
+                            "docref" => [] },
+                          { "level" => "attachments",
+                            "title" => "Attachments",
+                            "docref" => [] }].freeze
+
       # @param file [String]
       # @param collection_model [Hash]
       # @return [Metanorma::Collection]
@@ -134,12 +141,7 @@ module Metanorma
 
       # @param manifest [Hash{String=>String}]
       def set_default_manifest(manifest)
-        manifest["manifest"] ||= [{ "level" => "document",
-                                    "title" => "Document",
-                                    "docref" => [] },
-                                  { "level" => "attachments",
-                                    "title" => "Attachments",
-                                    "docref" => [] }]
+        manifest["manifest"] ||= DEFAULT_MANIFEST
       end
 
       # @param collection_model [Hash{String=>String}]
