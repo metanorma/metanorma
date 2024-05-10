@@ -117,7 +117,7 @@ module Metanorma
         mnf = collection_model["manifest"]
 
         mnf["docref"].each do |dr|
-          check_file_existance(dr["file"])
+          check_file_existence(dr["fileref"])
           set_default_manifest(mnf)
           construct_docref(mnf, dr)
         end
@@ -131,7 +131,7 @@ module Metanorma
 
       # @param filepath
       # @raise [FileNotFoundException]
-      def check_file_existance(filepath)
+      def check_file_existence(filepath)
         unless File.exist?(filepath)
           error_message = "#{filepath} not found!"
           Util.log("[metanorma] Error: #{error_message}", :error)
@@ -164,7 +164,7 @@ module Metanorma
         identifier = resolve_indentifier(ref_folder)
         doc_col    = YAML.load_file docref["file"]
 
-        docref_from_document_and_attaments(doc_col).each do |m|
+        docref_from_document_and_attachments(doc_col).each do |m|
           m["docref"].each do |doc_dr|
             doc_ref_hash = set_doc_ref_hash(doc_dr, ref_folder, identifier, mnf)
             append_docref(mnf, m["level"], doc_ref_hash)
@@ -173,7 +173,7 @@ module Metanorma
       end
 
       # @param doc_col [Hash{String=>String}]
-      def docref_from_document_and_attaments(doc_col)
+      def docref_from_document_and_attachments(doc_col)
         doc_col["manifest"]["manifest"].select do |m|
           m["level"] == "document" || m["level"] == "attachments"
         end
