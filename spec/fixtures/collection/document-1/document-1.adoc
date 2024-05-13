@@ -24,7 +24,6 @@
 :mn-output-extensions: xml,html,pdf,rxl
 :local-cache-only:
 :data-uri-image:
-:lutaml-express-index: schemas; schemas.yaml;
 
 == Introduction
 
