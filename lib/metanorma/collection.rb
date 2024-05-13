@@ -5,8 +5,13 @@ require "relaton/cli"
 require "metanorma/collection_manifest"
 require "metanorma-utils"
 require_relative "util"
+require_relative "collection_construct_model"
 
 module Metanorma
+  class FileNotFoundException < StandardError; end
+
+  class AdocFileNotFoundException < StandardError; end
+
   # Metanorma collection of documents
   class Collection
     attr_reader :file
@@ -144,20 +149,20 @@ module Metanorma
       end
 
       def parse_yaml(file)
-        yaml = YAML.load_file file
-        if yaml["bibdata"]
-          bd = Relaton::Cli::YAMLConvertor.convert_single_file yaml["bibdata"]
+        collection_model = YAML.load_file file
+        if new_yaml_format?(collection_model)
+          collection_model = construct_collection_manifest(collection_model)
+          file = File.basename(file)
         end
-        mnf = CollectionManifest.from_yaml yaml["manifest"]
-        dirs = yaml["directives"]
-        pref = yaml["prefatory-content"]
-        fnl = yaml["final-content"]
-        new(file: file, directives: dirs, bibdata: bd, manifest: mnf,
-            prefatory: pref, final: fnl)
+        pre_parse_model(collection_model)
+        if collection_model["manifest"]["manifest"]
+          compile_adoc_documents(collection_model)
+        end
+        parse_model(file, collection_model)
       end
 
       # @param xml [Nokogiri::XML::Document]
-      # @parma mnf [Metanorma::CollectionManifest]
+      # @param mnf [Metanorma::CollectionManifest]
       # @return [Hash{String=>Metanorma::Document}]
       def docs_from_xml(xml, mnf)
         xml.xpath("//xmlns:doc-container//xmlns:bibdata")

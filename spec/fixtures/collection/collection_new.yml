@@ -1,0 +1,23 @@
+---
+directives:
+- documents-inline
+bibdata:
+  title:
+  - language: en
+    content: bibdata - Test Title
+  docid:
+    type: iso
+    id: '12345'
+  edition: 12
+  copyright:
+    owner:
+      name: International Standards Organization
+      abbreviation: ISO
+    from: '2024'
+manifest:
+  level: collection
+  title: ISO Collection
+  sectionsplit: true
+  docref:
+  - file: spec/fixtures/collection/document-1/collection.yml
+  - file: spec/fixtures/collection/document-2/collection.yml
