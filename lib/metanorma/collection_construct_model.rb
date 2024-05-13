@@ -117,7 +117,7 @@ module Metanorma
         mnf = collection_model["manifest"]
 
         mnf["docref"].each do |dr|
-          check_file_existence(dr["fileref"])
+          check_file_existence(dr["file"] || dr["fileref"])
           set_default_manifest(mnf)
           construct_docref(mnf, dr)
         end
@@ -174,7 +174,8 @@ module Metanorma
 
       # @param doc_col [Hash{String=>String}]
       def docref_from_document_and_attachments(doc_col)
-        doc_col["manifest"]["manifest"].select do |m|
+        mnf = doc_col["manifest"]["manifest"] || doc_col["manifest"]["docref"]
+        mnf.select do |m|
           m["level"] == "document" || m["level"] == "attachments"
         end
       end
