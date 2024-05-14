@@ -14,6 +14,8 @@ module Metanorma
 
   # Metanorma collection of documents
   class Collection
+    extend CollectionConstructModel
+
     attr_reader :file
 
     # @return [Array<String>] documents-inline to inject the XML into

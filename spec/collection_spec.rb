@@ -120,7 +120,7 @@ RSpec.describe Metanorma::Collection do
           end
         end
 
-        it "should allow user to set indentifier" do
+        it "should allow user to set identifier" do
           my_identifier_proc = Proc.new do |identifier|
             identifier = case identifier
                          when /^spec\/fixtures\/collection\//
@@ -130,7 +130,7 @@ RSpec.describe Metanorma::Collection do
                          end
             next identifier
           end
-          Metanorma::Collection.set_indentifier_resolver(&my_identifier_proc)
+          Metanorma::Collection.set_identifier_resolver(&my_identifier_proc)
 
           expect(ccm).to include("manifest")
           expect(ccm["manifest"]).to include("manifest")
@@ -141,10 +141,8 @@ RSpec.describe Metanorma::Collection do
               expect(dr).to include("identifier")
               expect(File.extname(dr["fileref"])).to eq(".adoc").or eq(".svg")
               if File.extname(dr["fileref"]) == ".adoc"
-                # set new identifier value if not present
                 expect(dr["identifier"]).to match(/^document-[1,2]/)
               else
-                # follow original identifier value if present
                 expect(dr["identifier"]).to eq("action_schemaexpg1.svg")
               end
             end
@@ -224,7 +222,7 @@ RSpec.describe Metanorma::Collection do
             next fileref
           end
 
-          Metanorma::Collection.set_indentifier_resolver(&my_identifier_proc)
+          Metanorma::Collection.set_identifier_resolver(&my_identifier_proc)
           Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
         end
 
