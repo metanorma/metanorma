@@ -12,18 +12,15 @@ module Metanorma
     # @param title [String, nil]
     # @param docref [Array<Hash{String=>String}>]
     # @param manifest [Array<Metanorma::CollectionManifest>]
-    def initialize(level, title = nil, docref = [], manifest = [])
-      @level = level
-      @title = title
-      @docref = docref
-      @manifest = manifest
+    def initialize(config)
       @disambig = Util::DisambigFiles.new
+      @config = config
     end
 
     class << self
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
-      def from_yaml(mnf)
+      def from_yaml(mnf) # KILL
         manifest = RelatonBib.array(mnf["manifest"]).map do |m|
           from_yaml m
         end
@@ -33,7 +30,7 @@ module Metanorma
 
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
-      def from_xml(mnf)
+      def from_xml(mnf) # KILL
         level = mnf.at("level").text
         title = mnf.at("title")&.text
         manifest = mnf.xpath("xmlns:manifest").map { |m| from_xml(m) }
@@ -42,13 +39,14 @@ module Metanorma
 
       private
 
-      def parse_docrefs_yaml(docrefs)
+      def parse_docrefs_yaml(docrefs) # KILL
         docrefs.map do |dr|
           h = {}
           h["identifier"] = dr["identifier"] ||
             UUIDTools::UUID.random_create.to_s
           dr["manifest"] and h["manifest"] = from_yaml(dr["manifest"].first)
-          %w(fileref url attachment sectionsplit index presentation-xml).each do |k|
+          %w(fileref url attachment sectionsplit index
+             presentation-xml).each do |k|
             dr.has_key?(k) and h[k] = dr[k]
           end
           h
@@ -57,7 +55,7 @@ module Metanorma
 
       # @param mnf [Nokogiri::XML::Element]
       # @return [Hash{String=>String}]
-      def parse_docrefs_xml(mnf)
+      def parse_docrefs_xml(mnf) # KILL
         mnf.xpath("xmlns:docref").map do |dr|
           h = { "identifier" => parse_docrefs_xml_id(dr) }
           %i(fileref url attachment sectionsplit index).each do |s|
@@ -69,7 +67,7 @@ module Metanorma
         end
       end
 
-      def parse_docrefs_xml_id(docref)
+      def parse_docrefs_xml_id(docref) # KILL
         if i = docref.at("identifier")
           i.children.to_xml
         else UUIDTools::UUID.random_create
@@ -80,12 +78,12 @@ module Metanorma
     # @param col [Metanorma::Collection]
     def collection=(col)
       @collection = col
-      @manifest.each { |mnf| mnf.collection = col }
+      # @manifest.each { |mnf| mnf.collection = col } # KILL
     end
 
     # @param dir [String] path to collection
     # @return [Hash<String, Metanorma::Document>]
-    def documents(dir = "")
+    def documents(dir = "") # KILL
       docs = @docref.each_with_object({}) do |dr, m|
         if dr["fileref"]
           m[Util::key dr["identifier"]] = documents_add(dir, dr)
@@ -94,18 +92,39 @@ module Metanorma
         end
         m
       end
-      @manifest.reduce(docs) { |mem, mnf| mem.merge mnf.documents(dir) }
+      # no manifest/manifest any more
+      @manifest.reduce(docs) do |mem, mnf|
+        mem.merge mnf.documents(dir)
+      end
     end
 
-    def documents_add(dir, docref)
+    def documents(dir = "", mnf = @config)
+      Array(mnf.entry).each_with_object({}) do |dr, m|
+        if dr.file
+          m[Util::key dr.identifier] = documents_add(dir, dr)
+        elsif dr.entry
+          m.merge! documents(dir, dr)
+        end
+        m
+      end
+    end
+
+    def documents_add(dir, docref) # KILL
       Document.parse_file(
         Util::rel_path_resolve(dir, docref["fileref"]),
         docref["attachment"], docref["identifier"], docref["index"]
       )
     end
 
+    def documents_add(dir, docref)
+      Document.parse_file(
+        Util::rel_path_resolve(dir, docref.file),
+        docref.attachment, docref.identifier, docref.index
+      )
+    end
+
     # @param builder [Nokogiri::XML::Builder]
-    def to_xml(builder)
+    def to_xml(builder) # KILL
       builder.manifest do |b|
         b.level @level
         b.title @title if @title
@@ -114,24 +133,61 @@ module Metanorma
       end
     end
 
-    # @return [Array<Hash{String=>String}>]
-    def docrefs
-      return @docrefs if @docrefs
-
-      drfs = @docref.map { |dr| dr }
-      @manifest.reduce(drfs) { |mem, mnf| mem + mnf.docrefs }
+    def to_xml(builder)
+      clean_manifest(@config)
+      builder.parent.add_child(@config.to_xml)
     end
 
-    def docref_by_id(docid)
+    def clean_manifest_bibdata(mnf)
+      if mnf.file && !mnf.attachment && !mnf.sectionsplit && @collection &&
+          d = @collection.bibdatas[Util::key mnf.identifier]
+        mnf.bibdata = d.bibitem.dup
+      end
+    end
+
+    def clean_manifest_id(mnf)
+      if @collection.directives.detect { |d| d.key == "documents-inline" }
+        id = @collection.documents.find_index do |k, _|
+          k == mnf.identifier
+        end
+        id and mnf.id = format("doc%<index>09d", index: id)
+      end
+    end
+
+    def clean_manifest(mnf)
+      clean_manifest_bibdata(mnf)
+      mnf.file &&= @disambig.strip_root(mnf.file)
+      clean_manifest_id(mnf)
+      Array(mnf.entry).each { |e| clean_manifest(e) }
+    end
+
+    # @return [Array<Hash{String=>String}>] # KILL
+    def docrefs
+      @docrefs and return @docrefs
+      drfs = @docref.map { |dr| dr }
+      @manifest.reduce(drfs) { |mem, mnf| mem + mnf.docrefs } # no manifest/manifest
+    end
+
+    # @return [Array<Hash{String=>String}>]
+    def docrefs
+      @config.entry
+    end
+
+    def docref_by_id(docid) # KILL
       refs = docrefs
       dref = refs.detect { |k| k["identifier"] == docid }
       dref || docrefs.detect { |k| /^#{k['identifier']}/ =~ docid }
     end
 
+    def docref_by_id(docid)
+      @config.entry.detect { |k| k.identifier == docid } ||
+         @config.entry.detect { |k| /^#{k.identifier}/ =~ docid }
+    end
+
     private
 
     # @param builder [Nokogiri::XML::Builder]
-    def docref_to_xml(builder)
+    def docref_to_xml(builder) # KILL
       @disambig = Util::DisambigFiles.new
       @docref.each do |dr|
         drf = builder.docref do |b|
@@ -145,7 +201,7 @@ module Metanorma
       end
     end
 
-    def docref_to_xml_attrs(elem, docref)
+    def docref_to_xml_attrs(elem, docref) # KILL
       f = docref["fileref"] and elem[:fileref] = @disambig.strip_root(f)
       %i(attachment sectionsplit url).each do |i|
         elem[i] = docref[i.to_s] if docref[i.to_s]
@@ -156,7 +212,7 @@ module Metanorma
       docref_to_xml_attrs_id(elem, docref)
     end
 
-    def docref_to_xml_attrs_id(elem, docref)
+    def docref_to_xml_attrs_id(elem, docref) # KILL
       if collection&.directives&.include?("documents-inline")
         id = collection.documents.find_index do |k, _|
           k == docref["identifier"]

@@ -58,7 +58,7 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(xml)).to be_equivalent_to xml_content
+      expect(xmlpp(cleanup_id(xml))).to be_equivalent_to xmlpp(xml_content)
     end
 
     context "YAML collection with new format" do

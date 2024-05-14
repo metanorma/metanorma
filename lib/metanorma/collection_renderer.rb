@@ -109,7 +109,8 @@ module Metanorma
     end
 
     def concatenate1(out, ext)
-      out.directives << "documents-inline"
+      # out.directives << "documents-inline"
+      out.directives << CollectionConfig::Directive.new(key: "documents-inline")
       out.bibdatas.each_key do |ident|
         id = @isodoc.docid_prefix(nil, ident.dup)
         @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next

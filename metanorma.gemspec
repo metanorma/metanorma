@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "isodoc", ">= 2.6.3"
   spec.add_runtime_dependency "mn2pdf", "~> 1"
   spec.add_runtime_dependency "nokogiri"
-  spec.add_runtime_dependency "pry"
+  spec.add_runtime_dependency "shale"
 
   # get relaton-cli to avoid circular reference with metanorma-standoc
   # spec.add_dependency "relaton-cli"
@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
   spec.add_development_dependency "metanorma-iso"
   spec.add_development_dependency "mnconvert"
+  spec.add_development_dependency "pry"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-command", "~> 1.0"

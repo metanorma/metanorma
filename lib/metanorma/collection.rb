@@ -6,6 +6,7 @@ require "metanorma/collection_manifest"
 require "metanorma-utils"
 require_relative "util"
 require_relative "collection_construct_model"
+require_relative "collectionconfig/collectionconfig"
 
 module Metanorma
   class FileNotFoundException < StandardError; end
@@ -35,25 +36,30 @@ module Metanorma
     def initialize(**args)
       @file = args[:file]
       @dirname = File.dirname(@file)
-      @directives = args[:directives] || []
-      @bibdata = args[:bibdata]
-      @manifest = args[:manifest]
+      config = args[:config]
+      @directives = config.directives || []
+      @bibdata = config.bibdata
+      @manifest = CollectionManifest.new(config.manifest)
       @manifest.collection = self
-      @coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
-      @coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
-                                               @coverpage_style)
+      #@coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
+      #@coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
+                                               #@coverpage_style)
+      @coverpage = @directives.detect { |d| d.key == "coverpage" }&.value
+      @coverpage_style = @directives.detect { |d| d.key == "coverpage-style" }&.value
       @documents = args[:documents] || {}
       @bibdatas = args[:documents] || {}
+      directive_keys = @directives.map(&:key)
       if (@documents.any? || @manifest) &&
-          (%w(documents-inline documents-external) & @directives).empty?
-        @directives << "documents-inline"
+          (%w(documents-inline documents-external) & directive_keys).empty?
+        #@directives << "documents-inline"
+        @directives << ConfigureCollection::Directive.new(key: "documents-inline")
       end
       @documents.merge! @manifest.documents(@dirname)
       @bibdatas.merge! @manifest.documents(@dirname)
       @documents.transform_keys { |k| Util::key(k) }
       @bibdatas.transform_keys { |k| Util::key(k) }
-      @prefatory = args[:prefatory]
-      @final = args[:final]
+      @prefatory = config.prefatory_content
+      @final = config.final_content
       @compile = Metanorma::Compile.new
       @log = Metanorma::Utils::Log.new
       @disambig = Util::DisambigFiles.new
@@ -76,8 +82,8 @@ module Metanorma
       b.to_xml
     end
 
-    def collection_body(coll)
-      coll << @bibdata.to_xml(bibdata: true, date_format: :full)
+    def collection_body(coll) # KILL
+      #coll << @bibdata.to_xml(bibdata: true, date_format: :full)
       @directives.each do |d|
         coll << "<directives>#{obj_to_xml(d)}</directives>"
       end
@@ -87,7 +93,16 @@ module Metanorma
       content_to_xml "final", coll
     end
 
-    def obj_to_xml(elem)
+    def collection_body(coll)
+      coll << @bibdata.to_xml(bibdata: true, date_format: :full)
+      @directives.each { |d| coll << d.to_xml }
+      @manifest.to_xml coll
+      content_to_xml "prefatory", coll
+      doccontainer coll
+      content_to_xml "final", coll
+    end
+
+    def obj_to_xml(elem) # KILL
       case elem
       when ::Array
         elem.each_with_object([]) do |v, m|
@@ -106,19 +121,26 @@ module Metanorma
     end
 
     class << self
-      # @param file [String]
-      # @return [RelatonBib::BibliographicItem,
-      #   RelatonIso::IsoBibliographicItem]
       def parse(file)
-        case file
-        when /\.xml$/ then parse_xml(file)
-        when /.ya?ml$/ then parse_yaml(file)
-        end
+        config = case file
+                 when /\.xml$/
+                   CollectionConfig::Config.from_xml(File.read(file))
+                 when /.ya?ml$/
+                   CollectionConfig::Config.from_yaml(File.read(file))
+                 end
+        new(file: file, config: config)
       end
+
+      #def parse(file)
+        #case file
+        #when /\.xml$/ then parse_xml(file)
+        #when /.ya?ml$/ then parse_yaml(file)
+        #end
+      #end
 
       private
 
-      def parse_xml(file)
+      def parse_xml(file) # KILL
         xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)
         (b = xml.at("/xmlns:metanorma-collection/xmlns:bibdata")) and
           bd = Relaton::Cli.parse_xml(b)
@@ -132,10 +154,13 @@ module Metanorma
             documents: docs_from_xml(xml, mnf),
             bibdatas: docs_from_xml(xml, mnf),
             prefatory: pref, final: fnl, coverpage: cov)
+
+        new(file: file, directives: dirs, bibdata: bd, manifest: mnf,
+            prefatory: pref, final: fnl)
       end
 
       # TODO refine
-      def directives_from_xml(dir)
+      def directives_from_xml(dir) # KILL
         dir.each_with_object([]) do |d, m|
           m << if d.at("./xmlns:value")
                  x.xpath("./xmlns:value").map(&:text)
@@ -203,8 +228,7 @@ module Metanorma
     # @param elm [String] 'prefatory' or 'final'
     # @param builder [Nokogiri::XML::Builder]
     def content_to_xml(elm, builder)
-      return unless (cnt = send(elm))
-
+      (cnt = send(elm)) or return
       @compile.load_flavor(doctype)
       out = sections(dummy_header + cnt.strip)
       builder.send("#{elm}-content") { |b| b << out }
@@ -219,7 +243,8 @@ module Metanorma
 
     # @param builder [Nokogiri::XML::Builder]
     def doccontainer(builder)
-      Array(@directives).include? "documents-inline" or return
+      #Array(@directives).include? "documents-inline" or return
+      @directives.detect { |d| d.key == "documents-inline" } or return
       documents.each_with_index do |(_, d), i|
         doccontainer1(builder, d, i)
       end
