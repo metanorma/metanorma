@@ -32,9 +32,9 @@ module Metanorma
     end
 
     # @param Block [Proc]
-    # @note allow user-specific function to resolve indentifier
-    def set_indentifier_resolver(&block)
-      @indentifier_resolver = block
+    # @note allow user-specific function to resolve identifier
+    def set_identifier_resolver(&block)
+      @identifier_resolver = block
     end
 
     # @param Block [Proc]
@@ -54,10 +54,10 @@ module Metanorma
 
     # @param identifier [String]
     # @return [String]
-    def resolve_indentifier(identifier)
-      return identifier unless @indentifier_resolver
+    def resolve_identifier(identifier)
+      return identifier unless @identifier_resolver
 
-      @indentifier_resolver.call(identifier)
+      @identifier_resolver.call(identifier)
     end
 
     # @param fileref [String]
@@ -160,7 +160,7 @@ module Metanorma
     # @param docref [Hash{String=>String}]
     def construct_docref(mnf, docref)
       ref_folder = File.dirname(docref["file"])
-      identifier = resolve_indentifier(ref_folder)
+      identifier = resolve_identifier(ref_folder)
       doc_col    = YAML.load_file docref["file"]
 
       docref_from_document_and_attachments(doc_col).each do |m|
