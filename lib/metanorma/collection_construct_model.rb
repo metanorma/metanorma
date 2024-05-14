@@ -63,7 +63,11 @@ module Metanorma
     # @param fileref [String]
     # @return [String]
     def resolve_fileref(ref_folder, fileref)
-      return fileref unless @fileref_resolver
+      unless @fileref_resolver
+        (Pathname.new fileref).absolute? or
+          fileref = File.join(ref_folder, fileref)
+        return fileref
+      end
 
       @fileref_resolver.call(ref_folder, fileref)
     end
@@ -161,11 +165,14 @@ module Metanorma
     def construct_docref(mnf, docref)
       ref_folder = File.dirname(docref["file"])
       identifier = resolve_identifier(ref_folder)
+      # INSANELY we are presupposing that the top files in a manifest are YAML.
+      # WITHOUT EVEN CHECKING WHETHER THEY ARE. This is offensive.
       doc_col    = YAML.load_file docref["file"]
 
       docref_from_document_and_attachments(doc_col).each do |m|
         m["docref"].each do |doc_dr|
-          doc_ref_hash = set_doc_ref_hash(doc_dr, ref_folder, identifier, mnf)
+          doc_ref_hash = set_doc_ref_hash(doc_dr, File.expand_path(ref_folder),
+                                          identifier, mnf)
           append_docref(mnf, m["level"], doc_ref_hash)
         end
       end

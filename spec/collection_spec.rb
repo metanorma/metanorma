@@ -236,8 +236,10 @@ RSpec.describe Metanorma::Collection do
         end
 
         it "should raise error if adoc files not found" do
-          my_nil_fileref_proc = nil
-          Metanorma::Collection.set_fileref_resolver(&my_nil_fileref_proc)
+          my_dumb_fileref_proc = Proc.new do |ref_folder, fileref|
+      next fileref
+    end
+    Metanorma::Collection.set_fileref_resolver(&my_dumb_fileref_proc)
           expect { parse_model }.to raise_error(
             Metanorma::AdocFileNotFoundException, "document-1.adoc not found!"
           )
@@ -297,7 +299,6 @@ RSpec.describe Metanorma::Collection do
     it "XML collection with docs inline" do
       mock_pdf
       file = "#{INPATH}/collection_docinline.xml"
-      require "debug"; binding.b
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
@@ -783,7 +784,7 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
-  it "injects repository identifiers" do
+  xit "copes with disparity between working directory and manifest location" do
     file = "#{INPATH}/collection1.norepo.yml"
     of = OUTPATH
     col = Metanorma::Collection.parse file
@@ -795,6 +796,27 @@ RSpec.describe Metanorma::Collection do
         no_install_fonts: true,
       },
     )
+    index = File.read("#{OUTPATH}/rice-en.final.norepo.xml")
+    expect(index).to include "rice_image1.png"
+    # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
+    # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
+    FileUtils.rm_rf of
+  end
+
+  it "inject repository identifiers" do
+    Dir.chdir("spec")
+    file = "../#{INPATH}/collection1.norepo.yml"
+    of = "../#{OUTPATH}"
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation xml html],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: {
+        no_install_fonts: true,
+      },
+    )
+    Dir.chdir("..")
     index = File.read("#{OUTPATH}/rice-en.final.norepo.xml")
     expect(index).to include "Mass fraction of extraneous matter, milled rice " \
                              "(nonglutinous), sample dividers and " \
