@@ -141,10 +141,8 @@ RSpec.describe Metanorma::Collection do
               expect(dr).to include("identifier")
               expect(File.extname(dr["fileref"])).to eq(".adoc").or eq(".svg")
               if File.extname(dr["fileref"]) == ".adoc"
-                # set new identifier value if not present
                 expect(dr["identifier"]).to match(/^document-[1,2]/)
               else
-                # follow original identifier value if present
                 expect(dr["identifier"]).to eq("action_schemaexpg1.svg")
               end
             end

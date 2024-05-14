@@ -115,10 +115,9 @@ module Metanorma
       # @return [Hash{String=>String}]
       def construct_collection_manifest(collection_model)
         mnf = collection_model["manifest"]
-
+        set_default_manifest(mnf)
         mnf["docref"].each do |dr|
           check_file_existence(dr["file"] || dr["fileref"])
-          set_default_manifest(mnf)
           construct_docref(mnf, dr)
         end
 
@@ -141,7 +140,8 @@ module Metanorma
 
       # @param manifest [Hash{String=>String}]
       def set_default_manifest(manifest)
-        manifest["manifest"] ||= DEFAULT_MANIFEST
+        DEFAULT_MANIFEST.each { |i| i["docref"] = [] }
+        manifest["manifest"] = DEFAULT_MANIFEST.dup
       end
 
       # @param collection_model [Hash{String=>String}]
