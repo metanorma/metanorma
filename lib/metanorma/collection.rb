@@ -36,7 +36,7 @@ module Metanorma
     # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     def initialize(**args)
       @file = args[:file]
-      @dirname = File.dirname(@file)
+      @dirname = File.expand_path(File.dirname(@file))
       @directives = args[:directives] || []
       @bibdata = args[:bibdata]
       @manifest = args[:manifest]
@@ -112,6 +112,8 @@ module Metanorma
       # @return [RelatonBib::BibliographicItem,
       #   RelatonIso::IsoBibliographicItem]
       def parse(file)
+        @dirname = File.expand_path(File.dirname(file))
+        # need @dirname before collection object initialisation
         case file
         when /\.xml$/ then parse_xml(file)
         when /.ya?ml$/ then parse_yaml(file)
@@ -171,9 +173,17 @@ module Metanorma
           .each_with_object({}) do |b, m|
           bd = Relaton::Cli.parse_xml b
           docref = mnf.docref_by_id bd.docidentifier.first.id
-          m[docref["identifier"]] = Document.new bd, docref["fileref"]
+          m[docref["identifier"]] = Document.new bd, docpath_from_docid(mnf, bd)
           m
         end
+      end
+
+      # TODO .first should be .primary
+      def docpath_from_docid(mnf, bibdata)
+        docref = mnf.docref_by_id bibdata.docidentifier.first.id
+        p = docref["fileref"]
+        (Pathname.new p).absolute? or p = File.join(@dirname, p)
+        p
       end
 
       # @param xml [Nokogiri::XML::Element, nil]
