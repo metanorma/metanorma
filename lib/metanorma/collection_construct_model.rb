@@ -39,6 +39,8 @@ module Metanorma
 
     # @param Block [Proc]
     # @note allow user-specific function to resolve fileref
+    # NOTE: MUST ALWAYS RETURN ABSOLUTE PATH. @fileref_resolver.call(ref_folder, fileref)
+    # needs to use ref_folder (which already is absolute) to formulate absolute link, not just return variant of fileref
     def set_fileref_resolver(&block)
       @fileref_resolver = block
     end
