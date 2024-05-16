@@ -48,7 +48,8 @@ module Metanorma
           h["identifier"] = dr["identifier"] ||
             UUIDTools::UUID.random_create.to_s
           dr["manifest"] and h["manifest"] = from_yaml(dr["manifest"].first)
-          %w(fileref url attachment sectionsplit index presentation-xml).each do |k|
+          %w(fileref url attachment sectionsplit index presentation-xml)
+            .each do |k|
             dr.has_key?(k) and h[k] = dr[k]
           end
           h
@@ -60,7 +61,7 @@ module Metanorma
       def parse_docrefs_xml(mnf)
         mnf.xpath("xmlns:docref").map do |dr|
           h = { "identifier" => parse_docrefs_xml_id(dr) }
-          %i(fileref url attachment sectionsplit index).each do |s|
+          %i(fileref fileref_original url attachment sectionsplit index).each do |s|
             h[s.to_s] = dr[s] if dr[s]
           end
           m = dr.at("manifest") and h["manifest"] = from_xml(m)
@@ -147,7 +148,7 @@ module Metanorma
 
     def docref_to_xml_attrs(elem, docref)
       f = docref["fileref"] and elem[:fileref] = @disambig.strip_root(f)
-      %i(attachment sectionsplit url).each do |i|
+      %i(attachment sectionsplit url fileref_original).each do |i|
         elem[i] = docref[i.to_s] if docref[i.to_s]
       end
       elem[:index] = docref.has_key?("index") ? docref["index"] : "true"

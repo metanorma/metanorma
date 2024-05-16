@@ -59,22 +59,29 @@ module Metanorma
       entry[:bibitem].at("./*[local-name() = 'ext']")&.remove
     end
 
-    # rel_path is the source file address, determined relative to the YAML.
+    # rel_path is the absolute source file address, determined relative to the YAML.
     # out_path is the destination file address, with any references outside
-    # the working directory (../../...) truncated
+    # the working directory (../../...) truncated, and based on relative path
     # identifier is the id with only spaces, no nbsp
     def file_entry(ref, identifier)
       ref["fileref"] or return
-      out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
-      out1 = @disambig.source2dest_filename(out)
       ret = if ref["fileref"]
               { type: "fileref", ref: @documents[Util::key identifier].file,
                 rel_path: ref["fileref"], url: ref["url"],
-                out_path: out1 } # @disambig.source2dest_filename(out) }
+                out_path: output_file_path(ref) }
             else { type: "id", ref: ref["id"] }
             end
       file_entry_copy(ref, ret)
+      warn ret
       ret.compact
+    end
+
+    # TODO make the output file location reflect source location universally,
+    # not just for attachments: no File.basename
+    def output_file_path(ref)
+      f = File.basename(ref["fileref"])
+      ref["attachment"] and f = ref["fileref"]
+      @disambig.source2dest_filename(f)
     end
 
     def file_entry_copy(ref, ret)

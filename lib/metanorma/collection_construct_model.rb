@@ -203,6 +203,7 @@ module Metanorma
     def set_doc_ref_hash(doc_dr, ref_folder, identifier, mnf)
       doc_ref_hash = {
         "fileref" => resolve_fileref(ref_folder, doc_dr["fileref"]),
+        "fileref_original" => doc_dr["fileref"],
         "identifier" => doc_dr["identifier"] || identifier,
         "sectionsplit" => doc_dr["sectionsplit"] || mnf["sectionsplit"],
       }

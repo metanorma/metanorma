@@ -50,6 +50,7 @@ module Metanorma
     def copy_file_to_dest(identifier)
       dest = File.join(@outdir, @files.get(identifier, :out_path))
       FileUtils.mkdir_p(File.dirname(dest))
+      warn "cp #{ @files.get(identifier, :ref)} #{dest}"
       FileUtils.cp @files.get(identifier, :ref), dest
     end
 
