@@ -127,7 +127,7 @@ module Metanorma
         (b = xml.at("/xmlns:metanorma-collection/xmlns:bibdata")) and
           bd = Relaton::Cli.parse_xml(b)
         mnf_xml = xml.at("/xmlns:metanorma-collection/xmlns:manifest")
-        mnf = CollectionManifest.from_xml mnf_xml
+        mnf = CollectionManifest.from_xml mnf_xml, @dirname
         pref = pref_final_content xml.at("//xmlns:prefatory-content")
         fnl = pref_final_content xml.at("//xmlns:final-content")
         cov = pref_final_content xml.at("//xmlns:coverpage")
@@ -159,9 +159,9 @@ module Metanorma
           file = File.basename(file)
         end
         pre_parse_model(collection_model)
-        if collection_model["manifest"]["manifest"]
-          compile_adoc_documents(collection_model)
-        end
+        #if collection_model["manifest"]["manifest"]
+          #compile_adoc_documents(collection_model)
+        #end
         parse_model(file, collection_model)
       end
 

@@ -66,8 +66,9 @@ module Metanorma
     # identifier is the id with only spaces, no nbsp
     def file_entry(ref, identifier)
       ref["fileref"] or return
+      ref["absolute_location"] = @documents[Util::key identifier].file
       ret = if ref["fileref"]
-              { type: "fileref", ref: @documents[Util::key identifier].file,
+              { type: "fileref", ref: ref["absolute_location"],
                 rel_path: ref["fileref"], url: ref["url"],
                 out_path: output_file_path(ref) }
             else { type: "id", ref: ref["id"] }
@@ -75,6 +76,33 @@ module Metanorma
       file_entry_copy(ref, ret)
       warn ret
       ret.compact
+    end
+
+    def compile_adoc(ref)
+      File.extname(ref["fileref"]) == ".adoc" or return
+      compile_adoc_file(ref["absolute_location"])
+      ref["absolute_location"] = set_adoc2xml(ref["absolute_location"])
+      ref["fileref"] = set_adoc2xml(ref["fileref"])
+    end
+
+    # @param fileref [String]
+    def set_adoc2xml(fileref)
+      File.join(
+        File.dirname(fileref),
+        File.basename(fileref).gsub(/.adoc$/, ".xml"),
+      )
+    end
+
+    # param filepath [String]
+    # @raise [AdocFileNotFoundException]
+    def compile_adoc_file(filepath)
+      unless File.exist? filepath
+        raise AdocFileNotFoundException.new "#{filepath} not found!"
+      end
+      Util.log("[metanorma] Info: Compiling #{filepath}...", :info)
+      Metanorma::Compile.new
+        .compile(filepath, agree_to_terms: true, no_install_fonts: true)
+      Util.log("[metanorma] Info: Compiling #{filepath}...done!", :info)
     end
 
     # TODO make the output file location reflect source location universally,

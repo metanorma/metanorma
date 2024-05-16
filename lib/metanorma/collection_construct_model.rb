@@ -16,7 +16,7 @@ module Metanorma
           .convert_single_file(collection_model["bibdata"])
       end
 
-      mnf  = CollectionManifest.from_yaml collection_model["manifest"]
+      mnf  = CollectionManifest.from_yaml collection_model["manifest"], @dirname
       dirs = collection_model["directives"]
       pref = collection_model["prefatory-content"]
       fnl  = collection_model["final-content"]
@@ -39,10 +39,13 @@ module Metanorma
 
     # @param Block [Proc]
     # @note allow user-specific function to resolve fileref
-    # NOTE: MUST ALWAYS RETURN ABSOLUTE PATH. @fileref_resolver.call(ref_folder, fileref)
-    # needs to use ref_folder (which already is absolute) to formulate absolute link, not just return variant of fileref
+    # NOTE: MUST ALWAYS RETURN PATH relative to YAML file. @fileref_resolver.call(ref_folder, fileref)
     def set_fileref_resolver(&block)
       @fileref_resolver = block
+    end
+
+    def unset_fileref_resolver
+      @fileref_resolver = nil
     end
 
     private
@@ -135,6 +138,7 @@ module Metanorma
 
     # @param filepath
     # @raise [FileNotFoundException]
+    # THIS.... IS ONLY BEING RUN FOR TOP LEVEL YAML? REALLY?
     def check_file_existence(filepath)
       unless File.exist?(filepath)
         error_message = "#{filepath} not found!"

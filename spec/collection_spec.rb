@@ -106,7 +106,8 @@ RSpec.describe Metanorma::Collection do
             i["docref"].each do |dr|
               expect(dr).to include("fileref")
               expect(dr).to include("identifier")
-              expect(File.extname(dr["fileref"])).to eq(".adoc").or eq(".svg")
+              ext = File.extname(dr["fileref"])
+              expect(%w(.adoc .svg .png).include?(ext)).to be true
               if File.extname(dr["fileref"]) == ".adoc"
                 # check sectionsplit inheritance
                 expect(dr).to include("sectionsplit")
@@ -139,11 +140,14 @@ RSpec.describe Metanorma::Collection do
             expect(i).to include("docref")
             i["docref"].each do |dr|
               expect(dr).to include("identifier")
-              expect(File.extname(dr["fileref"])).to eq(".adoc").or eq(".svg")
+              ext = File.extname(dr["fileref"])
+              expect(%w(.adoc .svg .png).include?(ext)).to be true
               if File.extname(dr["fileref"]) == ".adoc"
                 expect(dr["identifier"]).to match(/^document-[1,2]/)
+              elsif File.extname(dr["fileref"]) == ".png"
+                expect(dr["identifier"]).to match(/rice_image1\.png/)
               else
-                expect(dr["identifier"]).to eq("action_schemaexpg1.svg")
+                expect(dr["identifier"]).to match(/action_schemaexpg[123]\.svg/)
               end
             end
           end
@@ -151,11 +155,8 @@ RSpec.describe Metanorma::Collection do
 
         it "should allow user to point fileref to new location conditionally" do
           my_fileref_proc = Proc.new do |_ref_folder, fileref|
-            if File.extname(fileref) == ".svg"
-              fileref = fileref.gsub(
-                "spec/fixtures/collection",
-                "new/location",
-              )
+            if fileref == "img/action_schemaexpg2.svg"
+              fileref = fileref.gsub("img/", "image/")
             end
             next fileref
           end
@@ -168,13 +169,11 @@ RSpec.describe Metanorma::Collection do
             expect(i).to include("docref")
             i["docref"].each do |dr|
               expect(dr).to include("fileref")
-              expect(File.extname(dr["fileref"])).to eq(".adoc").or eq(".svg")
-              if File.extname(dr["fileref"]) == ".svg"
+              ext = File.extname(dr["fileref"])
+              expect(%w(.adoc .svg .png).include?(ext)).to be true
+              if dr["fileref"].match?(/action_schemaexpg2/)
                 expect(dr["fileref"])
-                  .to match(/^new\/location\/.*/)
-              else
-                expect(dr["fileref"])
-                  .to match(/^document-[1,2].*/)
+                  .to match(/^image\/.*/)
               end
             end
           end
@@ -212,18 +211,7 @@ RSpec.describe Metanorma::Collection do
             next identifier
           end
 
-          my_fileref_proc = Proc.new do |ref_folder, fileref|
-            if File.extname(fileref) == ".adoc"
-              fileref = fileref.gsub(
-                /^document/,
-                "#{ref_folder}/document",
-              )
-            end
-            next fileref
-          end
-
           Metanorma::Collection.set_identifier_resolver(&my_identifier_proc)
-          Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
         end
 
         it "should allow user to define a proc to run" do
@@ -237,17 +225,19 @@ RSpec.describe Metanorma::Collection do
 
         it "should raise error if adoc files not found" do
           my_dumb_fileref_proc = Proc.new do |_ref_folder, fileref|
+            fileref = "dunno/#{fileref}"
             next fileref
           end
 
           Metanorma::Collection.set_fileref_resolver(&my_dumb_fileref_proc)
 
-          expect { parse_model }.to raise_error(
-            Metanorma::AdocFileNotFoundException, "document-1.adoc not found!"
+          expect { parse_model.render(collection_opts) }.to raise_error(
+            Metanorma::AdocFileNotFoundException, /document-1\.adoc not found!/
           )
         end
 
         it "should compile adoc files and return Metanorma::Collection" do
+          Metanorma::Collection.unset_fileref_resolver
           xml_paths = [
             "#{INPATH}/document-1/document-1.xml",
             "#{INPATH}/document-2/document-2.xml",
@@ -262,6 +252,7 @@ RSpec.describe Metanorma::Collection do
         end
 
         it "should render output" do
+          Metanorma::Collection.unset_fileref_resolver
           parse_model.render(collection_opts)
 
           expected_output = {
