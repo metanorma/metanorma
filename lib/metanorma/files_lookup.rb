@@ -59,7 +59,8 @@ module Metanorma
       entry[:bibitem].at("./*[local-name() = 'ext']")&.remove
     end
 
-    # rel_path is the absolute source file address, determined relative to the YAML.
+    # ref is the absolute source file address
+    # rel_path is the relative source file address, determined relative to the YAML.
     # out_path is the destination file address, with any references outside
     # the working directory (../../...) truncated, and based on relative path
     # identifier is the id with only spaces, no nbsp

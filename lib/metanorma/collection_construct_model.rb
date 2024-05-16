@@ -173,7 +173,7 @@ module Metanorma
 
       docref_from_document_and_attachments(doc_col).each do |m|
         m["docref"].each do |doc_dr|
-          doc_ref_hash = set_doc_ref_hash(doc_dr, File.expand_path(ref_folder),
+          doc_ref_hash = set_doc_ref_hash(doc_dr, (ref_folder),
                                           identifier, mnf)
           append_docref(mnf, m["level"], doc_ref_hash)
         end
