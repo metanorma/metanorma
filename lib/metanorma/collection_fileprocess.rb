@@ -49,7 +49,7 @@ module Metanorma
 
     def copy_file_to_dest(identifier)
       out = Pathname.new(@files.get(identifier, :out_path)).cleanpath
-      out.absolute? and out = out.relative_path_from(@outdir)
+      out.absolute? and out = out.relative_path_from(File.expand_path(FileUtils.pwd))
       dest = File.join(@outdir, @disambig.source2dest_filename(out.to_s))
       FileUtils.mkdir_p(File.dirname(dest))
       warn "cp #{@files.get(identifier, :ref)} #{dest}"

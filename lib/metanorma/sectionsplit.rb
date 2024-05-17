@@ -199,17 +199,17 @@ module Metanorma
       Util::recursive_string_keys(ret).to_yaml
     end
 
-    def section_split_cover(col, ident, one_doc_coll)
+    def section_split_cover(col, ident, _one_doc_coll)
       dir = File.dirname(col.file)
       collection_setup(nil, dir)
-      CollectionRenderer.new(col, dir,
-                             output_folder: "#{ident}_collection",
-                             format: %i(html),
-                             coverpage: File.join(dir, "cover.html")).coverpage
-      #filename = one_doc_coll ? "#{ident}_index.html" : "index.html"
-      filename = "#{ident}_index.html"
-      FileUtils.mv "#{ident}_collection/index.html", File.join(dir, filename)
-      FileUtils.rm_rf "#{ident}_collection"
+      r = CollectionRenderer
+        .new(col, dir, output_folder: "#{ident}_collection",
+                       format: %i(html), coverpage: File.join(dir, "cover.html"))
+      r.coverpage
+      # filename = one_doc_coll ? "#{ident}_index.html" : "index.html"
+      filename = File.basename("#{ident}_index.html") # ident can be a directory with YAML indirection
+      FileUtils.mv File.join(r.outdir, "index.html"), File.join(dir, filename)
+      FileUtils.rm_rf r.outdir
       filename
     end
   end
