@@ -59,22 +59,58 @@ module Metanorma
       entry[:bibitem].at("./*[local-name() = 'ext']")&.remove
     end
 
-    # rel_path is the source file address, determined relative to the YAML.
+    # ref is the absolute source file address
+    # rel_path is the relative source file address, determined relative to the YAML.
     # out_path is the destination file address, with any references outside
-    # the working directory (../../...) truncated
+    # the working directory (../../...) truncated, and based on relative path
     # identifier is the id with only spaces, no nbsp
     def file_entry(ref, identifier)
       ref["fileref"] or return
-      out = ref["attachment"] ? ref["fileref"] : File.basename(ref["fileref"])
-      out1 = @disambig.source2dest_filename(out)
+      ref["absolute_location"] = @documents[Util::key identifier].file
       ret = if ref["fileref"]
-              { type: "fileref", ref: @documents[Util::key identifier].file,
+              { type: "fileref", ref: ref["absolute_location"],
                 rel_path: ref["fileref"], url: ref["url"],
-                out_path: out1 } # @disambig.source2dest_filename(out) }
+                out_path: output_file_path(ref) }
             else { type: "id", ref: ref["id"] }
             end
       file_entry_copy(ref, ret)
+      warn ret
       ret.compact
+    end
+
+    def compile_adoc(ref)
+      File.extname(ref["fileref"]) == ".adoc" or return
+      compile_adoc_file(ref["absolute_location"])
+      ref["absolute_location"] = set_adoc2xml(ref["absolute_location"])
+      ref["fileref"] = set_adoc2xml(ref["fileref"])
+    end
+
+    # @param fileref [String]
+    def set_adoc2xml(fileref)
+      File.join(
+        File.dirname(fileref),
+        File.basename(fileref).gsub(/.adoc$/, ".xml"),
+      )
+    end
+
+    # param filepath [String]
+    # @raise [AdocFileNotFoundException]
+    def compile_adoc_file(filepath)
+      unless File.exist? filepath
+        raise AdocFileNotFoundException.new "#{filepath} not found!"
+      end
+      Util.log("[metanorma] Info: Compiling #{filepath}...", :info)
+      Metanorma::Compile.new
+        .compile(filepath, agree_to_terms: true, no_install_fonts: true)
+      Util.log("[metanorma] Info: Compiling #{filepath}...done!", :info)
+    end
+
+    # TODO make the output file location reflect source location universally,
+    # not just for attachments: no File.basename
+    def output_file_path(ref)
+      f = File.basename(ref["fileref"])
+      ref["attachment"] and f = ref["fileref"]
+      @disambig.source2dest_filename(f)
     end
 
     def file_entry_copy(ref, ret)

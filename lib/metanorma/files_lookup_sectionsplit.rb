@@ -13,8 +13,7 @@ module Metanorma
     end
 
     def process_section_split_instance(key, manifest)
-      s, sectionsplit_manifest = sectionsplit(@files[key][:ref],
-                                              @files[key][:out_path], key)
+      s, sectionsplit_manifest = sectionsplit(key)
       s.each_with_index do |f1, i|
         add_section_split_instance(f1, manifest, key, i)
       end
@@ -24,7 +23,7 @@ module Metanorma
 
     def cleanup_section_split_instance(key, manifest)
       @files_to_delete << manifest["#{key}:index.html"][:ref]
-      #@files[key].delete(:ids).delete(:anchors)
+      # @files[key].delete(:ids).delete(:anchors)
       @files[key][:indirect_key] = @sectionsplit.key
     end
 
@@ -69,10 +68,11 @@ module Metanorma
       [presfile, newkey, xml]
     end
 
-    def sectionsplit(file, outfile, ident)
+    def sectionsplit(ident)
+      file = @files[ident][:ref]
       @sectionsplit = Sectionsplit
-        .new(input: file, base: outfile, dir: File.dirname(file),
-             output: outfile, compile_opts: @parent.compile_options,
+        .new(input:  file, base: @files[ident][:out_path], dir: File.dirname(file),
+             output: @files[ident][:out_path], compile_opts: @parent.compile_options,
              fileslookup: self, ident: ident, isodoc: @isodoc)
       coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
       xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)

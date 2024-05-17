@@ -25,6 +25,9 @@ manifest:
     - level: attachments
       title: Attachments
       docref:
-        - fileref: spec/fixtures/collection/pics/action_schemaexpg1.svg
-          identifier: action_schemaexpg1.svg
+        - fileref: img/action_schemaexpg2.svg
+          identifier: action_schemaexpg2.svg
+          attachment: true
+        - fileref: ../../../assets/rice_image1.png
+          identifier: rice_image1.png
           attachment: true

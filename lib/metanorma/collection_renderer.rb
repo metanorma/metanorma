@@ -13,7 +13,7 @@ module Metanorma
     FORMATS = %i[html xml doc pdf].freeze
 
     attr_accessor :isodoc, :nested
-    attr_reader :xml, :compile, :compile_options, :documents
+    attr_reader :xml, :compile, :compile_options, :documents, :outdir
 
     # This is only going to render the HTML collection
     # @param xml [Metanorma::Collection] input XML collection

@@ -9,10 +9,12 @@ module Metanorma
     attr_reader :collection
 
     # @param level [String]
+    # @param dir [String]
     # @param title [String, nil]
     # @param docref [Array<Hash{String=>String}>]
     # @param manifest [Array<Metanorma::CollectionManifest>]
-    def initialize(config)
+    def initialize(config, dir)
+      @dir = dir
       @disambig = Util::DisambigFiles.new
       @config = config
     end
@@ -20,48 +22,81 @@ module Metanorma
     class << self
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
-      def from_yaml(mnf) # KILL
+      def from_yaml(mnf, dir) # KILL
         manifest = RelatonBib.array(mnf["manifest"]).map do |m|
-          from_yaml m
+          from_yaml m, dir
         end
         docref = RelatonBib.array mnf["docref"]
-        new(mnf["level"], mnf["title"], parse_docrefs_yaml(docref), manifest)
+        new(mnf["level"], dir, mnf["title"], parse_docrefs_yaml(docref, dir), manifest)
       end
 
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
-      def from_xml(mnf) # KILL
+      def from_xml(mnf, dir) # KILL
         level = mnf.at("level").text
         title = mnf.at("title")&.text
-        manifest = mnf.xpath("xmlns:manifest").map { |m| from_xml(m) }
-        new(level, title, parse_docrefs_xml(mnf), manifest)
+        manifest = mnf.xpath("xmlns:manifest").map { |m| from_xml(m, dir) }
+        new(level, dir, title, parse_docrefs_xml(mnf, dir), manifest)
       end
 
       private
 
-      def parse_docrefs_yaml(docrefs) # KILL
+      # We will deal with YAML files on sighting them,
+      # before passing the manifest on to anything else
+      def parse_docrefs_yaml(docrefs, dir) # KILL
         docrefs.map do |dr|
           h = {}
-          h["identifier"] = dr["identifier"] ||
-            UUIDTools::UUID.random_create.to_s
-          dr["manifest"] and h["manifest"] = from_yaml(dr["manifest"].first)
-          %w(fileref url attachment sectionsplit index
-             presentation-xml).each do |k|
+          h["identifier"] =
+            dr["identifier"] || UUIDTools::UUID.random_create.to_s
+          dr["manifest"] and h["manifest"] = from_yaml(dr["manifest"].first, dir)
+          compile_adoc(dr, dir)
+          %w(fileref url attachment sectionsplit index presentation-xml)
+            .each do |k|
             dr.has_key?(k) and h[k] = dr[k]
           end
           h
         end
       end
 
+      def compile_adoc(ref, dir)
+        f = ref["fileref"] or return
+        #(Pathname.new f).absolute? or f = File.join(dir, f)
+      File.extname(f) == ".adoc" or return
+      compile_adoc_file(f)
+      ref["fileref"] = set_adoc2xml(ref["fileref"])
+    end
+
+    # @param fileref [String]
+    def set_adoc2xml(fileref)
+      File.join(
+        File.dirname(fileref),
+        File.basename(fileref).gsub(/.adoc$/, ".xml"),
+      )
+    end
+
+    # param filepath [String]
+    # @raise [AdocFileNotFoundException]
+    def compile_adoc_file(filepath)
+      unless File.exist? filepath
+        raise AdocFileNotFoundException.new "#{filepath} not found!"
+      end
+      Util.log("[metanorma] Info: Compiling #{filepath}...", :info)
+      Metanorma::Compile.new
+        .compile(filepath, agree_to_terms: true, no_install_fonts: true)
+      Util.log("[metanorma] Info: Compiling #{filepath}...done!", :info)
+    end
+
+
       # @param mnf [Nokogiri::XML::Element]
       # @return [Hash{String=>String}]
-      def parse_docrefs_xml(mnf) # KILL
+      def parse_docrefs_xml(mnf, dir) # KILL
         mnf.xpath("xmlns:docref").map do |dr|
           h = { "identifier" => parse_docrefs_xml_id(dr) }
-          %i(fileref url attachment sectionsplit index).each do |s|
+          %i(fileref fileref_original url attachment sectionsplit
+             index).each do |s|
             h[s.to_s] = dr[s] if dr[s]
           end
-          m = dr.at("manifest") and h["manifest"] = from_xml(m)
+          m = dr.at("manifest") and h["manifest"] = from_xml(m, dir)
           h["presentation-xml"] = dr[:presentationxml] if dr[:presentationxml]
           h
         end
@@ -203,7 +238,7 @@ module Metanorma
 
     def docref_to_xml_attrs(elem, docref) # KILL
       f = docref["fileref"] and elem[:fileref] = @disambig.strip_root(f)
-      %i(attachment sectionsplit url).each do |i|
+      %i(attachment sectionsplit url fileref_original).each do |i|
         elem[i] = docref[i.to_s] if docref[i.to_s]
       end
       elem[:index] = docref.has_key?("index") ? docref["index"] : "true"

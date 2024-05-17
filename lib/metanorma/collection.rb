@@ -15,6 +15,8 @@ module Metanorma
 
   # Metanorma collection of documents
   class Collection
+    extend CollectionConstructModel
+
     attr_reader :file
 
     # @return [Array<String>] documents-inline to inject the XML into
@@ -35,11 +37,11 @@ module Metanorma
     # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     def initialize(**args)
       @file = args[:file]
-      @dirname = File.dirname(@file)
       config = args[:config]
       @directives = config.directives || []
       @bibdata = config.bibdata
       @manifest = CollectionManifest.new(config.manifest)
+      @dirname = File.expand_path(File.dirname(@file))
       @manifest.collection = self
       #@coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
       #@coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
@@ -122,6 +124,8 @@ module Metanorma
 
     class << self
       def parse(file)
+        @dirname = File.expand_path(File.dirname(file))
+        # need @dirname before collection object initialisation
         config = case file
                  when /\.xml$/
                    CollectionConfig::Config.from_xml(File.read(file))
@@ -145,7 +149,7 @@ module Metanorma
         (b = xml.at("/xmlns:metanorma-collection/xmlns:bibdata")) and
           bd = Relaton::Cli.parse_xml(b)
         mnf_xml = xml.at("/xmlns:metanorma-collection/xmlns:manifest")
-        mnf = CollectionManifest.from_xml mnf_xml
+        mnf = CollectionManifest.from_xml mnf_xml, @dirname
         pref = pref_final_content xml.at("//xmlns:prefatory-content")
         fnl = pref_final_content xml.at("//xmlns:final-content")
         cov = pref_final_content xml.at("//xmlns:coverpage")
@@ -180,9 +184,9 @@ module Metanorma
           file = File.basename(file)
         end
         pre_parse_model(collection_model)
-        if collection_model["manifest"]["manifest"]
-          compile_adoc_documents(collection_model)
-        end
+        #if collection_model["manifest"]["manifest"]
+          #compile_adoc_documents(collection_model)
+        #end
         parse_model(file, collection_model)
       end
 
@@ -194,9 +198,17 @@ module Metanorma
           .each_with_object({}) do |b, m|
           bd = Relaton::Cli.parse_xml b
           docref = mnf.docref_by_id bd.docidentifier.first.id
-          m[docref["identifier"]] = Document.new bd, docref["fileref"]
+          m[docref["identifier"]] = Document.new bd, docpath_from_docid(mnf, bd)
           m
         end
+      end
+
+      # TODO .first should be .primary
+      def docpath_from_docid(mnf, bibdata)
+        docref = mnf.docref_by_id bibdata.docidentifier.first.id
+        p = docref["fileref"]
+        (Pathname.new p).absolute? or p = File.join(@dirname, p)
+        p
       end
 
       # @param xml [Nokogiri::XML::Element, nil]
