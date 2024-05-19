@@ -141,16 +141,18 @@ module Metanorma
     # extracted from the manifest
     def isodoc_populate
       @isodoc.info(@xml, nil)
-      m = @xml.at(ns("//manifest"))
-      { navigation: indexfile(m), nav_object: index_object(m),
+      #{ navigation: indexfile(m), nav_object: index_object(m),
+      { navigation: indexfile(@manifest.entry), nav_object: index_object(@manifest.entry),
         docrefs: liquid_docrefs,
-        "prefatory-content": isodoc_builder(@xml.at(ns("//prefatory-content"))),
-        "final-content": isodoc_builder(@xml.at(ns("//final-content"))),
-        doctitle: m.at(ns("../bibdata/title"))&.text,
-        docnumber: m.at(ns("../bibdata/docidentifier"))&.text }.each do |k, v|
-          v and @isodoc.meta.set(
-            k, v
-          )
+        "prefatory-content": isodoc_builder(@prefatory),
+        #"final-content": isodoc_builder(@xml.at(ns("//final-content"))),
+        "final-content": isodoc_builder(@final),
+        #doctitle: m.at(ns("../bibdata/title"))&.text,
+        doctitle: @bibdata.title.first.title.content,
+        #docnumber: m.at(ns("../bibdata/docidentifier"))&.text }
+        docnumber: @bibdata.docidentifier.first.id,
+      }.each do |k, v|
+          v and @isodoc.meta.set(k, v)
         end
     end
 

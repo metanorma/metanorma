@@ -30,8 +30,9 @@ module Metanorma
     def initialize(collection, folder, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       check_options options
       @xml = Nokogiri::XML collection.to_xml # @xml is the collection manifest
-      @lang = @xml.at("//xmlns:bibdata/xmlns:language")&.text || "en"
-      @script = @xml.at("//xmlns:bibdata/xmlns:script")&.text || "Latn"
+      @xml.root.default_namespace = "http://metanorma.org"
+      @lang = collection.bibdata.language.first || "en"
+      @script = collection.bibdata.script.first || "Latn"
       @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
       @doctype = doctype
       @compile = Compile.new
@@ -44,11 +45,15 @@ module Metanorma
       @compile_options = options[:compile] || {}
       @compile_options[:no_install_fonts] = true if options[:no_install_fonts]
       @log = options[:log]
+      @bibdata = collection.bibdata
       @documents = collection.documents
-      @bibdata = collection.documents
+      @bibdatas = collection.documents
       @directives = collection.directives
       @dirname = collection.dirname
+      @manifest = collection.manifest.config
       @disambig = Util::DisambigFiles.new
+      @prefatory = collection.prefatory
+      @final = collection.final
       @c = HTMLEntities.new
       @files_to_delete = []
       @nested = options[:nested] # if false, this is the root instance of Renderer
@@ -122,9 +127,9 @@ module Metanorma
 
     # infer the flavour from the first document identifier; relaton does that
     def doctype
-      if (docid = @xml.at("//xmlns:bibdata/xmlns:docidentifier/@type")&.text)
+      if (docid = @xml.at("//bibdata/docidentifier/@type")&.text)
         dt = docid.downcase
-      elsif (docid = @xml.at("//xmlns:bibdata/xmlns:docidentifier")&.text)
+      elsif (docid = @xml.at("//bibdata/docidentifier")&.text)
         dt = docid.sub(/\s.*$/, "").lowercase
       else return "standoc"
       end
@@ -153,15 +158,21 @@ module Metanorma
     #
     # @param elm [Nokogiri::XML::Element]
     # @param builder [Nokogiri::XML::Builder]
-    def indexfile_docref(elm, builder)
+    def indexfile_docref(elm, builder) # KILL
       return "" unless elm.at(ns("./docref[@index = 'true']"))
 
       builder.ul { |b| docrefs(elm, b) }
     end
 
+    def indexfile_docref(mnf, builder)
+      return "" unless Array(mnf.entry).detect { |d| d.index }
+
+      builder.ul { |b| docrefs(mnf, b) }
+    end
+
     # @param elm [Nokogiri::XML::Element]
     # @param builder [Nokogiri::XML::Builder]
-    def docrefs(elm, builder)
+    def docrefs(elm, builder) # KILL
       elm.xpath(ns("./docref[@index = 'true']")).each do |d|
         if m = d.at(ns("./manifest"))
           builder << indexfile(m, ul: false)
@@ -178,15 +189,44 @@ module Metanorma
       end
     end
 
-    def docref_ident(docref)
+    def docrefs(mnf, builder)
+      Array(mnf.entry).select { |d| d.index }.each do |d|
+        if m = d.entry
+          builder << indexfile(m, ul: false)
+        else
+        ident = docref_ident(d)
+        builder.li do |li|
+          li.a href: index_link(d, ident) do |a|
+            a << ident.split(/([<>&])/).map do |x|
+              /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
+            end.join
+          end
+        end
+      end
+      end
+    end
+
+    def docref_ident(docref) # KILL
       ident = docref.at(ns("./identifier")).children.to_xml
       @c.decode(@isodoc.docid_prefix(nil, ident))
     end
 
-    def index_link(docref, ident)
+     def docref_ident(docref)
+       ident = docref.identifier
+      @c.decode(@isodoc.docid_prefix(nil, ident))
+    end
+
+    def index_link(docref, ident) # KILL
       if docref["fileref"]
         @files.get(ident, :out_path).sub(/\.xml$/, ".html")
       else "#{docref['id']}.html"
+      end
+    end
+
+    def index_link(docref, ident)
+      if docref.file
+        @files.get(ident, :out_path).sub(/\.xml$/, ".html")
+      else "#{docref.id}.html"
       end
     end
 
@@ -194,24 +234,44 @@ module Metanorma
     #
     # @param elm [Nokogiri::XML::Element]
     # @return [String] XML
-    def indexfile(elm, ul: true)
+    def indexfile(elm, ul: true) # KILL
       ret = Nokogiri::HTML::Builder.new do |b|
         b.ul do
           b.li indexfile_title(elm)
           indexfile_docref(elm, b)
-          elm.xpath(ns("./manifest")).each do |d|
+          elm.xpath(ns("./entry")).each do |d|
             b << indexfile(d)
           end
         end
       end
       ret = ret.doc.root
       ul or ret = ret.children
-        ret.to_html
+      ret.to_html
+    end
+
+    def indexfile(mnfs, ul: true)
+      mnfs.empty? and return ""
+      mnfs.map { |m| indexfile1(m, ul) }.join("\n")
+    end
+
+    def indexfile1(mnf, ul)
+      ret = Nokogiri::HTML::Builder.new do |b|
+        b.ul do
+          b.li mnf.title
+          indexfile_docref(mnf, b)
+          Array(mnf.entry).each do |e|
+            b << indexfile1(e, ul)
+          end
+        end
+      end
+      ret = ret.doc.root
+      ul or ret = ret.children
+      ret.to_html
     end
 
     # object to construct navigation out of in Liquid
-    def index_object(elm)
-      c = elm.xpath(ns("./manifest")).each_with_object([]) do |d, b|
+    def index_object(elm) # KILL
+      c = elm.xpath(ns("./entry")).each_with_object([]) do |d, b|
         b << index_object(d)
       end
       c.empty? and c = nil
@@ -220,6 +280,20 @@ module Metanorma
       end
       r &&= r.doc.root&.to_html&.gsub("\n", " ")
       { title: indexfile_title(elm),
+        docrefs: r, children: c }.compact
+    end
+
+     def index_object(mnf)
+       mnf = Array(mnf).first
+      c = Array(mnf.entry).each_with_object([]) do |d, b|
+        b << index_object(d)
+      end
+      c.empty? and c = nil
+      r = Nokogiri::HTML::Builder.new do |b|
+        indexfile_docref(mnf, b)
+      end
+      r &&= r.doc.root&.to_html&.gsub("\n", " ")
+      { title: mnf.title,
         docrefs: r, children: c }.compact
     end
 

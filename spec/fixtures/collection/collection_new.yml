@@ -19,5 +19,5 @@ manifest:
   title: ISO Collection
   sectionsplit: true
   docref:
-  - file: spec/fixtures/collection/document-1/collection.yml
-  - file: spec/fixtures/collection/document-2/collection.yml
+  - file: document-1/collection.yml
+  - file: document-2/collection.yml

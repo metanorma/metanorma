@@ -22,7 +22,7 @@ module Metanorma
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
     attr_accessor :directives, :documents, :bibdatas, :coverpage, :dirname
-    attr_accessor :disambig, :manifest
+    attr_accessor :disambig, :manifest, :bibdata
 
     # @param file [String] path to source file
     # @param dirname [String] directory of source file
@@ -41,8 +41,7 @@ module Metanorma
       @directives = config.directive || []
       @bibdata = config.bibdata
       @dirname = File.expand_path(File.dirname(@file))
-      @manifest = CollectionManifest.new(config.manifest, @dirname)
-      @manifest.collection = self
+      @manifest = CollectionManifest.new(config.manifest, self, @dirname)
       #@coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
       #@coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
                                                #@coverpage_style)
@@ -128,10 +127,11 @@ module Metanorma
         # need @dirname before collection object initialisation
         config = case file
                  when /\.xml$/
-                   require "debug"; binding.b
                    CollectionConfig::Config.from_xml(File.read(file))
                  when /.ya?ml$/
-                   CollectionConfig::Config.from_yaml(File.read(file))
+                   y = YAML.load(File.read(file))
+                   pre_parse_model(y)
+                   CollectionConfig::Config.from_yaml(y.to_yaml)
                  end
         new(file: file, config: config)
       end
@@ -267,7 +267,8 @@ module Metanorma
         if doc.attachment
           doc.bibitem and b << doc.bibitem.root.to_xml
           b.attachment Vectory::Utils::datauri(doc.file)
-        else doc.to_xml b
+        else
+          doc.to_xml b
         end
       end
     end

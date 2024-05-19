@@ -10,7 +10,7 @@ module Metanorma
     # @param file [String]
     # @param collection_model [Hash]
     # @return [Metanorma::Collection]
-    def parse_model(file, collection_model)
+    def parse_model(file, collection_model) # KILL
       if collection_model["bibdata"]
         bd = Relaton::Cli::YAMLConvertor
           .convert_single_file(collection_model["bibdata"])
@@ -48,8 +48,6 @@ module Metanorma
       @fileref_resolver = nil
     end
 
-    private
-
     # @param collection_model [Hash{String=>String}]
     def pre_parse_model(collection_model)
       return unless @pre_parse_model_proc
@@ -78,7 +76,7 @@ module Metanorma
     end
 
     # @param collection_model [Hash{String=>String}]
-    def compile_adoc_documents(collection_model)
+    def compile_adoc_documents(collection_model) # KILL
       documents = select_documents(collection_model)
       return unless documents
 
@@ -97,7 +95,7 @@ module Metanorma
     end
 
     # @param fileref [String]
-    def set_adoc2xml(fileref)
+    def set_adoc2xml(fileref) # KILL
       File.join(
         File.dirname(fileref),
         File.basename(fileref).gsub(/.adoc$/, ".xml"),
@@ -106,7 +104,7 @@ module Metanorma
 
     # param filepath [String]
     # @raise [AdocFileNotFoundException]
-    def compile_adoc_file(filepath)
+    def compile_adoc_file(filepath) # KILL
       unless File.exist? filepath
         raise AdocFileNotFoundException.new "#{filepath} not found!"
       end
@@ -125,13 +123,13 @@ module Metanorma
       mnf = collection_model["manifest"]
       set_default_manifest(mnf)
       mnf["docref"].each do |dr|
-        check_file_existence(dr["file"] || dr["fileref"])
+        check_file_existence(dr["file"] || dr["fileref"]) # KILL
         construct_docref(mnf, dr)
       end
 
       # remove keys in upper level
       mnf.delete("docref")
-      mnf.delete("sectionsplit")
+      mnf.delete("sectionsplit") # KILL
 
       collection_model
     end
@@ -156,6 +154,7 @@ module Metanorma
     # @param collection_model [Hash{String=>String}]
     # @return [Bool]
     def new_yaml_format?(collection_model)
+      require "debug"; binding.b
       mnf = collection_model["manifest"]
       # return if collection yaml is not the new format
       if mnf["docref"].nil? || mnf["docref"].empty? ||
@@ -205,6 +204,7 @@ module Metanorma
     # @param identifier [String]
     # @param mnf [Hash{String=>String}]
     def set_doc_ref_hash(doc_dr, ref_folder, identifier, mnf)
+      require "debug"; binding.b
       doc_ref_hash = {
         "fileref" => resolve_fileref(ref_folder, doc_dr["fileref"]),
         "fileref_original" => doc_dr["fileref"],

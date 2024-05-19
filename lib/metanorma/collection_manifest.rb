@@ -13,10 +13,120 @@ module Metanorma
     # @param title [String, nil]
     # @param docref [Array<Hash{String=>String}>]
     # @param manifest [Array<Metanorma::CollectionManifest>]
-    def initialize(config, dir)
+    def initialize(config, collection, dir)
+      @collection = collection
       @dir = dir
       @disambig = Util::DisambigFiles.new
-      @config = config
+      @config = manifest_postprocess(config, dir)
+    end
+
+    def manifest_postprocess(config, dir)
+      manifest_expand_yaml(config, dir)
+      manifest_compile_adoc(config, dir)
+      require "debug"; binding.b
+      manifest_filexist(config, dir)
+      manifest_sectionsplit(config, dir)
+      manifest_identifier(config, dir)
+      config
+    end
+
+    def manifest_identifier(config, dir)
+      if !config.identifier && config.file
+        ref_folder = File.dirname(config.file)
+        config.identifier = resolve_identifier(ref_folder)
+      end
+      Array(config.entry).each do |f|
+        manifest_identifier(f, dir)
+      end
+    end
+
+    def manifest_sectionsplit(config, dir)
+      if config.sectionsplit && !config.file
+        config.sectionsplit = nil
+        Array(config.entry).each do |e|
+          e.attachment and next
+          e.sectionsplit = true
+        end
+      end
+      Array(config.entry).each do |f|
+        manifest_sectionsplit(f, dir)
+      end
+
+    end
+
+    def manifest_filexist(config, dir)
+      if config.file
+        file = @collection.class.resolve_fileref(dir, config.file)
+      @collection.class.check_file_existence(file)
+      end
+      Array(config.entry).each do |f|
+        manifest_filexist(f, dir)
+      end
+    end
+
+    def manifest_expand_yaml(config, dir)
+      Array(config.entry).each do |e|
+        currdir = dir
+        if /\.ya?ml$/.match?(e.file)
+          f = @collection.class.resolve_fileref(dir, e.file)
+          currdir = File.dirname(f)
+          @collection.class.check_file_existence(f)
+          e.file = nil
+          e.entry = CollectionConfig::Config.from_yaml(File.read(f)).manifest
+          if currdir != dir
+            prefix = Pathname.new(currdir).relative_path_from(Pathname.new(dir))
+            update_filepaths(e.entry, prefix.to_s)
+          end
+        end
+        manifest_expand_yaml(e, currdir)
+      end
+      config
+    end
+
+    def update_filepaths(entry, prefix)
+      entry.file && !(Pathname.new entry.file).absolute? and
+        entry.file = File.join(prefix, entry.file)
+      entry.entry.each do |f|
+        update_filepaths(f, prefix)
+      end
+    end
+
+    def manifest_compile_adoc(config, dir)
+      if /\.adoc$/.match?(config.file)
+        file = @collection.class.resolve_fileref(dir, config.file)
+        config.file = compile_adoc(dir, file, config.file)
+      end
+      Array(config.entry).each do |f|
+        manifest_compile_adoc(f, dir)
+      end
+    end
+
+    def compile_adoc(dir, resolved_filename, rel_filename)
+      compile_adoc_file(dir, resolved_filename)
+      set_adoc2xml(rel_filename)
+    end
+
+    # @param fileref [String]
+    def set_adoc2xml(fileref)
+      File.join(
+        File.dirname(fileref),
+        File.basename(fileref).gsub(/.adoc$/, ".xml"),
+      )
+    end
+
+    # param filepath [String]
+    # @raise [AdocFileNotFoundException]
+    def compile_adoc_file(dir, file)
+      f = (Pathname.new file).absolute? ? file : File.join(dir, file)
+      unless File.exist? f
+        raise AdocFileNotFoundException.new "#{f} not found!"
+      end
+
+      Util.log("[metanorma] Info: Compiling #{f}...", :info)
+      Metanorma::Compile.new
+        .compile(f, agree_to_terms: true, no_install_fonts: true,
+                extension_keys: [:xml])
+      Util.log("[metanorma] Info: Compiling #{f}...done!", :info)
     end
 
     class << self
@@ -27,7 +137,8 @@ module Metanorma
           from_yaml m, dir
         end
         docref = RelatonBib.array mnf["docref"]
-        new(mnf["level"], dir, mnf["title"], parse_docrefs_yaml(docref, dir), manifest)
+        new(mnf["level"], dir, mnf["title"], parse_docrefs_yaml(docref, dir),
+            manifest)
       end
 
       # @param mnf [Nokogiri::XML::Element]
@@ -48,7 +159,8 @@ module Metanorma
           h = {}
           h["identifier"] =
             dr["identifier"] || UUIDTools::UUID.random_create.to_s
-          dr["manifest"] and h["manifest"] = from_yaml(dr["manifest"].first, dir)
+          dr["manifest"] and h["manifest"] =
+                               from_yaml(dr["manifest"].first, dir)
           compile_adoc(dr, dir)
           %w(fileref url attachment sectionsplit index presentation-xml)
             .each do |k|
@@ -57,35 +169,6 @@ module Metanorma
           h
         end
       end
-
-      def compile_adoc(ref, dir)
-        f = ref["fileref"] or return
-        #(Pathname.new f).absolute? or f = File.join(dir, f)
-      File.extname(f) == ".adoc" or return
-      compile_adoc_file(f)
-      ref["fileref"] = set_adoc2xml(ref["fileref"])
-    end
-
-    # @param fileref [String]
-    def set_adoc2xml(fileref)
-      File.join(
-        File.dirname(fileref),
-        File.basename(fileref).gsub(/.adoc$/, ".xml"),
-      )
-    end
-
-    # param filepath [String]
-    # @raise [AdocFileNotFoundException]
-    def compile_adoc_file(filepath)
-      unless File.exist? filepath
-        raise AdocFileNotFoundException.new "#{filepath} not found!"
-      end
-      Util.log("[metanorma] Info: Compiling #{filepath}...", :info)
-      Metanorma::Compile.new
-        .compile(filepath, agree_to_terms: true, no_install_fonts: true)
-      Util.log("[metanorma] Info: Compiling #{filepath}...done!", :info)
-    end
-
 
       # @param mnf [Nokogiri::XML::Element]
       # @return [Hash{String=>String}]
@@ -152,7 +235,6 @@ module Metanorma
     end
 
     def documents_add(dir, docref)
-      require "debug"; binding.b
       Document.parse_file(
         Util::rel_path_resolve(dir, docref.file),
         docref.attachment, docref.identifier, docref.index
@@ -192,7 +274,7 @@ module Metanorma
 
     def clean_manifest(mnf)
       clean_manifest_bibdata(mnf)
-      mnf.file &&= @disambig.strip_root(mnf.file)
+      #mnf.file &&= @disambig.strip_root(mnf.file)
       clean_manifest_id(mnf)
       Array(mnf.entry).each { |e| clean_manifest(e) }
     end
@@ -201,7 +283,10 @@ module Metanorma
     def docrefs
       @docrefs and return @docrefs
       drfs = @docref.map { |dr| dr }
-      @manifest.reduce(drfs) { |mem, mnf| mem + mnf.docrefs } # no manifest/manifest
+      # no manifest/manifest
+      @manifest.reduce(drfs) do |mem, mnf|
+        mem + mnf.docrefs
+      end
     end
 
     # @return [Array<Hash{String=>String}>]
@@ -217,7 +302,7 @@ module Metanorma
 
     def docref_by_id(docid)
       @config.entry.detect { |k| k.identifier == docid } ||
-         @config.entry.detect { |k| /^#{k.identifier}/ =~ docid }
+        @config.entry.detect { |k| /^#{k.identifier}/ =~ docid }
     end
 
     private
@@ -238,7 +323,7 @@ module Metanorma
     end
 
     def docref_to_xml_attrs(elem, docref) # KILL
-      f = docref["fileref"] and elem[:fileref] = @disambig.strip_root(f)
+      #f = docref["fileref"] and elem[:fileref] = @disambig.strip_root(f)
       %i(attachment sectionsplit url fileref_original).each do |i|
         elem[i] = docref[i.to_s] if docref[i.to_s]
       end

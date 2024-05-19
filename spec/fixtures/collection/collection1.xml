@@ -303,7 +303,7 @@
       <entry attachment="true" index="true" fileref="pics/action_schemaexpg1.svg">
         <identifier>action_schemaexpg1.svg</identifier>
       </entry>
-      <entry attachment="true" index="true" fileref="assets/rice_image1.png">
+      <entry attachment="true" index="true" fileref="../../assets/rice_image1.png">
         <identifier>rice_image1.png</identifier>
       </entry>
     </entry>

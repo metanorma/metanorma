@@ -63,35 +63,15 @@ RSpec.describe Metanorma::Collection do
 
     context "YAML collection with new format" do
       let(:yaml_file) { "#{INPATH}/collection_new.yml" }
-      let(:collection_model) { YAML.load_file yaml_file }
-      let(:ccm) do
-        Metanorma::Collection.send(
-          :construct_collection_manifest,
-          collection_model,
-        )
-      end
-
-      describe "when loading new collection yaml file" do
-        it "should conform to new format" do
-          expect(collection_model).to include("manifest")
-          expect(collection_model["manifest"])
-            .to include("level" => "collection")
-          expect(collection_model["manifest"]).to include("docref")
-          expect(collection_model["manifest"]["docref"])
-            .to be_an_instance_of(Array)
-          collection_model["manifest"]["docref"].each do |i|
-            expect(i).to include("file")
-          end
-        end
-      end
+      let(:ccm) { Metanorma::Collection.parse(yaml_file).manifest }
 
       describe "when constructing collection manifest" do
         it "should inherit sectionsplit and have correct format" do
-          expect(collection_model).to include("manifest")
-          expect(collection_model["manifest"]).to include("sectionsplit")
+          expect(ccm).to include("manifest")
+          expect(ccm["manifest"]).to include("sectionsplit")
 
           # get sectionsplit from source collection model
-          sectionsplit = collection_model["manifest"]["sectionsplit"]
+          sectionsplit = ccm["manifest"]["sectionsplit"]
 
           expect(ccm).to include("manifest")
           expect(ccm["manifest"]).to include("manifest")
@@ -218,14 +198,15 @@ RSpec.describe Metanorma::Collection do
           my_proc = Proc.new { puts "Test Proc!" }
           Metanorma::Collection.set_pre_parse_model(&my_proc)
           printed = capture_stdout do
-            Metanorma::Collection.send(:pre_parse_model, collection_model)
+            Metanorma::Collection.send(:pre_parse_model, parse_model)
           end
           expect(printed).to include("Test Proc!")
         end
 
         it "should raise error if adoc files not found" do
-          my_dumb_fileref_proc = Proc.new do |_ref_folder, fileref|
-            fileref = "dunno/#{fileref}"
+          my_dumb_fileref_proc = Proc.new do |ref_folder, fileref|
+            /\.adoc$?/.match?(fileref) and fileref = "dunno/#{fileref}"
+            fileref = File.join(ref_folder, fileref)
             next fileref
           end
 
@@ -233,6 +214,21 @@ RSpec.describe Metanorma::Collection do
 
           expect { parse_model.render(collection_opts) }.to raise_error(
             Metanorma::AdocFileNotFoundException, /document-1\.adoc not found!/
+          )
+        end
+
+        it "should raise error if YAML files not found" do
+          my_dumb_fileref_proc = Proc.new do |ref_folder, fileref|
+            /\.ya?ml$?/.match?(fileref) and fileref = "dunno/#{fileref}"
+            fileref = File.join(ref_folder, fileref)
+            next fileref
+          end
+
+          Metanorma::Collection.set_fileref_resolver(&my_dumb_fileref_proc)
+
+          expect { parse_model.render(collection_opts) }.to raise_error(
+            Metanorma::FileNotFoundException,
+            /document-1\/collection\.yml not found!/,
           )
         end
 
