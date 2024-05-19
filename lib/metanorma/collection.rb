@@ -38,10 +38,10 @@ module Metanorma
     def initialize(**args)
       @file = args[:file]
       config = args[:config]
-      @directives = config.directives || []
+      @directives = config.directive || []
       @bibdata = config.bibdata
-      @manifest = CollectionManifest.new(config.manifest)
       @dirname = File.expand_path(File.dirname(@file))
+      @manifest = CollectionManifest.new(config.manifest, @dirname)
       @manifest.collection = self
       #@coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
       #@coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
@@ -54,7 +54,7 @@ module Metanorma
       if (@documents.any? || @manifest) &&
           (%w(documents-inline documents-external) & directive_keys).empty?
         #@directives << "documents-inline"
-        @directives << ConfigureCollection::Directive.new(key: "documents-inline")
+        @directives << CollectionConfig::Directive.new(key: "documents-inline")
       end
       @documents.merge! @manifest.documents(@dirname)
       @bibdatas.merge! @manifest.documents(@dirname)
@@ -74,14 +74,23 @@ module Metanorma
     end
 
     # @return [String] XML
-    def to_xml
+    def to_xml # KILL
       b = Nokogiri::XML::Builder.new do |xml|
         xml.send(:"metanorma-collection",
-                 "xmlns" => "http://metanorma.org") do |mc|
+                 #"xmlns" => "http://metanorma.org") do |mc|
+                 ) do |mc|
           collection_body(mc)
         end
       end
       b.to_xml
+    end
+
+    def to_xml
+      c = CollectionConfig::Config.new(directive: @directives, bibdata: @bibdata, manifest: @manifest.config,
+                                       prefatory_content: @prefatory, final_content: @final,
+                                       documents: @documents)
+      c.collection = self
+      c.to_xml
     end
 
     def collection_body(coll) # KILL
@@ -89,15 +98,6 @@ module Metanorma
       @directives.each do |d|
         coll << "<directives>#{obj_to_xml(d)}</directives>"
       end
-      @manifest.to_xml coll
-      content_to_xml "prefatory", coll
-      doccontainer coll
-      content_to_xml "final", coll
-    end
-
-    def collection_body(coll)
-      coll << @bibdata.to_xml(bibdata: true, date_format: :full)
-      @directives.each { |d| coll << d.to_xml }
       @manifest.to_xml coll
       content_to_xml "prefatory", coll
       doccontainer coll
@@ -128,6 +128,7 @@ module Metanorma
         # need @dirname before collection object initialisation
         config = case file
                  when /\.xml$/
+                   require "debug"; binding.b
                    CollectionConfig::Config.from_xml(File.read(file))
                  when /.ya?ml$/
                    CollectionConfig::Config.from_yaml(File.read(file))
@@ -222,8 +223,6 @@ module Metanorma
         CONT
       end
     end
-
-    private
 
     # @return [String, nil]
     attr_reader :prefatory, :final

@@ -6,7 +6,7 @@ module Metanorma
   # Metanorma collection's manifest
   class CollectionManifest
     # @return [Metanorma::Collection]
-    attr_reader :collection
+    attr_reader :collection, :config
 
     # @param level [String]
     # @param dir [String]
@@ -152,6 +152,7 @@ module Metanorma
     end
 
     def documents_add(dir, docref)
+      require "debug"; binding.b
       Document.parse_file(
         Util::rel_path_resolve(dir, docref.file),
         docref.attachment, docref.identifier, docref.index

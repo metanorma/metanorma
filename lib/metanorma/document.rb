@@ -104,7 +104,7 @@ module Metanorma
       else
         Nokogiri::XML::Builder.new do |b|
           root = render_xml b
-          root["xmlns"] = "http://metanorma.org"
+          # root["xmlns"] = "http://metanorma.org"
         end.to_xml
       end
     end

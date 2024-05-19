@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+class Array
+  alias orig_filter filter
+end
+
 require "metanorma/version"
 require "asciidoctor"
 require "metanorma/util"
