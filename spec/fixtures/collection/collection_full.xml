@@ -1,4 +1,4 @@
-<metanorma-collection xmlns="http://metanorma.org">
+<metanorma-collection>
   <bibdata type="collection">
     <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
     <docidentifier type="iso">ISO 12345</docidentifier>

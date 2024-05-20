@@ -13,7 +13,7 @@ module Metanorma
     FORMATS = %i[html xml doc pdf].freeze
 
     attr_accessor :isodoc, :nested
-    attr_reader :xml, :compile, :compile_options, :documents, :outdir
+    attr_reader :xml, :compile, :compile_options, :documents, :outdir, :manifest
 
     # This is only going to render the HTML collection
     # @param xml [Metanorma::Collection] input XML collection
@@ -102,7 +102,11 @@ module Metanorma
         options[:format].include?(e) or next
         ext = e == :presentation ? "presentation.xml" : e.to_s
         File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") do |f|
-          f.write(concatenate1(col.clone, e).to_xml)
+          b = concatenate1(col.clone, e).to_xml
+          e == :presentation and
+            b.sub!("<metanorma-collection>", "<metanorma-collection xmlns='http://metanorma.org'>")
+          # BEING FORCED TO DO THAT BECAUSE SHALE IS NOT DEALING WITH DEFAULT NAMESPACES
+          f.write(b)
         end
       end
     end

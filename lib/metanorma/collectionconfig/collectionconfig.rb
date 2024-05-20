@@ -172,6 +172,7 @@ module CollectionConfig
     attribute :prefatory_content, ::Shale::Type::String
     attribute :final_content, ::Shale::Type::String
     attribute :documents, Bibdata, collection: true
+    attribute :xmlns, ::Shale::Type::String, default: -> { "http://metanorma.org" }
 
     yaml do
       map "directives", using: { from: :directives_from_yaml,
@@ -189,7 +190,8 @@ module CollectionConfig
 
     xml do
       root "metanorma-collection"
-      # namespace "http://metanorma.org", ""
+      #namespace "http://metanorma.org", "m"
+      #map_attribute "xmlns", to: :xmlns
       map_element "bibdata", using: { from: :bibdata_from_xml,
                                       to: :bibdata_to_xml }
       map_element "directive", using: { from: :directive_from_xml,

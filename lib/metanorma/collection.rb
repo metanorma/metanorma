@@ -89,7 +89,7 @@ module Metanorma
                                        prefatory_content: @prefatory, final_content: @final,
                                        documents: @documents)
       c.collection = self
-      c.to_xml
+      c.to_xml #.sub("<metanorma-collection", "<metanorma-collection xmlns='http://metanorma.org'")
     end
 
     def collection_body(coll) # KILL
