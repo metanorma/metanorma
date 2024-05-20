@@ -39,7 +39,10 @@ module Metanorma
 
     # @param Block [Proc]
     # @note allow user-specific function to resolve fileref
-    # NOTE: MUST ALWAYS RETURN PATH relative to YAML file. @fileref_resolver.call(ref_folder, fileref)
+    # NOTE: MUST ALWAYS RETURN PATH relative to working directory
+    # (initial YAML file location). @fileref_resolver.call(ref_folder, fileref)
+    # fileref is not what is in the YAML, but the resolved path
+    # relative to the working directory
     def set_fileref_resolver(&block)
       @fileref_resolver = block
     end
@@ -59,7 +62,6 @@ module Metanorma
     # @return [String]
     def resolve_identifier(identifier)
       return identifier unless @identifier_resolver
-
       @identifier_resolver.call(identifier)
     end
 

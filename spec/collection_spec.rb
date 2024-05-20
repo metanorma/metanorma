@@ -63,100 +63,109 @@ RSpec.describe Metanorma::Collection do
 
     context "YAML collection with new format" do
       let(:yaml_file) { "#{INPATH}/collection_new.yml" }
-      let(:ccm) { Metanorma::Collection.parse(yaml_file).manifest }
+      let(:ccm) do
+        Metanorma::Collection.parse(yaml_file).manifest
+          .to_xml(Nokogiri::XML::Builder.new).to_xml
+      end
 
       describe "when constructing collection manifest" do
         it "should inherit sectionsplit and have correct format" do
-          expect(ccm).to include("manifest")
-          expect(ccm["manifest"]).to include("sectionsplit")
-
-          # get sectionsplit from source collection model
-          sectionsplit = ccm["manifest"]["sectionsplit"]
-
-          expect(ccm).to include("manifest")
-          expect(ccm["manifest"]).to include("manifest")
-          expect(ccm["manifest"]).not_to include("docref")
-          expect(ccm["manifest"]).not_to include("sectionsplit")
-          expect(ccm["manifest"]["manifest"]).to be_an_instance_of(Array)
-          ccm["manifest"]["manifest"].each do |i|
-            expect(i).to include("level")
-            expect(i).to include("title")
-            expect(i).to include("docref")
-            expect(i["level"]).to eq("document").or eq("attachments")
-            i["docref"].each do |dr|
-              expect(dr).to include("fileref")
-              expect(dr).to include("identifier")
-              ext = File.extname(dr["fileref"])
-              expect(%w(.adoc .svg .png).include?(ext)).to be true
-              if File.extname(dr["fileref"]) == ".adoc"
-                # check sectionsplit inheritance
-                expect(dr).to include("sectionsplit")
-                expect(dr["sectionsplit"]).to eq(sectionsplit)
-              else
-                expect(dr).to include("attachment")
-                expect(dr).not_to include("sectionsplit")
-                expect(dr["attachment"]).to eq(true)
-              end
-            end
-          end
+          expect(xmlpp(cleanup_id(ccm)))
+            .to be_equivalent_to xmlpp(cleanup_id(<<~OUTPUT))
+              <entry index="true">
+                <identifier>27b4fbb3-a76e-42c9-a519-3cf18a7ca1c5</identifier>
+                <type>collection</type>
+                <title>ISO Collection</title>
+                <entry index="true">
+                  <identifier>00b50518-1656-465e-b14a-ba4e67aff9d0</identifier>
+                  <entry index="true">
+                    <identifier>4409d72f-9e2d-4aa3-bc3f-732ba76e211c</identifier>
+                    <type>collection</type>
+                    <title>ISO Collection</title>
+                    <entry index="true">
+                      <identifier>5a254d10-6c28-4721-872e-4974dfc035a3</identifier>
+                      <type>document</type>
+                      <title>Document</title>
+                      <entry id="doc000000000" sectionsplit="true" index="true" fileref="document-1/document-1.xml">
+                        <identifier>5f99f008-8fd4-45f9-841b-52b558e87a91</identifier>
+                      </entry>
+                    </entry>
+                    <entry index="true">
+                      <identifier>eb779c1d-f770-47e4-9d5f-83958e59be0f</identifier>
+                      <type>attachments</type>
+                      <title>Attachments</title>
+                      <entry id="doc000000001" attachment="true" index="true" fileref="document-1/img/action_schemaexpg2.svg">
+                        <identifier>action_schemaexpg2.svg</identifier>
+                      </entry>
+                      <entry id="doc000000002" attachment="true" index="true" fileref="../../assets/rice_image1.png">
+                        <identifier>rice_image1.png</identifier>
+                      </entry>
+                    </entry>
+                  </entry>
+                </entry>
+                <entry index="true">
+                  <identifier>fcd781f4-4189-407d-b316-eb676fd04cb9</identifier>
+                  <entry index="true">
+                    <identifier>67ae8932-3c18-4ff1-987f-b0cb7093f460</identifier>
+                    <type>collection</type>
+                    <title>ISO Collection</title>
+                    <entry index="true">
+                      <identifier>862b2f9e-0e7a-4a01-9916-27500e141a46</identifier>
+                      <type>document</type>
+                      <title>Document</title>
+                      <entry id="doc000000003" sectionsplit="true" index="true" fileref="document-2/document-2.xml">
+                        <identifier>616f9232-e79e-44d2-a84b-b06bb141756d</identifier>
+                      </entry>
+                    </entry>
+                    <entry index="true">
+                      <identifier>380c7f48-59e5-44c8-b5db-5ac5d79c12f3</identifier>
+                      <type>attachments</type>
+                      <title>Attachments</title>
+                      <entry id="doc000000004" attachment="true" index="true" fileref="document-2/img/action_schemaexpg3.svg">
+                        <identifier>action_schemaexpg3.svg</identifier>
+                      </entry>
+                    </entry>
+                  </entry>
+                </entry>
+              </entry>
+            OUTPUT
         end
 
         it "should allow user to set identifier" do
           my_identifier_proc = Proc.new do |identifier|
             identifier = case identifier
-                         when /^spec\/fixtures\/collection\//
-                           identifier.gsub("spec/fixtures/collection/", "")
+                         when "action_schemaexpg2.svg"
+                           "freedom"
                          else
                            identifier
                          end
             next identifier
           end
           Metanorma::Collection.set_identifier_resolver(&my_identifier_proc)
-
-          expect(ccm).to include("manifest")
-          expect(ccm["manifest"]).to include("manifest")
-          expect(ccm["manifest"]["manifest"]).to be_an_instance_of(Array)
-          ccm["manifest"]["manifest"].each do |i|
-            expect(i).to include("docref")
-            i["docref"].each do |dr|
-              expect(dr).to include("identifier")
-              ext = File.extname(dr["fileref"])
-              expect(%w(.adoc .svg .png).include?(ext)).to be true
-              if File.extname(dr["fileref"]) == ".adoc"
-                expect(dr["identifier"]).to match(/^document-[1,2]/)
-              elsif File.extname(dr["fileref"]) == ".png"
-                expect(dr["identifier"]).to match(/rice_image1\.png/)
-              else
-                expect(dr["identifier"]).to match(/action_schemaexpg[123]\.svg/)
-              end
-            end
-          end
+          xml = Nokogiri::XML(ccm)
+          id = xml.at("//entry[@fileref = 'document-1/img/" \
+                      "action_schemaexpg2.svg']/identifier")
+          expect(id.text).to eq "freedom"
+          id = xml.at("//entry[@fileref = 'document-2/img/" \
+                      "action_schemaexpg3.svg']/identifier")
+          expect(id.text).to eq "action_schemaexpg3.svg"
+          id = xml.at("//entry[@fileref = '../../assets/" \
+                      "rice_image1.png']/identifier")
+          expect(id.text).to eq "rice_image1.png"
         end
 
         it "should allow user to point fileref to new location conditionally" do
-          my_fileref_proc = Proc.new do |_ref_folder, fileref|
-            if fileref == "img/action_schemaexpg2.svg"
+          my_fileref_proc = Proc.new do |ref_folder, fileref|
+            if fileref == "document-1/img/action_schemaexpg2.svg"
               fileref = fileref.gsub("img/", "image/")
             end
+            fileref = File.join(ref_folder, fileref)
             next fileref
           end
           Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
-
-          expect(ccm).to include("manifest")
-          expect(ccm["manifest"]).to include("manifest")
-          expect(ccm["manifest"]["manifest"]).to be_an_instance_of(Array)
-          ccm["manifest"]["manifest"].each do |i|
-            expect(i).to include("docref")
-            i["docref"].each do |dr|
-              expect(dr).to include("fileref")
-              ext = File.extname(dr["fileref"])
-              expect(%w(.adoc .svg .png).include?(ext)).to be true
-              if dr["fileref"].match?(/action_schemaexpg2/)
-                expect(dr["fileref"])
-                  .to match(/^image\/.*/)
-              end
-            end
-          end
+          xml = Nokogiri::XML(ccm)
+          id = xml.at("//entry[@id = 'doc000000001']/@fileref")
+          expect(id.text).to eq "document-1/image/action_schemaexpg2.svg"
         end
       end
 
@@ -196,6 +205,7 @@ RSpec.describe Metanorma::Collection do
 
         it "should allow user to define a proc to run" do
           my_proc = Proc.new { puts "Test Proc!" }
+          Metanorma::Collection.unset_fileref_resolver
           Metanorma::Collection.set_pre_parse_model(&my_proc)
           printed = capture_stdout do
             Metanorma::Collection.send(:pre_parse_model, parse_model)

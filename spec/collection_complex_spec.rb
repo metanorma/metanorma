@@ -456,7 +456,7 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "YAML collection with nested YAMLs, directory changes, attachments " \
-"with absolute paths, attachments with paths outside working directory" do # rubocop:disable metrics/blocklength
+       "with absolute paths, attachments with paths outside working directory" do # rubocop:disable metrics/blocklength
       mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"

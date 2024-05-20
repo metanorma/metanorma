@@ -23,7 +23,6 @@ module Metanorma
     def manifest_postprocess(config, dir)
       manifest_expand_yaml(config, dir)
       manifest_compile_adoc(config, dir)
-      require "debug"; binding.b
       manifest_filexist(config, dir)
       manifest_sectionsplit(config, dir)
       manifest_identifier(config, dir)
@@ -31,10 +30,13 @@ module Metanorma
     end
 
     def manifest_identifier(config, dir)
-      if !config.identifier && config.file
-        ref_folder = File.dirname(config.file)
-        config.identifier = resolve_identifier(ref_folder)
-      end
+      config.identifier = if !config.identifier && config.file
+                            @collection.class
+                              .resolve_identifier(File.dirname(config.file))
+                          else
+                            @collection.class
+                              .resolve_identifier(config.identifier)
+                          end
       Array(config.entry).each do |f|
         manifest_identifier(f, dir)
       end
@@ -51,13 +53,13 @@ module Metanorma
       Array(config.entry).each do |f|
         manifest_sectionsplit(f, dir)
       end
-
     end
 
     def manifest_filexist(config, dir)
       if config.file
         file = @collection.class.resolve_fileref(dir, config.file)
-      @collection.class.check_file_existence(file)
+        @collection.class.check_file_existence(file)
+        config.file = Pathname.new(file).relative_path_from(Pathname.new(dir))
       end
       Array(config.entry).each do |f|
         manifest_filexist(f, dir)
@@ -125,7 +127,7 @@ module Metanorma
       Util.log("[metanorma] Info: Compiling #{f}...", :info)
       Metanorma::Compile.new
         .compile(f, agree_to_terms: true, no_install_fonts: true,
-                extension_keys: [:xml])
+                    extension_keys: [:xml])
       Util.log("[metanorma] Info: Compiling #{f}...done!", :info)
     end
 
@@ -274,7 +276,7 @@ module Metanorma
 
     def clean_manifest(mnf)
       clean_manifest_bibdata(mnf)
-      #mnf.file &&= @disambig.strip_root(mnf.file)
+      # mnf.file &&= @disambig.strip_root(mnf.file)
       clean_manifest_id(mnf)
       Array(mnf.entry).each { |e| clean_manifest(e) }
     end
@@ -323,7 +325,7 @@ module Metanorma
     end
 
     def docref_to_xml_attrs(elem, docref) # KILL
-      #f = docref["fileref"] and elem[:fileref] = @disambig.strip_root(f)
+      # f = docref["fileref"] and elem[:fileref] = @disambig.strip_root(f)
       %i(attachment sectionsplit url fileref_original).each do |i|
         elem[i] = docref[i.to_s] if docref[i.to_s]
       end
