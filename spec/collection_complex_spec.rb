@@ -406,7 +406,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
         .to include %(This document is also unrelated to <a href="dummy.xml.3.html#what">)
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
-        .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302:2016 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas E0/A0, <a href="dummy.xml.2.html#A1_ISO_17302_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_ISO_17302_2016_4">E2</a>.</p>}
+        .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302:2016 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas E0/A0, <a href="dummy.xml.2.html#A1_ISO_17302_2016_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_2016_ISO_17302_2016_4">E2</a>.</p>}
       FileUtils.rm_rf of
     end
 
