@@ -3,7 +3,7 @@ module Metanorma
   class FileLookup
     def add_section_split
       ret = @files.keys.each_with_object({}) do |k, m|
-        if @files[k][:sectionsplit] == "true" && !@files[k]["attachment"]
+        if @files[k][:sectionsplit] && !@files[k][:attachment]
           process_section_split_instance(k, m)
           cleanup_section_split_instance(k, m)
         end

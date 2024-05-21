@@ -41,6 +41,7 @@ module Metanorma
       @directives = config.directive || []
       @bibdata = config.bibdata
       @dirname = File.expand_path(File.dirname(@file))
+      require "debug"; binding.b
       @manifest = CollectionManifest.new(config.manifest, self, @dirname)
       #@coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
       #@coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",

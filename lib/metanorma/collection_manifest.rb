@@ -21,11 +21,13 @@ module Metanorma
     end
 
     def manifest_postprocess(config, dir)
+      require  "debug"; binding.b
       manifest_expand_yaml(config, dir)
       manifest_compile_adoc(config, dir)
       manifest_filexist(config, dir)
       manifest_sectionsplit(config, dir)
       manifest_identifier(config, dir)
+      require  "debug"; binding.b
       config
     end
 
