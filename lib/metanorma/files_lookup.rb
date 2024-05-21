@@ -98,7 +98,6 @@ module Metanorma
             else { type: "id", ref: ref["id"] }
             end
       file_entry_copy(ref, ret)
-      warn ret
       ret.compact
     end
 
@@ -112,7 +111,6 @@ module Metanorma
             else { type: "id", ref: ref.id }
             end
       file_entry_copy(ref, ret)
-      warn ret
       ret.compact
     end
 

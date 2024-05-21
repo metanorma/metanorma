@@ -267,6 +267,7 @@ RSpec.describe Metanorma::Collection do
             "document-2_index.html" => "ISO 12345-2:2024",
           }
           generated_files = Dir["#{OUTPATH}/*"]
+          require "debug"; binding.b
 
           expected_output.each do |k, v|
             expect(generated_files).to include("#{OUTPATH}/#{k}")

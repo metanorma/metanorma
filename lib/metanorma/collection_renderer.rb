@@ -304,13 +304,22 @@ module Metanorma
 
     def index_object(mnf)
       mnf = Array(mnf).first
-      c = Array(mnf.entry).each_with_object([]) do |d, b|
+      nonfiles = Array(mnf.entry).select { |d| !d.file }
+      files = Array(mnf.entry).select { |d| d.file }
+      files.empty? or r = Nokogiri::HTML::Builder.new do |b|
+        b.ul do |u|
+        files.each do |f|
+          docrefs(f, u)
+        end
+      end
+      end
+
+
+
+      c = nonfiles.each_with_object([]) do |d, b|
         b << index_object(d)
       end
       c.empty? and c = nil
-      r = Nokogiri::HTML::Builder.new do |b|
-        indexfile_docref(mnf, b)
-      end
       r &&= r.doc.root&.to_html&.gsub("\n", " ")
       { title: indexfile_title(mnf),
         docrefs: r, children: c }.compact
