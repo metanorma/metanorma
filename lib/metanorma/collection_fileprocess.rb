@@ -25,7 +25,7 @@ module Metanorma
 
     def compile_options_update(identifier)
       ret = @compile_options.dup
-      Array(@directives).include?("presentation-xml") ||
+      @directives.detect { |d| d.key == "presentation-xml" } ||
         @files.get(identifier, :presentationxml) and
         ret.merge!(passthrough_presentation_xml: true)
       @files.get(identifier, :sectionsplit) == "true" and
@@ -62,7 +62,7 @@ module Metanorma
       warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
       internal_refs = locate_internal_refs
       @files.keys.each_with_index do |ident, i|
-        i.positive? && Array(@directives).include?("bare-after-first") and
+        i.positive? && @directives.detect { |d| d.key == "bare-after-first" } and
           @compile_options.merge!(bare: true)
         if @files.get(ident, :attachment) then copy_file_to_dest(ident)
         else

@@ -75,9 +75,9 @@ module Metanorma
     end
 
     def self.hash_key_detect(directives, key, variable)
-      c = directives.detect { |x| x.is_a?(Hash) && x.has_key?(key) } or
+      c = directives.detect { |x| x.key == key } or
         return variable
-      c[key]
+      c.value
     end
 
     def self.rel_path_resolve(dir, path)

@@ -153,8 +153,18 @@ module Metanorma
 
     # @param elm [Nokogiri::XML::Element]
     # @return [String]
-    def indexfile_title(elm)
+    def indexfile_title(elm) # KILL
       elm.at(ns("./title"))&.text
+    end
+
+    def indexfile_title(entry)
+      if entry.bibdata
+        x = entry.bibdata.title.detect { |t| t.type == "main" } ||
+          entry.bibdata.title.first
+        x.title.content
+      else
+        entry.title
+      end
     end
 
     # uses the identifier to label documents; other attributes (title) can be
@@ -168,7 +178,7 @@ module Metanorma
       builder.ul { |b| docrefs(elm, b) }
     end
 
-    def indexfile_docref(mnf, builder)
+    def indexfile_docref(mnf, builder) # KILL
       return "" unless Array(mnf.entry).detect { |d| d.index }
 
       builder.ul { |b| docrefs(mnf, b) }
@@ -181,33 +191,27 @@ module Metanorma
         if m = d.at(ns("./manifest"))
           builder << indexfile(m, ul: false)
         else
-        ident = docref_ident(d)
-        builder.li do |li|
-          li.a href: index_link(d, ident) do |a|
-            a << ident.split(/([<>&])/).map do |x|
-              /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
-            end.join
+          ident = docref_ident(d)
+          builder.li do |li|
+            li.a href: index_link(d, ident) do |a|
+              a << ident.split(/([<>&])/).map do |x|
+                /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
+              end.join
+            end
           end
         end
-      end
       end
     end
 
     def docrefs(mnf, builder)
-      Array(mnf.entry).select { |d| d.index }.each do |d|
-        if m = d.entry
-          builder << indexfile(m, ul: false)
-        else
-        ident = docref_ident(d)
-        builder.li do |li|
-          li.a href: index_link(d, ident) do |a|
-            a << ident.split(/([<>&])/).map do |x|
-              /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
-            end.join
+          ident = docref_ident(mnf)
+          builder.li do |li|
+            li.a href: index_link(mnf, ident) do |a|
+              a << ident.split(/([<>&])/).map do |x|
+                /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
+              end.join
+            end
           end
-        end
-      end
-      end
     end
 
     def docref_ident(docref) # KILL
@@ -215,8 +219,8 @@ module Metanorma
       @c.decode(@isodoc.docid_prefix(nil, ident))
     end
 
-     def docref_ident(docref)
-       ident = docref.identifier
+    def docref_ident(docref)
+      ident = docref.identifier.dup
       @c.decode(@isodoc.docid_prefix(nil, ident))
     end
 
@@ -253,23 +257,34 @@ module Metanorma
       ret.to_html
     end
 
-    def indexfile(mnfs, ul: true)
+    def indexfile(mnf)
+      mnfs = Array(mnf)
       mnfs.empty? and return ""
-      mnfs.map { |m| indexfile1(m, ul) }.join("\n")
+      mnfs.map { |m| "<ul>#{indexfile1(m)}</ul>" }.join("\n")
     end
 
-    def indexfile1(mnf, ul)
+    def index?(mnf)
+      mnf.index and return true
+      mnf.entry.detect { |e| index?(e) }
+    end
+
+    def indexfile1(mnf)
+      index?(mnf)  or return ""
       ret = Nokogiri::HTML::Builder.new do |b|
-        b.ul do
-          b.li mnf.title
-          indexfile_docref(mnf, b)
+          if mnf.file
+          docrefs(mnf, b)
+          else
+          b.li do |l|
+            l << indexfile_title(mnf)
+            l.ul do |u|
           Array(mnf.entry).each do |e|
-            b << indexfile1(e, ul)
+              u << indexfile1(e)
+            end
+            end
+          end
           end
         end
-      end
       ret = ret.doc.root
-      ul or ret = ret.children
       ret.to_html
     end
 
@@ -287,8 +302,8 @@ module Metanorma
         docrefs: r, children: c }.compact
     end
 
-     def index_object(mnf)
-       mnf = Array(mnf).first
+    def index_object(mnf)
+      mnf = Array(mnf).first
       c = Array(mnf.entry).each_with_object([]) do |d, b|
         b << index_object(d)
       end
@@ -297,11 +312,11 @@ module Metanorma
         indexfile_docref(mnf, b)
       end
       r &&= r.doc.root&.to_html&.gsub("\n", " ")
-      { title: mnf.title,
+      { title: indexfile_title(mnf),
         docrefs: r, children: c }.compact
     end
 
-    def liquid_docrefs
+    def liquid_docrefs # KILL
       @xml.xpath(ns("//docref[@index = 'true']")).each_with_object([]) do |d, m|
         ident = d.at(ns("./identifier")).children.to_xml
         ident = @c.decode(@isodoc.docid_prefix(nil, ident))
@@ -310,6 +325,20 @@ module Metanorma
         m << { "identifier" => ident, "file" => index_link(d, ident),
                "title" => title&.children&.to_xml,
                "level" => d.at(ns("./level"))&.text }
+      end
+    end
+
+    def liquid_docrefs(mnfs)
+      Array(mnfs).select { |d| d.index }.each_with_object([]) do |d, m|
+        if d.file
+          ident = d.identifier.dup
+          ident = @c.decode(@isodoc.docid_prefix(nil, ident))
+          title = indexfile_title(d)
+          m << { "identifier" => ident, "file" => index_link(d, ident),
+                 "title" => title, "level" => d.type }
+        else
+          liquid_docrefs(d.entry).each { |m1| m << m1 }
+        end
       end
     end
   end

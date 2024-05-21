@@ -19,18 +19,25 @@
       </owner>
     </copyright>
   </bibdata>
-  <directives>documents-external</directives>
-  <directives>
-    <coverpage>spec/fixtures/collection/collection_cover.html</coverpage>
-  </directives>
-  <directives>documents-inline</directives>
-  <manifest>
-    <level>collection</level>
+  <directive>
+    <key>documents-external</key>
+  </directive>
+  <directive>
+    <key>coverpage</key>
+    <value>spec/fixtures/collection/collection_cover.html</value>
+  </directive>
+  <directive>
+    <key>documents-inline</key>
+  </directive>
+  <entry index="true">
+    <identifier>_</identifier>
+    <type>collection</type>
     <title>ISO Collection</title>
-    <manifest>
-      <level>subcollection</level>
+    <entry index="true">
+      <identifier>_</identifier>
+      <type>subcollection</type>
       <title>Standards</title>
-      <docref fileref="rice-en.final.xml" index="true" id="doc000000000">
+      <entry id="doc000000000" index="true" fileref="rice-en.final.xml">
         <identifier>ISO 17301-1:2016</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
@@ -96,8 +103,8 @@
             <stagename>International standard</stagename>
           </ext>
         </bibdata>
-      </docref>
-      <docref fileref="dummy.xml" url="example/url" index="true" id="doc000000001">
+      </entry>
+      <entry id="doc000000001" index="true" url="example/url" fileref="dummy.xml">
         <identifier>ISO 17302</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Dummy document</title>
@@ -154,8 +161,8 @@
             <stagename>International standard</stagename>
           </ext>
         </bibdata>
-      </docref>
-      <docref fileref="rice1-en.final.xml" index="true" id="doc000000002">
+      </entry>
+      <entry id="doc000000002" index="true" fileref="rice1-en.final.xml">
         <identifier>ISO 1701:1974</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
@@ -216,12 +223,13 @@
             <stagename>International standard</stagename>
           </ext>
         </bibdata>
-      </docref>
-    </manifest>
-    <manifest>
-      <level>subcollection</level>
+      </entry>
+    </entry>
+    <entry index="true">
+      <identifier>_</identifier>
+      <type>subcollection</type>
       <title>Amendments</title>
-      <docref fileref="rice-amd.final.xml" index="true" id="doc000000003">
+      <entry id="doc000000003" index="true" fileref="rice-amd.final.xml">
         <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
@@ -240,7 +248,7 @@
             <on>2016-05-01</on>
           </date>
           <date type="updated">
-            <on>2017-02</on>
+            <on>2017-02-01</on>
           </date>
           <contributor>
             <role type="author"/>
@@ -289,19 +297,21 @@
             <stagename>International standard</stagename>
           </ext>
         </bibdata>
-      </docref>
-    </manifest>
-    <manifest>
-      <level>attachments</level>
+      </entry>
+    </entry>
+    <entry index="true">
+      <identifier>_</identifier>
+      <type>attachments</type>
       <title>Attachments</title>
-      <docref fileref="pics/action_schemaexpg1.svg" attachment="true" index="true" id="doc000000004">
+      <entry id="doc000000004" attachment="true" index="true" fileref="pics/action_schemaexpg1.svg">
         <identifier>action_schemaexpg1.svg</identifier>
-      </docref>
-      <docref fileref="assets/rice_image1.png" attachment="true" index="true" id="doc000000005">
+      </entry>
+      <entry id="doc000000005" attachment="true" index="true" fileref="../../assets/rice_image1.png">
         <identifier>rice_image1.png</identifier>
-      </docref>
-    </manifest>
-  </manifest>
+      </entry>
+    </entry>
+  </entry>
+  <coverpage>cover.html</coverpage>
   <prefatory-content>
     <clause id="_clause" inline-header="false" obligation="normative">
       <title>Clause</title>
@@ -424,19 +434,586 @@ at the address below or ISO’s member body in the country of the requester.
 </locality>E2/A2</eref>.</p>-->
           <p id="">This document uses schemas E0/A0, <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A1</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302">E2<localityStack><locality type="anchor"><referenceFrom>E2</referenceFrom></locality></localityStack></eref>.</p>
           <figure id="fig1_ISO_17301-1_2016">
+            <?xml version="1.0" encoding="utf-8"?>
+            <!-- Generator: Adobe Illustrator 25.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
               <style type="text/css">
 	.st0{fill:none;stroke:#000000;stroke-miterlimit:10;}
 </style>
-              <image style="overflow:visible;" width="368" height="315" xlink:href='data:image/gif;base64,_'s manifest
+              <image style="overflow:visible;" width="368" height="315" xlink:href='data:image/gif;base64,_' transform="matrix(1 0 0 1 114 263.8898)"/>
+              <a xlink:href="mn://action_schema">
+                <rect x="123.28" y="273.93" class="st0" width="88.05" height="41.84"/>
+              </a>
+              <a xlink:href="mn://basic_attribute_schema">
+                <rect x="324.69" y="450.52" class="st0" width="132.62" height="40.75"/>
+              </a>
+              <a xlink:href="example/url.html#A2">
+                <rect x="324.69" y="528.36" class="st0" width="148.16" height="40.75"/>
+              </a>
+            </svg>
+          </figure>
+          <p>You can also download the svg image at: <eref type="inline" bibitemid="action_schemaexpg1.svg_ISO_17301-1_2016" citeas="action_schemaexpg1.svg"/>. See <xref target="_scope_ISO_17301-1_2016"/> and <strong style="background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);">scope</strong></p>
+        </clause>
+        <clause id="anotherclause_ISO_17301-1_2016" type="express">
+          <title>This is another clause</title>
+          <p><eref bibitemid="Nowhere_ISO_17301-1_2016"/>Direct links nowhere</p>
+          <p><eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302">E2<localityStack><locality type="anchor"><referenceFrom>E2</referenceFrom></locality></localityStack></eref>Indirect links nowhere</p>
+        </clause>
+        <clause id="thirdclause_ISO_17301-1_2016">
+          <title>This is another clause</title>
+        </clause>
+      </sections>
+      <bibliography>
+        <references id="_normative_references_ISO_17301-1_2016" normative="true" obligation="informative" hidden="true">
+          <title>Normative References</title>
+          <p id="">The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</p>
+          <bibitem type="standard" hidden="true" id="RiceAmd_ISO_17301-1_2016">
+            <title language="en" format="text/plain" type="main">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
+            <title language="en" format="text/plain" type="title-main">Specification and test methods</title>
+            <title language="en" format="text/plain" type="title-part">Rice</title>
+            <title language="en" format="text/plain" type="title-amd">Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
+            <title language="fr" format="text/plain" type="main">Spécification et méthodes d’essai — Riz — Fraction massique de matière étrangère, riz usiné (non gluant), diviseurs d’échantillon et recommandations relatives aux conditions d’entreposage et de transport</title>
+            <title language="fr" format="text/plain" type="title-main">Spécification et méthodes d’essai</title>
+            <title language="fr" format="text/plain" type="title-part">Riz</title>
+            <title language="fr" format="text/plain" type="title-amd">Fraction massique de matière étrangère, riz usiné (non gluant), diviseurs d’échantillon et recommandations relatives aux conditions d’entreposage et de transport</title>
+            <uri type="citation">rice-amd.final.html</uri>
+            <docidentifier primary="true" type="ISO">ISO 17301-1:2016/Amd.1:2017</docidentifier>
+            <docidentifier type="iso-with-lang">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
+            <docidentifier type="iso-reference">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
+            <docnumber>17301</docnumber>
+            <date type="created">
+              <on>2016-05-01</on>
+            </date>
+            <date type="updated">
+              <on>2017-02</on>
+            </date>
+            <contributor>
+              <role type="author"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <contributor>
+              <role type="publisher"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <edition>2</edition>
+            <version/>
+            <language>en</language>
+            <script>Latn</script>
+            <status>
+              <stage abbreviation="IS">60</stage>
+              <substage>60</substage>
+            </status>
+            <copyright>
+              <from>2017</from>
+              <owner>
+                <organization>
+                  <name>International Organization for Standardization</name>
+                  <abbreviation>ISO</abbreviation>
+                </organization>
+              </owner>
+            </copyright>
+          </bibitem>
+          <bibitem type="standard" hidden="true" id="StarTrek_ISO_17301-1_2016">
+            <title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
+            <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
+            <title language="fr" format="text/plain" type="main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
+            <title language="fr" format="text/plain" type="title-main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
+            <uri type="citation">rice1-en.final.html</uri>
+            <docidentifier primary="true" type="ISO">ISO 1701:1974</docidentifier>
+            <docidentifier type="iso-with-lang">ISO 1701:1974(E)</docidentifier>
+            <docidentifier type="iso-reference">ISO 1701:1974(E)</docidentifier>
+            <docnumber>1701</docnumber>
+            <contributor>
+              <role type="author"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <contributor>
+              <role type="publisher"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <edition>1</edition>
+            <version>
+              <revision-date>2016-05-01</revision-date>
+            </version>
+            <language>en</language>
+            <script>Latn</script>
+            <status>
+              <stage abbreviation="IS">60</stage>
+              <substage>60</substage>
+            </status>
+            <copyright>
+              <from>1974</from>
+              <owner>
+                <organization>
+                  <name>International Organization for Standardization</name>
+                  <abbreviation>ISO</abbreviation>
+                </organization>
+              </owner>
+            </copyright>
+          </bibitem>
+        </references>
+        <references id="_bibliography_ISO_17301-1_2016" normative="false" obligation="informative">
+          <title>Bibliography</title>
+          <bibitem type="standard" hidden="true" id="Dummy_ISO_17301-1_2016">
+            <title language="en" format="text/plain" type="main">Dummy document</title>
+            <title language="en" format="text/plain" type="title-main">Dummy document</title>
+            <title language="fr" format="text/plain" type="main">Dummy document</title>
+            <title language="fr" format="text/plain" type="title-main">Dummy document</title>
+            <uri type="citation">example/url</uri>
+            <docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
+            <docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
+            <docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
+            <docnumber>17302</docnumber>
+            <contributor>
+              <role type="author"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <contributor>
+              <role type="publisher"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <language>en</language>
+            <script>Latn</script>
+            <status>
+              <stage abbreviation="IS">60</stage>
+              <substage>60</substage>
+            </status>
+            <copyright>
+              <from>2016</from>
+              <owner>
+                <organization>
+                  <name>International Organization for Standardization</name>
+                  <abbreviation>ISO</abbreviation>
+                </organization>
+              </owner>
+            </copyright>
+          </bibitem>
+          <bibitem id="ISO712_ISO_17301-1_2016" type="standard">
+            <fetched>2024-05-21</fetched>
+            <title type="title-intro" format="text/plain" language="en" script="Latn">Cereals and cereal products</title>
+            <title type="title-main" format="text/plain" language="en" script="Latn">Determination of moisture content</title>
+            <title type="main" format="text/plain" language="en" script="Latn">Cereals and cereal products – Determination of moisture content</title>
+            <title type="title-intro" format="text/plain" language="fr" script="Latn">Céréales et produits céréaliers</title>
+            <title type="title-main" format="text/plain" language="fr" script="Latn">Détermination de la teneur en eau</title>
+            <title type="main" format="text/plain" language="fr" script="Latn">Céréales et produits céréaliers – Détermination de la teneur en eau</title>
+            <uri type="src">https://www.iso.org/standard/44807.html</uri>
+            <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:44807:en</uri>
+            <uri type="rss">https://www.iso.org/contents/data/standard/04/48/44807.detail.rss</uri>
+            <docidentifier type="ISO">ISO 712 (all parts)</docidentifier>
+            <docnumber>712</docnumber>
+            <date type="published">
+              <on>2009</on>
+            </date>
+            <contributor>
+              <role type="publisher"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+                <uri>www.iso.org</uri>
+              </organization>
+            </contributor>
+            <edition>4</edition>
+            <language>en</language>
+            <language>fr</language>
+            <script>Latn</script>
+            <status>
+              <stage>90</stage>
+              <substage>93</substage>
+            </status>
+            <copyright>
+              <from>2009</from>
+              <owner>
+                <organization>
+                  <name>ISO</name>
+                </organization>
+              </owner>
+            </copyright>
+            <relation type="obsoletes">
+              <bibitem type="standard">
+                <formattedref format="text/plain">ISO 712:1998</formattedref>
+              </bibitem>
+            </relation>
+            <relation type="instance">
+              <bibitem type="standard">
+                <fetched>2024-05-21</fetched>
+                <title type="title-intro" format="text/plain" language="en" script="Latn">Cereals and cereal products</title>
+                <title type="title-main" format="text/plain" language="en" script="Latn">Determination of moisture content</title>
+                <title type="title-part" format="text/plain" language="en" script="Latn">Reference method</title>
+                <title type="main" format="text/plain" language="en" script="Latn">Cereals and cereal products — Determination of moisture content — Reference method</title>
+                <title type="title-intro" format="text/plain" language="fr" script="Latn">Céréales et produits céréaliers</title>
+                <title type="title-main" format="text/plain" language="fr" script="Latn">Détermination de la teneur en eau</title>
+                <title type="title-part" format="text/plain" language="fr" script="Latn">Méthode de référence</title>
+                <title type="main" format="text/plain" language="fr" script="Latn">Céréales et produits céréaliers — Détermination de la teneur en eau — Méthode de référence</title>
+                <uri type="src">https://www.iso.org/standard/44807.html</uri>
+                <uri type="obp">https://www.iso.org/obp/ui/#!iso:std:44807:en</uri>
+                <uri type="rss">https://www.iso.org/contents/data/standard/04/48/44807.detail.rss</uri>
+                <docidentifier type="ISO">ISO 712:2009</docidentifier>
+                <docnumber>712</docnumber>
+                <date type="published">
+                  <on>2009</on>
+                </date>
+                <contributor>
+                  <role type="publisher"/>
+                  <organization>
+                    <name>International Organization for Standardization</name>
+                    <abbreviation>ISO</abbreviation>
+                    <uri>www.iso.org</uri>
+                  </organization>
+                </contributor>
+                <edition>4</edition>
+                <language>en</language>
+                <language>fr</language>
+                <script>Latn</script>
+                <abstract format="text/plain" language="en" script="Latn">ISO 712:2009 specifies a routine reference method for the determination of the moisture content of cereals and cereal products.ISO 712:2009 applies to: wheat, rice (paddy, husked and milled), barley, millet (Panicum miliaceum), rye, oats, triticale, sorghum in the form of grains, milled grains, semolina or flour.The method is not applicable to maize and pulses.</abstract>
+                <abstract format="text/plain" language="fr" script="Latn">L’ISO 712:2009 spécifie une méthode de référence pratique pour la détermination de la teneur en eau des céréales et des produits céréaliers.L’ISO 712:2009 est applicable aux produits suivants: blé, riz (paddy, décortiqué et usiné), orge, millet (Panicum miliaceum), seigle, avoine, triticale, sorgho, à l’état de grains, grains broyés, semoule ou farine.La méthode n’est applicable ni au maïs ni aux légumineuses.</abstract>
+                <status>
+                  <stage>90</stage>
+                  <substage>93</substage>
+                </status>
+                <copyright>
+                  <from>2009</from>
+                  <owner>
+                    <organization>
+                      <name>ISO</name>
+                    </organization>
+                  </owner>
+                </copyright>
+                <relation type="obsoletes">
+                  <bibitem type="standard">
+                    <formattedref format="text/plain">ISO 712:1998</formattedref>
+                  </bibitem>
+                </relation>
+                <place>Geneva</place>
+              </bibitem>
+            </relation>
+            <relation type="instance">
+              <bibitem type="standard">
+                <formattedref format="text/plain">ISO 712:1998</formattedref>
+              </bibitem>
+            </relation>
+            <relation type="instance">
+              <bibitem type="standard">
+                <formattedref format="text/plain">ISO 712:1985</formattedref>
+              </bibitem>
+            </relation>
+            <relation type="instance">
+              <bibitem type="standard">
+                <formattedref format="text/plain">ISO 712:1979</formattedref>
+              </bibitem>
+            </relation>
+            <place>Geneva</place>
+          </bibitem>
+          <bibitem id="express-schema_E0_ISO_17301-1_2016" type="internal">
+            <docidentifier type="metanorma-collection">Missing:express-schema:E0</docidentifier>
+            <docidentifier type="repository">current-metanorma-collection/Missing:express-schema:E0</docidentifier>
+          </bibitem>
+          <bibitem type="standard" hidden="true" id="express-schema_E1_ISO_17301-1_2016">
+            <title language="en" format="text/plain" type="main">Dummy document</title>
+            <title language="en" format="text/plain" type="title-main">Dummy document</title>
+            <title language="fr" format="text/plain" type="main">Dummy document</title>
+            <title language="fr" format="text/plain" type="title-main">Dummy document</title>
+            <uri type="citation">example/url</uri>
+            <docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
+            <docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
+            <docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
+            <docnumber>17302</docnumber>
+            <contributor>
+              <role type="author"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <contributor>
+              <role type="publisher"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <language>en</language>
+            <script>Latn</script>
+            <status>
+              <stage abbreviation="IS">60</stage>
+              <substage>60</substage>
+            </status>
+            <copyright>
+              <from>2016</from>
+              <owner>
+                <organization>
+                  <name>International Organization for Standardization</name>
+                  <abbreviation>ISO</abbreviation>
+                </organization>
+              </owner>
+            </copyright>
+          </bibitem>
+          <bibitem type="standard" hidden="true" id="express-schema_E2_ISO_17301-1_2016">
+            <title language="en" format="text/plain" type="main">Dummy document</title>
+            <title language="en" format="text/plain" type="title-main">Dummy document</title>
+            <title language="fr" format="text/plain" type="main">Dummy document</title>
+            <title language="fr" format="text/plain" type="title-main">Dummy document</title>
+            <uri type="citation">example/url</uri>
+            <docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
+            <docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
+            <docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
+            <docnumber>17302</docnumber>
+            <contributor>
+              <role type="author"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <contributor>
+              <role type="publisher"/>
+              <organization>
+                <name>International Organization for Standardization</name>
+                <abbreviation>ISO</abbreviation>
+              </organization>
+            </contributor>
+            <language>en</language>
+            <script>Latn</script>
+            <status>
+              <stage abbreviation="IS">60</stage>
+              <substage>60</substage>
+            </status>
+            <copyright>
+              <from>2016</from>
+              <owner>
+                <organization>
+                  <name>International Organization for Standardization</name>
+                  <abbreviation>ISO</abbreviation>
+                </organization>
+              </owner>
+            </copyright>
+          </bibitem>
+          <bibitem hidden="true" id="action_schemaexpg1.svg_ISO_17301-1_2016">
+            <uri type="citation">pics/action_schemaexpg1.svg</uri>
+            <docidentifier>action_schemaexpg1.svg</docidentifier>
+          </bibitem>
+        </references>
+        <references hidden="true" normative="false"/>
+      </bibliography>
+    </iso-standard>
+  </doc-container>
+  <doc-container id="doc000000001">
+    <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17302">
+      <bibdata type="standard">
+        <title language="en" format="text/plain" type="main">Dummy document</title>
+        <title language="en" format="text/plain" type="title-main">Dummy document</title>
+        <title language="fr" format="text/plain" type="main">Dummy document</title>
+        <title language="fr" format="text/plain" type="title-main">Dummy document</title>
+        <docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
+        <docidentifier type="iso-with-lang">ISO 17302:2016(E)</docidentifier>
+        <docidentifier type="iso-reference">ISO 17302:2016(E)</docidentifier>
+        <docnumber>17302</docnumber>
+        <contributor>
+          <role type="author"/>
+          <organization>
+            <name>International Organization for Standardization</name>
+            <abbreviation>ISO</abbreviation>
+          </organization>
+        </contributor>
+        <contributor>
+          <role type="publisher"/>
+          <organization>
+            <name>International Organization for Standardization</name>
+            <abbreviation>ISO</abbreviation>
+          </organization>
+        </contributor>
+        <language>en</language>
+        <script>Latn</script>
+        <status>
+          <stage abbreviation="IS">60</stage>
+          <substage>60</substage>
+        </status>
+        <copyright>
+          <from>2016</from>
+          <owner>
+            <organization>
+              <name>International Organization for Standardization</name>
+              <abbreviation>ISO</abbreviation>
+            </organization>
+          </owner>
+        </copyright>
+        <ext>
+          <doctype>international-standard</doctype>
+          <editorialgroup>
+            <technical-committee number="34">Food products</technical-committee>
+            <subcommittee number="4">Cereals and pulses</subcommittee>
+            <workgroup number="4" type="WG">Amylose in rice</workgroup>
+            <secretariat>SAC</secretariat>
+          </editorialgroup>
+          <ics>
+            <code>67.060</code>
+          </ics>
+          <structuredidentifier>
+            <project-number>ISO 17302</project-number>
+          </structuredidentifier>
+          <stagename>International standard</stagename>
+        </ext>
+      </bibdata>
+      <boilerplate>
+        <copyright-statement>
+          <clause>
+            <p id="">
+    © ISO 2016
+  </p>
+            <p id="">
+    All rights
+reserved. Unless otherwise specified, no part of this publication may be
+reproduced or utilized otherwise in any form or by any means, electronic or
+mechanical, including photocopying, or posting on the internet or an intranet,
+without prior written permission. Permission can be requested from either ISO
+at the address below or ISO’s member body in the country of the requester.
+  </p>
+            <p id="" align="left">
+    ISO copyright office<br/>
+    Ch. de Blandonnet 8 • CP 401<br/>
+    CH-1214 Vernier, Geneva, Switzerland<br/>
+    Tel.  + 41 22 749 01 11<br/>
+    Fax  + 41 22 749 09 47<br/>
+    Email: copyright@iso.org<br/>
+    Website: www.iso.org
+  </p>
+            <p id="">
+    Published in Switzerland
+  </p>
+          </clause>
+        </copyright-statement>
+      </boilerplate>
+      <sections>
+        <clause id="_scope_ISO_17302" obligation="normative">
+          <title>Scope</title>
+          <p id="">This is a dummy document.</p>
+        </clause>
+        <clause id="E1_ISO_17302" type="express-schema">
+          <figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1_ISO_17302">
+            <pre id="A1_ISO_17302">
+module Metanorma
+  class Document
+    # @return [Strin]
+    attr_reader :file
+     
+    # @param bibitem [RelatonBib::BibliographicItem]
+    def initialize(bibitem, file)
+      @bibitem = bibitem
+      @file = file
+    end
+     
+    class  self
+      # @param file [String] file path
+      # @return [Metanorma::Document]
+      def parse_file(file)
+        new bibitem(file), file
+      end
+     
+      # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
+      # @return [Metanorma::Document]
+      def parse_xml(xml)
+        new from_xml(xml)
+      end
+     
+      private
+     
+      # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
+      # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
+      def from_xml(xml)
+        Relaton::Cli.parse_xml xml.at("//xmlns:bibitem|//xmlns:bibdata")
+      end
+     
+      # @param file [String]
+      # @return [Symbol] file type
+      def format(file)
+        case file
+        when /\.xml$/ then :xml
+        when /.ya?ml$/ then :yaml
+        end
+      end
+     
+      # @param file [String]
+      # @return [RelatonBib::BibliographicItem,
+      #   RelatonIso::IsoBibliographicItem]
+      def bibitem(file)
+        case format(file)
+        when :xml
+          from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8"))
+        when :yaml
+          yaml = File.read(file, ecoding: "UTF-8")
+          Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
+        end
+      end
+    end
+     
+    # @param builder [Nokogiri::XML::Builder, nil]
+    # @return [Nokogiri::XML::Builder, String]
+    def to_xml(builder = nil)
+      if builder
+        render_xml builder
+      else
+        Nokogiri::XML::Builder.new do |b|
+          root = render_xml b
+          root["xmlns"] = "http://metanorma.org"
+        end.to_xml
+      end
+    end
+     
+    # @return [String]
+    def type
+      @type ||= (@bibitem.docidentifier.first.type ||
+        @bibitem.docidentifier.first.id.match(/^[^\s]+/).to_s).downcase ||
+        "standoc"
+    end
+     
+    private
+     
+    def render_xml(builder)
+      builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true }
+    end
+  end
+end
+</pre>
+          </figure>
+        </clause>
+        <clause id="what_ISO_17302" inline-header="false" obligation="normative">
+          <title>What?</title>
+          <ol id="_2a3efdd5-8e78-47d9-9721-38699221dd31_ISO_17302" type="roman">
+            <li>
+              <p id="">What?</p>
+            </li>
+          </ol>
+        </clause>
+        <clause id="E2_ISO_17302" type="express-schema">
+          <figure id="A2_ISO_17302">
+            <pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438_ISO_17302">
+module Metanorma
+  # Metanorma collection's manifest
   class CollectionManifest
     # @return [Metanorma::Collection]
     attr_reader :collection
      
     # @param level [String]
     # @param title [String, nil]
-    # @param docref [Array&lt;Hash{String=&gt;String}&gt;]
-    # @param manifest [Array&lt;Metanorma::CollectionManifest&gt;]
+    # @param docref [ArrayHash{String=String}]
+    # @param manifest [ArrayMetanorma::CollectionManifest]
     def initialize(level, title = nil, docref = [], manifest = [])
       @level = level
       @title = title
@@ -444,7 +1021,7 @@ at the address below or ISO’s member body in the country of the requester.
       @manifest = manifest
     end
      
-    class &lt;&lt; self
+    class  self
       # @param mnf [Nokogiri::XML::Element]
       # @return [Metanorma::CollectionManifest]
       def from_yaml(mnf)
@@ -459,7 +1036,7 @@ at the address below or ISO’s member body in the country of the requester.
       # @return [Metanorma::CollectionManifest]
       def from_xml(mnf)
         level = mnf.at("level").text
-        title = mnf.at("title")&amp;.text
+        title = mnf.at("title").text
         manifest = mnf.xpath("xmlns:manifest").map { |m| from_xml(m) }
         new(level, title, parse_docref(mnf), manifest)
       end
@@ -467,10 +1044,10 @@ at the address below or ISO’s member body in the country of the requester.
       private
      
       # @param mnf [Nokogiri::XML::Element]
-      # @return [Hash{String=&gt;String}]
+      # @return [Hash{String=String}]
       def parse_docref(mnf)
         mnf.xpath("xmlns:docref").map do |dr|
-          h = { "identifier" =&gt; dr.at("identifier").text }
+          h = { "identifier" = dr.at("identifier").text }
           h["fileref"] = dr[:fileref] if dr[:fileref]
           h
         end
@@ -484,7 +1061,7 @@ at the address below or ISO’s member body in the country of the requester.
     end
      
     # @param dir [String] path to coolection
-    # @return [Hash&lt;String, Metanorma::Document&gt;]
+    # @return [HashString, Metanorma::Document]
     def documents(dir = "")
       docs = @docref.each_with_object({}) do |dr, m|
         next m unless dr["fileref"]
@@ -507,7 +1084,7 @@ at the address below or ISO’s member body in the country of the requester.
       end
     end
      
-    # @return [Array&lt;Hash{String=&gt;String}&gt;]
+    # @return [ArrayHash{String=String}]
     def docrefs
       return @docrefs if @docrefs
      
@@ -530,7 +1107,7 @@ at the address below or ISO’s member body in the country of the requester.
         drf[:fileref] = dr["fileref"]
         if collection.directives.include?("documents-inline")
           id = collection.documents.find_index { |k, _| k == dr["identifier"] }
-          drf[:id] = format("doc%&lt;index&gt;09d", index: id)
+          drf[:id] = format("doc%index09d", index: id)
         end
       end
     end

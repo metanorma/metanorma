@@ -49,13 +49,13 @@ module Metanorma
     end
 
     def read_file(manifest)
-      i = @isodoc.docid_prefix("", manifest.identifier)
+      i = key(@isodoc.docid_prefix("", manifest.identifier.dup))
       k = manifest.identifier
       if false && manifest.bibdata and # NO, DO NOT FISH FOR THE GENUINE IDENTIFIER IN BIBDATA
         d = manifest.bibdata.docidentifier.detect { |x| x.primary } ||
           manifest.bibdata.docidentifier.first
         k = d.id
-        i = key(@isodoc.docid_prefix(d.type, d.id))
+        i = key(@isodoc.docid_prefix(d.type, d.id.dup))
       end
       entry = file_entry(manifest, k) or return
       bibdata_process(entry, i)

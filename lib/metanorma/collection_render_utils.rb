@@ -142,10 +142,10 @@ module Metanorma
     def isodoc_populate
       @isodoc.info(@xml, nil)
       #{ navigation: indexfile(m), nav_object: index_object(m),
-      { navigation: indexfile(@manifest.entry), nav_object: index_object(@manifest.entry),
-        docrefs: liquid_docrefs,
-        "prefatory-content": isodoc_builder(@xml.at(ns("//prefatory-content"))),
-        "final-content": isodoc_builder(@xml.at(ns("//final-content"))),
+      { navigation: indexfile(@manifest), nav_object: index_object(@manifest),
+        docrefs: liquid_docrefs(@manifest),
+        "prefatory-content": isodoc_builder(@xml.at(("//prefatory-content"))),
+        "final-content": isodoc_builder(@xml.at(("//final-content"))),
         #doctitle: m.at(ns("../bibdata/title"))&.text,
         doctitle: @bibdata.title.first.title.content,
         #docnumber: m.at(ns("../bibdata/docidentifier"))&.text }
@@ -156,9 +156,13 @@ module Metanorma
     end
 
     def isodoc_builder(node)
+      node or return
+
+      # Kludging namespace back in because of Shale brain damage
+      doc = Nokogiri::XML(node.to_xml.sub(">", " xmlns='http://www.metanorma.org'>"))
       Nokogiri::HTML::Builder.new(encoding: "UTF-8") do |b|
         b.div do |div|
-          node&.children&.each { |n| @isodoc.parse(n, div) }
+          doc.root.children&.each { |n| @isodoc.parse(n, div) }
         end
       end.doc.root.to_html
     end

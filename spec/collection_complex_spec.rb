@@ -38,10 +38,10 @@ RSpec.describe Metanorma::Collection do
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
       expect(xmlpp(concat_file.gsub("><", ">\n<"))
-        .sub(%r{xlink:href=['"]data:image/gif;base64,[^']*'},
+        .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'"))
         .to be_equivalent_to xmlpp(concat_text.gsub("><", ">\n<"))
-          .sub(%r{xlink:href=['"]data:image/gif;base64[^']*'},
+          .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
       concat_text_doc_xml = File.open("#{INPATH}/rice-en.final.xml") do |f|
@@ -157,28 +157,22 @@ RSpec.describe Metanorma::Collection do
         ]
       expect(cr.isodoc.meta.get[:navigation])
         .to be_equivalent_to <<~OUTPUT
-          <ul>
-          <li>ISO Collection</li>
-          <ul>
-          <li>Standards</li>
-          <ul>
+          <ul><li>ISO Collection<ul>
+          <li>Standards<ul>
           <li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li>
           <li><a href="dummy.html">ISO&nbsp;17302</a></li>
           <li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li>
           </ul>
-          </ul>
-          <ul>
-          <li>Amendments</li>
-          <ul><li><a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a></li></ul>
-          </ul>
-          <ul>
-          <li>Attachments</li>
-          <ul>
+          </li>
+          <li>Amendments<ul><li><a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a></li></ul>
+          </li>
+          <li>Attachments<ul>
           <li><a href="pics/action_schemaexpg1.svg">action_schemaexpg1.svg</a></li>
           <li><a href="assets/rice_image1.png">rice_image1.png</a></li>
           </ul>
+          </li>
           </ul>
-          </ul>
+          </li></ul>
         OUTPUT
       expect(strip_guid(cr.isodoc.meta.get[:"prefatory-content"]))
         .to be_equivalent_to <<~OUTPUT

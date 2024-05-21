@@ -25,9 +25,9 @@ module Metanorma
     end
 
     def wrapping_doc_intro_outro(xml, sections)
-      p = xml.at(ns("//prefatory-content")) and
+      p = xml.at(("//prefatory-content")) and
         sections.previous = "<preface>#{p.children.to_xml}</preface>"
-      p = xml.at(ns("//final-content")) and
+      p = xml.at(("//final-content")) and
         sections.next = "<annex>#{p.children.to_xml}</annex>"
     end
 
