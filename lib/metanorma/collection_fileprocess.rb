@@ -52,6 +52,7 @@ module Metanorma
       out.absolute? and out = out.relative_path_from(File.expand_path(FileUtils.pwd))
       dest = File.join(@outdir, @disambig.source2dest_filename(out.to_s))
       FileUtils.mkdir_p(File.dirname(dest))
+      warn "cp #{@files.get(identifier, :ref)}, #{dest}"
       FileUtils.cp @files.get(identifier, :ref), dest
     end
 

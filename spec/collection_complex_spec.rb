@@ -449,67 +449,68 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "YAML collection with nested YAMLs, directory changes, attachments " \
-       "with absolute paths, attachments with paths outside working directory" do # rubocop:disable metrics/blocklength
-      mock_pdf
-      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
-      FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
-      file = "#{INPATH}/collection_new.yml"
-      # xml = file.read file, encoding: "utf-8"
-      of = OUTPATH
-      # change file path of attachment in document-2/collection.yml to absolute
-      f = "#{INPATH}/document-2/collection.yml"
-      a = File.read(f).sub(/img/, "#{File.expand_path(INPATH)}/document-2/img")
-      File.open(f, "w") { |x| x.write(a) }
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation html xml],
-        output_folder: of,
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      expect(File.exist?("#{OUTPATH}/document-1.xml.0.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-1.xml.1.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-1.xml.2.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-2.xml.0.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-2.xml.1.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-2.xml.2.html")).to be true
-      # from: spec/fixtures/collection/document-1/img/action_schemaexpg2.svg :
-      # relative link within working directory spec/fixtures/collection
-      expect(File.exist?("#{OUTPATH}/spec/fixtures/collection/document-1/img/action_schemaexpg2.svg")).to be true
-      # from: spec/fixtures/collection/../../../assets/rice_image1.png :
-      # relative link outside of working directory spec/fixtures/collection
-      expect(File.exist?("#{OUTPATH}/spec/assets/rice_image1.png")).to be true
-      # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg3.svg :
-      # absolute link
-      expect(File.exist?("#{OUTPATH}/spec/fixtures/collection/document-2/img/action_schemaexpg3.svg")).to be true
+   it "YAML collection with nested YAMLs, directory changes, attachments " \
+   "with absolute paths, attachments with paths outside working directory, " \
+   "implicit identifier for files" do # rubocop:disable metrics/blocklength
+    mock_pdf
+    FileUtils.rm_f "#{OUTPATH}/collection.err.html"
+    FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
+    file = "#{INPATH}/collection_new.yml"
+    # xml = file.read file, encoding: "utf-8"
+    of = OUTPATH
+    # change file path of attachment in document-2/collection.yml to absolute
+    f = "#{INPATH}/document-2/collection.yml"
+    a = File.read(f).sub(/img/, "#{File.expand_path(INPATH)}/document-2/img")
+    File.open(f, "w") { |x| x.write(a) }
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation html xml],
+      output_folder: of,
+      compile: {
+        no_install_fonts: true,
+      },
+    )
+    expect(File.exist?("#{OUTPATH}/document-1.xml.0.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-1.xml.1.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-1.xml.2.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-2.xml.0.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-2.xml.1.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-2.xml.2.html")).to be true
+    # from: spec/fixtures/collection/document-1/img/action_schemaexpg2.svg :
+    # relative link within working directory spec/fixtures/collection
+    expect(File.exist?("#{OUTPATH}/document-1/img/action_schemaexpg2.svg")).to be true
+    # from: spec/fixtures/collection/../../../assets/rice_image1.png :
+    # relative link outside of working directory spec/fixtures/collection
+    expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
+    # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg3.svg :
+    # absolute link
+    expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg3.svg")).to be true
 
-      # disambig files
-      f = "#{INPATH}/document-2/collection.yml"
-      a = File.read(f).sub(%r{fileref: \S+/img/action_schemaexpg3.svg},
-                           "fileref: #{File.expand_path(INPATH)}/document-2/img/action_schemaexpg2.svg")
-      File.open(f, "w") { |x| x.write(a) }
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation html xml],
-        output_folder: of,
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      expect(File.exist?("#{OUTPATH}/document-1.xml.0.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-1.xml.1.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-1.xml.2.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-2.xml.0.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-2.xml.1.html")).to be true
-      expect(File.exist?("#{OUTPATH}/document-2.xml.2.html")).to be true
-      expect(File.exist?("#{OUTPATH}/spec/fixtures/collection/document-1/img/action_schemaexpg2.svg")).to be true
-      expect(File.exist?("#{OUTPATH}/spec/assets/rice_image1.png")).to be true
-      # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg2.svg :
-      # ambiguous name
-      expect(File.exist?("#{OUTPATH}/spec/fixtures/collection/document-2/img/action_schemaexpg2.1.svg")).to be true
-    end
+    # disambig files
+    f = "#{INPATH}/document-2/collection.yml"
+    a = File.read(f).sub(%r{fileref: \S+/img/action_schemaexpg3.svg},
+                         "fileref: #{File.expand_path(INPATH)}/document-2/img/action_schemaexpg2.svg")
+    File.open(f, "w") { |x| x.write(a) }
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation html xml],
+      output_folder: of,
+      compile: {
+        no_install_fonts: true,
+      },
+    )
+    expect(File.exist?("#{OUTPATH}/document-1.xml.0.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-1.xml.1.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-1.xml.2.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-2.xml.0.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-2.xml.1.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-2.xml.2.html")).to be true
+    expect(File.exist?("#{OUTPATH}/document-1/img/action_schemaexpg2.svg")).to be true
+    expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
+    # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg2.svg :
+    # ambiguous name
+    expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.1.svg")).to be true
+  end
   end
 
   it "disambiguates destination filenames" do

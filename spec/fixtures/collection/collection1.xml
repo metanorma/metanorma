@@ -102,7 +102,7 @@
         </bibdata>
       </entry>
       <entry index="true" url="example/url" fileref="dummy.xml">
-        <identifier>ISO 17302</identifier>
+        <identifier>ISO 17302:2016</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Dummy document</title>
           <title type="title-main" format="text/plain" language="en">Dummy document</title>

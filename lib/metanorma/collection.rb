@@ -22,7 +22,7 @@ module Metanorma
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
     attr_accessor :directives, :documents, :bibdatas, :coverpage, :dirname
-    attr_accessor :disambig, :manifest, :bibdata
+    attr_accessor :disambig, :manifest, :bibdata, :compile
 
     # @param file [String] path to source file
     # @param dirname [String] directory of source file
@@ -41,7 +41,7 @@ module Metanorma
       @directives = config.directive || []
       @bibdata = config.bibdata
       @dirname = File.expand_path(File.dirname(@file))
-      require "debug"; binding.b
+      @compile = Metanorma::Compile.new # feeds manifest
       @manifest = CollectionManifest.new(config.manifest, self, @dirname)
       #@coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
       #@coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
@@ -62,7 +62,6 @@ module Metanorma
       @bibdatas.transform_keys { |k| Util::key(k) }
       @prefatory = config.prefatory_content
       @final = config.final_content
-      @compile = Metanorma::Compile.new
       @log = Metanorma::Utils::Log.new
       @disambig = Util::DisambigFiles.new
     end
@@ -132,6 +131,7 @@ module Metanorma
                  when /.ya?ml$/
                    y = YAML.load(File.read(file))
                    pre_parse_model(y)
+                   #file = File.basename(file) # so file resolution is relative to working directory
                    CollectionConfig::Config.from_yaml(y.to_yaml)
                  end
         new(file: file, config: config)
@@ -181,10 +181,10 @@ module Metanorma
 
       def parse_yaml(file)
         collection_model = YAML.load_file file
-        if new_yaml_format?(collection_model)
-          collection_model = construct_collection_manifest(collection_model)
+        #if new_yaml_format?(collection_model)
+          #collection_model = construct_collection_manifest(collection_model)
           file = File.basename(file)
-        end
+        #end
         pre_parse_model(collection_model)
         #if collection_model["manifest"]["manifest"]
           #compile_adoc_documents(collection_model)

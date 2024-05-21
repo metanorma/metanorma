@@ -21,27 +21,67 @@ module Metanorma
     end
 
     def manifest_postprocess(config, dir)
-      require  "debug"; binding.b
+      manifest_bibdata(config)
       manifest_expand_yaml(config, dir)
       manifest_compile_adoc(config, dir)
       manifest_filexist(config, dir)
       manifest_sectionsplit(config, dir)
       manifest_identifier(config, dir)
-      require  "debug"; binding.b
       config
     end
 
+    def manifest_bibdata(config)
+      @lang = config.bibdata&.language&.first || "en"
+      @script = config.bibdata&.script&.first || "Latn"
+    end
+
+    GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+
     def manifest_identifier(config, dir)
-      config.identifier = if !config.identifier && config.file
-                            @collection.class
-                              .resolve_identifier(File.dirname(config.file))
-                          else
-                            @collection.class
-                              .resolve_identifier(config.identifier)
-                          end
+      no_id = populate_id_from_doc(config, dir)
+      config.identifier =
+        if no_id && config.file # make file name be id
+          @collection.class.resolve_identifier(File.basename(config.file))
+        else
+          @collection.class.resolve_identifier(config.identifier)
+        end
       Array(config.entry).each do |f|
         manifest_identifier(f, dir)
       end
+    end
+
+    def populate_id_from_doc(config, dir)
+      no_id = /^#{GUID}$/o.match?(config.identifier)
+      # GUID assumed to be no identifier supplied
+      if no_id && /\.xml$/.match?(config.file) &&
+          (i = retrieve_id_from_doc(config.file, dir))
+        config.identifier = i
+        no_id = false
+      end
+      no_id
+    end
+
+    def retrieve_id_from_doc(file, dir)
+      x = Nokogiri::XML(File.read(File.join(dir, file)), &:huge)
+      i = x.at("//xmlns:bibdata/xmlns:docidentifier[@primary = 'true']") ||
+        x.at("//xmlns:bibdata/xmlns:docidentifier")
+      i or return nil
+      @doctype ||= i["type"]&.downcase || "standoc"
+      load_isodoc
+      Util::key(@isodoc.docid_prefix(i["type"], i.text))
+    end
+
+    # TODO refactor to overlap with collection_render_utils
+    def load_isodoc
+      @isodoc and return
+      @collection.compile.load_flavor(@doctype)
+      x = Asciidoctor.load nil, backend: @doctype.to_sym
+      @isodoc = x.converter.html_converter(Dummy.new) # to obtain Isodoc class
+      @isodoc.i18n_init(@lang, @script, nil) # for @i18n.all_parts in docid
+    end
+
+    class Dummy
+      def attr(_key); end
     end
 
     def manifest_sectionsplit(config, dir)

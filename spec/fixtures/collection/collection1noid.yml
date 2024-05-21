@@ -34,25 +34,19 @@ manifest:
       title: Standards
       docref:
         - fileref: rice-en.final.xml
-          identifier: ISO 17301-1:2016
         - fileref: dummy.xml
           url: example/url
-          identifier: ISO 17302:2016
         - fileref: rice1-en.final.xml
-          identifier: ISO 1701:1974
     - level: subcollection
       title: Amendments
       docref:
         fileref: rice-amd.final.xml
-        identifier: ISO 17301-1:2016/Amd.1:2017
     - level: attachments
       title: Attachments
       docref:
         - fileref: pics/action_schemaexpg1.svg
-          identifier: action_schemaexpg1.svg
           attachment: true
         - fileref: ../../assets/rice_image1.png
-          identifier: rice_image1.png
           attachment: true
 prefatory-content: 
 |

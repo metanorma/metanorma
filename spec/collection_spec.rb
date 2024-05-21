@@ -27,6 +27,17 @@ RSpec.describe Metanorma::Collection do
       expect(cleanup_id(xmlpp(xml))).to be_equivalent_to xmlpp(xml_content)
     end
 
+    it "YAML collection with no document identifiers" do
+      mock_pdf
+      xml_file = "#{INPATH}/collection1.xml"
+      mc = Metanorma::Collection.parse "#{INPATH}/collection1noid.yml"
+      xml = mc.to_xml
+      File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
+      expect(mc).to be_instance_of Metanorma::Collection
+      xml_content = read_and_cleanup(xml_file)
+      expect(cleanup_id(xmlpp(xml))).to be_equivalent_to xmlpp(xml_content)
+    end
+
     it "YAML collection with docs inline" do
       mock_pdf
       xml_file = "#{INPATH}/collection_docinline.xml"

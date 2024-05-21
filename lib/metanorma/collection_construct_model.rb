@@ -155,7 +155,7 @@ module Metanorma
 
     # @param collection_model [Hash{String=>String}]
     # @return [Bool]
-    def new_yaml_format?(collection_model)
+    def new_yaml_format?(collection_model) # KILL
       require "debug"; binding.b
       mnf = collection_model["manifest"]
       # return if collection yaml is not the new format
