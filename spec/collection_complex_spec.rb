@@ -135,7 +135,7 @@ RSpec.describe Metanorma::Collection do
             "title" => "Cereals and pulses&#x2009;&#x2014;&#x2009;" \
                        "Specifications and test methods&#x2009;&#x2014;" \
                        "&#x2009;Rice (Final)", "level" => nil },
-          { "identifier" => "ISO 17302", "file" => "dummy.html",
+          { "identifier" => "ISO 17302:2016", "file" => "dummy.html",
             "title" => "Dummy document", "level" => nil },
           { "identifier" => "ISO 1701:1974", "file" => "rice1-en.final.html",
             "title" => "Test conditions for milling machines with table of " \
@@ -160,7 +160,7 @@ RSpec.describe Metanorma::Collection do
           <ul><li>ISO Collection<ul>
           <li>Standards<ul>
           <li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li>
-          <li><a href="dummy.html">ISO&nbsp;17302</a></li>
+          <li><a href="dummy.html">ISO&nbsp;17302:2016</a></li>
           <li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li>
           </ul>
           </li>
@@ -200,7 +200,7 @@ RSpec.describe Metanorma::Collection do
             children: [
               { title: "Standards",
                 docrefs: <<~DOCREF,
-                  <ul><li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li><li><a href="dummy.html">ISO&nbsp;17302</a></li><li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li></ul>
+                  <ul><li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li><li><a href="dummy.html">ISO&nbsp;17302:2016</a></li><li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li></ul>
                 DOCREF
               },
               { title: "Amendments",
@@ -371,8 +371,8 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{INPATH}/ISO 17302_index.html")).to be false
-      expect(File.exist?("#{OUTPATH}/ISO 17302_index.html")).to be true
+      expect(File.exist?("#{INPATH}/ISO 17302_2016_index.html")).to be false
+      expect(File.exist?("#{OUTPATH}/ISO 17302_2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO Collection 1"
@@ -406,7 +406,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
         .to include %(This document is also unrelated to <a href="dummy.xml.3.html#what">)
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
-        .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas E0/A0, <a href="dummy.xml.2.html#A1_ISO_17302_ISO_17302_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_ISO_17302_4">E2</a>.</p>}
+        .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302:2016 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas E0/A0, <a href="dummy.xml.2.html#A1_ISO_17302_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_ISO_17302_2016_4">E2</a>.</p>}
       FileUtils.rm_rf of
     end
 

@@ -3,7 +3,7 @@
 :partnumber: 2
 :copyright-year: 2024
 :language: en
-:publish-date: 2024
+:published-date: 2024
 :edition: 12
 :title-intro-en: Introduction 1
 :title-main-en: Main 1

@@ -98,7 +98,7 @@ RSpec.describe Metanorma::Collection do
                       <type>document</type>
                       <title>Document</title>
                       <entry id="doc000000000" sectionsplit="true" index="true" fileref="document-1/document-1.xml">
-                        <identifier>5f99f008-8fd4-45f9-841b-52b558e87a91</identifier>
+                        <identifier>ISO 12345-1:2024</identifier>
                       </entry>
                     </entry>
                     <entry index="true">
@@ -125,7 +125,7 @@ RSpec.describe Metanorma::Collection do
                       <type>document</type>
                       <title>Document</title>
                       <entry id="doc000000003" sectionsplit="true" index="true" fileref="document-2/document-2.xml">
-                        <identifier>616f9232-e79e-44d2-a84b-b06bb141756d</identifier>
+                        <identifier>ISO 12345-2:2024</identifier>
                       </entry>
                     </entry>
                     <entry index="true">
@@ -260,6 +260,7 @@ RSpec.describe Metanorma::Collection do
             "#{INPATH}/document-2/document-2.xml",
           ]
           xml_paths.each do |x|
+            FileUtils.rm_rf(x)
             expect(File.exist?(x)).to be_falsy
           end
           expect(parse_model).to be_instance_of Metanorma::Collection
@@ -274,11 +275,10 @@ RSpec.describe Metanorma::Collection do
 
           expected_output = {
             "index.html" => "Cover bibdata - Test Title",
-            "document-1_index.html" => "ISO 12345-1:2024",
-            "document-2_index.html" => "ISO 12345-2:2024",
+            "ISO 12345-1_2024_index.html" => "ISO 12345-1",
+            "ISO 12345-2_2024_index.html" => "ISO 12345-2",
           }
           generated_files = Dir["#{OUTPATH}/*"]
-          require "debug"; binding.b
 
           expected_output.each do |k, v|
             expect(generated_files).to include("#{OUTPATH}/#{k}")

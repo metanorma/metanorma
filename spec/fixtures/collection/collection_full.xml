@@ -105,7 +105,7 @@
         </bibdata>
       </entry>
       <entry id="doc000000001" index="true" url="example/url" fileref="dummy.xml">
-        <identifier>ISO 17302</identifier>
+        <identifier>ISO 17302:2016</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Dummy document</title>
           <title type="title-main" format="text/plain" language="en">Dummy document</title>
@@ -421,7 +421,7 @@ at the address below or ISO’s member body in the country of the requester.
           <p id="">It is not applicable to cooked rice products, which are not discussed in <xref target="anotherclause_ISO_17301-1_2016"/> or <xref target="thirdclause_ISO_17301-1_2016"/>.</p>
           <p id="">This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016" citeas="ISO 17301-1:2016/Amd.1:2017"/>.</p>
           <p id="">This document is unrelated <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"/>, see e.g. <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality><locality type="anchor"><referenceFrom>scope_ISO_1701_1974</referenceFrom></locality></localityStack></eref>.</p>
-          <p id="">This document is also unrelated to <eref type="inline" bibitemid="Dummy_ISO_17301-1_2016" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
+          <p id="">This document is also unrelated to <eref type="inline" bibitemid="Dummy_ISO_17301-1_2016" citeas="ISO 17302:2016"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
           <!--<p id="">This document uses schemas <eref bibitemid="express-schema_E0">
 <locality type="anchor">
 <referenceFrom>A0</referenceFrom>
@@ -432,7 +432,7 @@ at the address below or ISO’s member body in the country of the requester.
 <locality type="anchor">
 <referenceFrom>A2</referenceFrom>
 </locality>E2/A2</eref>.</p>-->
-          <p id="">This document uses schemas E0/A0, <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302"><locality type="anchor"><referenceFrom>A1</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302">E2<localityStack><locality type="anchor"><referenceFrom>E2</referenceFrom></locality></localityStack></eref>.</p>
+          <p id="">This document uses schemas E0/A0, <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302:2016"><locality type="anchor"><referenceFrom>A1</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302:2016">E2<localityStack><locality type="anchor"><referenceFrom>E2</referenceFrom></locality></localityStack></eref>.</p>
           <figure id="fig1_ISO_17301-1_2016">
             <?xml version="1.0" encoding="utf-8"?>
             <!-- Generator: Adobe Illustrator 25.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
@@ -457,7 +457,7 @@ at the address below or ISO’s member body in the country of the requester.
         <clause id="anotherclause_ISO_17301-1_2016" type="express">
           <title>This is another clause</title>
           <p><eref bibitemid="Nowhere_ISO_17301-1_2016"/>Direct links nowhere</p>
-          <p><eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302">E2<localityStack><locality type="anchor"><referenceFrom>E2</referenceFrom></locality></localityStack></eref>Indirect links nowhere</p>
+          <p><eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302:2016">E2<localityStack><locality type="anchor"><referenceFrom>E2</referenceFrom></locality></localityStack></eref>Indirect links nowhere</p>
         </clause>
         <clause id="thirdclause_ISO_17301-1_2016">
           <title>This is another clause</title>
@@ -815,7 +815,7 @@ at the address below or ISO’s member body in the country of the requester.
     </iso-standard>
   </doc-container>
   <doc-container id="doc000000001">
-    <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17302">
+    <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17302_2016">
       <bibdata type="standard">
         <title language="en" format="text/plain" type="main">Dummy document</title>
         <title language="en" format="text/plain" type="title-main">Dummy document</title>
@@ -901,13 +901,13 @@ at the address below or ISO’s member body in the country of the requester.
         </copyright-statement>
       </boilerplate>
       <sections>
-        <clause id="_scope_ISO_17302" obligation="normative">
+        <clause id="_scope_ISO_17302_2016" obligation="normative">
           <title>Scope</title>
           <p id="">This is a dummy document.</p>
         </clause>
-        <clause id="E1_ISO_17302" type="express-schema">
-          <figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1_ISO_17302">
-            <pre id="A1_ISO_17302">
+        <clause id="E1_ISO_17302_2016" type="express-schema">
+          <figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1_ISO_17302_2016">
+            <pre id="A1_ISO_17302_2016">
 module Metanorma
   class Document
     # @return [Strin]
@@ -993,17 +993,17 @@ end
 </pre>
           </figure>
         </clause>
-        <clause id="what_ISO_17302" inline-header="false" obligation="normative">
+        <clause id="what_ISO_17302_2016" inline-header="false" obligation="normative">
           <title>What?</title>
-          <ol id="_2a3efdd5-8e78-47d9-9721-38699221dd31_ISO_17302" type="roman">
+          <ol id="_2a3efdd5-8e78-47d9-9721-38699221dd31_ISO_17302_2016" type="roman">
             <li>
               <p id="">What?</p>
             </li>
           </ol>
         </clause>
-        <clause id="E2_ISO_17302" type="express-schema">
-          <figure id="A2_ISO_17302">
-            <pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438_ISO_17302">
+        <clause id="E2_ISO_17302_2016" type="express-schema">
+          <figure id="A2_ISO_17302_2016">
+            <pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438_ISO_17302_2016">
 module Metanorma
   # Metanorma collection's manifest
   class CollectionManifest
@@ -1220,7 +1220,7 @@ at the address below or ISO’s member body in the country of the requester.
           <p id="">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
           <p id="">It is not applicable to cooked rice products.</p>
           <p id="">This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_1701_1974" citeas="ISO 17301-1:2016/Amd.1:2017"/>. It derives from <eref type="inline" bibitemid="StarTrek_ISO_1701_1974" citeas="ISO 1701:1974"/>. See e.g. <eref type="inline" bibitemid="StarTrek_ISO_1701_1974" citeas="ISO 1701:1974"><localityStack><locality type="clause"><referenceFrom>1</referenceFrom></locality><locality type="anchor"><referenceFrom>scope_ISO_1701_1974</referenceFrom></locality></localityStack></eref>.</p>
-          <p id="">This document is unrelated to <eref type="inline" bibitemid="Dummy_ISO_1701_1974" citeas="ISO 17302"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
+          <p id="">This document is unrelated to <eref type="inline" bibitemid="Dummy_ISO_1701_1974" citeas="ISO 17302:2016"><localityStack><locality type="anchor"><referenceFrom>what</referenceFrom></locality></localityStack></eref>.</p>
         </clause>
       </sections>
       <bibliography>
