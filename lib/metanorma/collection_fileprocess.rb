@@ -10,7 +10,7 @@ module Metanorma
     # compile and output individual file in collection
     # warn "metanorma compile -x html #{f.path}"
     def file_compile(file, filename, identifier)
-      return if @files.get(identifier, :sectionsplit) == "true"
+      return if @files.get(identifier, :sectionsplit)
 
       opts = {
         format: :asciidoc,
@@ -28,8 +28,8 @@ module Metanorma
       @directives.detect { |d| d.key == "presentation-xml" } ||
         @files.get(identifier, :presentationxml) and
         ret.merge!(passthrough_presentation_xml: true)
-      @files.get(identifier, :sectionsplit) == "true" and
-        ret.merge!(sectionsplit: "true")
+      @files.get(identifier, :sectionsplit) == true and
+        ret.merge!(sectionsplit: true)
       @files.get(identifier, :bare) == true and
         ret.merge!(bare: true)
       ret
@@ -66,14 +66,14 @@ module Metanorma
           @compile_options.merge!(bare: true)
         if @files.get(ident, :attachment) then copy_file_to_dest(ident)
         else
-          file, filename = @files.targetfile_id(ident, read: true)
-          warn "\n\n\n\n\nProcess #{filename}: #{DateTime.now.strftime('%H:%M:%S')}"
+          file, fname = @files.targetfile_id(ident, read: true)
+          warn "\n\n\n\n\nProcess #{fname}: #{DateTime.now.strftime('%H:%M:%S')}"
           collection_xml = update_xrefs(file, ident, internal_refs)
-          collection_filename = File.basename(filename, File.extname(filename))
+          collection_filename = File.basename(fname, File.extname(fname))
           collection_xml_path = File.join(Dir.tmpdir,
                                           "#{collection_filename}.xml")
           File.write collection_xml_path, collection_xml, encoding: "UTF-8"
-          file_compile(collection_xml_path, filename, ident)
+          file_compile(collection_xml_path, fname, ident)
           FileUtils.rm(collection_xml_path)
         end
       end

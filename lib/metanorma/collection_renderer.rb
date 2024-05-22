@@ -285,6 +285,11 @@ module Metanorma
           end
         end
       ret = ret.doc.root
+      ret.xpath("/ul").each do |u|
+        if u.at("./li/ul") && !u.at("./li[text()]")
+          u.replace(u.xpath("./li/ul"))
+        end
+      end
       ret.to_html
     end
 
@@ -321,8 +326,10 @@ module Metanorma
       end
       c.empty? and c = nil
       r &&= r.doc.root&.to_html&.gsub("\n", " ")
-      { title: indexfile_title(mnf),
+      ret = { title: indexfile_title(mnf),
         docrefs: r, children: c }.compact
+      ret.keys == [:children] and ret = c
+      ret
     end
 
     def liquid_docrefs # KILL
