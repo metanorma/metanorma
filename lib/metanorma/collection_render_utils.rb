@@ -101,9 +101,9 @@ module Metanorma
       Util.log(error, :warning)
     end
 
-    def datauri_encode(docxml)
+    def datauri_encode(docxml, directory)
       docxml.xpath(ns("//image")).each do |i|
-        i["src"] = Vectory::Utils::datauri(i["src"])
+        i["src"] = Vectory::Utils::datauri(i["src"], directory)
       end
       docxml
     end

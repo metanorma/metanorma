@@ -23,8 +23,11 @@
 :mn-document-class: iso
 :mn-output-extensions: xml,html,pdf,rxl
 :local-cache-only:
-:data-uri-image:
+:data-uri-image: false
 
 == Introduction
 
 This is document 1.
+
+image::../pics/action_schemaexpg1.svg[]
+

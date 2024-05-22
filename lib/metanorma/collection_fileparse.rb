@@ -23,7 +23,7 @@ module Metanorma
       update_direct_refs_to_docs(xml, docid)
       hide_refs(xml)
       sso and eref2link(xml)
-      svgmap_resolve(datauri_encode(xml), @files.get(docid, :ids))
+      svgmap_resolve(xml, docid)
       xml.to_xml
     end
 
@@ -98,7 +98,10 @@ module Metanorma
       end
     end
 
-    def svgmap_resolve(docxml, ids)
+    def svgmap_resolve(docxml, docid)
+      ids = @files.get(docid, :ids)
+      dir = File.join(@dirname, File.dirname(@files.get(docid, :rel_path)))
+      docxml = datauri_encode(docxml, dir)
       isodoc = IsoDoc::PresentationXMLConvert.new({})
       isodoc.bibitem_lookup(docxml)
       docxml.xpath(ns("//svgmap//eref")).each do |e|
