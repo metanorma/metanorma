@@ -196,23 +196,17 @@ RSpec.describe Metanorma::Collection do
       OUTPUT
       expect(cr.isodoc.meta.get[:nav_object])
         .to be_equivalent_to (
-          { title: "ISO Collection",
+          { title: "ISO Collection", level: "collection",
             children: [
               { title: "Standards",
-                docrefs: <<~DOCREF,
-                  <ul><li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li><li><a href="dummy.html">ISO&nbsp;17302:2016</a></li><li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li></ul>
-                DOCREF
-              },
+                level: "subcollection",
+                docrefs: "<ul> <li><a href=\"rice-en.final.html\">ISO&nbsp;17301-1:2016</a></li> <li><a href=\"dummy.html\">ISO&nbsp;17302:2016</a></li> <li><a href=\"rice1-en.final.html\">ISO&nbsp;1701:1974</a></li> </ul>" },
               { title: "Amendments",
-                docrefs: <<~DOCREF,
-                  "<ul><li><a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a></li></ul>"
-                DOCREF
-              },
+                level: "subcollection",
+                docrefs: "<ul><li><a href=\"rice-amd.final.html\">ISO 17301-1:2016/Amd.1:2017</a></li></ul>" },
               { title: "Attachments",
-                docrefs: <<~DOCREF,
-                  "<ul><li><a href="pics/action_schemaexpg1.svg">action_schemaexpg1.svg</a></li><li><a href="assets/rice_image1.png">rice_image1.png</a></li></ul>"
-                DOCREF
-              },
+                level: "attachments",
+                docrefs: "<ul> <li><a href=\"pics/action_schemaexpg1.svg\">action_schemaexpg1.svg</a></li> <li><a href=\"assets/rice_image1.png\">rice_image1.png</a></li> </ul>" },
             ] }
         )
     end

@@ -323,10 +323,10 @@ module Metanorma
 
       c = nonfiles.each_with_object([]) do |d, b|
         b << index_object(d)
-      end
+      end.flatten
       c.empty? and c = nil
       r &&= r.doc.root&.to_html&.gsub("\n", " ")
-      ret = { title: indexfile_title(mnf),
+      ret = { title: indexfile_title(mnf), level: mnf.type,
         docrefs: r, children: c }.compact
       ret.keys == [:children] and ret = c
       ret
