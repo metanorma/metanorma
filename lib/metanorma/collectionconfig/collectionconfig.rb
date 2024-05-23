@@ -47,6 +47,8 @@ module CollectionConfig
       elem = b.to_xml(bibdata: true, date_format: :full)
       doc.add_element(parent, elem)
     end
+
+    def nop(model, value); end
   end
 
   class CompileOptions < ::Shale::Mapper
@@ -63,6 +65,7 @@ module CollectionConfig
     attribute :value, ::Shale::Type::String
   end
 
+  # TODO sidesteps bibdata redefinition of filter, will remove
   class Manifest < ::Shale::Mapper
     class ::Array
       alias filter select
@@ -115,8 +118,6 @@ module CollectionConfig
       map_element "entry", to: :entry # using: { from: :entry_from_xml, to: :entry_to_xml }
     end
 
-    def nop(model, value); end
-
     def entry_from_xml(model, node)
       model.entry = Manifest.from_xml(node.content)
     end
@@ -140,17 +141,6 @@ module CollectionConfig
       model.entry = Manifest.from_yaml(value.to_yaml)
     end
 
-    #     def attachments
-    #       docref.detect do |ref|
-    #         ref.type == "attachments"
-    #       end&.docref
-    #     end
-    #
-    #     def documents
-    #       docref.detect do |ref|
-    #         ref.type == "document"
-    #       end&.docref
-    #     end
     include ::CollectionConfig::Converters
   end
 
@@ -190,8 +180,8 @@ module CollectionConfig
 
     xml do
       root "metanorma-collection"
-      #namespace "http://metanorma.org", "m"
-      #map_attribute "xmlns", to: :xmlns
+      # namespace "http://metanorma.org", "m"
+      # map_attribute "xmlns", to: :xmlns
       map_element "bibdata", using: { from: :bibdata_from_xml,
                                       to: :bibdata_to_xml }
       map_element "directive", using: { from: :directive_from_xml,
@@ -224,35 +214,27 @@ module CollectionConfig
     end
 
     def prefatory_to_xml(model, parent, doc)
-      x = model.prefatory_content or return
-      elem = doc.create_element("prefatory-content")
+      content_to_xml(model, parent, doc, "prefatory")
+    end
+
+    def final_to_xml(model, parent, doc)
+      content_to_xml(model, parent, doc, "final")
+    end
+
+    def content_to_xml(model, parent, doc, type)
+      x = model.send("#{type}_content") or return
       n = Nokogiri::XML(x)
-      if n.elements.size == 1
-        elem = n.root
-      else
-        b = Nokogiri::XML::Builder.new
-        model.collection.content_to_xml("prefatory", b)
-        elem = b.parent.elements.first
-      end
+      elem = if n.elements.size == 1 then n.root
+             else
+               b = Nokogiri::XML::Builder.new
+               model.collection.content_to_xml(type, b)
+               b.parent.elements.first
+             end
       doc.add_element(parent, elem)
     end
 
     def final_from_xml(model, node)
       model.final_content = node.to_xml
-    end
-
-    def final_to_xml(model, parent, doc)
-      x = model.final_content or return
-      elem = doc.create_element("final-content")
-      n = Nokogiri::XML(x)
-      if n.elements.size == 1
-        elem = n.root
-      else
-        b = Nokogiri::XML::Builder.new
-        model.collection.content_to_xml("final", b)
-        elem = b.parent.elements.first
-      end
-      doc.add_element(parent, elem)
     end
 
     def directive_from_xml(model, node)
@@ -284,37 +266,12 @@ module CollectionConfig
       end
     end
 
-    def directives_from_xml(model, node)
-      model.directive = if node.text?
-                          Directive.new(key: node.text)
-                        else
-                          Directive.new(key: node.name, value: node.text)
-                        end
-    end
-
-    def directives_to_xml(model, parent, doc)
-      model.directive.each do |d|
-        if d.value.nil?
-          dir = doc.create_element("directives")
-          doc.add_text(dir, d.key)
-          doc.add_element(parent, dir)
-        else
-          elem = doc.create_element(d.key)
-          doc.add_text(elem, d.value)
-          doc.add_element(parent, elem)
-        end
-      end
-    end
-
-    def nop(model, value); end
-
     def documents_from_xml(model, value)
       x = if value.is_a?(Shale::Adapter::Nokogiri::Node)
             value.content
           else
             Nokogiri::XML(value)
           end
-      #model.documents = x.xpath(".//xmlns::bibdata")
       model.documents = x.xpath(".//bibdata")
         .each_with_object([]) do |b, m|
         m << Bibdata.from_xml(b.to_xml)

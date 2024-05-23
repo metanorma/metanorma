@@ -27,11 +27,6 @@ module Metanorma
       read_files(@manifest.entry)
     end
 
-    def read_files # KILL
-      @disambig = Util::DisambigFiles.new
-      @xml.xpath(ns("//docref")).each { |d| read_file(d) }
-    end
-
     def read_files(entries)
       Array(entries).each do |e|
         e.file and read_file(e)
@@ -39,28 +34,24 @@ module Metanorma
       end
     end
 
-    def read_file(docref) # KILL
-      ident = docref.at(ns("./identifier"))
-      i = key(@isodoc.docid_prefix(ident["type"], ident.children.to_xml))
-      entry = file_entry(docref, ident.children.to_xml) or return
-      bibdata_process(entry, i)
-      bibitem_process(entry)
-      @files[i] = entry
-    end
-
     def read_file(manifest)
-      i = key(@isodoc.docid_prefix("", manifest.identifier.dup))
-      k = manifest.identifier
-      if false && manifest.bibdata and # NO, DO NOT FISH FOR THE GENUINE IDENTIFIER IN BIBDATA
-        d = manifest.bibdata.docidentifier.detect { |x| x.primary } ||
-          manifest.bibdata.docidentifier.first
-        k = d.id
-        i = key(@isodoc.docid_prefix(d.type, d.id.dup))
-      end
+      i, k = read_file_idents(manifest)
       entry = file_entry(manifest, k) or return
       bibdata_process(entry, i)
       bibitem_process(entry)
       @files[key(i)] = entry
+    end
+
+    def read_file_idents(manifest)
+      id = manifest.identifier
+      sanitised_id = key(@isodoc.docid_prefix("", manifest.identifier.dup))
+      #       if manifest.bibdata and # NO, DO NOT FISH FOR THE GENUINE IDENTIFIER IN BIBDATA
+      #         d = manifest.bibdata.docidentifier.detect { |x| x.primary } ||
+      #           manifest.bibdata.docidentifier.first
+      #         k = d.id
+      #         i = key(@isodoc.docid_prefix(d.type, d.id.dup))
+      #       end
+      [id, sanitised_id]
     end
 
     def bibdata_process(entry, ident)
@@ -88,19 +79,6 @@ module Metanorma
     # out_path is the destination file address, with any references outside
     # the working directory (../../...) truncated, and based on relative path
     # identifier is the id with only spaces, no nbsp
-    def file_entry(ref, identifier) # KILL
-      ref["fileref"] or return
-      ref["absolute_location"] = @documents[Util::key identifier].file
-      ret = if ref["fileref"]
-              { type: "fileref", ref: ref["absolute_location"],
-                rel_path: ref["fileref"], url: ref["url"],
-                out_path: output_file_path(ref) }
-            else { type: "id", ref: ref["id"] }
-            end
-      file_entry_copy(ref, ret)
-      ret.compact
-    end
-
     def file_entry(ref, identifier)
       ref.file or return
       abs = @documents[Util::key identifier].file
@@ -116,30 +94,17 @@ module Metanorma
 
     # TODO make the output file location reflect source location universally,
     # not just for attachments: no File.basename
-    def output_file_path(ref) # KILL
-      f = File.basename(ref["fileref"])
-      ref["attachment"] and f = ref["fileref"]
-      @disambig.source2dest_filename(f)
-    end
-
     def output_file_path(ref)
       f = File.basename(ref.file)
       ref.attachment and f = ref.file
       @disambig.source2dest_filename(f)
     end
 
-    def file_entry_copy(ref, ret) # KILL
-      %w(attachment sectionsplit index presentation-xml url
-         bare-after-first).each do |s|
-        ret[s.gsub("-", "").to_sym] = ref[s] if ref[s]
-      end
-    end
-
     def file_entry_copy(ref, ret)
       %w(attachment sectionsplit index presentation-xml url
          bare-after-first).each do |s|
-           ref.respond_to?(s.to_sym) and
-             ret[s.gsub("-", "").to_sym] = ref.send(s)
+        ref.respond_to?(s.to_sym) and
+          ret[s.gsub("-", "").to_sym] = ref.send(s)
       end
     end
 

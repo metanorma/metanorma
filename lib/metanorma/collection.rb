@@ -43,17 +43,19 @@ module Metanorma
       @dirname = File.expand_path(File.dirname(@file))
       @compile = Metanorma::Compile.new # feeds manifest
       @manifest = CollectionManifest.new(config.manifest, self, @dirname)
-      #@coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
-      #@coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
-                                               #@coverpage_style)
+      # @coverpage = Util::hash_key_detect(@directives, "coverpage", @coverpage)
+      # @coverpage_style = Util::hash_key_detect(@directives, "coverpage-style",
+      # @coverpage_style)
       @coverpage = @directives.detect { |d| d.key == "coverpage" }&.value
-      @coverpage_style = @directives.detect { |d| d.key == "coverpage-style" }&.value
+      @coverpage_style = @directives.detect do |d|
+                           d.key == "coverpage-style"
+                         end&.value
       @documents = args[:documents] || {}
       @bibdatas = args[:documents] || {}
       directive_keys = @directives.map(&:key)
       if (@documents.any? || @manifest) &&
           (%w(documents-inline documents-external) & directive_keys).empty?
-        #@directives << "documents-inline"
+        # @directives << "documents-inline"
         @directives << CollectionConfig::Directive.new(key: "documents-inline")
       end
       @documents.merge! @manifest.documents(@dirname)
@@ -73,47 +75,13 @@ module Metanorma
     end
 
     # @return [String] XML
-    def to_xml # KILL
-      b = Nokogiri::XML::Builder.new do |xml|
-        xml.send(:"metanorma-collection",
-                 #"xmlns" => "http://metanorma.org") do |mc|
-                 ) do |mc|
-          collection_body(mc)
-        end
-      end
-      b.to_xml
-    end
-
     def to_xml
-      c = CollectionConfig::Config.new(directive: @directives, bibdata: @bibdata, manifest: @manifest.config,
-                                       prefatory_content: @prefatory, final_content: @final,
-                                       documents: @documents)
+      c = CollectionConfig::Config
+        .new(directive: @directives, bibdata: @bibdata,
+             manifest: @manifest.config, documents: @documents,
+             prefatory_content: @prefatory, final_content: @final)
       c.collection = self
-      c.to_xml #.sub("<metanorma-collection", "<metanorma-collection xmlns='http://metanorma.org'")
-    end
-
-    def collection_body(coll) # KILL
-      #coll << @bibdata.to_xml(bibdata: true, date_format: :full)
-      @directives.each do |d|
-        coll << "<directives>#{obj_to_xml(d)}</directives>"
-      end
-      @manifest.to_xml coll
-      content_to_xml "prefatory", coll
-      doccontainer coll
-      content_to_xml "final", coll
-    end
-
-    def obj_to_xml(elem) # KILL
-      case elem
-      when ::Array
-        elem.each_with_object([]) do |v, m|
-          m << "<value>#{obj_to_xml(v)}</value>"
-        end.join
-      when ::Hash
-        elem.each_with_object([]) do |(k, v), m|
-          m << "<#{k}>#{obj_to_xml(v)}</#{k}>"
-        end.join
-      else elem end
+      c.to_xml # .sub("<metanorma-collection", "<metanorma-collection xmlns='http://metanorma.org'")
     end
 
     def render(opts)
@@ -123,105 +91,17 @@ module Metanorma
 
     class << self
       def parse(file)
+        # need @dirname initialised before collection object initialisation
         @dirname = File.expand_path(File.dirname(file))
-        # need @dirname before collection object initialisation
         config = case file
                  when /\.xml$/
                    CollectionConfig::Config.from_xml(File.read(file))
                  when /.ya?ml$/
-                   y = YAML.load(File.read(file))
+                   y = YAML.safe_load(File.read(file))
                    pre_parse_model(y)
-                   #file = File.basename(file) # so file resolution is relative to working directory
                    CollectionConfig::Config.from_yaml(y.to_yaml)
                  end
         new(file: file, config: config)
-      end
-
-      #def parse(file)
-        #case file
-        #when /\.xml$/ then parse_xml(file)
-        #when /.ya?ml$/ then parse_yaml(file)
-        #end
-      #end
-
-      private
-
-      def parse_xml(file) # KILL
-        xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)
-        (b = xml.at("/xmlns:metanorma-collection/xmlns:bibdata")) and
-          bd = Relaton::Cli.parse_xml(b)
-        mnf_xml = xml.at("/xmlns:metanorma-collection/xmlns:manifest")
-        mnf = CollectionManifest.from_xml mnf_xml, @dirname
-        pref = pref_final_content xml.at("//xmlns:prefatory-content")
-        fnl = pref_final_content xml.at("//xmlns:final-content")
-        cov = pref_final_content xml.at("//xmlns:coverpage")
-        new(file: file, bibdata: bd, manifest: mnf,
-            directives: directives_from_xml(xml.xpath("//xmlns:directives")),
-            documents: docs_from_xml(xml, mnf),
-            bibdatas: docs_from_xml(xml, mnf),
-            prefatory: pref, final: fnl, coverpage: cov)
-
-        new(file: file, directives: dirs, bibdata: bd, manifest: mnf,
-            prefatory: pref, final: fnl)
-      end
-
-      # TODO refine
-      def directives_from_xml(dir) # KILL
-        dir.each_with_object([]) do |d, m|
-          m << if d.at("./xmlns:value")
-                 x.xpath("./xmlns:value").map(&:text)
-               elsif d.at("./*")
-                 d.elements.each_with_object({}) do |e, ret|
-                   ret[e.name] = e.children.to_xml
-                 end
-               else d.children.to_xml
-               end
-        end
-      end
-
-      def parse_yaml(file)
-        collection_model = YAML.load_file file
-        #if new_yaml_format?(collection_model)
-          #collection_model = construct_collection_manifest(collection_model)
-          file = File.basename(file)
-        #end
-        pre_parse_model(collection_model)
-        #if collection_model["manifest"]["manifest"]
-          #compile_adoc_documents(collection_model)
-        #end
-        parse_model(file, collection_model)
-      end
-
-      # @param xml [Nokogiri::XML::Document]
-      # @param mnf [Metanorma::CollectionManifest]
-      # @return [Hash{String=>Metanorma::Document}]
-      def docs_from_xml(xml, mnf)
-        xml.xpath("//xmlns:doc-container//xmlns:bibdata")
-          .each_with_object({}) do |b, m|
-          bd = Relaton::Cli.parse_xml b
-          docref = mnf.docref_by_id bd.docidentifier.first.id
-          m[docref["identifier"]] = Document.new bd, docpath_from_docid(mnf, bd)
-          m
-        end
-      end
-
-      # TODO .first should be .primary
-      def docpath_from_docid(mnf, bibdata)
-        docref = mnf.docref_by_id bibdata.docidentifier.first.id
-        p = docref["fileref"]
-        (Pathname.new p).absolute? or p = File.join(@dirname, p)
-        p
-      end
-
-      # @param xml [Nokogiri::XML::Element, nil]
-      # @return [String, nil]
-      def pref_final_content(xml)
-        xml or return
-        <<~CONT
-
-            == #{xml.at('title')&.text}
-          #{xml.at('p')&.text}
-        CONT
       end
     end
 
@@ -255,7 +135,7 @@ module Metanorma
 
     # @param builder [Nokogiri::XML::Builder]
     def doccontainer(builder)
-      #Array(@directives).include? "documents-inline" or return
+      # Array(@directives).include? "documents-inline" or return
       @directives.detect { |d| d.key == "documents-inline" } or return
       documents.each_with_index do |(_, d), i|
         doccontainer1(builder, d, i)

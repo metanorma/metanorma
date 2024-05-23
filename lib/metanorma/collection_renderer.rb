@@ -105,7 +105,7 @@ module Metanorma
           b = concatenate1(col.clone, e).to_xml
           e == :presentation and
             b.sub!("<metanorma-collection>", "<metanorma-collection xmlns='http://metanorma.org'>")
-          # BEING FORCED TO DO THAT BECAUSE SHALE IS NOT DEALING WITH DEFAULT NAMESPACES
+          # TODO BEING FORCED TO DO THAT BECAUSE SHALE IS NOT DEALING WITH DEFAULT NAMESPACES
           f.write(b)
         end
       end
@@ -118,7 +118,6 @@ module Metanorma
     end
 
     def concatenate1(out, ext)
-      # out.directives << "documents-inline"
       out.directives << CollectionConfig::Directive.new(key: "documents-inline")
       out.bibdatas.each_key do |ident|
         id = @isodoc.docid_prefix(nil, ident.dup)
@@ -153,10 +152,6 @@ module Metanorma
 
     # @param elm [Nokogiri::XML::Element]
     # @return [String]
-    def indexfile_title(elm) # KILL
-      elm.at(ns("./title"))&.text
-    end
-
     def indexfile_title(entry)
       if entry.bibdata
         x = entry.bibdata.title.detect { |t| t.type == "main" } ||
@@ -170,65 +165,27 @@ module Metanorma
     # uses the identifier to label documents; other attributes (title) can be
     # looked up in @files[id][:bibdata]
     #
-    # @param elm [Nokogiri::XML::Element]
+    # @param mnf [Collection::Manifest]
     # @param builder [Nokogiri::XML::Builder]
-    def indexfile_docref(elm, builder) # KILL
-      return "" unless elm.at(ns("./docref[@index = 'true']"))
-
-      builder.ul { |b| docrefs(elm, b) }
-    end
-
-    def indexfile_docref(mnf, builder) # KILL
-      return "" unless Array(mnf.entry).detect { |d| d.index }
-
+    def indexfile_docref(mnf, builder)
+      Array(mnf.entry).detect(&:index) or return ""
       builder.ul { |b| docrefs(mnf, b) }
     end
 
-    # @param elm [Nokogiri::XML::Element]
-    # @param builder [Nokogiri::XML::Builder]
-    def docrefs(elm, builder) # KILL
-      elm.xpath(ns("./docref[@index = 'true']")).each do |d|
-        if m = d.at(ns("./manifest"))
-          builder << indexfile(m, ul: false)
-        else
-          ident = docref_ident(d)
-          builder.li do |li|
-            li.a href: index_link(d, ident) do |a|
-              a << ident.split(/([<>&])/).map do |x|
-                /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
-              end.join
-            end
-          end
+    def docrefs(mnf, builder)
+      ident = docref_ident(mnf)
+      builder.li do |li|
+        li.a href: index_link(mnf, ident) do |a|
+          a << ident.split(/([<>&])/).map do |x|
+            /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
+          end.join
         end
       end
-    end
-
-    def docrefs(mnf, builder)
-          ident = docref_ident(mnf)
-          builder.li do |li|
-            li.a href: index_link(mnf, ident) do |a|
-              a << ident.split(/([<>&])/).map do |x|
-                /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
-              end.join
-            end
-          end
-    end
-
-    def docref_ident(docref) # KILL
-      ident = docref.at(ns("./identifier")).children.to_xml
-      @c.decode(@isodoc.docid_prefix(nil, ident))
     end
 
     def docref_ident(docref)
       ident = docref.identifier.dup
       @c.decode(@isodoc.docid_prefix(nil, ident))
-    end
-
-    def index_link(docref, ident) # KILL
-      if docref["fileref"]
-        @files.get(ident, :out_path).sub(/\.xml$/, ".html")
-      else "#{docref['id']}.html"
-      end
     end
 
     def index_link(docref, ident)
@@ -239,24 +196,6 @@ module Metanorma
     end
 
     # single level navigation list, with hierarchical nesting
-    #
-    # @param elm [Nokogiri::XML::Element]
-    # @return [String] XML
-    def indexfile(elm, ul: true) # KILL
-      ret = Nokogiri::HTML::Builder.new do |b|
-        b.ul do
-          b.li indexfile_title(elm)
-          indexfile_docref(elm, b)
-          elm.xpath(ns("./entry")).each do |d|
-            b << indexfile(d)
-          end
-        end
-      end
-      ret = ret.doc.root
-      ul or ret = ret.children
-      ret.to_html
-    end
-
     def indexfile(mnf)
       mnfs = Array(mnf)
       mnfs.empty? and return ""
@@ -269,21 +208,25 @@ module Metanorma
     end
 
     def indexfile1(mnf)
-      index?(mnf)  or return ""
-      ret = Nokogiri::HTML::Builder.new do |b|
-          if mnf.file
-          docrefs(mnf, b)
-          else
+      index?(mnf) or return ""
+      cleanup_indexfile1(build_indexfile1(mnf))
+    end
+
+    def build_indexfile1(mnf)
+      Nokogiri::HTML::Builder.new do |b|
+        if mnf.file then docrefs(mnf, b)
+        else
           b.li do |l|
             l << indexfile_title(mnf)
             l.ul do |u|
-          Array(mnf.entry).each do |e|
-              u << indexfile1(e)
+              Array(mnf.entry).each { |e| u << indexfile1(e) }
             end
-            end
-          end
           end
         end
+      end
+    end
+
+    def cleanup_indexfile1(ret)
       ret = ret.doc.root
       ret.xpath("/ul").each do |u|
         if u.at("./li/ul") && !u.at("./li[text()]")
@@ -294,64 +237,41 @@ module Metanorma
     end
 
     # object to construct navigation out of in Liquid
-    def index_object(elm) # KILL
-      c = elm.xpath(ns("./entry")).each_with_object([]) do |d, b|
-        b << index_object(d)
-      end
-      c.empty? and c = nil
-      r = Nokogiri::HTML::Builder.new do |b|
-        indexfile_docref(elm, b)
-      end
-      r &&= r.doc.root&.to_html&.gsub("\n", " ")
-      { title: indexfile_title(elm),
-        docrefs: r, children: c }.compact
-    end
-
     def index_object(mnf)
       mnf = Array(mnf).first
-      nonfiles = Array(mnf.entry).select { |d| !d.file }
-      files = Array(mnf.entry).select { |d| d.file }
-      files.empty? or r = Nokogiri::HTML::Builder.new do |b|
-        b.ul do |u|
-        files.each do |f|
-          docrefs(f, u)
-        end
-      end
-      end
+      ret = { title: indexfile_title(mnf), level: mnf.type,
+              docrefs: index_object_docrefs(mnf),
+              children: index_object_children(mnf) }.compact
+      ret.keys == [:children] and ret = ret[:children]
+      ret
+    end
 
-
-
+    def index_object_children(mnf)
+      nonfiles = Array(mnf.entry).reject(&:file)
       c = nonfiles.each_with_object([]) do |d, b|
         b << index_object(d)
       end.flatten
       c.empty? and c = nil
-      r &&= r.doc.root&.to_html&.gsub("\n", " ")
-      ret = { title: indexfile_title(mnf), level: mnf.type,
-        docrefs: r, children: c }.compact
-      ret.keys == [:children] and ret = c
-      ret
+      c
     end
 
-    def liquid_docrefs # KILL
-      @xml.xpath(ns("//docref[@index = 'true']")).each_with_object([]) do |d, m|
-        ident = d.at(ns("./identifier")).children.to_xml
-        ident = @c.decode(@isodoc.docid_prefix(nil, ident))
-        title = d.at(ns("./bibdata/title[@type = 'main']")) ||
-          d.at(ns("./bibdata/title")) || d.at(ns("./title"))
-        m << { "identifier" => ident, "file" => index_link(d, ident),
-               "title" => title&.children&.to_xml,
-               "level" => d.at(ns("./level"))&.text }
+    def index_object_docrefs(mnf)
+      files = Array(mnf.entry).select(&:file)
+      files.empty? and return nil
+      r = Nokogiri::HTML::Builder.new do |b|
+        b.ul do |u|
+          files.each { |f| docrefs(f, u) }
+        end
       end
+      r.doc.root&.to_html&.gsub("\n", " ")
     end
 
     def liquid_docrefs(mnfs)
-      Array(mnfs).select { |d| d.index }.each_with_object([]) do |d, m|
+      Array(mnfs).select(&:index).each_with_object([]) do |d, m|
         if d.file
-          ident = d.identifier.dup
-          ident = @c.decode(@isodoc.docid_prefix(nil, ident))
-          title = indexfile_title(d)
+          ident = @c.decode(@isodoc.docid_prefix(nil, d.identifier.dup))
           m << { "identifier" => ident, "file" => index_link(d, ident),
-                 "title" => title, "level" => d.type }
+                 "title" => indexfile_title(d), "level" => d.type }
         else
           liquid_docrefs(d.entry).each { |m1| m << m1 }
         end
