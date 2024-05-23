@@ -6,11 +6,11 @@ require "fontist"
 require "fontist/manifest/install"
 require_relative "compile_validate"
 require_relative "compile_options"
-require_relative "fontist_utils"
-require_relative "util"
-require_relative "sectionsplit"
+require_relative "../util/fontist_utils"
+require_relative "../util/util"
+require_relative "../collection_sectionsplit/sectionsplit"
 require_relative "extract"
-require_relative "worker_pool"
+require_relative "../util/worker_pool"
 
 module Metanorma
   class Compile
@@ -86,7 +86,7 @@ module Metanorma
     def relaton_export(isodoc, options)
       return unless options[:relaton]
 
-      xml = Nokogiri::XML(isodoc) { |config| config.huge }
+      xml = Nokogiri::XML(isodoc, &:huge)
       bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
       # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
       # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"

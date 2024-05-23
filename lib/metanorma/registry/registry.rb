@@ -1,5 +1,4 @@
 # Registry of all Metanorma types and entry points
-#
 
 require "singleton"
 

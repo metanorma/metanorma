@@ -1,9 +1,9 @@
 require "isodoc"
 require "htmlentities"
 require_relative "collection_fileprocess"
-require_relative "fontist_utils"
-require_relative "util"
-require_relative "files_lookup"
+require_relative "../util/fontist_utils"
+require_relative "../util/util"
+require_relative "../collection_files_lookup/files_lookup"
 require_relative "collection_render_utils"
 require_relative "collection_render_word"
 

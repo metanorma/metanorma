@@ -269,8 +269,7 @@ module CollectionConfig
     def documents_from_xml(model, value)
       x = if value.is_a?(Shale::Adapter::Nokogiri::Node)
             value.content
-          else
-            Nokogiri::XML(value)
+          else Nokogiri::XML(value)
           end
       model.documents = x.xpath(".//bibdata")
         .each_with_object([]) do |b, m|

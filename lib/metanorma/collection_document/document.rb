@@ -33,9 +33,7 @@ module Metanorma
 
       # raw XML file, can be used to put in entire file instead of just bibitem
       def raw_file(filename)
-        doc = Nokogiri::XML(File.read(filename, encoding: "UTF-8")) do |config|
-          config.huge
-        end
+        doc = Nokogiri::XML(File.read(filename, encoding: "UTF-8"), &:huge)
         new(doc, filename, raw: true)
       end
 
@@ -87,7 +85,7 @@ module Metanorma
         else
           case format(file)
           when :xml
-            from_xml (Nokogiri::XML(File.read(file, encoding: "UTF-8")) { |x| x.huge })
+            from_xml (Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge))
           when :yaml
             yaml = File.read(file, encoding: "UTF-8")
             Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
@@ -121,7 +119,6 @@ module Metanorma
 
     def render_xml(builder)
       if @raw
-        #builder << @bibitem.root.to_xml
         builder.parent.add_child(@bibitem.root)
       else
         builder.send("#{type}-standard") do |b|
