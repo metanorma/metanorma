@@ -75,7 +75,7 @@ module Metanorma
     end
 
     # ref is the absolute source file address
-    # rel_path is the relative source file address, determined relative to the YAML.
+    # rel_path is the relative source file address, relative to the YAML locaton
     # out_path is the destination file address, with any references outside
     # the working directory (../../...) truncated, and based on relative path
     # identifier is the id with only spaces, no nbsp
@@ -83,8 +83,7 @@ module Metanorma
       ref.file or return
       abs = @documents[Util::key identifier].file
       ret = if ref.file
-              { type: "fileref", ref: abs,
-                rel_path: ref.file, url: ref.url,
+              { type: "fileref", ref: abs, rel_path: ref.file, url: ref.url,
                 out_path: output_file_path(ref) }
             else { type: "id", ref: ref.id }
             end

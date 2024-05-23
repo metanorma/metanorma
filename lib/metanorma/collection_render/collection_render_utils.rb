@@ -123,13 +123,8 @@ module Metanorma
       end
     end
 
-    class Dummy
-      def attr(_key); end
-    end
-
     def isodoc_create
-      x = Asciidoctor.load nil, backend: @doctype.to_sym
-      isodoc = x.converter.html_converter(Dummy.new) # to obtain Isodoc class
+      isodoc = Util::load_isodoc(@doctype)
       isodoc.i18n_init(@lang, @script, @locale) # read in internationalisation
       isodoc.metadata_init(@lang, @script, @locale, isodoc.i18n)
       isodoc.info(@xml, nil)
@@ -141,18 +136,14 @@ module Metanorma
     # extracted from the manifest
     def isodoc_populate
       @isodoc.info(@xml, nil)
-      #{ navigation: indexfile(m), nav_object: index_object(m),
       { navigation: indexfile(@manifest), nav_object: index_object(@manifest),
         docrefs: liquid_docrefs(@manifest),
-        "prefatory-content": isodoc_builder(@xml.at(("//prefatory-content"))),
-        "final-content": isodoc_builder(@xml.at(("//final-content"))),
-        #doctitle: m.at(ns("../bibdata/title"))&.text,
+        "prefatory-content": isodoc_builder(@xml.at("//prefatory-content")),
+        "final-content": isodoc_builder(@xml.at("//final-content")),
         doctitle: @bibdata.title.first.title.content,
-        #docnumber: m.at(ns("../bibdata/docidentifier"))&.text }
-        docnumber: @bibdata.docidentifier.first.id,
-      }.each do |k, v|
-          v and @isodoc.meta.set(k, v)
-        end
+        docnumber: @bibdata.docidentifier.first.id }.each do |k, v|
+        v and @isodoc.meta.set(k, v)
+      end
     end
 
     def isodoc_builder(node)

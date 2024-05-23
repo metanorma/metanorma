@@ -10,14 +10,12 @@ module Metanorma
     # compile and output individual file in collection
     # warn "metanorma compile -x html #{f.path}"
     def file_compile(file, filename, identifier)
-      return if @files.get(identifier, :sectionsplit)
-
+      @files.get(identifier, :sectionsplit) and return
       opts = {
         format: :asciidoc,
         extension_keys: @format,
         output_dir: @outdir,
       }.merge(compile_options_update(identifier))
-
       @compile.compile file, opts
       @files.set(identifier, :outputs, {})
       file_compile_formats(filename, identifier)
@@ -49,10 +47,10 @@ module Metanorma
 
     def copy_file_to_dest(identifier)
       out = Pathname.new(@files.get(identifier, :out_path)).cleanpath
-      out.absolute? and out = out.relative_path_from(File.expand_path(FileUtils.pwd))
+      out.absolute? and
+        out = out.relative_path_from(File.expand_path(FileUtils.pwd))
       dest = File.join(@outdir, @disambig.source2dest_filename(out.to_s))
       FileUtils.mkdir_p(File.dirname(dest))
-      warn "cp #{@files.get(identifier, :ref)}, #{dest}"
       FileUtils.cp @files.get(identifier, :ref), dest
     end
 

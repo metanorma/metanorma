@@ -92,6 +92,15 @@ module Metanorma
       @c.decode(ident).gsub(/(\p{Zs})+/, " ")
     end
 
+    class Dummy
+      def attr(_key); end
+    end
+
+    def self.load_isodoc(doctype)
+    x = Asciidoctor.load nil, backend: doctype.to_sym
+      isodoc = x.converter.html_converter(Dummy.new) # to obtain Isodoc class
+    end
+
     class DisambigFiles
       def initialize
         @seen_filenames = []

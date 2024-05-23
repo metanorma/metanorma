@@ -72,17 +72,11 @@ module Metanorma
       Util::key(@isodoc.docid_prefix(i["type"], i.text))
     end
 
-    # TODO refactor to overlap with collection_render_utils
     def load_isodoc
       @isodoc and return
       @collection.compile.load_flavor(@doctype)
-      x = Asciidoctor.load nil, backend: @doctype.to_sym
-      @isodoc = x.converter.html_converter(Dummy.new) # to obtain Isodoc class
+      @isodoc = Util::load_isodoc(@doctype)
       @isodoc.i18n_init(@lang, @script, nil) # for @i18n.all_parts in docid
-    end
-
-    class Dummy
-      def attr(_key); end
     end
 
     def manifest_sectionsplit(config, dir)

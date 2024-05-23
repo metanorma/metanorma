@@ -1,5 +1,4 @@
 module Metanorma
-  # XML collection renderer
   class CollectionRenderer
     # Resolves references to other files in the collection. Three routines:
     # 1. Eref to a document that has been split into multiple documents
@@ -16,7 +15,8 @@ module Metanorma
     # @return [String] XML content
     def update_xrefs(file, docid, internal_refs)
       xml, sso = update_xrefs_prep(file, docid)
-      @nested || sso or Metanorma::XrefProcess::xref_process(xml, xml, nil, docid, @isodoc)
+      @nested || sso or Metanorma::XrefProcess::xref_process(xml, xml, nil,
+                                                             docid, @isodoc)
       @nested or update_indirect_refs_to_docs(xml, docid, internal_refs)
       @files.add_document_suffix(docid, xml)
       @nested or update_sectionsplit_refs_to_docs(xml, internal_refs)
@@ -64,15 +64,17 @@ module Metanorma
         ins.add_child("<references hidden='true' normative='false'/>").first
     end
 
+    def docid_xml(val)
+      "<docidentifier type='repository'>current-metanorma-collection/" \
+        "#{val}</docidentifier>"
+    end
+
     def add_hidden_bibliography(xmldoc, refs)
       ins = new_hidden_ref(xmldoc)
       refs.each do |k, v|
         url = @files.url(v, {})
         ins << <<~XML
-          <bibitem id="#{k}">
-            <docidentifier type="repository">current-metanorma-collection/#{v}</docidentifier>
-            <uri type='citation'>#{url}</uri>
-          </bibitem>
+          <bibitem id="#{k}">#{docid_xml(v)}<uri type='citation'>#{url}</uri></bibitem>
         XML
       end
     end
@@ -92,8 +94,7 @@ module Metanorma
           id = @isodoc.docid_prefix(docid["type"], docid.children.to_xml)
           @files.get(id) or next
           @files.get(id, :indirect_key) and next # will resolve as indirect key
-          docid.next = "<docidentifier type='repository'>" \
-                       "current-metanorma-collection/#{id}</docidentifier>"
+          docid.next = docid_xml(id)
         end
       end
     end
@@ -167,10 +168,8 @@ module Metanorma
     end
 
     def update_indirect_refs_to_docs_prep(docxml)
-      bibitems = Util::gather_bibitems(docxml)
-      erefs = Util::gather_bibitemids(docxml)
       @updated_anchors = {}
-      [bibitems, erefs]
+      [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml)]
     end
 
     def indirect_ref_key(schema, id, docxml)
@@ -232,9 +231,8 @@ module Metanorma
       ref = loc.at("./xmlns:referenceFrom") or return
       anchor = suffix_anchor(ref, docid)
       a = @files.get(docid, :anchors) or return
-      a.inject([]) do |m, (_, x)|
-        m += x.values
-      end.include?(anchor) or return
+      a.inject([]) { |m, (_, x)| m += x.values }
+        .include?(anchor) or return
       ref.content = anchor
     end
 
