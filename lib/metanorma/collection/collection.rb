@@ -5,7 +5,8 @@ require "relaton/cli"
 require "metanorma-utils"
 require_relative "../util/util"
 require_relative "../util/disambig_files"
-require_relative "../collectionconfig/collectionconfig"
+require_relative "../collection_config/config"
+require_relative "../collection_config/manifest"
 
 module Metanorma
   class FileNotFoundException < StandardError; end
