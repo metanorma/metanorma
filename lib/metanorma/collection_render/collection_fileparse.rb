@@ -15,8 +15,8 @@ module Metanorma
     # @return [String] XML content
     def update_xrefs(file, docid, internal_refs)
       xml, sso = update_xrefs_prep(file, docid)
-      @nested || sso or Metanorma::XrefProcess::xref_process(xml, xml, nil,
-                                                             docid, @isodoc)
+      @nested || sso or
+        Metanorma::XrefProcess::xref_process(xml, xml, nil, docid, @isodoc)
       @nested or update_indirect_refs_to_docs(xml, docid, internal_refs)
       @files.add_document_suffix(docid, xml)
       @nested or update_sectionsplit_refs_to_docs(xml, internal_refs)
@@ -62,21 +62,6 @@ module Metanorma
         xmldoc.root << "<bibliography/>" and ins = xmldoc.at(ns("bibliography"))
       ins.at(ns("./referenced[@hidden = 'true']")) or
         ins.add_child("<references hidden='true' normative='false'/>").first
-    end
-
-    def docid_xml(val)
-      "<docidentifier type='repository'>current-metanorma-collection/" \
-        "#{val}</docidentifier>"
-    end
-
-    def add_hidden_bibliography(xmldoc, refs)
-      ins = new_hidden_ref(xmldoc)
-      refs.each do |k, v|
-        url = @files.url(v, {})
-        ins << <<~XML
-          <bibitem id="#{k}">#{docid_xml(v)}<uri type='citation'>#{url}</uri></bibitem>
-        XML
-      end
     end
 
     def eref2link(docxml)

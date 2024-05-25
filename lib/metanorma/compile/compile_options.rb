@@ -57,7 +57,8 @@ module Metanorma
     end
 
     def font_install(opt)
-      FontistUtils.install_fonts(@processor, opt) unless @fontist_installed
+      @fontist_installed or
+        Util::Fontist.install_fonts(@processor, opt)
       @fontist_installed = true
     end
 
@@ -89,9 +90,10 @@ module Metanorma
     end
 
     def font_manifest_mn2pdf(options, ret, ext)
-      custom_fonts = FontistUtils.has_custom_fonts?(@processor, options, ret)
+      custom_fonts = Util::Fontist
+        .has_custom_fonts?(@processor, options, ret)
       ext == :pdf && custom_fonts and
-        ret[:mn2pdf] = { font_manifest: FontistUtils
+        ret[:mn2pdf] = { font_manifest: Util::Fontist
           .location_manifest(@processor, ret) }
     end
   end

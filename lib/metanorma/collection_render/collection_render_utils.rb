@@ -58,6 +58,21 @@ module Metanorma
       end
     end
 
+    def docid_xml(val)
+      "<docidentifier type='repository'>current-metanorma-collection/" \
+        "#{val}</docidentifier>"
+    end
+
+    def add_hidden_bibliography(xmldoc, refs)
+      ins = new_hidden_ref(xmldoc)
+      refs.each do |k, v|
+        url = @files.url(v, {})
+        ins << <<~XML
+          <bibitem id="#{k}">#{docid_xml(v)}<uri type='citation'>#{url}</uri></bibitem>
+        XML
+      end
+    end
+
     private
 
     def docid_prefix(docid)
@@ -111,8 +126,9 @@ module Metanorma
     class PdfOptionsNode
       def initialize(doctype, options)
         docproc = Metanorma::Registry.instance.find_processor(doctype)
-        if FontistUtils.has_custom_fonts?(docproc, options, {})
-          @fonts_manifest = FontistUtils.location_manifest(docproc, options)
+        if Util::Fontist.has_custom_fonts?(docproc, options, {})
+          @fonts_manifest =
+            Util::Fontist.location_manifest(docproc, options)
         end
       end
 

@@ -113,7 +113,7 @@ module Metanorma
       fnames = { xml: f.sub(/\.[^.]+$/, ".xml"), f: f,
                  orig_filename: File.expand_path(filename),
                  presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
-      @queue = ::Metanorma::WorkersPool
+      @queue = ::Metanorma::Util::WorkersPool
         .new(ENV["METANORMA_PARALLEL"]&.to_i || 3)
       gather_and_install_fonts(file, options.dup, extensions)
       process_exts_run(fnames, file, isodoc, extensions, options)

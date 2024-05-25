@@ -4,6 +4,7 @@ require "relaton"
 require "relaton/cli"
 require "metanorma-utils"
 require_relative "../util/util"
+require_relative "../util/disambig_files"
 require_relative "../collectionconfig/collectionconfig"
 
 module Metanorma
@@ -30,7 +31,6 @@ module Metanorma
     # @param prefatory [String]
     # @param coverpage [String]
     # @param final [String]
-    # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     def initialize(**args)
       @file = args[:file]
       @dirname = File.expand_path(File.dirname(@file)) # feeds @manifest
@@ -210,7 +210,7 @@ module Metanorma
         end
       end
 
-            def parse(file)
+      def parse(file)
         # need @dirname initialised before collection object initialisation
         @dirname = File.expand_path(File.dirname(file))
         config = case file

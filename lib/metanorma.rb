@@ -7,7 +7,7 @@ end
 require "metanorma/version"
 require "asciidoctor"
 require "metanorma/util/util"
-require "metanorma/util/config"
+require "metanorma/config/config"
 require "metanorma/input"
 require "metanorma/registry/registry"
 require "metanorma/processor/processor"
