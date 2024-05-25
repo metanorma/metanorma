@@ -17,16 +17,16 @@ module Metanorma
       @collection = collection
       @dir = dir
       @disambig = Util::DisambigFiles.new
-      @config = manifest_postprocess(config, dir)
+      @config = manifest_postprocess(config)
     end
 
-    def manifest_postprocess(config, dir)
+    def manifest_postprocess(config)
       manifest_bibdata(config)
-      manifest_expand_yaml(config, dir)
-      manifest_compile_adoc(config, dir)
-      manifest_filexist(config, dir)
-      manifest_sectionsplit(config, dir)
-      manifest_identifier(config, dir)
+      manifest_expand_yaml(config, @dir)
+      manifest_compile_adoc(config)
+      manifest_filexist(config)
+      manifest_sectionsplit(config)
+      manifest_identifier(config)
       config
     end
 
@@ -38,8 +38,8 @@ module Metanorma
 
     GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 
-    def manifest_identifier(config, dir)
-      no_id = populate_id_from_doc(config, dir)
+    def manifest_identifier(config)
+      no_id = populate_id_from_doc(config)
       config.identifier =
         if no_id && config.file # make file name be id
           @collection.class.resolve_identifier(File.basename(config.file))
@@ -47,23 +47,23 @@ module Metanorma
           @collection.class.resolve_identifier(config.identifier)
         end
       Array(config.entry).each do |f|
-        manifest_identifier(f, dir)
+        manifest_identifier(f)
       end
     end
 
-    def populate_id_from_doc(config, dir)
+    def populate_id_from_doc(config)
       no_id = /^#{GUID}$/o.match?(config.identifier)
       # GUID assumed to be no identifier supplied
       if no_id && /\.xml$/.match?(config.file) &&
-          (i = retrieve_id_from_doc(config.file, dir))
+          (i = retrieve_id_from_doc(config.file))
         config.identifier = i
         no_id = false
       end
       no_id
     end
 
-    def retrieve_id_from_doc(file, dir)
-      x = Nokogiri::XML(File.read(File.join(dir, file)), &:huge)
+    def retrieve_id_from_doc(file)
+      x = Nokogiri::XML(File.read(File.join(@dir, file)), &:huge)
       i = x.at("//xmlns:bibdata/xmlns:docidentifier[@primary = 'true']") ||
         x.at("//xmlns:bibdata/xmlns:docidentifier")
       i or return nil
@@ -79,7 +79,7 @@ module Metanorma
       @isodoc.i18n_init(@lang, @script, nil) # for @i18n.all_parts in docid
     end
 
-    def manifest_sectionsplit(config, dir)
+    def manifest_sectionsplit(config)
       if config.sectionsplit && !config.file
         config.sectionsplit = nil
         Array(config.entry).each do |e|
@@ -88,18 +88,18 @@ module Metanorma
         end
       end
       Array(config.entry).each do |f|
-        manifest_sectionsplit(f, dir)
+        manifest_sectionsplit(f)
       end
     end
 
-    def manifest_filexist(config, dir)
+    def manifest_filexist(config)
       if config.file
-        file = @collection.class.resolve_fileref(dir, config.file)
+        file = @collection.class.resolve_fileref(@dir, config.file)
         @collection.class.check_file_existence(file)
-        config.file = Pathname.new(file).relative_path_from(Pathname.new(dir))
+        config.file = Pathname.new(file).relative_path_from(Pathname.new(@dir))
       end
       Array(config.entry).each do |f|
-        manifest_filexist(f, dir)
+        manifest_filexist(f)
       end
     end
 
@@ -134,18 +134,18 @@ module Metanorma
       end
     end
 
-    def manifest_compile_adoc(config, dir)
+    def manifest_compile_adoc(config)
       if /\.adoc$/.match?(config.file)
-        file = @collection.class.resolve_fileref(dir, config.file)
-        config.file = compile_adoc(dir, file, config.file)
+        file = @collection.class.resolve_fileref(@dir, config.file)
+        config.file = compile_adoc(file, config.file)
       end
       Array(config.entry).each do |f|
-        manifest_compile_adoc(f, dir)
+        manifest_compile_adoc(f)
       end
     end
 
-    def compile_adoc(dir, resolved_filename, rel_filename)
-      compile_adoc_file(dir, resolved_filename)
+    def compile_adoc(resolved_filename, rel_filename)
+      compile_adoc_file(resolved_filename)
       set_adoc2xml(rel_filename)
     end
 
@@ -159,8 +159,8 @@ module Metanorma
 
     # param filepath [String]
     # @raise [AdocFileNotFoundException]
-    def compile_adoc_file(dir, file)
-      f = (Pathname.new file).absolute? ? file : File.join(dir, file)
+    def compile_adoc_file(file)
+      f = (Pathname.new file).absolute? ? file : File.join(@dir, file)
       unless File.exist? f
         raise AdocFileNotFoundException.new "#{f} not found!"
       end
@@ -175,7 +175,7 @@ module Metanorma
     def documents(mnf = @config)
       Array(mnf.entry).each_with_object({}) do |dr, m|
         if dr.file
-          m[Util::key dr.identifier] = documents_add(@dir, dr)
+          m[Util::key dr.identifier] = documents_add(dr)
         elsif dr.entry
           m.merge! documents(dr)
         end
@@ -183,9 +183,9 @@ module Metanorma
       end
     end
 
-    def documents_add(dir, docref)
+    def documents_add(docref)
       Document.parse_file(
-        Util::rel_path_resolve(dir, docref.file),
+        Util::rel_path_resolve(@dir, docref.file),
         docref.attachment, docref.identifier, docref.index
       )
     end
@@ -207,14 +207,12 @@ module Metanorma
     end
 
     def clean_manifest_id(mnf)
-      return unless @collection.directives.detect { |d|
+      @collection.directives.detect do |d|
         d.key == "documents-inline"
-      }
-
+      end or return
       id = @collection.documents.find_index do |k, _|
         k == mnf.identifier
       end
-
       id and mnf.id = format("doc%<index>09d", index: id)
     end
 

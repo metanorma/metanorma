@@ -23,15 +23,8 @@ module Metanorma
     attr_accessor :disambig, :manifest, :bibdata, :compile
 
     # @param file [String] path to source file
-    # @param dirname [String] directory of source file
-    # @param directives [Array<String>] documents-inline to inject the XML into
-    #   the collection manifest; documents-external to keeps them outside
-    # @param bibdata [RelatonBib::BibliographicItem]
-    # @param manifest [Metanorma::CollectionManifest]
+    # @param config [Metanorma::CollectionConfig]
     # @param documents [Hash<String, Metanorma::Document>]
-    # @param prefatory [String]
-    # @param coverpage [String]
-    # @param final [String]
     def initialize(**args)
       @file = args[:file]
       @dirname = File.expand_path(File.dirname(@file)) # feeds @manifest
