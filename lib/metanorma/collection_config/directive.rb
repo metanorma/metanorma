@@ -4,6 +4,5 @@ module Metanorma
       attribute :key, ::Shale::Type::String
       attribute :value, ::Shale::Type::String
     end
-
   end
 end

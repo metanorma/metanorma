@@ -60,7 +60,9 @@ module Metanorma
       warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
       internal_refs = locate_internal_refs
       @files.keys.each_with_index do |ident, i|
-        i.positive? && @directives.detect { |d| d.key == "bare-after-first" } and
+        i.positive? && @directives.detect do |d|
+          d.key == "bare-after-first"
+        end and
           @compile_options.merge!(bare: true)
         if @files.get(ident, :attachment) then copy_file_to_dest(ident)
         else

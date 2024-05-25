@@ -216,7 +216,7 @@ module Metanorma
       ref = loc.at("./xmlns:referenceFrom") or return
       anchor = suffix_anchor(ref, docid)
       a = @files.get(docid, :anchors) or return
-      a.inject([]) { |m, (_, x)| m += x.values }
+      a.inject([]) { |m, (_, x)| m + x.values }
         .include?(anchor) or return
       ref.content = anchor
     end

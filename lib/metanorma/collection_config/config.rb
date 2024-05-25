@@ -30,7 +30,7 @@ module Metanorma
 
       yaml do
         map "directives", using: { from: :directives_from_yaml,
-                                  to: :directives_to_yaml }
+                                   to: :directives_to_yaml }
         map "bibdata", using: { from: :bibdata_from_yaml,
                                 to: :bibdata_to_yaml }
         map "manifest", to: :manifest
@@ -89,11 +89,11 @@ module Metanorma
         x = model.send("#{type}_content") or return
         n = Nokogiri::XML(x)
         elem = if n.elements.size == 1 then n.root
-              else
-                b = Nokogiri::XML::Builder.new
-                model.collection.content_to_xml(type, b)
-                b.parent.elements.first
-              end
+               else
+                 b = Nokogiri::XML::Builder.new
+                 model.collection.content_to_xml(type, b)
+                 b.parent.elements.first
+               end
         doc.add_element(parent, elem)
       end
 
@@ -116,11 +116,11 @@ module Metanorma
       def directives_from_yaml(model, value)
         model.directive = value&.each_with_object([]) do |v, m|
           m << case v
-              when String then Directive.new(key: v)
-              when Hash
-                k = v.keys.first
-                Directive.new(key: k, value: v[k])
-              end
+               when String then Directive.new(key: v)
+               when Hash
+                 k = v.keys.first
+                 Directive.new(key: k, value: v[k])
+               end
         end
       end
 

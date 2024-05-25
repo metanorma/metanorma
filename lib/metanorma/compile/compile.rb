@@ -189,7 +189,7 @@ module Metanorma
       ext != :presentation
     end
 
-     # assume we pass in Presentation XML, but we want to recover Semantic XML
+    # assume we pass in Presentation XML, but we want to recover Semantic XML
     def sectionsplit_convert(input_filename, file, output_filename = nil,
                              opts = {})
       @isodoc ||= IsoDoc::PresentationXMLConvert.new({})
@@ -206,7 +206,7 @@ module Metanorma
         base: File.basename(output_filename || filename),
         output: output_filename || filename,
         dir: dir,
-        compile_opts: opts
+        compile_opts: opts,
       ).build_collection
     end
 

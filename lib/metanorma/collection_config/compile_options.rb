@@ -1,4 +1,4 @@
-require 'shale'
+require "shale"
 
 module Metanorma
   module CollectionConfig

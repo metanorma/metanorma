@@ -95,7 +95,7 @@ module Metanorma
 
       ext == :pdf && custom_fonts and
         ret[:mn2pdf] = {
-          font_manifest: Util::FontistHelper.location_manifest(@processor, ret)
+          font_manifest: Util::FontistHelper.location_manifest(@processor, ret),
         }
     end
   end

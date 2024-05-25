@@ -187,7 +187,7 @@ module Metanorma
 
       def insert_indirect_biblio(ins, refs, key, xml)
         refs.empty? and return
-        internal_bibitems, external_bibitems = insert_indirect_biblio_prep(xml)
+        internal_bibitems, = insert_indirect_biblio_prep(xml)
         refs.compact.reject do |x|
           # external_bibitems[x.sub(/^#{key}_/, "")]
         end.each do |x|

@@ -82,6 +82,5 @@ module Metanorma
 
       include Converters
     end
-
   end
 end

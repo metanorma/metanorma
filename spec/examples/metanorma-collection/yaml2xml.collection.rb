@@ -14,20 +14,21 @@ end
 
 def output
   print <<~END
-<metanorma-collection xmlns="http://metanorma.org">
-  #{collection_bibdata}
-  #{manifest(@collection["manifest"])}
-  #{prefatory}
-  #{doccontainer}
-  #{final}
-</metanorma-collection>
+    <metanorma-collection xmlns="http://metanorma.org">
+      #{collection_bibdata}
+      #{manifest(@collection['manifest'])}
+      #{prefatory}
+      #{doccontainer}
+      #{final}
+    </metanorma-collection>
   END
 end
 
 def collection_bibdata
-  return unless @collection["bibdata"] 
+  return unless @collection["bibdata"]
+
   Tempfile.open(["bibdata", ".yml"], encoding: "utf-8") do |f|
-    f.write(YAML.dump(@collection["bibdata"])) 
+    f.write(YAML.dump(@collection["bibdata"]))
     f.close
     ::Relaton::Cli::YAMLConvertor.new(f).to_xml
     File.read(f.path.sub(/\.yml$/, ".rxl"), encoding: "utf-8")
@@ -53,13 +54,14 @@ def manifest(m)
 end
 
 def docref(d)
-  @docs << { identifier: d["identifier"], fileref: d["fileref"], id: "doc%09d" % @docs.size }
+  @docs << { identifier: d["identifier"], fileref: d["fileref"],
+             id: "doc%09d" % @docs.size }
   ret = "<docref"
-  if Array(@collection["directives"]).include?("documents-inline")
-    ret += %( id="#{d['id']}")
-  else
-    ret += %( fileref="#{d['fileref']}")
-  end
+  ret += if Array(@collection["directives"]).include?("documents-inline")
+           %( id="#{d['id']}")
+         else
+           %( fileref="#{d['fileref']}")
+         end
   ret += ">"
   ret += "<identifier>#{d['identifier']}</identifier>"
   ret += "</docref>\n"
@@ -68,22 +70,26 @@ end
 
 def dummy_header
   <<~END
-= X
-A
+    = X
+    A
 
   END
 end
 
 def prefatory
   return unless @collection["prefatory-content"]
-  c =  Asciidoctor.convert(dummy_header + @collection["prefatory-content"], backend: doctype.to_sym, header_footer: true)
+
+  c = Asciidoctor.convert(dummy_header + @collection["prefatory-content"],
+                          backend: doctype.to_sym, header_footer: true)
   out = Nokogiri::XML(c).at("//xmlns:sections").children.to_xml
   "<prefatory-content>\n#{out}</prefatory-content>"
 end
 
 def final
   return unless @collection["final-content"]
-  c =  Asciidoctor.convert(dummy_header + @collection["final-content"], backend: doctype.to_sym, header_footer: true)
+
+  c = Asciidoctor.convert(dummy_header + @collection["final-content"],
+                          backend: doctype.to_sym, header_footer: true)
   out = Nokogiri::XML(c).at("//xmlns:sections").children.to_xml
   "<final-content>\n#{out}</final-content>"
 end
@@ -91,6 +97,7 @@ end
 def doccontainer
   ret = ""
   return unless Array(@collection["directives"]).include?("documents-inline")
+
   @docs.each do |d|
     ret += "<doc-container id=#{d[:id]}>\n"
     ret += File.read(d[:fileref], encoding: "utf-8")

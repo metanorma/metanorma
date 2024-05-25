@@ -2,7 +2,6 @@ require "relaton-cli"
 
 module Metanorma
   module CollectionConfig
-
     module Converters
       def bibdata_from_yaml(model, value)
         model.bibdata = Relaton::Cli::YAMLConvertor.convert_single_file(value)

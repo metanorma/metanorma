@@ -73,7 +73,7 @@ module Metanorma
     def sectionsplit(ident)
       file = @files[ident][:ref]
       @sectionsplit = ::Metanorma::Sectionsplit
-        .new(input:  file, base: @files[ident][:out_path], dir: File.dirname(file),
+        .new(input: file, base: @files[ident][:out_path], dir: File.dirname(file),
              output: @files[ident][:out_path], compile_opts: @parent.compile_options,
              fileslookup: self, ident: ident, isodoc: @isodoc)
       coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }

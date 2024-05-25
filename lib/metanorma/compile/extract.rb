@@ -3,7 +3,7 @@ module Metanorma
     def relaton_export(isodoc, options)
       return unless options[:relaton]
 
-      xml = Nokogiri::XML(isodoc) { |config| config.huge }
+      xml = Nokogiri::XML(isodoc, &:huge)
       bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
       # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
       # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
@@ -24,7 +24,7 @@ module Metanorma
         extract_types = %i[sourcecode image requirement]
       FileUtils.rm_rf dirname
       FileUtils.mkdir_p dirname
-      xml = Nokogiri::XML(isodoc) { |config| config.huge }
+      xml = Nokogiri::XML(isodoc, &:huge)
       sourcecode_export(xml, dirname) if extract_types.include? :sourcecode
       image_export(xml, dirname) if extract_types.include? :image
       extract_types.include?(:requirement) and
