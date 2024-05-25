@@ -6,10 +6,10 @@ require "fontist"
 require "fontist/manifest/install"
 require_relative "compile_validate"
 require_relative "compile_options"
-require_relative "../util/fontist_utils"
+require_relative "../util/fontist_helper"
 require_relative "../util/util"
-require_relative "../collection_sectionsplit/sectionsplit"
 require_relative "extract"
+require_relative "../sectionsplit"
 require_relative "../util/worker_pool"
 
 module Metanorma
@@ -198,10 +198,16 @@ module Metanorma
         File.open(input_filename, "w:UTF-8") { |f| f.write(file) }
       presxml = File.read(input_filename, encoding: "utf-8")
       _xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
-      Sectionsplit.new(input: input_filename, isodoc: @isodoc, xml: presxml,
-                       base: File.basename(output_filename || filename),
-                       output: output_filename || filename,
-                       dir: dir, compile_opts: opts).build_collection
+
+      ::Metanorma::Sectionsplit.new(
+        input: input_filename,
+        isodoc: @isodoc,
+        xml: presxml,
+        base: File.basename(output_filename || filename),
+        output: output_filename || filename,
+        dir: dir,
+        compile_opts: opts
+      ).build_collection
     end
 
     private

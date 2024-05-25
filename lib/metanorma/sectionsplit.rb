@@ -1,6 +1,6 @@
 require "yaml"
-require_relative "../util/util"
-require_relative "../collection_xref_process/collection_xref_process"
+require_relative "util/util"
+require_relative "collection_xref_process/collection_xref_process"
 
 module Metanorma
   class Sectionsplit

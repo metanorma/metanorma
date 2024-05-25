@@ -1,6 +1,7 @@
+require "fontist"
 module Metanorma
   module Util
-    class Fontist
+    class FontistHelper
       class << self
         private
 
@@ -35,7 +36,7 @@ module Metanorma
                    "Please report this issue at github.com/metanorma/metanorma" \
                    "/issues to report this issue.", log_level)
         rescue Fontist::Errors::FormulaIndexNotFoundError
-          fintist_update_repo(manifest, agree, continue, no_progress)
+          fontist_update_repo(manifest, agree, continue, no_progress)
         end
 
         def fontist_install(manifest, agree, no_progress)
@@ -72,7 +73,7 @@ module Metanorma
           )
         end
 
-        def fintist_update_repo(manifest, agree, continue, no_progress)
+        def fontist_update_repo(manifest, agree, continue, no_progress)
           if @@updated_formulas_repo
             Util.log(
               "[fontist] Bug: formula index not found after 'fontist update'",
