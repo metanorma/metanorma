@@ -190,9 +190,13 @@ module Metanorma
       )
     end
 
-    def to_xml(builder)
+    def to_xml(builder = nil)
       clean_manifest(@config)
-      builder.parent.add_child(@config.to_xml)
+      if builder
+        builder.parent.add_child(@config.to_xml)
+      else
+        @config.to_xml
+      end
     end
 
     def clean_manifest_bibdata(mnf)
