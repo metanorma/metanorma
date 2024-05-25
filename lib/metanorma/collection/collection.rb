@@ -40,8 +40,8 @@ module Metanorma
       initialize_vars
       initialize_config(args[:config])
       initialize_directives
-      @documents.merge! @manifest.documents(@dirname)
-      @bibdatas.merge! @manifest.documents(@dirname)
+      @documents.merge! @manifest.documents
+      @bibdatas.merge! @manifest.documents
       @documents.transform_keys { |k| Util::key(k) }
       @bibdatas.transform_keys { |k| Util::key(k) }
     end

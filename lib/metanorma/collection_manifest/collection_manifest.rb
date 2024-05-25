@@ -172,12 +172,12 @@ module Metanorma
       Util.log("[metanorma] Info: Compiling #{f}...done!", :info)
     end
 
-    def documents(dir = "", mnf = @config)
+    def documents(mnf = @config)
       Array(mnf.entry).each_with_object({}) do |dr, m|
         if dr.file
-          m[Util::key dr.identifier] = documents_add(dir, dr)
+          m[Util::key dr.identifier] = documents_add(@dir, dr)
         elsif dr.entry
-          m.merge! documents(dir, dr)
+          m.merge! documents(dr)
         end
         m
       end
@@ -203,12 +203,15 @@ module Metanorma
     end
 
     def clean_manifest_id(mnf)
-      if @collection.directives.detect { |d| d.key == "documents-inline" }
-        id = @collection.documents.find_index do |k, _|
-          k == mnf.identifier
-        end
-        id and mnf.id = format("doc%<index>09d", index: id)
+      return unless @collection.directives.detect { |d|
+        d.key == "documents-inline"
+      }
+
+      id = @collection.documents.find_index do |k, _|
+        k == mnf.identifier
       end
+
+      id and mnf.id = format("doc%<index>09d", index: id)
     end
 
     def clean_manifest(mnf)
