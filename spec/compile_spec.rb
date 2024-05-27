@@ -641,7 +641,7 @@ RSpec.describe Metanorma::Compile do
      .at("//xmlns:note[@id = 'N2']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
       .to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom></referenceFrom></locality></localityStack></eref>
+        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
       OUTPUT
     expect(file2
      .at("//xmlns:bibitem[@id = 'R1']"))
