@@ -37,7 +37,7 @@ manifest:
           identifier: ISO 17301-1:2016
         - fileref: dummy.xml
           url: example/url
-          identifier: ISO 17302
+          identifier: ISO 17302:2016
         - fileref: rice1-en.final.xml
           identifier: ISO 1701:1974
     - level: subcollection

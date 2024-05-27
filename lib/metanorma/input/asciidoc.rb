@@ -35,9 +35,9 @@ module Metanorma
 
       def extract_metanorma_options(file)
         headerextract = file.sub(/\n\n.*$/m, "\n")
-        /\n:mn-document-class:\s+(?<type>[^\n]+)\n/ =~ headerextract
-        /\n:mn-output-extensions:\s+(?<extensions>[^\n]+)\n/ =~ headerextract
-        /\n:mn-relaton-output-file:\s+(?<relaton>[^\n]+)\n/ =~ headerextract
+        /\n:mn-document-class:\s+(?<type>\S[^\n]*)\n/ =~ headerextract
+        /\n:mn-output-extensions:\s+(?<extensions>\S[^\n]*)\n/ =~ headerextract
+        /\n:mn-relaton-output-file:\s+(?<relaton>\S[^\n]*)\n/ =~ headerextract
         /\n(?<asciimath>:mn-keep-asciimath:[^\n]*)\n/ =~ headerextract
         /\n(?<novalid>:novalid:[^\n]*)\n/ =~ headerextract
         asciimath = if defined?(asciimath)

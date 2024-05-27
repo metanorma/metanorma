@@ -1,5 +1,16 @@
 # frozen_string_literal: true
 
+require "stringio"
+
+def capture_stdout
+  old = $stdout
+  $stdout = fake = StringIO.new
+  yield
+  fake.string
+ensure
+  $stdout = old
+end
+
 INPATH = "spec/fixtures/collection"
 OUTPATH = "spec/fixtures/ouput"
 
@@ -13,7 +24,18 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(xml)).to be_equivalent_to xml_content
+      expect(cleanup_id(xmlpp(xml))).to be_equivalent_to xmlpp(xml_content)
+    end
+
+    it "YAML collection with no document identifiers" do
+      mock_pdf
+      xml_file = "#{INPATH}/collection1.xml"
+      mc = Metanorma::Collection.parse "#{INPATH}/collection1noid.yml"
+      xml = mc.to_xml
+      File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
+      expect(mc).to be_instance_of Metanorma::Collection
+      xml_content = read_and_cleanup(xml_file)
+      expect(cleanup_id(xmlpp(xml))).to be_equivalent_to xmlpp(xml_content)
     end
 
     it "YAML collection with docs inline" do
@@ -47,7 +69,224 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(xml)).to be_equivalent_to xml_content
+      expect(xmlpp(cleanup_id(xml))).to be_equivalent_to xmlpp(xml_content)
+    end
+
+    context "YAML collection with new format" do
+      let(:yaml_file) { "#{INPATH}/collection_new.yml" }
+      let(:ccm) do
+        Metanorma::Collection.parse(yaml_file).manifest
+          .to_xml(Nokogiri::XML::Builder.new).to_xml
+      end
+
+      describe "when constructing collection manifest" do
+        it "should inherit sectionsplit and have correct format" do
+          expect(xmlpp(cleanup_id(ccm)))
+            .to be_equivalent_to xmlpp(cleanup_id(<<~OUTPUT))
+              <entry index="true">
+                <identifier>27b4fbb3-a76e-42c9-a519-3cf18a7ca1c5</identifier>
+                <type>collection</type>
+                <title>ISO Collection</title>
+                <entry index="true">
+                  <identifier>00b50518-1656-465e-b14a-ba4e67aff9d0</identifier>
+                  <entry index="true">
+                    <identifier>4409d72f-9e2d-4aa3-bc3f-732ba76e211c</identifier>
+                    <type>collection</type>
+                    <title>ISO Collection</title>
+                    <entry index="true">
+                      <identifier>5a254d10-6c28-4721-872e-4974dfc035a3</identifier>
+                      <type>document</type>
+                      <title>Document</title>
+                      <entry id="doc000000000" sectionsplit="true" index="true" fileref="document-1/document-1.xml">
+                        <identifier>ISO 12345-1:2024</identifier>
+                      </entry>
+                    </entry>
+                    <entry index="true">
+                      <identifier>eb779c1d-f770-47e4-9d5f-83958e59be0f</identifier>
+                      <type>attachments</type>
+                      <title>Attachments</title>
+                      <entry id="doc000000001" attachment="true" index="true" fileref="document-1/img/action_schemaexpg2.svg">
+                        <identifier>action_schemaexpg2.svg</identifier>
+                      </entry>
+                      <entry id="doc000000002" attachment="true" index="true" fileref="../../assets/rice_image1.png">
+                        <identifier>rice_image1.png</identifier>
+                      </entry>
+                    </entry>
+                  </entry>
+                </entry>
+                <entry index="true">
+                  <identifier>fcd781f4-4189-407d-b316-eb676fd04cb9</identifier>
+                  <entry index="true">
+                    <identifier>67ae8932-3c18-4ff1-987f-b0cb7093f460</identifier>
+                    <type>collection</type>
+                    <title>ISO Collection</title>
+                    <entry index="true">
+                      <identifier>862b2f9e-0e7a-4a01-9916-27500e141a46</identifier>
+                      <type>document</type>
+                      <title>Document</title>
+                      <entry id="doc000000003" sectionsplit="true" index="true" fileref="document-2/document-2.xml">
+                        <identifier>ISO 12345-2:2024</identifier>
+                      </entry>
+                    </entry>
+                    <entry index="true">
+                      <identifier>380c7f48-59e5-44c8-b5db-5ac5d79c12f3</identifier>
+                      <type>attachments</type>
+                      <title>Attachments</title>
+                      <entry id="doc000000004" attachment="true" index="true" fileref="document-2/img/action_schemaexpg3.svg">
+                        <identifier>action_schemaexpg3.svg</identifier>
+                      </entry>
+                    </entry>
+                  </entry>
+                </entry>
+              </entry>
+            OUTPUT
+        end
+
+        it "should allow user to set identifier" do
+          my_identifier_proc = Proc.new do |identifier|
+            identifier = case identifier
+                         when "action_schemaexpg2.svg"
+                           "freedom"
+                         else
+                           identifier
+                         end
+            next identifier
+          end
+          Metanorma::Collection.set_identifier_resolver(&my_identifier_proc)
+          xml = Nokogiri::XML(ccm)
+          id = xml.at("//entry[@fileref = 'document-1/img/" \
+                      "action_schemaexpg2.svg']/identifier")
+          expect(id.text).to eq "freedom"
+          id = xml.at("//entry[@fileref = 'document-2/img/" \
+                      "action_schemaexpg3.svg']/identifier")
+          expect(id.text).to eq "action_schemaexpg3.svg"
+          id = xml.at("//entry[@fileref = '../../assets/" \
+                      "rice_image1.png']/identifier")
+          expect(id.text).to eq "rice_image1.png"
+        end
+
+        it "should allow user to point fileref to new location conditionally" do
+          my_fileref_proc = Proc.new do |ref_folder, fileref|
+            if fileref == "document-1/img/action_schemaexpg2.svg"
+              fileref = fileref.gsub("img/", "image/")
+            end
+            fileref = File.join(ref_folder, fileref)
+            next fileref
+          end
+          Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
+          xml = Nokogiri::XML(ccm)
+          id = xml.at("//entry[@id = 'doc000000001']/@fileref")
+          expect(id.text).to eq "document-1/image/action_schemaexpg2.svg"
+        end
+      end
+
+      describe "when parsing and rendering model" do
+        let(:parse_model) { Metanorma::Collection.parse(yaml_file) }
+        let(:collection_opts) do
+          {
+            format: [:html],
+            output_folder: OUTPATH,
+            compile: {
+              no_install_fonts: true,
+            },
+            coverpage: "#{INPATH}/cover1.html",
+          }
+        end
+
+        let(:compile_adoc) do
+          Metanorma::Collection.send(
+            :compile_adoc_documents,
+            collection_model,
+          )
+        end
+
+        before do
+          my_identifier_proc = Proc.new do |identifier|
+            identifier = case identifier
+                         when /^spec\/fixtures\/collection\//
+                           identifier.gsub("spec/fixtures/collection/", "")
+                         else
+                           identifier
+                         end
+            next identifier
+          end
+
+          Metanorma::Collection.set_identifier_resolver(&my_identifier_proc)
+        end
+
+        it "should allow user to define a proc to run" do
+          my_proc = Proc.new { puts "Test Proc!" }
+          Metanorma::Collection.unset_fileref_resolver
+          Metanorma::Collection.set_pre_parse_model(&my_proc)
+          printed = capture_stdout do
+            Metanorma::Collection.send(:pre_parse_model, parse_model)
+          end
+          expect(printed).to include("Test Proc!")
+        end
+
+        it "should raise error if adoc files not found" do
+          my_dumb_fileref_proc = Proc.new do |ref_folder, fileref|
+            /\.adoc$?/.match?(fileref) and fileref = "dunno/#{fileref}"
+            fileref = File.join(ref_folder, fileref)
+            next fileref
+          end
+
+          Metanorma::Collection.set_fileref_resolver(&my_dumb_fileref_proc)
+
+          expect { parse_model.render(collection_opts) }.to raise_error(
+            Metanorma::AdocFileNotFoundException, /document-1\.adoc not found!/
+          )
+        end
+
+        it "should raise error if YAML files not found" do
+          my_dumb_fileref_proc = Proc.new do |ref_folder, fileref|
+            /\.ya?ml$?/.match?(fileref) and fileref = "dunno/#{fileref}"
+            fileref = File.join(ref_folder, fileref)
+            next fileref
+          end
+
+          Metanorma::Collection.set_fileref_resolver(&my_dumb_fileref_proc)
+
+          expect { parse_model.render(collection_opts) }.to raise_error(
+            Metanorma::FileNotFoundException,
+            /document-1\/collection\.yml not found!/,
+          )
+        end
+
+        it "should compile adoc files and return Metanorma::Collection" do
+          Metanorma::Collection.unset_fileref_resolver
+          xml_paths = [
+            "#{INPATH}/document-1/document-1.xml",
+            "#{INPATH}/document-2/document-2.xml",
+          ]
+          xml_paths.each do |x|
+            FileUtils.rm_rf(x)
+            expect(File.exist?(x)).to be_falsy
+          end
+          expect(parse_model).to be_instance_of Metanorma::Collection
+          xml_paths.each do |x|
+            expect(File.exist?(x)).to be_truthy
+          end
+        end
+
+        it "should render output" do
+          Metanorma::Collection.unset_fileref_resolver
+          parse_model.render(collection_opts)
+
+          expected_output = {
+            "index.html" => "Cover bibdata - Test Title",
+            "ISO 12345-1_2024_index.html" => "ISO 12345-1",
+            "ISO 12345-2_2024_index.html" => "ISO 12345-2",
+          }
+          generated_files = Dir["#{OUTPATH}/*"]
+
+          expected_output.each do |k, v|
+            expect(generated_files).to include("#{OUTPATH}/#{k}")
+            expect(File.read("#{OUTPATH}/#{k}", encoding: "utf-8"))
+              .to include(v)
+          end
+        end
+      end
     end
 
     it "XML collection" do
@@ -56,7 +295,7 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(cleanup_id(mc.to_xml)).to be_equivalent_to xml
+      expect(cleanup_id(xmlpp(mc.to_xml))).to be_equivalent_to xmlpp(xml)
     end
 
     it "XML collection with interleaved documents and manifests" do
@@ -75,553 +314,6 @@ RSpec.describe Metanorma::Collection do
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
       expect(xmlpp(cleanup_id(mc.to_xml))).to be_equivalent_to xmlpp(xml)
-    end
-  end
-
-  context "render html & build doc, pdf, xml files from" do
-    it "YAML collection" do # rubocop:disable metrics/blocklength
-      mock_pdf
-      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
-      FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
-      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
-                   "action_schemaexpg1.svg"
-      file = "#{INPATH}/collection1.yml"
-      # xml = file.read file, encoding: "utf-8"
-      of = OUTPATH
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation html pdf xml],
-        output_folder: of,
-        # coverpage: "#{INPATH}/collection_cover.html",
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
-      concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
-      concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
-      expect(xmlpp(concat_file.gsub("><", ">\n<"))
-        .sub(%r{xlink:href=['"]data:image/gif;base64,[^']*'},
-             "xlink:href='data:image/gif;base64,_'"))
-        .to be_equivalent_to xmlpp(concat_text.gsub("><", ">\n<"))
-          .sub(%r{xlink:href=['"]data:image/gif;base64[^']*'},
-               "xlink:href='data:image/gif;base64,_'")
-      conact_file_doc_xml = Nokogiri::XML(concat_file)
-      concat_text_doc_xml = File.open("#{INPATH}/rice-en.final.xml") do |f|
-        Nokogiri::XML(f)
-      end
-
-      %w[
-        Dummy_ISO_17301-1_2016
-        StarTrek_ISO_17301-1_2016
-        RiceAmd_ISO_17301-1_2016
-        _scope_ISO_1701_1974
-        _introduction_ISO_17301-1_2016_Amd.1_2017
-      ].each do |id|
-        expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
-          .ns("//*[@id='#{id}']")).length).to_not be_zero
-      end
-      expect(concat_text_doc_xml.xpath("//xmlns:xref/@target")[-1].text)
-        .to be_equivalent_to "_scope"
-      expect(conact_file_doc_xml.xpath("//i:xref/@target", "i" => "https://www.metanorma.org/ns/iso")[-1].text)
-        .to be_equivalent_to "_scope_ISO_17301-1_2016"
-      expect(concat_text_doc_xml.at("//xmlns:strong/@style").text)
-        .to be_equivalent_to "background: url(#svg1); foreground: url(_001); middleground: url(#fig1);"
-      expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/iso").text)
-        .to be_equivalent_to "background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);"
-
-      expect(File.exist?("#{INPATH}/collection1.err.html")).to be true
-      expect(File.read("#{INPATH}/collection1.err.html", encoding: "utf-8"))
-        .to include "Missing:​express-schema:​E0"
-      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/collection.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/index.html")).to be true
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "<h1>ISO Collection 1"
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "ISO 17301-1:2016/Amd.1:2017"
-      expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
-      expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
-      expect(File.read("#{OUTPATH}/dummy.xml"))
-        .not_to be_equivalent_to File.read("#{OUTPATH}/dummy.presentation.xml")
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
-        .to be true
-      rice = File.read("#{OUTPATH}/rice-en.final.html")
-      expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
-      expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
-      # demonstrate that erefs are removed if they point to another document in the repository,
-      # but that document is not supplied
-      expect(rice).to include %{This document uses schemas E0/A0, <a href="example/url.html#A1">E1/A1</a> and <a href="example/url.html#E2">E2</a>.}
-      expect(rice).to include %(This document is also unrelated to <a href="example/url.html#what">)
-      FileUtils.rm_rf of
-    end
-
-    it "extracts metadata from collection for Liquid" do
-      mock_pdf
-      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
-      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
-                   "action_schemaexpg1.svg"
-      file = "#{INPATH}/collection1.yml"
-      # xml = file.read file, encoding: "utf-8"
-      of = OUTPATH
-      col = Metanorma::Collection.parse file
-      cr = Metanorma::CollectionRenderer
-        .render(col,
-                format: %i[presentation html xml],
-                output_folder: of,
-                coverpage: "#{INPATH}/collection_cover.html",
-                compile: {
-                  no_install_fonts: true,
-                })
-      expect(cr.isodoc.meta.get[:docrefs])
-        .to be_equivalent_to [
-          { "identifier" => "ISO 17301-1:2016", "file" => "rice-en.final.html",
-            "title" => "Cereals and pulses&#x2009;&#x2014;&#x2009;" \
-                       "Specifications and test methods&#x2009;&#x2014;" \
-                       "&#x2009;Rice (Final)", "level" => nil },
-          { "identifier" => "ISO 17302", "file" => "dummy.html",
-            "title" => "Dummy document", "level" => nil },
-          { "identifier" => "ISO 1701:1974", "file" => "rice1-en.final.html",
-            "title" => "Test conditions for milling machines with table of " \
-                       "variable height, with horizontal or vertical spindle",
-            "level" => nil },
-          { "identifier" => "ISO 17301-1:2016/Amd.1:2017",
-            "file" => "rice-amd.final.html",
-            "title" => "Specification and test methods&#x2009;&#x2014;&#x2009;" \
-                       "Rice&#x2009;&#x2014;&#x2009;Mass fraction of " \
-                       "extraneous matter, milled rice (nonglutinous), sample " \
-                       "dividers and recommendations relating to storage and " \
-                       "transport conditions", "level" => nil },
-          { "identifier" => "action_schemaexpg1.svg",
-            "file" => "pics/action_schemaexpg1.svg", "title" => nil,
-            "level" => nil },
-          { "identifier" => "rice_image1.png",
-            "file" => "assets/rice_image1.png",
-            "title" => nil, "level" => nil },
-        ]
-      expect(cr.isodoc.meta.get[:navigation])
-        .to be_equivalent_to <<~OUTPUT
-          <ul>
-          <li>ISO Collection</li>
-          <ul>
-          <li>Standards</li>
-          <ul>
-          <li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li>
-          <li><a href="dummy.html">ISO&nbsp;17302</a></li>
-          <li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li>
-          </ul>
-          </ul>
-          <ul>
-          <li>Amendments</li>
-          <ul><li><a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a></li></ul>
-          </ul>
-          <ul>
-          <li>Attachments</li>
-          <ul>
-          <li><a href="pics/action_schemaexpg1.svg">action_schemaexpg1.svg</a></li>
-          <li><a href="assets/rice_image1.png">rice_image1.png</a></li>
-          </ul>
-          </ul>
-          </ul>
-        OUTPUT
-      expect(strip_guid(cr.isodoc.meta.get[:"prefatory-content"]))
-        .to be_equivalent_to <<~OUTPUT
-          <div>
-          <div id="_">
-          <h1>Clause</h1>
-
-          <p id="_">Welcome to our collection</p>
-          </div>
-          </div>
-      OUTPUT
-      expect(strip_guid(cr.isodoc.meta.get[:"final-content"]))
-        .to be_equivalent_to <<~OUTPUT
-           <div>
-          <div id="_">
-          <h1>Exordium</h1>
-
-          <p id="_">Hic explicit</p>
-          </div>
-          </div>
-      OUTPUT
-      expect(cr.isodoc.meta.get[:nav_object])
-        .to be_equivalent_to (
-          { title: "ISO Collection",
-            children: [
-              { title: "Standards",
-                docrefs: <<~DOCREF,
-                  <ul><li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li><li><a href="dummy.html">ISO&nbsp;17302</a></li><li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li></ul>
-                DOCREF
-              },
-              { title: "Amendments",
-                docrefs: <<~DOCREF,
-                  "<ul><li><a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a></li></ul>"
-                DOCREF
-              },
-              { title: "Attachments",
-                docrefs: <<~DOCREF,
-                  "<ul><li><a href="pics/action_schemaexpg1.svg">action_schemaexpg1.svg</a></li><li><a href="assets/rice_image1.png">rice_image1.png</a></li></ul>"
-                DOCREF
-              },
-            ] }
-        )
-    end
-
-    it "uses presentation XML directive, markup in identifiers" do # rubocop:disable metrics/blocklength
-      mock_pdf
-      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
-      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
-                   "action_schemaexpg1.svg"
-      file = "#{INPATH}/collection2.yml"
-      of = OUTPATH.to_s
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[html presentation xml],
-        output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
-      expect(File.read("#{OUTPATH}/dummy.xml"))
-        .to be_equivalent_to File.read("#{OUTPATH}/dummy.presentation.xml")
-      expect(File.exist?("#{OUTPATH}/index.html")).to be true
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "1701<sup>x</sup>"
-      FileUtils.rm_rf of
-    end
-
-    it "YAML collection with documents inline" do # rubocop:disable metrics/blocklength
-      mock_pdf
-      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg", "action_schemaexpg1.svg"
-      file = "#{INPATH}/collection1.yml"
-      # xml = file.read file, encoding: "utf-8"
-      of = OUTPATH.to_s
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation html pdf xml],
-        output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/index.html")).to be true
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "<h1>ISO Collection 1"
-      expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/dummy.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/rice-en.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.0.html"))
-        .to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.1.html"))
-        .to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html"))
-        .to be false
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/rice1-en.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
-        .to be true
-      FileUtils.rm_rf of
-    end
-
-    it "YAML collection with multiple documents sectionsplit (source document for links)" do # rubocop:disable metrics/blocklength
-      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
-                   "action_schemaexpg1.svg"
-      file = "#{INPATH}/collection_sectionsplit.yml"
-      of = OUTPATH.to_s
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation html xml],
-        output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
-      expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{INPATH}/ISO 17301-1_2016_index.html")).to be false
-      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be true
-      expect(File.exist?("#{OUTPATH}/index.html")).to be true
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "ISO Collection 1"
-      expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
-        .to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.0.html"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.1.html"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.2.html"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
-        .to be true
-      rice = File.read("#{OUTPATH}/rice-en.final.xml.1.html")
-      expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
-      expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="rice-en.final.xml.2.html#anotherclause_ISO_17301-1_2016_ISO_17301-1_2016_2_This_is_another_clause"><span class="citesec">Clause 2</span></a> or <a href="rice-en.final.xml.3.html#thirdclause_ISO_17301-1_2016_ISO_17301-1_2016_3_This_is_another_clause"><span class="citesec">Clause 3</span></a>.</p>)
-      # demonstrate that erefs are removed if they point to another document in the repository,
-      # but that document is not supplied
-      expect(rice).to match %r{This document uses schemas E0/A0, <a href="dummy.html#express-schema_E1_ISO_17302">E1/A1</a> and <a href="dummy.html#express-schema_E2_ISO_17302">express-schema/E2</a>.}
-      expect(rice).to include %(This document is also unrelated to <a href="dummy.html#what">)
-      xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
-      p = xml.xpath("//xmlns:sections//xmlns:p")[4]
-      p.delete("id")
-      expect(p.to_xml).to be_equivalent_to <<~OUTPUT
-        <p>This document is updated in <link target="rice-amd.final.html"><span class="stdpublisher">ISO</span> <span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</link>.</p>
-      OUTPUT
-      FileUtils.rm_rf of
-    end
-
-    it "YAML collection with multiple documents sectionsplit (target document for links)" do # rubocop:disable metrics/blocklength
-      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
-                   "action_schemaexpg1.svg"
-      file = "#{INPATH}/collection_target_sectionsplit.yml"
-      of = OUTPATH.to_s
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation html xml],
-        output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
-      expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{INPATH}/ISO 17302_index.html")).to be false
-      expect(File.exist?("#{OUTPATH}/ISO 17302_index.html")).to be true
-      expect(File.exist?("#{OUTPATH}/index.html")).to be true
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "ISO Collection 1"
-      expect(File.exist?("#{OUTPATH}/dummy.html")).to be false
-      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be false
-      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/dummy.xml.0.html"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/dummy.xml.1.html"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/dummy.xml.2.html"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
-        .to be true
-      expect(File.read("#{OUTPATH}/rice-en.final.html"))
-        .to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
-      expect(File.read("#{OUTPATH}/rice-en.final.html"))
-        .to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
-      # demonstrate that erefs are removed if they point to another document in the repository,
-      # and point to the right sectionsplit file
-      expect(File.read("#{OUTPATH}/rice-en.final.html"))
-        .to include %(This document is also unrelated to <a href="dummy.xml.3.html#what">)
-      expect(File.read("#{OUTPATH}/rice-en.final.html"))
-        .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas E0/A0, <a href="dummy.xml.2.html#A1_ISO_17302_ISO_17302_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_ISO_17302_4">E2</a>.</p>}
-      FileUtils.rm_rf of
-    end
-
-    xit "YAML collection with single document sectionsplit" do # rubocop:disable metrics/blocklength
-      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
-                   "action_schemaexpg1.svg"
-      file = "#{INPATH}/collection_sectionsplit_solo.yml"
-      of = OUTPATH.to_s
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation html xml],
-        output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be false
-      expect(File.exist?("#{OUTPATH}/index.html")).to be true
-      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "ISO Collection 1"
-      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
-        .to be false
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.0.html"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.1.html"))
-        .to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.xml.2.html"))
-        .to be true
-      expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
-        .to include %(This document is updated in <b>** Unresolved reference to document ISO 17301-1:2016/Amd.1:2017 from eref</b>.</p>)
-      expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
-        .to include %(This document uses schemas E0/A0, E1/A1 and E2/A2.)
-      expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
-        .to include %(This document is also unrelated to <a href="dummy.html#what">)
-      FileUtils.rm_rf of
-    end
-  end
-
-  it "disambiguates destination filenames" do
-    file = "#{INPATH}/collection.dup.yml"
-    of = OUTPATH
-    col = Metanorma::Collection.parse file
-    col.render(
-      format: %i[presentation xml],
-      output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
-      compile: {
-        no_install_fonts: true,
-      },
-    )
-    expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
-    expect(File.exist?("#{OUTPATH}/dummy.1.xml")).to be true
-    expect(File.exist?("#{OUTPATH}/dummy.2.xml")).to be true
-    FileUtils.rm_rf of
-  end
-
-  it "skips indexing of files in coverpage on request" do
-    file = "#{INPATH}/collection.dup.yml"
-    of = OUTPATH
-    col = Metanorma::Collection.parse file
-    col.render(
-      format: %i[presentation xml html],
-      output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
-      compile: {
-        no_install_fonts: true,
-      },
-    )
-    index = File.read("#{OUTPATH}/index.html")
-    expect(index).to include "ISO&nbsp;44001"
-    expect(index).not_to include "ISO&nbsp;44002"
-    expect(index).to include "ISO&nbsp;44003"
-    FileUtils.rm_rf of
-  end
-
-  it "injects repository identifiers" do
-    file = "#{INPATH}/collection1.norepo.yml"
-    of = OUTPATH
-    col = Metanorma::Collection.parse file
-    col.render(
-      format: %i[presentation xml html],
-      output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
-      compile: {
-        no_install_fonts: true,
-      },
-    )
-    index = File.read("#{OUTPATH}/rice-en.final.norepo.xml")
-    expect(index).to include "Mass fraction of extraneous matter, milled rice " \
-                             "(nonglutinous), sample dividers and " \
-                             "recommendations relating to storage and " \
-                             "transport conditions"
-    # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
-    # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
-    FileUtils.rm_rf of
-  end
-
-  context "Word collection" do
-    it "builds Word collection, no coverpages" do
-      file = "#{INPATH}/wordcollection.yml"
-      of = OUTPATH
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation doc],
-        output_folder: of,
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      output = File.read("#{OUTPATH}/collection.doc")
-      expected = File.read("#{INPATH}/collection.doc")
-      # the two images made it into the document
-      expect(output).to include "iVBORw0KGgoAAAANSUhEUgAAAaQAAAJnCAYAAADY2CeyAAAAAXNSR0IArs4c6QAAAARnQU1BAACx"
-      expect(output).to include "CCQAQAoEEgAgBQIJAJACgQQASIFAAgCkQCABAFIgkAAAKRBIAIAUCCQAQAoEEgAgBQIJAJACgQQA"
-      expect(output).to include "mIAkDAAAYAKSMAAAgAlIwgAAACYgCQMAAJiAJAwAAGACkjAAAIAJSMIAAAAmIAkDAACYgCQMAABg"
-      expect(output).to include "Content-Type: image/png"
-      output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
-        .sub!(%r{<style>.+</style>}m, "<style/>")
-      expect(cleanup_guid(cleanup_id(output)))
-        .to be_equivalent_to cleanup_guid(expected)
-      FileUtils.rm_rf of
-    end
-
-    it "builds Word collection, coverpages" do
-      file = "#{INPATH}/wordcollection_cover.yml"
-      of = OUTPATH
-      col = Metanorma::Collection.parse file
-      col.render(
-        format: %i[presentation doc],
-        output_folder: of,
-        compile: {
-          no_install_fonts: true,
-        },
-      )
-      output = File.read("#{OUTPATH}/collection.doc")
-      expected = File.read("#{INPATH}/collection1.doc")
-      output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
-        .sub!(%r{<style>.+</style>}m, "<style/>")
-      expect(cleanup_guid(cleanup_id(output)))
-        .to be_equivalent_to cleanup_guid(expected)
-      FileUtils.rm_rf of
     end
   end
 

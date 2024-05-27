@@ -1,0 +1,33 @@
+directives:
+- documents-inline
+bibdata:
+  title:
+  - language: en
+    content: bibdata - Test Title
+  docid:
+    type: iso
+    id: '12345'
+  edition: 12
+  copyright:
+    owner:
+      name: International Standards Organization
+      abbreviation: ISO
+    from: '2024'
+manifest:
+  level: collection
+  title: ISO Collection
+  manifest:
+    - level: document
+      title: Document
+      sectionsplit: true
+      docref:
+        - fileref: document-1.adoc
+    - level: attachments
+      title: Attachments
+      docref:
+        - fileref: img/action_schemaexpg2.svg
+          identifier: action_schemaexpg2.svg
+          attachment: true
+        - fileref: ../../../assets/rice_image1.png
+          identifier: rice_image1.png
+          attachment: true

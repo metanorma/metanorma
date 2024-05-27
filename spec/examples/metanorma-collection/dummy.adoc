@@ -1,82 +1,145 @@
-= Rice model
-:docnumber: 17302
-:copyright-year: 2016
+= Anger Management Systems -- Requirements
+:docnumber: 99001
+:copyright-year: 2024
 :language: en
-:title-main-en: Dummy document
-:title-main-fr: Dummy document
+:title-main-en: Anger Management Systems -- Requirements
+:title-main-fr: Systèmes de gestion de la colère -- Exigences
 :doctype: international-standard
 :docstage: 60
 :docsubstage: 60
-:technical-committee-number: 34
-:secretariat: SAC
-:technical-committee: Food products
-:subcommittee-number: 4
-:subcommittee: Cereals and pulses
+:technical-committee-number: 99
+:secretariat: DIN
+:technical-committee: Personal emotions
 :workgroup-type: WG
-:workgroup-number: 4
-:workgroup: Amylose in rice
-:docfile: rice-en.covers.final.adoc
+:workgroup-number: 1
+:workgroup: Management
 :library-ics: 67.060
 :mn-document-class: iso
 :mn-output-extensions: xml,html,doc,html_alt,pdf,rxl
 :local-cache-only:
 :data-uri-image:
 
+.Foreword
+
+ISO (the International Organization for Standardization) is a worldwide
+federation of national standards bodies (ISO member bodies). The work of
+preparing International Standards is normally carried out through ISO technical
+committees. Each member body interested in a subject for which a technical
+committee has been established has the right to be represented on that
+committee. International organizations, governmental and non-governmental, in
+liaison with ISO, also take part in the work. ISO collaborates closely with the
+International Electrotechnical Commission (IEC) on all matters of
+electrotechnical standardization.
+
+The procedures used to develop this document and those intended for its further
+maintenance are described in the ISO/IEC Directives, Part 1. In particular, the
+different approval criteria needed for the different types of ISO documents
+should be noted. This document was drafted in accordance with the editorial
+rules of the ISO/IEC Directives, Part 2 (see www.iso.org/directives).
+
+== Introduction
+
+The purpose of this document is to provide a framework for the establishment,
+implementation, maintenance, and improvement of an anger management system. This
+standard outlines the requirements for effectively managing personal and group
+anger in various settings, including workplaces, schools, and community
+organizations.
+
+Anger is a natural emotion, but when it is not managed properly, it can lead to
+negative outcomes, including personal distress and interpersonal conflict. This
+standard aims to provide guidance on how to manage anger constructively.
+
 == Scope
 
-This is a dummy document.
+This document specifies requirements for an anger management system to enable an
+organization or individual to establish, implement, maintain, and improve
+policies, procedures, and practices for the management of anger. It is
+applicable to any organization or individual, regardless of type or size, and
+can be adapted to various cultural, social, and legal contexts.
 
-....
-~/Documents/Arbeit/upwork/ribose/isodoc/lib/isodoc/function[master] $ ls -l
-total 240
--rw-r--r--  1 nickn  admin  6850 31 May 01:00 blocks.rb
--rw-r--r--  1 nickn  admin  1628  9 Mar 13:18 blocks_example.rb
--rw-r--r--  1 nickn  admin  6185  1 Jun 22:41 cleanup.rb
--rw-r--r--  1 nickn  admin  4286 12 Jun 21:09 i18n.rb
--rw-r--r--  1 nickn  admin  7154 13 Jun 00:12 inline.rb
--rw-r--r--  1 nickn  admin  1268 31 May 23:36 inline_simple.rb
--rw-r--r--  1 nickn  admin  2384 16 Mar 01:40 lists.rb
--rw-r--r--  1 nickn  admin  6916 31 May 23:31 references.rb
--rw-r--r--  1 nickn  admin  3105 28 Mar 01:47 reqt.rb
--rw-r--r--  1 nickn  admin  7415  5 Jun 00:11 section.rb
--rw-r--r--  1 nickn  admin  3441 19 May 00:28 table.rb
--rw-r--r--  1 nickn  admin  1862  6 Nov  2019 terms.rb
--rw-r--r--  1 nickn  admin  7739 31 May 01:32 to_word_html.rb
--rw-r--r--  1 nickn  admin  5965 10 Jun 22:05 utils.rb
--rw-r--r--  1 nickn  admin  1480 26 Nov  2019 xref_anchor.rb
--rw-r--r--  1 nickn  admin  1109 21 Jan 23:35 xref_counter.rb
--rw-r--r--  1 nickn  admin  4855 11 May 23:19 xref_gen.rb
--rw-r--r--  1 nickn  admin  5745 17 Mar 11:05 xref_gen_seq.rb
--rw-r--r--  1 nickn  admin  4995 12 May 23:45 xref_sect_gen.rb
-~/Documents/Arbeit/upwork/ribose/isodoc/lib/isodoc/function[master] $ vi inline.rb i18n.rb
-....
+[bibliography]
+== Normative references
 
-[[what]]
-== What?
-... What?
+== Terms and definitions
 
-....
-~/Documents/Arbeit/upwork/ribose/isodoc/lib/isodoc/function[master] $ ls -l
-total 240
--rw-r--r--  1 nickn  admin  6850 31 May 01:00 blocks.rb
--rw-r--r--  1 nickn  admin  1628  9 Mar 13:18 blocks_example.rb
--rw-r--r--  1 nickn  admin  6185  1 Jun 22:41 cleanup.rb
--rw-r--r--  1 nickn  admin  4286 12 Jun 21:09 i18n.rb
--rw-r--r--  1 nickn  admin  7154 13 Jun 00:12 inline.rb
--rw-r--r--  1 nickn  admin  1268 31 May 23:36 inline_simple.rb
--rw-r--r--  1 nickn  admin  2384 16 Mar 01:40 lists.rb
--rw-r--r--  1 nickn  admin  6916 31 May 23:31 references.rb
--rw-r--r--  1 nickn  admin  3105 28 Mar 01:47 reqt.rb
--rw-r--r--  1 nickn  admin  7415  5 Jun 00:11 section.rb
--rw-r--r--  1 nickn  admin  3441 19 May 00:28 table.rb
--rw-r--r--  1 nickn  admin  1862  6 Nov  2019 terms.rb
--rw-r--r--  1 nickn  admin  7739 31 May 01:32 to_word_html.rb
--rw-r--r--  1 nickn  admin  5965 10 Jun 22:05 utils.rb
--rw-r--r--  1 nickn  admin  1480 26 Nov  2019 xref_anchor.rb
--rw-r--r--  1 nickn  admin  1109 21 Jan 23:35 xref_counter.rb
--rw-r--r--  1 nickn  admin  4855 11 May 23:19 xref_gen.rb
--rw-r--r--  1 nickn  admin  5745 17 Mar 11:05 xref_gen_seq.rb
--rw-r--r--  1 nickn  admin  4995 12 May 23:45 xref_sect_gen.rb
-~/Documents/Arbeit/upwork/ribose/isodoc/lib/isodoc/function[master] $ vi inline.rb i18n.rb
-....
+=== anger
 
+emotional state that varies in intensity from mild irritation to intense fury
+and rage
+
+=== anger Management
+
+process of learning to recognize signs of becoming angry, and taking action
+to calm down and deal with the situation in a positive way
+
+=== stakeholder
+
+person or organization that can affect, be affected by, or perceive themselves
+to be affected by a decision or activity
+
+
+== Context of the organization
+
+The organization SHALL identify relevant external and internal issues that
+affect its ability to achieve the intended outcomes of its anger management
+system. It SHALL consider the needs and expectations of interested parties and
+determine the scope of the anger management system.
+
+== Leadership
+
+Top management SHALL demonstrate leadership and commitment by establishing an
+anger management policy and ensuring roles, responsibilities, and authorities
+are assigned and communicated.
+
+== Planning
+
+The organization SHALL identify risks and opportunities, establish anger
+management objectives, and determine actions to achieve these objectives,
+integrating them into its processes.
+
+== Support
+
+The organization SHALL determine and provide necessary resources, ensure the
+competence of personnel, raise awareness, establish communication processes, and
+control documented information.
+
+== Operation
+
+The organization SHALL plan, implement, and control the processes needed to meet
+anger management system requirements and implement programs appropriate to its
+context.
+
+== Performance Evaluation
+
+The organization SHALL monitor, measure, analyze, and evaluate anger management
+performance, conduct internal audits, and review the system at planned intervals
+to ensure its effectiveness.
+
+== Improvement
+
+The organization SHALL determine opportunities for improvement, react to
+nonconformities, take corrective actions, and continually improve the anger
+management system.
+
+[appendix]
+== Example of anger management techniques
+
+This annex provides examples of techniques that can be used in anger management
+programs.
+
+=== Deep Breathing
+
+Deep breathing exercises can help individuals calm their minds and reduce
+physical tension.
+
+=== Mindfulness Meditation
+
+Mindfulness meditation involves focusing on the present moment and accepting it
+without judgment.
+
+=== Physical Exercise
+
+Regular physical exercise can help reduce stress and improve overall mood.
+
+[bibliography]
+== Bibliography

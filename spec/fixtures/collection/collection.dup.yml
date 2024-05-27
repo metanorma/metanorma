@@ -4,11 +4,11 @@ bibdata:
   title:
     type: title-main
     language: en
-    content: ISO 44001 & 44003
+    content: Collection1
   type: collection
   docid:
     type: iso
-    id: ISO 44001 & 44003
+    id: 4400x
 manifest:
   level: collection
   title: BSI Collection
