@@ -59,7 +59,7 @@ module Metanorma
 
         def make_anchor(elem, anchor)
           elem.at(ns("./localityStack | ./locality")) and return
-          elem.text.strip.empty? and elem << anchor
+          elem.text.strip.empty? && elem.elements.empty? and elem << anchor
           elem <<
             "<localityStack><locality type='anchor'><referenceFrom>" \
               "#{anchor}</referenceFrom></locality></localityStack>"
