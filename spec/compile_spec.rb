@@ -768,8 +768,8 @@ RSpec.describe Metanorma::Compile do
   private
 
   def mock_render
-    original_add = Metanorma::CollectionRenderer.method(:render)
-    allow(Metanorma::CollectionRenderer)
+    original_add = Metanorma::Collection::Renderer.method(:render)
+    allow(Metanorma::Collection::Renderer)
       .to receive(:render) do |col, opts|
       original_add.call(col, opts.merge(compile: { no_install_fonts: true }))
     end

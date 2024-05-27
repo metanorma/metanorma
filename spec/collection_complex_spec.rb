@@ -14,9 +14,10 @@ end
 INPATH = "spec/fixtures/collection"
 OUTPATH = "spec/fixtures/ouput"
 
+# rubocop:disable Layout/LineLength
 RSpec.describe Metanorma::Collection do
   context "render html & build doc, pdf, xml files from" do
-    it "YAML collection" do # rubocop:disable metrics/blocklength
+    it "YAML collection" do
       mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
@@ -121,7 +122,7 @@ RSpec.describe Metanorma::Collection do
       # xml = file.read file, encoding: "utf-8"
       of = OUTPATH
       col = Metanorma::Collection.parse file
-      cr = Metanorma::CollectionRenderer
+      cr = Metanorma::Collection::Renderer
         .render(col,
                 format: %i[presentation html xml],
                 output_folder: of,
@@ -211,7 +212,7 @@ RSpec.describe Metanorma::Collection do
         )
     end
 
-    it "uses presentation XML directive, markup in identifiers" do # rubocop:disable metrics/blocklength
+    it "uses presentation XML directive, markup in identifiers" do
       mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
@@ -237,7 +238,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "YAML collection with documents inline" do # rubocop:disable metrics/blocklength
+    it "YAML collection with documents inline" do
       mock_pdf
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg", "action_schemaexpg1.svg"
       file = "#{INPATH}/collection1.yml"
@@ -289,7 +290,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "YAML collection with multiple documents sectionsplit (source document for links)" do # rubocop:disable metrics/blocklength
+    it "YAML collection with multiple documents sectionsplit (source document for links)" do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_sectionsplit.yml"
@@ -348,7 +349,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "YAML collection with multiple documents sectionsplit (target document for links)" do # rubocop:disable metrics/blocklength
+    it "YAML collection with multiple documents sectionsplit (target document for links)" do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_target_sectionsplit.yml"
@@ -404,7 +405,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    xit "YAML collection with single document sectionsplit" do # rubocop:disable metrics/blocklength
+    xit "YAML collection with single document sectionsplit" do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_sectionsplit_solo.yml"
@@ -445,7 +446,7 @@ RSpec.describe Metanorma::Collection do
 
     it "YAML collection with nested YAMLs, directory changes, attachments " \
     "with absolute paths, attachments with paths outside working directory, " \
-    "implicit identifier for files, svg links outside current file" do # rubocop:disable metrics/blocklength
+    "implicit identifier for files, svg links outside current file" do
       mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"

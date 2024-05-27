@@ -3,10 +3,10 @@
 require "relaton"
 require "relaton/cli"
 require "metanorma-utils"
-require_relative "../util/util"
-require_relative "../util/disambig_files"
-require_relative "../collection_config/config"
-require_relative "../collection_config/manifest"
+require_relative "util/util"
+require_relative "util/disambig_files"
+require_relative "config/config"
+require_relative "config/manifest"
 
 module Metanorma
   class FileNotFoundException < StandardError; end
@@ -23,8 +23,8 @@ module Metanorma
     attr_accessor :disambig, :manifest, :bibdata, :compile
 
     # @param file [String] path to source file
-    # @param config [Metanorma::CollectionConfig]
-    # @param documents [Hash<String, Metanorma::Document>]
+    # @param config [Metanorma::Collection::Config]
+    # @param documents [Hash<String, Metanorma::Collection::Document>]
     def initialize(**args)
       @file = args[:file]
       @dirname = File.expand_path(File.dirname(@file)) # feeds @manifest
@@ -50,7 +50,8 @@ module Metanorma
       @bibdata = config.bibdata
       @prefatory = config.prefatory_content
       @final = config.final_content
-      @manifest = CollectionManifest.new(config.manifest, self, @dirname) # feeds initialize_directives
+      @manifest = ::Metanorma::Collection::Manifest
+        .new(config.manifest, self, @dirname) # feeds initialize_directives
     end
 
     def initialize_directives
@@ -59,7 +60,8 @@ module Metanorma
       @coverpage_style = d["coverpage-style"]
       if (@documents.any? || @manifest) && !d.key?("documents-inline") &&
           !d.key?("documents-external")
-        @directives << CollectionConfig::Directive.new(key: "documents-inline")
+        @directives << ::Metanorma::Collection::Config::Directive
+          .new(key: "documents-inline")
       end
     end
 
@@ -70,7 +72,7 @@ module Metanorma
 
     # @return [String] XML
     def to_xml
-      c = CollectionConfig::Config
+      c = ::Metanorma::Collection::Config::Config
         .new(directive: @directives, bibdata: @bibdata,
              manifest: @manifest.config, documents: @documents,
              prefatory_content: @prefatory, final_content: @final)
@@ -79,7 +81,7 @@ module Metanorma
     end
 
     def render(opts)
-      CollectionRenderer.render self, opts.merge(log: @log)
+      ::Metanorma::Collection::Renderer.render self, opts.merge(log: @log)
       clean_exit
     end
 
@@ -199,7 +201,7 @@ module Metanorma
       def check_file_existence(filepath)
         unless File.exist?(filepath)
           error_message = "#{filepath} not found!"
-          Util.log("[metanorma] Error: #{error_message}", :error)
+          ::Metanorma::Util.log("[metanorma] Error: #{error_message}", :error)
           raise FileNotFoundException.new error_message.to_s
         end
       end
@@ -209,11 +211,11 @@ module Metanorma
         @dirname = File.expand_path(File.dirname(file))
         config = case file
                  when /\.xml$/
-                   CollectionConfig::Config.from_xml(File.read(file))
+                   ::Metanorma::Collection::Config::Config.from_xml(File.read(file))
                  when /.ya?ml$/
                    y = YAML.safe_load(File.read(file))
                    pre_parse_model(y)
-                   CollectionConfig::Config.from_yaml(y.to_yaml)
+                   ::Metanorma::Collection::Config::Config.from_yaml(y.to_yaml)
                  end
         new(file: file, config: config)
       end

@@ -9,7 +9,7 @@ require_relative "compile_options"
 require_relative "../util/fontist_helper"
 require_relative "../util/util"
 require_relative "extract"
-require_relative "../sectionsplit"
+require_relative "../collection/sectionsplit/sectionsplit"
 require_relative "../util/worker_pool"
 
 module Metanorma
@@ -199,7 +199,7 @@ module Metanorma
       presxml = File.read(input_filename, encoding: "utf-8")
       _xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
 
-      ::Metanorma::Sectionsplit.new(
+      ::Metanorma::Collection::Sectionsplit.new(
         input: input_filename,
         isodoc: @isodoc,
         xml: presxml,
