@@ -30,7 +30,7 @@ RSpec.describe Metanorma::Compile do
         hierarchicalassets: false,
         usexinclude: true,
         suppressasciimathdup: true,
-        no_install_fonts: nil,
+        install_fonts: nil,
         sectionsplit: nil,
         sourcefilename: "spec/assets/test2.adoc",
         sourcehighlighter: true,
@@ -74,35 +74,35 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install) {}
-    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).once
+    allow(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe)
+    expect(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe).once
 
     compile.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true)
   end
 
-  it "fontist_install called with explicit no_install_fonts=false" do
+  it "fontist_install called with explicit install_fonts=true" do
     mock_pdf
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install) {}
-    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).once
+    allow(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe)
+    expect(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe).once
 
     compile.compile("spec/assets/test.adoc", type: "iso",
                                              agree_to_terms: true,
-                                             no_install_fonts: false)
+                                             install_fonts: true)
   end
 
-  it "skip font install with no_install_fonts" do
+  it "skip font install with install_fonts=false" do
     mock_pdf
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install) {}
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
     expect(Metanorma::Util::FontistHelper).not_to receive(:fontist_install)
 
     compile.compile("spec/assets/test.adoc", type: "iso",
-                                             no_install_fonts: true)
+                                             install_fonts: false)
   end
 
   it "exit on license error" do
@@ -235,10 +235,11 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
+    allow(Fontist::Manifest::Locations).to receive(:from_hash)
     expect(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .with(anything, false, true)
 
-    compile.compile("spec/assets/test.adoc", type: "iso", no_progress: true)
+    compile.compile("spec/assets/test.adoc", type: "iso", progress: false)
   end
 
   it "handle :fonts attribute in adoc" do
@@ -247,7 +248,7 @@ RSpec.describe Metanorma::Compile do
     compile = Metanorma::Compile.new
 
     allow(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe)
-      .with(hash_including("MS Gothic"), false, false, false)
+      .with(hash_including("MS Gothic"), false, false, true)
       .and_return(nil)
 
     allow(Metanorma::Util::FontistHelper).to receive(:location_manifest)
@@ -778,7 +779,7 @@ RSpec.describe Metanorma::Compile do
     original_add = Metanorma::Collection::Renderer.method(:render)
     allow(Metanorma::Collection::Renderer)
       .to receive(:render) do |col, opts|
-      original_add.call(col, opts.merge(compile: { no_install_fonts: true }))
+      original_add.call(col, opts.merge(compile: { install_fonts: false }))
     end
   end
 

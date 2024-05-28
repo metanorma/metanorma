@@ -187,7 +187,7 @@ RSpec.describe Metanorma::Collection do
             format: [:html],
             output_folder: OUTPATH,
             compile: {
-              no_install_fonts: true,
+              install_fonts: false,
             },
             coverpage: "#{INPATH}/cover1.html",
           }
