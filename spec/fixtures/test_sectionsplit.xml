@@ -15,7 +15,8 @@
          <clause id="N" inline-header="false" obligation="normative">
          <title>Introduction</title>
          <p><xref target="A">HE</xref></p>
-         <p><eref bibitemid="R1">SHE</xref></p>
+         <note id="N1"><p><eref bibitemid="R1">SHE</xref></p></note>
+         <note id="N2"><p><eref bibitemid="R1"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/></xref></p></note>
          <svgmap>
          <figure>
            <svg xmlns="http://www.w3.org/2000/svg">

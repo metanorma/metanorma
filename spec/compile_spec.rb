@@ -632,9 +632,16 @@ RSpec.describe Metanorma::Compile do
         <eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref>
       OUTPUT
     expect(xmlpp(file2
-     .at("//xmlns:eref[@bibitemid = '#{m[1]}_R1']").to_xml))
+     .at("//xmlns:note[@id = 'N1']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
+      .to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
         <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:note[@id = 'N2']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
+      .to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
       OUTPUT
     expect(file2
      .at("//xmlns:bibitem[@id = 'R1']"))
