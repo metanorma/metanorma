@@ -1,6 +1,5 @@
 require_relative "spec_helper"
 require "fileutils"
-require "fontist"
 
 RSpec.describe Metanorma::Compile do
   def clean_outputs
@@ -75,8 +74,8 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:install_fonts_safe)
-    expect(Metanorma::FontistUtils).to receive(:install_fonts_safe).once
+    allow(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe)
+    expect(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe).once
 
     compile.compile("spec/assets/test.adoc", type: "iso", agree_to_terms: true)
   end
@@ -86,8 +85,8 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:install_fonts_safe)
-    expect(Metanorma::FontistUtils).to receive(:install_fonts_safe).once
+    allow(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe)
+    expect(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe).once
 
     compile.compile("spec/assets/test.adoc", type: "iso",
                                              agree_to_terms: true,
@@ -99,8 +98,8 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:fontist_install)
-    expect(Metanorma::FontistUtils).not_to receive(:fontist_install)
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
+    expect(Metanorma::Util::FontistHelper).not_to receive(:fontist_install)
 
     compile.compile("spec/assets/test.adoc", type: "iso",
                                              install_fonts: false)
@@ -109,7 +108,7 @@ RSpec.describe Metanorma::Compile do
   it "exit on license error" do
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:fontist_install)
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .and_raise(Fontist::Errors::LicensingError)
 
     expect do
@@ -122,9 +121,9 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:fontist_install)
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .and_raise(Fontist::Errors::LicensingError)
-    expect(Metanorma::FontistUtils).to receive(:fontist_install).once
+    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).once
 
     compile.compile("spec/assets/test.adoc", type: "iso",
                                              continue_without_fonts: true)
@@ -133,9 +132,9 @@ RSpec.describe Metanorma::Compile do
   it "exit on license error" do
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:fontist_install)
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .and_raise(Fontist::Errors::LicensingError)
-    expect(Metanorma::FontistUtils).to receive(:fontist_install).once
+    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).once
 
     expect do
       compile.compile("spec/assets/test.adoc", type: "iso")
@@ -145,9 +144,9 @@ RSpec.describe Metanorma::Compile do
   it "exit on missing fonts" do
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:fontist_install)
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .and_raise(Fontist::Errors::FontError.new("Font 'SomeFont' not found"))
-    expect(Metanorma::FontistUtils).to receive(:fontist_install).once
+    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).once
 
     expect do
       compile.compile("spec/assets/test.adoc", type: "iso")
@@ -159,9 +158,9 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:fontist_install)
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .and_raise(Fontist::Errors::FontError.new("Font 'SomeFont' not found"))
-    expect(Metanorma::FontistUtils).to receive(:fontist_install).once
+    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).once
 
     compile.compile("spec/assets/test.adoc", type: "iso",
                                              continue_without_fonts: true)
@@ -173,12 +172,12 @@ RSpec.describe Metanorma::Compile do
     compile = Metanorma::Compile.new
 
     @called = 0
-    allow(Metanorma::FontistUtils).to receive(:fontist_install) do
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install) do
       @called += 1
       raise Fontist::Errors::FormulaIndexNotFoundError if @called == 1
     end
     allow(Fontist::Formula).to receive(:update_formulas_repo)
-    expect(Metanorma::FontistUtils).to receive(:fontist_install).twice
+    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).twice
 
     compile.compile("spec/assets/test.adoc", type: "iso",
                                              continue_without_fonts: true)
@@ -187,7 +186,7 @@ RSpec.describe Metanorma::Compile do
   it "exit on twice missing fontist index" do
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:fontist_install)
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .and_raise(Fontist::Errors::FormulaIndexNotFoundError)
 
     expect do
@@ -199,13 +198,13 @@ RSpec.describe Metanorma::Compile do
     compile = Metanorma::Compile.new
 
     @called = 0
-    allow(Metanorma::FontistUtils).to receive(:fontist_install) do
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install) do
       @called += 1
       raise Fontist::Errors::FormulaIndexNotFoundError if @called == 1
       raise Fontist::Errors::UnsupportedFontError.new("TestFnt") if @called == 2
     end
     allow(Fontist::Formula).to receive(:update_formulas_repo)
-    expect(Metanorma::FontistUtils).to receive(:fontist_install).twice
+    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).twice
 
     expect do
       compile.compile("spec/assets/test.adoc", type: "iso")
@@ -218,14 +217,14 @@ RSpec.describe Metanorma::Compile do
     compile = Metanorma::Compile.new
 
     @called = 0
-    allow(Metanorma::FontistUtils).to receive(:fontist_install) do
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install) do
       @called += 1
       raise Fontist::Errors::FormulaIndexNotFoundError if @called == 1
       raise Fontist::Errors::UnsupportedFontError.new("TestFnt") if @called == 2
     end
     allow(Fontist::Formula).to receive(:update_formulas_repo)
     allow(Fontist::Manifest::Locations).to receive(:from_hash)
-    expect(Metanorma::FontistUtils).to receive(:fontist_install).twice
+    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).twice
 
     compile.compile("spec/assets/test.adoc", type: "iso",
                                              continue_without_fonts: true)
@@ -237,7 +236,7 @@ RSpec.describe Metanorma::Compile do
     compile = Metanorma::Compile.new
 
     allow(Fontist::Manifest::Locations).to receive(:from_hash)
-    expect(Metanorma::FontistUtils).to receive(:fontist_install)
+    expect(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .with(anything, false, true)
 
     compile.compile("spec/assets/test.adoc", type: "iso", progress: false)
@@ -248,11 +247,11 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Metanorma::FontistUtils).to receive(:install_fonts_safe)
+    allow(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe)
       .with(hash_including("MS Gothic"), false, false, true)
       .and_return(nil)
 
-    allow(Metanorma::FontistUtils).to receive(:location_manifest)
+    allow(Metanorma::Util::FontistHelper).to receive(:location_manifest)
       .with(anything, anything)
       .and_return({})
 
@@ -634,9 +633,16 @@ RSpec.describe Metanorma::Compile do
         <eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref>
       OUTPUT
     expect(xmlpp(file2
-     .at("//xmlns:eref[@bibitemid = '#{m[1]}_R1']").to_xml))
+     .at("//xmlns:note[@id = 'N1']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
+      .to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
         <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:note[@id = 'N2']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
+      .to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
       OUTPUT
     expect(file2
      .at("//xmlns:bibitem[@id = 'R1']"))
@@ -741,7 +747,8 @@ RSpec.describe Metanorma::Compile do
   it "use threads number from METANORMA_PARALLEL" do
     expect(ENV).to receive(:[]).with("METANORMA_PARALLEL").and_return(1)
     allow(ENV).to receive(:[]).and_call_original
-    expect(Metanorma::WorkersPool).to receive(:new).with(1).and_call_original
+    expect(Metanorma::Util::WorkersPool).to receive(:new).with(1)
+      .and_call_original
     mock_pdf
     mock_sts
     Metanorma::Compile.new.compile("spec/assets/test.adoc",
@@ -769,8 +776,8 @@ RSpec.describe Metanorma::Compile do
   private
 
   def mock_render
-    original_add = Metanorma::CollectionRenderer.method(:render)
-    allow(Metanorma::CollectionRenderer)
+    original_add = Metanorma::Collection::Renderer.method(:render)
+    allow(Metanorma::Collection::Renderer)
       .to receive(:render) do |col, opts|
       original_add.call(col, opts.merge(compile: { install_fonts: false }))
     end

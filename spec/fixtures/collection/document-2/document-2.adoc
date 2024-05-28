@@ -1,0 +1,30 @@
+= Document 2
+:docnumber: 12345
+:partnumber: 2
+:copyright-year: 2024
+:language: en
+:published-date: 2024
+:edition: 12
+:title-intro-en: Introduction 1
+:title-main-en: Main 1
+:title-part-en: Part 1
+:doctype: international-standard
+:docstage: 60
+:docsubstage: 60
+:technical-committee-number: 999
+:technical-committee: Technical Committee
+:subcommittee-type: SC
+:subcommittee-number: 1
+:subcommittee: Industrial data
+:workgroup-type: WG
+:workgroup-number: 99
+:secretariat: ANSI
+:keywords: iso
+:mn-document-class: iso
+:mn-output-extensions: xml,html,pdf,rxl
+:local-cache-only:
+:data-uri-image:
+
+== Introduction
+
+This is document 2.
