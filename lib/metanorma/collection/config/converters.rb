@@ -9,7 +9,7 @@ module Metanorma
         end
 
         def bibdata_to_yaml(model, doc)
-          doc["bibdata"] = model.bibdata.to_yaml
+          doc["bibdata"] = model.bibdata&.to_hash
         end
 
         def bibdata_from_xml(model, node)
@@ -22,8 +22,7 @@ module Metanorma
           doc.add_element(parent, elem)
         end
 
-        def nop_to_yaml(model, doc)
-        end
+        def nop_to_yaml(model, doc); end
       end
     end
   end

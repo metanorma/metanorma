@@ -16,7 +16,114 @@ OUTPATH = "spec/fixtures/ouput"
 
 RSpec.describe Metanorma::Collection do
   context "parse" do
-    it "YAML collection" do
+    it "YAML collection manifest to YAML" do
+      mock_pdf
+      mc = Metanorma::Collection.parse "#{INPATH}/collection1.yml"
+      expect(mc).to be_instance_of Metanorma::Collection
+      yaml_out = mc.config.to_yaml
+        .gsub(/identifier: #{GUID}\n\s*/o, "\\1")
+        .gsub(/(\n\s+)schema-version: \S+\n\s*/, "\\1")
+      expect(yaml_out).to be_equivalent_to <<~OUTPUT
+              ---
+        directives:
+        - documents-external:
+        - coverpage: spec/fixtures/collection/collection_cover.html
+        bibdata:
+          id: ISO12345
+          title:
+          - content: ISO Collection 1
+            language:
+            - en
+            format: text/plain
+            type: title-main
+          type: collection
+          docid:
+          - id: ISO 12345
+            type: iso
+          date:
+          - type: created
+            value: '2020'
+          - type: issued
+            value: '2020'
+          edition:
+            content: '1'
+          copyright:
+          - owner:
+            - name:
+              - content: International Organization for Standardization
+              abbreviation:
+                content: ISO
+            from: '2020'
+          ext:
+            manifest:
+          type: collection
+          title: ISO Collection
+          index: true
+          entry:
+          - type: subcollection
+            title: Standards
+            index: true
+            entry:
+            - identifier: ISO 17301-1:2016
+              index: true
+              file: rice-en.final.xml
+              entry: []
+              bibdata:
+            - identifier: ISO 17302:2016
+              url: example/url
+              index: true
+              file: dummy.xml
+              entry: []
+              bibdata:
+            - identifier: ISO 1701:1974
+              index: true
+              file: rice1-en.final.xml
+              entry: []
+              bibdata:
+            bibdata:
+          - type: subcollection
+            title: Amendments
+            index: true
+            entry:
+            - identifier: ISO 17301-1:2016/Amd.1:2017
+              index: true
+              file: rice-amd.final.xml
+              entry: []
+              bibdata:
+            bibdata:
+          - type: attachments
+            title: Attachments
+            index: true
+            entry:
+            - identifier: action_schemaexpg1.svg
+              attachment: true
+              index: true
+              file: pics/action_schemaexpg1.svg
+              entry: []
+              bibdata:
+            - identifier: rice_image1.png
+              attachment: true
+              index: true
+              file: "../../assets/rice_image1.png"
+              entry: []
+              bibdata:
+            bibdata:
+          bibdata:
+        format: []
+        coverpage: cover.html
+        prefatory-content: |2
+
+          == Clause
+          Welcome to our collection
+        final-content: |2
+
+          == Exordium
+          Hic explicit
+
+      OUTPUT
+    end
+
+    it "YAML collection to XML" do
       mock_pdf
       xml_file = "#{INPATH}/collection1.xml"
       mc = Metanorma::Collection.parse "#{INPATH}/collection1.yml"
@@ -139,7 +246,7 @@ RSpec.describe Metanorma::Collection do
                   </entry>
                 </entry>
               </entry>
-            OUTPUT
+          OUTPUT
         end
 
         it "should allow user to set identifier" do

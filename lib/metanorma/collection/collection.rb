@@ -20,7 +20,7 @@ module Metanorma
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
     attr_accessor :directives, :documents, :bibdatas, :coverpage, :dirname
-    attr_accessor :disambig, :manifest, :bibdata, :compile
+    attr_accessor :disambig, :manifest, :bibdata, :compile, :config
 
     # @param file [String] path to source file
     # @param config [Metanorma::Collection::Config]
@@ -46,6 +46,7 @@ module Metanorma
     end
 
     def initialize_config(config)
+      @config = config
       @directives = config.directive || [] # feeds initialize_directives
       @bibdata = config.bibdata
       @prefatory = config.prefatory_content
