@@ -5,7 +5,7 @@ module Metanorma
     module Config
       module Converters
         def bibdata_from_yaml(model, value)
-          value or return
+          value and !value.empty? or return
           model.bibdata = Relaton::Cli::YAMLConvertor.convert_single_file(value)
         end
 
