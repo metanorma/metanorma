@@ -27,17 +27,17 @@ module Metanorma
         yaml do
           map "identifier", to: :identifier
           map "type", to: :type
-          map "level", using: { from: :level_from_yaml, to: :nop }
+          map "level", using: { from: :level_from_yaml, to: :nop_to_yaml }
           map "title", to: :title
           map "url", to: :url
           map "attachment", to: :attachment
           map "sectionsplit", to: :sectionsplit
           map "index", to: :index
           map "file", to: :file
-          map "fileref", using: { from: :fileref_from_yaml, to: :nop }
+          map "fileref", using: { from: :fileref_from_yaml, to: :nop_to_yaml }
           map "entry", to: :entry
-          map "docref", using: { from: :docref_from_yaml, to: :nop }
-          map "manifest", using: { from: :docref_from_yaml, to: :nop }
+          map "docref", using: { from: :docref_from_yaml, to: :nop_to_yaml }
+          map "manifest", using: { from: :docref_from_yaml, to: :nop_to_yaml }
           map "bibdata", using: { from: :bibdata_from_yaml,
                                   to: :bibdata_to_yaml }
         end

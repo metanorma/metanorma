@@ -21,6 +21,9 @@ module Metanorma
           elem = b.to_xml(bibdata: true, date_format: :full)
           doc.add_element(parent, elem)
         end
+
+        def nop_to_yaml(model, doc)
+        end
       end
     end
   end
