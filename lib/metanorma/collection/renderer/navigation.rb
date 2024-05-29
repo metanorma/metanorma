@@ -4,9 +4,9 @@ module Metanorma
       # @param elm [Nokogiri::XML::Element]
       # @return [String]
       def indexfile_title(entry)
-        if entry.bibdata
-          x = entry.bibdata.title.detect { |t| t.type == "main" } ||
-            entry.bibdata.title.first
+        if entry.bibdata &&
+            x = entry.bibdata.title.detect { |t| t.type == "main" } ||
+                entry.bibdata.title.first
           x.title.content
         else
           entry.title
