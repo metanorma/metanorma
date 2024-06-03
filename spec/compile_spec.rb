@@ -666,7 +666,8 @@ RSpec.describe Metanorma::Compile do
       .to be_equivalent_to xmlpp(<<~OUTPUT)
         <svgmap><figure>
         <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-          <svg xmlns="http://www.w3.org/2000/svg">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+               <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
             <a href="A">A</a>
             <a href="B">B</a>
           </svg>
@@ -681,7 +682,9 @@ RSpec.describe Metanorma::Compile do
      .at("//xmlns:svgmap[2]").to_xml))
       .to be_equivalent_to xmlpp(<<~OUTPUT)
              <svgmap><figure>
-         <image src="" mimetype="image/svg+xml" height="auto" width="auto"><svg xmlns="http://www.w3.org/2000/svg">
+         <image src="" mimetype="image/svg+xml" height="auto" width="auto">
+         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+               <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
            <a href="P">P</a>
          </svg></img>
         </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}">P<localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
