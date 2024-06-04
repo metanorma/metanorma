@@ -96,14 +96,15 @@ module Metanorma
 
       def sectionsplit_prep(file, filename, dir)
         @splitdir = dir
-        xml1filename, type = sectionsplit_preprocess_semxml(file, filename)
-        Compile.new.compile(
-          xml1filename,
-          { format: :asciidoc, extension_keys: [:presentation], type: type }
-         .merge(@compile_opts),
-        )
-        Nokogiri::XML(File.read(xml1filename.sub(/\.xml$/, ".presentation.xml"),
-                                encoding: "utf-8"), &:huge)
+        xml1, type = sectionsplit_preprocess_semxml(file, filename)
+        flags = { format: :asciidoc, extension_keys: [:presentation],
+                  type: type }.merge(@compile_opts)
+        Compile.new.compile(xml1, flags)
+        r = Nokogiri::XML(File.read(xml1.sub(/\.xml$/, ".presentation.xml"),
+                                    encoding: "utf-8"), &:huge)
+        # can process now
+        r.xpath("//xmlns:svgmap1").each { |x| x.name = "svgmap" }
+        r
       end
 
       def sectionsplit_preprocess_semxml(file, filename)
@@ -122,6 +123,8 @@ module Metanorma
           c.nested = true # so unresolved erefs are not deleted
           c.update_xrefs(xml, @ident, {})
           c.nested = n
+          xml.xpath("//xmlns:svgmap").each { |x| x.name = "svgmap1" }
+          # do not process svgmap until after files are split
         end
       end
 
@@ -152,7 +155,8 @@ module Metanorma
       def create_sectionfile(xml, out, file, chunks, parentnode)
         ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
         sectionfile_insert(ins, chunks, parentnode)
-        Metanorma::Collection::XrefProcess::xref_process(out, xml, @key, @ident, @isodoc)
+        Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
+                                                         @ident, @isodoc)
         outname = "#{file}.xml"
         File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
           f.write(out)

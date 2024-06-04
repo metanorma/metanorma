@@ -434,6 +434,7 @@ at the address below or ISO’s member body in the country of the requester.
 </locality>E2/A2</eref>.</p>-->
           <p id="">This document uses schemas E0/A0, <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302:2016"><locality type="anchor"><referenceFrom>A1</referenceFrom></locality>E1/A1</eref> and <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302:2016">E2<localityStack><locality type="anchor"><referenceFrom>E2</referenceFrom></locality></localityStack></eref>.</p>
           <figure id="fig1_ISO_17301-1_2016">
+            <image src="" id="__ISO_17301-1_2016" mimetype="image/svg+xml" height="auto" width="auto" alt="Workmap">
             <?xml version="1.0" encoding="utf-8"?>
             <!-- Generator: Adobe Illustrator 25.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
@@ -444,13 +445,14 @@ at the address below or ISO’s member body in the country of the requester.
               <a xlink:href="mn://action_schema">
                 <rect x="123.28" y="273.93" class="st0" width="88.05" height="41.84"/>
               </a>
-              <a xlink:href="mn://basic_attribute_schema">
+              <a xlink:href="example/url.html#A1">
                 <rect x="324.69" y="450.52" class="st0" width="132.62" height="40.75"/>
               </a>
               <a xlink:href="example/url.html#A2">
                 <rect x="324.69" y="528.36" class="st0" width="148.16" height="40.75"/>
               </a>
             </svg>
+          </image>
           </figure>
           <p>You can also download the svg image at: <eref type="inline" bibitemid="action_schemaexpg1.svg_ISO_17301-1_2016" citeas="action_schemaexpg1.svg"/>. See <xref target="_scope_ISO_17301-1_2016"/> and <strong style="background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);">scope</strong></p>
         </clause>

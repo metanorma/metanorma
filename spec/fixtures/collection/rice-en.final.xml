@@ -109,14 +109,14 @@ at the address below or ISO’s member body in the country of the requester.
   <figure id='fig1'>
     <image src='action_schemaexpg1.svg' id='_' mimetype='image/svg+xml' height='auto' width='auto' alt='Workmap'/>
   </figure>
-    <target href='mn://support_resource_schema'>
+    <target href='mn://action_schema'>
       <eref bibitemid='express-schema_E0'>      
         <localityStack>
           <locality type='anchor'><referenceFrom>A0</referenceFrom></locality>
         </localityStack>
       </eref>
     </target>
-    <target href='mn://support_resource_schema'>
+    <target href='mn://basic_attribute_schema'>
       <eref bibitemid='express-schema_E1'>
         <localityStack>
           <locality type='anchor'><referenceFrom>A1</referenceFrom></locality>

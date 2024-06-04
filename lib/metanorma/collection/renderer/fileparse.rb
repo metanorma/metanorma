@@ -25,7 +25,7 @@ module Metanorma
         update_direct_refs_to_docs(xml, docid)
         hide_refs(xml)
         sso and eref2link(xml)
-        svgmap_resolve(xml, docid)
+        @nested or svgmap_resolve(xml, docid)
         xml.to_xml
       end
 
@@ -86,10 +86,18 @@ module Metanorma
         end
       end
 
+      def svg_datauri(docxml, docid)
+        rel = @files.get(docid, :rel_path)
+        parent = @files.get(docid, :parentid) and
+          rel = @files.get(parent, :rel_path)
+        # if sectionsplit, use orig file dir
+        dir = File.join(@dirname, File.dirname(rel))
+        datauri_encode(docxml, dir)
+      end
+
       def svgmap_resolve(docxml, docid)
         ids = @files.get(docid, :ids)
-        dir = File.join(@dirname, File.dirname(@files.get(docid, :rel_path)))
-        docxml = datauri_encode(docxml, dir)
+        docxml = svg_datauri(docxml, docid)
         isodoc = IsoDoc::PresentationXMLConvert.new({})
         isodoc.bibitem_lookup(docxml)
         docxml.xpath(ns("//svgmap//eref")).each do |e|
@@ -237,9 +245,8 @@ module Metanorma
         type = ins.at(ns("./locality/@type"))&.text
         type = "clause" if type == "annex"
         ref = ins.at(ns("./locality/referenceFrom"))&.text
-        anchor = @files.get(docid, :anchors).dig(type, ref) or return
-        ins << "<locality type='anchor'><referenceFrom>#{anchor.sub(/^_/,
-                                                                    '')}" \
+        a = @files.get(docid, :anchors).dig(type, ref) or return
+        ins << "<locality type='anchor'><referenceFrom>#{a.sub(/^_/, '')}" \
                "</referenceFrom></locality>"
       end
     end
