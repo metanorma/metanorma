@@ -101,7 +101,7 @@ module Metanorma
       end
 
       def svg_unnest(docxml)
-        docxml.xpath(ns("//svgmap//image[.//image]")).each do |i|
+        docxml.xpath(ns("//svgmap//image[.//*[name() = 'image']]")).each do |i|
           s = i.elements.detect { |e| e.name == "svg" } and
             i.replace(s)
         end
