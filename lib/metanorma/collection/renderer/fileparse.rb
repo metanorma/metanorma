@@ -59,13 +59,6 @@ module Metanorma
         doclist
       end
 
-      def new_hidden_ref(xmldoc)
-        ins = xmldoc.at(ns("bibliography")) or
-          xmldoc.root << "<bibliography/>" and ins = xmldoc.at(ns("bibliography"))
-        ins.at(ns("./referenced[@hidden = 'true']")) or
-          ins.add_child("<references hidden='true' normative='false'/>").first
-      end
-
       def eref2link(docxml)
         isodoc = IsoDoc::PresentationXMLConvert.new({})
         isodoc.bibitem_lookup(docxml)
@@ -97,17 +90,24 @@ module Metanorma
 
       def svgmap_resolve(docxml, docid)
         ids = @files.get(docid, :ids)
-        docxml = svg_datauri(docxml, docid)
+        docxml = svg_unnest(svg_datauri(docxml, docid))
         isodoc = IsoDoc::PresentationXMLConvert.new({})
         isodoc.bibitem_lookup(docxml)
         docxml.xpath(ns("//svgmap//eref")).each do |e|
-          svgmap_resolve1(e, isodoc, docxml, ids)
+          svgmap_resolve_eref(e, isodoc, docxml, ids)
         end
         Vectory::SvgMapping.new(docxml, "").call
         docxml.xpath(ns("//svgmap")).each { |s| isodoc.svgmap_extract(s) }
       end
 
-      def svgmap_resolve1(eref, isodoc, _docxml, ids)
+      def svg_unnest(docxml)
+        docxml.xpath(ns("//svgmap//image[.//image]")).each do |i|
+          s = i.elements.detect { |e| e.name == "svg" } and
+            i.replace(s)
+        end
+      end
+
+      def svgmap_resolve_eref(eref, isodoc, _docxml, ids)
         href = isodoc.eref_target(eref) or return
         href == "##{eref['bibitemid']}" ||
           (href =~ /^#/ && !ids[href.sub(/^#/, "")]) and return
@@ -197,9 +197,8 @@ module Metanorma
         @updated_anchors[anchor] = true
       end
 
-      def update_indirect_refs_to_docs_docid(bibitem, file)
-        docid = bibitem&.at(ns("./docidentifier[@type = 'repository']")) or
-          return
+      def update_indirect_refs_to_docs_docid(bib, file)
+        docid = bib&.at(ns("./docidentifier[@type = 'repository']")) or return
         docid.children = "current-metanorma-collection/#{file}"
         docid.previous =
           "<docidentifier type='metanorma-collection'>#{file}</docidentifier>"

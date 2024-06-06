@@ -40,6 +40,13 @@ module Metanorma
         end
       end
 
+      def new_hidden_ref(xmldoc)
+        ins = xmldoc.at(ns("bibliography")) or
+          xmldoc.root << "<bibliography/>" and ins = xmldoc.at(ns("bibliography"))
+        ins.at(ns("./referenced[@hidden = 'true']")) or
+          ins.add_child("<references hidden='true' normative='false'/>").first
+      end
+
       def strip_eref(eref)
         eref.xpath(ns("./locality | ./localityStack")).each(&:remove)
         eref.replace(eref.children)
