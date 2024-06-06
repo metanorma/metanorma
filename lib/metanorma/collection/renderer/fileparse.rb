@@ -105,6 +105,7 @@ module Metanorma
           s = i.elements.detect { |e| e.name == "svg" } and
             i.replace(s)
         end
+        docxml
       end
 
       def svgmap_resolve_eref(eref, isodoc, _docxml, ids)
