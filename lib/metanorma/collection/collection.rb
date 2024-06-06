@@ -82,7 +82,7 @@ module Metanorma
     end
 
     def render(opts)
-      opts[:format].nil? || opts[:format].empty? and opts[:format] = ["html"]
+      opts[:format].nil? || opts[:format].empty? and opts[:format] = [:html]
       ::Metanorma::Collection::Renderer.render self, opts.merge(log: @log)
       clean_exit
     end
