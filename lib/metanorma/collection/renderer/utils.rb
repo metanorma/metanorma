@@ -121,7 +121,7 @@ module Metanorma
         docxml.xpath(ns("//image")).each do |i|
           read_in_if_svg(i, directory.sub(%r{(?<!=/)$}, "/")) and i["src"] = nil
         end
-        docxml.xpath(ns("//image")).each do |i|
+        docxml.xpath(ns("//image")).each do |i| # rubocop:disable Style/CombinableLoops
           i["src"] && !i["src"].empty? or next
           i["src"] = Vectory::Utils::datauri(i["src"], directory)
         end
@@ -130,13 +130,19 @@ module Metanorma
 
       def read_in_if_svg(img, localdir)
         img["src"] or return false
+        img.elements.map(&:name).include?("svg") and return true
         path = Vectory::Utils.svgmap_rewrite0_path(img["src"], localdir)
+        svg = svg_in_path?(path) or return false
+        img.children = (Nokogiri::XML(svg).root)
+        true
+      end
+
+      def svg_in_path?(path)
         File.file?(path) or return false
         types = MIME::Types.type_for(path) or return false
         types.first == "image/svg+xml" or return false
         svg = File.read(path, encoding: "utf-8") or return false
-        img.children = (Nokogiri::XML(svg).root)
-        true
+        svg
       end
 
       class PdfOptionsNode
