@@ -100,7 +100,8 @@ module Metanorma
         flags = { format: :asciidoc, extension_keys: [:presentation],
                   type: type }.merge(@compile_opts)
         Compile.new.compile(xml1, flags)
-        f = File.open(xml1.sub(/\.xml$/, ".presentation.xml"), encoding: "utf-8")
+        f = File.open(xml1.sub(/\.xml$/, ".presentation.xml"),
+                      encoding: "utf-8")
         r = Nokogiri::XML(f, &:huge)
         r.xpath("//xmlns:svgmap1").each { |x| x.name = "svgmap" }
         r
@@ -111,9 +112,9 @@ module Metanorma
         type = xml.root.name.sub("-standard", "").to_sym
         sectionsplit_update_xrefs(xml)
         xml1 = sectionsplit_write_semxml(filename, xml)
-        #@filecache ||= []
-        #@filecache << xml1
-        #[xml1.path, type]
+        # @filecache ||= []
+        # @filecache << xml1
+        # [xml1.path, type]
         [xml1, type]
       end
 
@@ -129,14 +130,12 @@ module Metanorma
       end
 
       def sectionsplit_write_semxml(filename, xml)
-=begin
-        Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
-          f.write(@isodoc.to_xml(xml))
-          f
-        end
-=end
-outname = Pathname.new("tmp_#{filename}").sub_ext(".xml").to_s
-File.open(outname, "w:UTF-8") do |f|
+        #         Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
+        #           f.write(@isodoc.to_xml(xml))
+        #           f
+        #         end
+        outname = Pathname.new("tmp_#{filename}").sub_ext(".xml").to_s
+        File.open(outname, "w:UTF-8") do |f|
           f.write(@isodoc.to_xml(xml))
         end
         outname
