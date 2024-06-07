@@ -108,6 +108,7 @@ module Metanorma
 
         def eref_to_internal_eref(section, xml, key)
           bibitems, indirect, bibids = eref_to_internal_eref_prep(section, xml)
+          require "debug"; binding.b
           eref_to_internal_eref_select(section, xml, bibitems)
             .each_with_object([]) do |x, m|
               url = bibitems[x]&.at(ns("./uri[@type = 'citation']"))&.text

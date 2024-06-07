@@ -51,7 +51,8 @@ module Metanorma
           out = out.relative_path_from(File.expand_path(FileUtils.pwd))
         dest = File.join(@outdir, @disambig.source2dest_filename(out.to_s))
         FileUtils.mkdir_p(File.dirname(dest))
-        FileUtils.cp @files.get(identifier, :ref), dest
+        source = @files.get(identifier, :ref)
+        source != dest and FileUtils.cp source, dest
       end
 
       # process each file in the collection

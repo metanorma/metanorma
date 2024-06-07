@@ -290,6 +290,278 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
+      it "processes section split HTML" do
+    FileUtils.rm_rf "test_collection"
+    FileUtils.rm_rf "test_files"
+    mock_render
+    Metanorma::Compile.new.compile("spec/fixtures/test_sectionsplit.xml",
+                                   type: "iso",
+                                   extension_keys: %i[presentation html],
+                                   bare: nil,
+                                   sectionsplit: "true",
+                                   datauriimage: true,
+                                   agree_to_terms: true)
+    f = "spec/fixtures/test_sectionsplit.html_collection"
+    expect(File.exist?("#{f}/index.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.4.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
+    f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
+    expect(File.exist?("#{f}/cover.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.2.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.3.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.4.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.5.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+    m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
+    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
+    file2.xpath("//xmlns:emf").each(&:remove)
+    expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
+    expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
+    expect(xmlpp(file2
+     .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:note[@id = 'N1']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
+      .to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:note[@id = 'N2']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
+      .to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+      OUTPUT
+    expect(file2
+     .at("//xmlns:bibitem[@id = 'R1']"))
+      .to be_nil
+    expect(xmlpp(file2
+     .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <bibitem id="#{m[1]}_A" type="internal">
+        <docidentifier type="repository">#{m[1]}/A</docidentifier>
+        </bibitem>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <bibitem id="#{m[1]}_R1" type="internal">
+        <docidentifier type="repository">#{m[1]}/R1</docidentifier>
+        </bibitem>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:svgmap[1]").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+        <svgmap><figure>
+        <image src="" mimetype="image/svg+xml" height="auto" width="auto">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+               <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+            <a href="A">A</a>
+            <a href="B">B</a>
+          </svg>
+          </image>
+          <target href="B">
+            <eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+          </target>
+        </figure>
+        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}">A<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
+      OUTPUT
+    expect(xmlpp(file2
+     .at("//xmlns:svgmap[2]").to_xml))
+      .to be_equivalent_to xmlpp(<<~OUTPUT)
+             <svgmap><figure>
+         <image src="" mimetype="image/svg+xml" height="auto" width="auto">
+         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+               <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+           <a href="P">P</a>
+         </svg></img>
+        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}">P<localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
+      OUTPUT
+    expect(file2.at("//xmlns:preface")).to be_nil
+    expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
+    expect(file2.at("//xmlns:annex")).to be_nil
+    expect(file2.at("//xmlns:indexsect")).to be_nil
+    #     file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
+    #     expect(xmlpp(file4
+    #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+    #       .to be_equivalent_to xmlpp(<<~OUTPUT)
+    # <bibitem id="#{m[1]}_R1">
+    #   <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
+    #   <docidentifier>R1</docidentifier>
+    #   <biblio-tag>R1, </biblio-tag>
+    # </bibitem>
+    #       OUTPUT
+    file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.6.xml"))
+    expect(file6.at("//xmlns:preface")).to be_nil
+    expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
+    expect(file6.at("//xmlns:annex")).not_to be_nil
+    expect(file6.at("//xmlns:indexsect")).to be_nil
+    expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
+      .to be_equivalent_to <<~OUTPUT
+        ---
+        directives:
+        - presentation-xml
+        - bare-after-first
+        bibdata:
+          title:
+            type: title-main
+            language:
+            content: ISO Title
+          type: collection
+          docid:
+            type: ISO
+            id: ISO 1
+        manifest:
+          level: collection
+          title: Collection
+          docref:
+          - fileref: test_sectionsplit.html.0.xml
+            identifier: Contents
+          - fileref: test_sectionsplit.html.1.xml
+            identifier: abstract
+          - fileref: test_sectionsplit.html.2.xml
+            identifier: introduction
+          - fileref: test_sectionsplit.html.4.xml
+            identifier: 1 Normative References
+          - fileref: test_sectionsplit.html.3.xml
+            identifier: 2 Clause 4
+          - fileref: test_sectionsplit.html.5.xml
+            identifier: Annex A <span class="obligation">(normative)</span>  Annex (informative)
+          - fileref: test_sectionsplit.html.6.xml
+            identifier: Annex B <span class="obligation">(normative)</span>  Annex 2
+          - fileref: test_sectionsplit.html.7.xml
+            identifier: Bibliography
+
+      OUTPUT
+  end
+
+  xit "YAML collection manifest to YAML" do
+      mock_pdf
+      yaml_in = "#{INPATH}/collection1.yml"
+      mc = Metanorma::Collection.parse "#{INPATH}/collection1.yml"
+      expect(mc).to be_instance_of Metanorma::Collection
+      yaml_out = mc.config.to_yaml
+        .gsub(/(\n\s+)identifier: #{GUID}\n\s*/ , "\\1")
+        .gsub(/(\n\s+)schema-version: \S+\n\s*/ , "\\1")
+      expect(yaml_out).to be_equivalent_to <<~OUTPUT
+      ---
+directives:
+- documents-external:
+- coverpage: spec/fixtures/collection/collection_cover.html
+bibdata:
+  id: ISO12345
+  title:
+  - content: ISO Collection 1
+    language:
+    - en
+    format: text/plain
+    type: title-main
+  type: collection
+  docid:
+  - id: ISO 12345
+    type: iso
+  date:
+  - type: created
+    value: '2020'
+  - type: issued
+    value: '2020'
+  edition:
+    content: '1'
+  copyright:
+  - owner:
+    - name:
+      - content: International Organization for Standardization
+      abbreviation:
+        content: ISO
+    from: '2020'
+  ext:
+    manifest:
+  type: collection
+  title: ISO Collection
+  index: true
+  entry:
+  - type: subcollection
+    title: Standards
+    index: true
+    entry:
+    - identifier: ISO 17301-1:2016
+      index: true
+      file: rice-en.final.xml
+      entry: []
+      bibdata:
+    - identifier: ISO 17302:2016
+      url: example/url
+      index: true
+      file: dummy.xml
+      entry: []
+      bibdata:
+    - identifier: ISO 1701:1974
+      index: true
+      file: rice1-en.final.xml
+      entry: []
+      bibdata:
+    bibdata:
+  - type: subcollection
+    title: Amendments
+    index: true
+    entry:
+    - identifier: ISO 17301-1:2016/Amd.1:2017
+      index: true
+      file: rice-amd.final.xml
+      entry: []
+      bibdata:
+    bibdata:
+  - type: attachments
+    title: Attachments
+    index: true
+    entry:
+    - identifier: action_schemaexpg1.svg
+      attachment: true
+      index: true
+      file: pics/action_schemaexpg1.svg
+      entry: []
+      bibdata:
+    - identifier: rice_image1.png
+      attachment: true
+      index: true
+      file: "../../assets/rice_image1.png"
+      entry: []
+      bibdata:
+    bibdata:
+  bibdata:
+format: []
+coverpage: cover.html
+prefatory-content: |2
+
+  == Clause
+  Welcome to our collection
+final-content: |2
+
+  == Exordium
+  Hic explicit
+
+      OUTPUT
+    end
+
+
     it "YAML collection with multiple documents sectionsplit (source document for links)" do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
@@ -650,5 +922,13 @@ RSpec.describe Metanorma::Collection do
       .gsub(%r{data:image/png[^<"']+}, "data:image/png")
       .gsub(/ schema-version="[^"]+"/, "")
       .gsub(%r{<identifier>#{GUID}</identifier>}o, "<identifier>_</identifier>")
+  end
+
+   def mock_render
+    original_add = Metanorma::Collection::Renderer.method(:render)
+    allow(Metanorma::Collection::Renderer)
+      .to receive(:render) do |col, opts|
+      original_add.call(col, opts.merge(compile: { install_fonts: false }))
+    end
   end
 end

@@ -68,6 +68,7 @@ module Metanorma
       # Input XML is Semantic
       # def sectionsplit(filename, basename, dir, compile_options, fileslookup = nil, ident = nil)
       def sectionsplit
+        require "debug"; binding.b
         xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
         SPLITSECTIONS.each_with_object([]) do |n, ret|
@@ -100,9 +101,8 @@ module Metanorma
         flags = { format: :asciidoc, extension_keys: [:presentation],
                   type: type }.merge(@compile_opts)
         Compile.new.compile(xml1, flags)
-        r = Nokogiri::XML(File.read(xml1.sub(/\.xml$/, ".presentation.xml"),
-                                    encoding: "utf-8"), &:huge)
-        # can process now
+        f = File.open(xml1.sub(/\.xml$/, ".presentation.xml"), encoding: "utf-8")
+        r = Nokogiri::XML(f, &:huge)
         r.xpath("//xmlns:svgmap1").each { |x| x.name = "svgmap" }
         r
       end
@@ -112,9 +112,10 @@ module Metanorma
         type = xml.root.name.sub("-standard", "").to_sym
         sectionsplit_update_xrefs(xml)
         xml1 = sectionsplit_write_semxml(filename, xml)
-        @filecache ||= []
-        @filecache << xml1
-        [xml1.path, type]
+        #@filecache ||= []
+        #@filecache << xml1
+        #[xml1.path, type]
+        [xml1, type]
       end
 
       def sectionsplit_update_xrefs(xml)
@@ -129,11 +130,17 @@ module Metanorma
       end
 
       def sectionsplit_write_semxml(filename, xml)
+=begin
         Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
-          # f.write(@isodoc.to_xml(svg_preprocess(xml)))
           f.write(@isodoc.to_xml(xml))
           f
         end
+=end
+outname = "tmp_#{filename}"
+File.open(outname, "w:UTF-8") do |f|
+          f.write(@isodoc.to_xml(xml))
+        end
+        outname
       end
 
       def emptydoc(xml)
