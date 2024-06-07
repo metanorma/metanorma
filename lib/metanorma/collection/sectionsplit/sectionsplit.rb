@@ -68,7 +68,6 @@ module Metanorma
       # Input XML is Semantic
       # def sectionsplit(filename, basename, dir, compile_options, fileslookup = nil, ident = nil)
       def sectionsplit
-        require "debug"; binding.b
         xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
         SPLITSECTIONS.each_with_object([]) do |n, ret|
@@ -136,7 +135,7 @@ module Metanorma
           f
         end
 =end
-outname = "tmp_#{filename}"
+outname = Pathname.new("tmp_#{filename}").sub_ext(".xml").to_s
 File.open(outname, "w:UTF-8") do |f|
           f.write(@isodoc.to_xml(xml))
         end
