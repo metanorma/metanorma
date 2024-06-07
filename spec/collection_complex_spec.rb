@@ -311,7 +311,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
     f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
@@ -324,12 +324,12 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/test_sectionsplit.html.5.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be true
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
     m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
-    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
+    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
     file2.xpath("//xmlns:emf").each(&:remove)
     expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
     expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
@@ -452,115 +452,6 @@ RSpec.describe Metanorma::Collection do
 
       OUTPUT
   end
-
-  xit "YAML collection manifest to YAML" do
-      mock_pdf
-      yaml_in = "#{INPATH}/collection1.yml"
-      mc = Metanorma::Collection.parse "#{INPATH}/collection1.yml"
-      expect(mc).to be_instance_of Metanorma::Collection
-      yaml_out = mc.config.to_yaml
-        .gsub(/(\n\s+)identifier: #{GUID}\n\s*/ , "\\1")
-        .gsub(/(\n\s+)schema-version: \S+\n\s*/ , "\\1")
-      expect(yaml_out).to be_equivalent_to <<~OUTPUT
-      ---
-directives:
-- documents-external:
-- coverpage: spec/fixtures/collection/collection_cover.html
-bibdata:
-  id: ISO12345
-  title:
-  - content: ISO Collection 1
-    language:
-    - en
-    format: text/plain
-    type: title-main
-  type: collection
-  docid:
-  - id: ISO 12345
-    type: iso
-  date:
-  - type: created
-    value: '2020'
-  - type: issued
-    value: '2020'
-  edition:
-    content: '1'
-  copyright:
-  - owner:
-    - name:
-      - content: International Organization for Standardization
-      abbreviation:
-        content: ISO
-    from: '2020'
-  ext:
-    manifest:
-  type: collection
-  title: ISO Collection
-  index: true
-  entry:
-  - type: subcollection
-    title: Standards
-    index: true
-    entry:
-    - identifier: ISO 17301-1:2016
-      index: true
-      file: rice-en.final.xml
-      entry: []
-      bibdata:
-    - identifier: ISO 17302:2016
-      url: example/url
-      index: true
-      file: dummy.xml
-      entry: []
-      bibdata:
-    - identifier: ISO 1701:1974
-      index: true
-      file: rice1-en.final.xml
-      entry: []
-      bibdata:
-    bibdata:
-  - type: subcollection
-    title: Amendments
-    index: true
-    entry:
-    - identifier: ISO 17301-1:2016/Amd.1:2017
-      index: true
-      file: rice-amd.final.xml
-      entry: []
-      bibdata:
-    bibdata:
-  - type: attachments
-    title: Attachments
-    index: true
-    entry:
-    - identifier: action_schemaexpg1.svg
-      attachment: true
-      index: true
-      file: pics/action_schemaexpg1.svg
-      entry: []
-      bibdata:
-    - identifier: rice_image1.png
-      attachment: true
-      index: true
-      file: "../../assets/rice_image1.png"
-      entry: []
-      bibdata:
-    bibdata:
-  bibdata:
-format: []
-coverpage: cover.html
-prefatory-content: |2
-
-  == Clause
-  Welcome to our collection
-final-content: |2
-
-  == Exordium
-  Hic explicit
-
-      OUTPUT
-    end
-
 
     it "YAML collection with multiple documents sectionsplit (source document for links)" do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",

@@ -132,6 +132,7 @@ module Metanorma
       # so my URL should end with html or pdf or whatever
       def url(ident, options)
         data = get(ident)
+        require "debug"; binding.b unless data
         data[:url] || targetfile(data, options)[1]
       end
 

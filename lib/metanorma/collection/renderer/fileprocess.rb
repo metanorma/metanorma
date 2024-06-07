@@ -128,6 +128,7 @@ module Metanorma
       def locate_internal_refs
         warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
         refs = populate_internal_refs(gather_internal_refs)
+        warn refs
         refs.each do |schema, ids|
           ids.each do |id, key|
             key and next
