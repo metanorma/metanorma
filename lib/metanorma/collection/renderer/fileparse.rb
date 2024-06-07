@@ -20,7 +20,7 @@ module Metanorma
           Metanorma::Collection::XrefProcess::xref_process(xml, xml, nil, docid,
                                                            @isodoc)
         @nested or update_indirect_refs_to_docs(xml, docid, internal_refs)
-        @nested or @files.add_document_suffix(docid, xml)
+        @files.add_document_suffix(docid, xml)
         @nested or update_sectionsplit_refs_to_docs(xml, internal_refs)
         update_direct_refs_to_docs(xml, docid)
         hide_refs(xml)
@@ -37,7 +37,6 @@ module Metanorma
       end
 
       def update_sectionsplit_refs_to_docs(docxml, internal_refs)
-        require "debug"; binding.b
         Util::gather_citeases(docxml).each do |k, v|
           (@files.get(k) && @files.get(k, :sectionsplit)) or next
           opts = { key: @files.get(k, :indirect_key),
