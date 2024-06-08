@@ -66,7 +66,6 @@ module Metanorma
          ["//indexsect", nil], ["//colophon", nil]].freeze
 
       # Input XML is Semantic
-      # def sectionsplit(filename, basename, dir, compile_options, fileslookup = nil, ident = nil)
       def sectionsplit
         xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
@@ -112,9 +111,6 @@ module Metanorma
         type = xml.root.name.sub("-standard", "").to_sym
         sectionsplit_update_xrefs(xml)
         xml1 = sectionsplit_write_semxml(filename, xml)
-        # @filecache ||= []
-        # @filecache << xml1
-        # [xml1.path, type]
         [xml1, type]
       end
 
@@ -130,10 +126,6 @@ module Metanorma
       end
 
       def sectionsplit_write_semxml(filename, xml)
-        #         Tempfile.open([filename, ".xml"], encoding: "utf-8") do |f|
-        #           f.write(@isodoc.to_xml(xml))
-        #           f
-        #         end
         outname = Pathname.new("tmp_#{filename}").sub_ext(".xml").to_s
         File.open(outname, "w:UTF-8") do |f|
           f.write(@isodoc.to_xml(xml))

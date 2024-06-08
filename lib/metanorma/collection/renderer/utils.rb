@@ -3,7 +3,7 @@ module Metanorma
     class Renderer
       def dir_name_cleanse(name)
         path = Pathname.new(name)
-        clean_regex = /[<>:"|?*]/
+        clean_regex = /[<>:"|?*\p{Zs}]/
         fallback_sym = "_"
         return name.gsub(clean_regex, fallback_sym) unless path.absolute?
 
