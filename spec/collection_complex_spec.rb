@@ -470,8 +470,8 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{INPATH}/ISO 17301-1_2016_index.html")).to be false
-      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be true
+      expect(File.exist?("#{INPATH}/ISO_17301-1_2016_index.html")).to be false
+      expect(File.exist?("#{OUTPATH}/ISO_17301-1_2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO Collection 1"
@@ -533,8 +533,8 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("rice-en.final.presentation.xml.0.xml")).to be false
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{INPATH}/ISO 17302_2016_index.html")).to be false
-      expect(File.exist?("#{OUTPATH}/ISO 17302_2016_index.html")).to be true
+      expect(File.exist?("#{INPATH}/ISO_17302_2016_index.html")).to be false
+      expect(File.exist?("#{OUTPATH}/ISO_17302_2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO Collection 1"
@@ -588,7 +588,7 @@ RSpec.describe Metanorma::Collection do
       )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/ISO 17301-1_2016_index.html")).to be false
+      expect(File.exist?("#{OUTPATH}/ISO_17301-1_2016_index.html")).to be false
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO Collection 1"

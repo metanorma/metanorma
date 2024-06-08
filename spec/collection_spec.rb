@@ -382,8 +382,8 @@ RSpec.describe Metanorma::Collection do
 
           expected_output = {
             "index.html" => "Cover bibdata - Test Title",
-            "ISO 12345-1_2024_index.html" => "ISO 12345-1",
-            "ISO 12345-2_2024_index.html" => "ISO 12345-2",
+            "ISO_12345-1_2024_index.html" => "ISO 12345-1",
+            "ISO_12345-2_2024_index.html" => "ISO 12345-2",
           }
           generated_files = Dir["#{OUTPATH}/*"]
 
