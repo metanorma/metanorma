@@ -167,7 +167,7 @@ module Metanorma
 
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...", :info)
         ::Metanorma::Compile.new
-          .compile(f, agree_to_terms: true, no_install_fonts: true,
+          .compile(f, agree_to_terms: true, install_fonts: false,
                       extension_keys: [:xml])
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...done!", :info)
       end
