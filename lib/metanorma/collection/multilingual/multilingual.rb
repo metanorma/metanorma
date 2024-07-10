@@ -368,6 +368,7 @@ module Metanorma
                 <xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
                   <xsl:copy-of select="@element-number"/>
                   <xsl:copy-of select="@multilingual-rendering"/>
+                  <xsl:copy-of select="@displayorder"/>
                   <xsl:copy-of select="."/>
                 </xsl:element>
                 <xsl:if test="following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]">
@@ -377,6 +378,7 @@ module Metanorma
                     <xsl:if test="position() = 1">
                       <xsl:copy-of select="@element-number"/>
                     </xsl:if>
+                  <xsl:copy-of select="@displayorder"/>
                     <xsl:copy-of select="."/>
                   </xsl:for-each>
                 </xsl:element>
@@ -387,6 +389,7 @@ module Metanorma
               <xsl:variable name="curr_id" select="generate-id()"/>
               <xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
                 <xsl:copy-of select="@element-number"/>
+                  <xsl:copy-of select="@displayorder"/>
                 <xsl:if test="local-name() = 'clause'">
                   <xsl:copy-of select="@keep-with-next"/>
                 </xsl:if>
@@ -470,6 +473,7 @@ module Metanorma
                           <xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
 
                                           <xsl:copy-of select="@keep-with-next"/>
+                                          <xsl:copy-of select="@displayorder"/>
                                                           <xsl:element name="align-cell" namespace="https://www.metanorma.org/ns/bipm">
                                                                           <xsl:copy-of select="@keep-with-next"/>
                                                                           <xsl:apply-templates select="." />
@@ -541,6 +545,7 @@ module Metanorma
                           <xsl:variable name="number_"><xsl:number count="*"/></xsl:variable>
                           <xsl:variable name="number" select="number(normalize-space($number_))"/>
                           <xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
+                                          <xsl:copy-of select="@displayorder"/>
                                                   <xsl:element name="align-cell" namespace="https://www.metanorma.org/ns/bipm">
                                                                   <xsl:apply-templates select="." />
                                                           </xsl:element>
@@ -567,6 +572,7 @@ module Metanorma
               <xsl:variable name="number_"><xsl:number count="*"/></xsl:variable>
                           <xsl:variable name="number" select="number(normalize-space($number_))"/>
                           <xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
+                                          <xsl:copy-of select="@displayorder"/>
                                                   <xsl:element name="align-cell" namespace="https://www.metanorma.org/ns/bipm">
                                                                   <xsl:apply-templates select="." />
                                                           </xsl:element>
