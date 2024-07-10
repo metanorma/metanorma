@@ -35,7 +35,8 @@ module Metanorma
 
       def file_compile_formats(filename, identifier)
         f = @files.get(identifier, :outputs)
-        @format << :presentation if @format.include?(:pdf)
+        concatenate_presentation?({ format: @format }) and
+          @format << :presentation
         @format.each do |e|
           ext = @compile.processor.output_formats[e]
           fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)

@@ -1,0 +1,44 @@
+directives:
+  - documents-inline
+  - bilingual
+bibdata:
+  title:
+    type: title-main
+    language: en
+    content: JCGM Collection 1
+  type: collection
+  docid:
+    type: iso
+    id: JCGM 12345
+  edition: 1
+  date:
+    - type: created
+      value: "2020"
+    - type: issued
+      value: "2020"
+  copyright:
+    owner:
+      name: International Organization for Standardization
+      abbreviation: JCMG
+    from: "2020"
+output_folder: collection
+manifest:
+  level: collection
+  title: JCGM Collection
+  docref:
+        - fileref: bilingual-en.xml
+          identifier: ISO JCGM 100:2008(EN)
+        - fileref: bilingual-fr.xml
+          identifier: ISO JCGM 100:2008(FR)
+format:
+  - presentation
+  - html
+prefatory-content:
+|
+  == Clause
+  Welcome to our collection
+
+final-content:
+|
+  == Exordium
+  Hic explicit
