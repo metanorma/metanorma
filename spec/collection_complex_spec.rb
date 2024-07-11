@@ -13,6 +13,7 @@ end
 
 INPATH = "spec/fixtures/collection"
 OUTPATH = "spec/fixtures/ouput"
+GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 
 # rubocop:disable Layout/LineLength
 RSpec.describe Metanorma::Collection do
@@ -290,168 +291,168 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-      it "processes section split HTML" do
-    FileUtils.rm_rf "test_collection"
-    FileUtils.rm_rf "test_files"
-    mock_render
-    Metanorma::Compile.new.compile("spec/fixtures/test_sectionsplit.xml",
-                                   type: "iso",
-                                   extension_keys: %i[presentation html],
-                                   bare: nil,
-                                   sectionsplit: "true",
-                                   datauriimage: true,
-                                   agree_to_terms: true)
-    f = "spec/fixtures/test_sectionsplit.html_collection"
-    expect(File.exist?("#{f}/index.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.4.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
-    expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
-    expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
-    f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
-    expect(File.exist?("#{f}/cover.html")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.2.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.3.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.4.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.5.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
-    expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
-    expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
-    expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
-    expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
-    m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
-    file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
-    file2.xpath("//xmlns:emf").each(&:remove)
-    expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
-    expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
-    expect(xmlpp(file2
-     .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref>
-      OUTPUT
-    expect(xmlpp(file2
-     .at("//xmlns:note[@id = 'N1']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
-      .to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
-      OUTPUT
-    expect(xmlpp(file2
-     .at("//xmlns:note[@id = 'N2']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
-      .to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
-      OUTPUT
-    expect(file2
-     .at("//xmlns:bibitem[@id = 'R1']"))
-      .to be_nil
-    expect(xmlpp(file2
-     .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <bibitem id="#{m[1]}_A" type="internal">
-        <docidentifier type="repository">#{m[1]}/A</docidentifier>
-        </bibitem>
-      OUTPUT
-    expect(xmlpp(file2
-     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <bibitem id="#{m[1]}_R1" type="internal">
-        <docidentifier type="repository">#{m[1]}/R1</docidentifier>
-        </bibitem>
-      OUTPUT
-    expect(xmlpp(file2
-     .at("//xmlns:svgmap[1]").to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-        <svgmap><figure>
-        <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
-               <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
-            <a href="A">A</a>
-            <a href="B">B</a>
-          </svg>
-          </image>
-          <target href="B">
-            <eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
-          </target>
-        </figure>
-        <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}">A<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
-      OUTPUT
-    expect(xmlpp(file2
-     .at("//xmlns:svgmap[2]").to_xml))
-      .to be_equivalent_to xmlpp(<<~OUTPUT)
-             <svgmap><figure>
-         <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
-               <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
-           <a href="P">P</a>
-         </svg></img>
-        </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}">P<localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
-      OUTPUT
-    expect(file2.at("//xmlns:preface")).to be_nil
-    expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
-    expect(file2.at("//xmlns:annex")).to be_nil
-    expect(file2.at("//xmlns:indexsect")).to be_nil
-    #     file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
-    #     expect(xmlpp(file4
-    #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-    #       .to be_equivalent_to xmlpp(<<~OUTPUT)
-    # <bibitem id="#{m[1]}_R1">
-    #   <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
-    #   <docidentifier>R1</docidentifier>
-    #   <biblio-tag>R1, </biblio-tag>
-    # </bibitem>
-    #       OUTPUT
-    file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.6.xml"))
-    expect(file6.at("//xmlns:preface")).to be_nil
-    expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
-    expect(file6.at("//xmlns:annex")).not_to be_nil
-    expect(file6.at("//xmlns:indexsect")).to be_nil
-    expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
-      .to be_equivalent_to <<~OUTPUT
-        ---
-        directives:
-        - presentation-xml
-        - bare-after-first
-        bibdata:
-          title:
-            type: title-main
-            language:
-            content: ISO Title
-          type: collection
-          docid:
-            type: ISO
-            id: ISO 1
-        manifest:
-          level: collection
-          title: Collection
-          docref:
-          - fileref: test_sectionsplit.html.0.xml
-            identifier: Contents
-          - fileref: test_sectionsplit.html.1.xml
-            identifier: abstract
-          - fileref: test_sectionsplit.html.2.xml
-            identifier: introduction
-          - fileref: test_sectionsplit.html.4.xml
-            identifier: 1 Normative References
-          - fileref: test_sectionsplit.html.3.xml
-            identifier: 2 Clause 4
-          - fileref: test_sectionsplit.html.5.xml
-            identifier: Annex A <span class="obligation">(normative)</span>  Annex (informative)
-          - fileref: test_sectionsplit.html.6.xml
-            identifier: Annex B <span class="obligation">(normative)</span>  Annex 2
-          - fileref: test_sectionsplit.html.7.xml
-            identifier: Bibliography
+    it "processes section split HTML" do
+      FileUtils.rm_rf "test_collection"
+      FileUtils.rm_rf "test_files"
+      mock_render
+      Metanorma::Compile.new.compile("spec/fixtures/test_sectionsplit.xml",
+                                     type: "iso",
+                                     extension_keys: %i[presentation html],
+                                     bare: nil,
+                                     sectionsplit: "true",
+                                     datauriimage: true,
+                                     agree_to_terms: true)
+      f = "spec/fixtures/test_sectionsplit.html_collection"
+      expect(File.exist?("#{f}/index.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.4.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
+      expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
+      expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
+      f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
+      expect(File.exist?("#{f}/cover.html")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.2.xml")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.3.xml")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.4.xml")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.5.xml")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.6.xml")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.7.xml")).to be true
+      expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
+      expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
+      expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
+      expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+      m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
+      file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
+      file2.xpath("//xmlns:emf").each(&:remove)
+      expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
+      expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
+      expect(xmlpp(file2
+       .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
+        .to be_equivalent_to xmlpp(<<~OUTPUT)
+          <eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref>
+        OUTPUT
+      expect(xmlpp(file2
+       .at("//xmlns:note[@id = 'N1']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
+        .to_xml))
+        .to be_equivalent_to xmlpp(<<~OUTPUT)
+          <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+        OUTPUT
+      expect(xmlpp(file2
+       .at("//xmlns:note[@id = 'N2']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
+        .to_xml))
+        .to be_equivalent_to xmlpp(<<~OUTPUT)
+          <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+        OUTPUT
+      expect(file2
+       .at("//xmlns:bibitem[@id = 'R1']"))
+        .to be_nil
+      expect(xmlpp(file2
+       .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
+        .to be_equivalent_to xmlpp(<<~OUTPUT)
+          <bibitem id="#{m[1]}_A" type="internal">
+          <docidentifier type="repository">#{m[1]}/A</docidentifier>
+          </bibitem>
+        OUTPUT
+      expect(xmlpp(file2
+       .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+        .to be_equivalent_to xmlpp(<<~OUTPUT)
+          <bibitem id="#{m[1]}_R1" type="internal">
+          <docidentifier type="repository">#{m[1]}/R1</docidentifier>
+          </bibitem>
+        OUTPUT
+      expect(xmlpp(file2
+       .at("//xmlns:svgmap[1]").to_xml))
+        .to be_equivalent_to xmlpp(<<~OUTPUT)
+          <svgmap><figure>
+          <image src="" mimetype="image/svg+xml" height="auto" width="auto">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+                 <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+              <a href="A">A</a>
+              <a href="B">B</a>
+            </svg>
+            </image>
+            <target href="B">
+              <eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+            </target>
+          </figure>
+          <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}">A<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
+        OUTPUT
+      expect(xmlpp(file2
+       .at("//xmlns:svgmap[2]").to_xml))
+        .to be_equivalent_to xmlpp(<<~OUTPUT)
+               <svgmap><figure>
+           <image src="" mimetype="image/svg+xml" height="auto" width="auto">
+           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+                 <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+             <a href="P">P</a>
+           </svg></img>
+          </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}">P<localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
+        OUTPUT
+      expect(file2.at("//xmlns:preface")).to be_nil
+      expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
+      expect(file2.at("//xmlns:annex")).to be_nil
+      expect(file2.at("//xmlns:indexsect")).to be_nil
+      #     file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
+      #     expect(xmlpp(file4
+      #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
+      #       .to be_equivalent_to xmlpp(<<~OUTPUT)
+      # <bibitem id="#{m[1]}_R1">
+      #   <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
+      #   <docidentifier>R1</docidentifier>
+      #   <biblio-tag>R1, </biblio-tag>
+      # </bibitem>
+      #       OUTPUT
+      file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.6.xml"))
+      expect(file6.at("//xmlns:preface")).to be_nil
+      expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
+      expect(file6.at("//xmlns:annex")).not_to be_nil
+      expect(file6.at("//xmlns:indexsect")).to be_nil
+      expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
+        .to be_equivalent_to <<~OUTPUT
+          ---
+          directives:
+          - presentation-xml
+          - bare-after-first
+          bibdata:
+            title:
+              type: title-main
+              language:
+              content: ISO Title
+            type: collection
+            docid:
+              type: ISO
+              id: ISO 1
+          manifest:
+            level: collection
+            title: Collection
+            docref:
+            - fileref: test_sectionsplit.html.0.xml
+              identifier: Contents
+            - fileref: test_sectionsplit.html.1.xml
+              identifier: abstract
+            - fileref: test_sectionsplit.html.2.xml
+              identifier: introduction
+            - fileref: test_sectionsplit.html.4.xml
+              identifier: 1 Normative References
+            - fileref: test_sectionsplit.html.3.xml
+              identifier: 2 Clause 4
+            - fileref: test_sectionsplit.html.5.xml
+              identifier: Annex A <span class="obligation">(normative)</span>  Annex (informative)
+            - fileref: test_sectionsplit.html.6.xml
+              identifier: Annex B <span class="obligation">(normative)</span>  Annex 2
+            - fileref: test_sectionsplit.html.7.xml
+              identifier: Bibliography
 
-      OUTPUT
-  end
+        OUTPUT
+    end
 
     it "YAML collection with multiple documents sectionsplit (source document for links)" do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
@@ -788,14 +789,40 @@ RSpec.describe Metanorma::Collection do
     end
   end
 
-  private
+  context "bilingual document" do
+    it "YAML collection" do
+      mock_pdf
+      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
+      FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
+      file = "#{INPATH}/bilingual.yml"
+      of = OUTPATH
+      col = Metanorma::Collection.parse file
+      col.render(
+        output_folder: of,
+        # coverpage: "#{INPATH}/collection_cover.html",
+        compile: {
+          install_fonts: false,
+        },
+      )
+      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+      concat_text = cleanup_guid(read_and_cleanup("#{INPATH}/bilingual.presentation.xml"))
+      concat_file = cleanup_guid(read_and_cleanup("#{OUTPATH}/collection.presentation.xml"))
+      expect(xmlpp(concat_file.gsub("><", ">\n<"))
+        .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
+             "xlink:href='data:image/gif;base64,_'"))
+        .to be_equivalent_to xmlpp(concat_text.gsub("><", ">\n<"))
+          .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
+               "xlink:href='data:image/gif;base64,_'")
+    end
+  end
 
-  GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+  private
 
   def cleanup_guid(content)
     content
       .gsub(%r{cid:#{GUID}}o, "cid:_")
       .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
+      .gsub(%r{ target="_#{GUID}"}o, ' name="_"')
       .gsub(%r{ name="_#{GUID}"}o, ' name="_"')
       .gsub(%r{_Toc[0-9]{9}}o, "_Toc")
   end
@@ -815,7 +842,7 @@ RSpec.describe Metanorma::Collection do
       .gsub(%r{<identifier>#{GUID}</identifier>}o, "<identifier>_</identifier>")
   end
 
-   def mock_render
+  def mock_render
     original_add = Metanorma::Collection::Renderer.method(:render)
     allow(Metanorma::Collection::Renderer)
       .to receive(:render) do |col, opts|

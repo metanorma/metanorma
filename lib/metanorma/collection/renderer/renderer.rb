@@ -4,6 +4,7 @@ require_relative "fileprocess"
 require_relative "../../util/fontist_helper"
 require_relative "../../util/util"
 require_relative "../filelookup/filelookup"
+require_relative "../multilingual/multilingual"
 require_relative "utils"
 require_relative "render_word"
 require_relative "navigation"
@@ -36,6 +37,7 @@ module Metanorma
         @lang = collection.bibdata.language.first || "en"
         @script = collection.bibdata.script.first || "Latn"
         @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
+        @registry = Metanorma::Registry.instance
         @doctype = doctype
         @compile = Compile.new
         @compile.load_flavor(@doctype)
@@ -58,7 +60,8 @@ module Metanorma
         @final = collection.final
         @c = HTMLEntities.new
         @files_to_delete = []
-        @nested = options[:nested] # if false, this is the root instance of Renderer
+        @nested = options[:nested]
+        # if false, this is the root instance of Renderer
         # if true, then this is not the last time Renderer will be run
         # (e.g. this is sectionsplit)
 
@@ -93,10 +96,16 @@ module Metanorma
 
       def concatenate(col, options)
         warn "\n\n\n\n\nConcatenate: #{DateTime.now.strftime('%H:%M:%S')}"
-        (options[:format] & %i(pdf doc)).empty? or
+        concatenate_presentation?(options) and
           options[:format] << :presentation
         concatenate_prep(col, options)
         concatenate_outputs(options)
+      end
+
+      def concatenate_presentation?(options)
+        !(options[:format] & %i(pdf doc)).empty? ||
+          (@directives.detect { |d| d.key == "bilingual" } &&
+          options[:format].include?(:html))
       end
 
       def concatenate_prep(col, options)
@@ -105,28 +114,43 @@ module Metanorma
           ext = e == :presentation ? "presentation.xml" : e.to_s
           File.open(File.join(@outdir, "collection.#{ext}"), "w:UTF-8") do |f|
             b = concatenate1(col.clone, e).to_xml
-            e == :presentation and
-              b.sub!("<metanorma-collection>", "<metanorma-collection xmlns='http://metanorma.org'>")
-            # TODO BEING FORCED TO DO THAT BECAUSE SHALE IS NOT DEALING WITH DEFAULT NAMESPACES
+            e == :presentation and b = concatenate_presentation(b)
             f.write(b)
           end
         end
+      end
+
+      def concatenate_presentation(xml)
+        xml.sub!("<metanorma-collection>", "<metanorma-collection xmlns='http://metanorma.org'>")
+        # TODO BEING FORCED TO DO THAT BECAUSE SHALE IS NOT DEALING WITH DEFAULT NAMESPACES
+        @directives.detect { |d| d.key == "bilingual" } and
+          xml = Metanorma::Collection::Multilingual
+            .new({ align_cross_elements: %w(p note) }).to_bilingual(xml)
+        xml
       end
 
       def concatenate_outputs(options)
         pres = File.join(@outdir, "collection.presentation.xml")
         options[:format].include?(:pdf) and pdfconv.convert(pres)
         options[:format].include?(:doc) and docconv_convert(pres)
+        @directives.detect { |d| d.key == "bilingual" } &&
+          options[:format].include?(:html) and
+          Metanorma::Collection::Multilingual.new(
+            { doctype: doctype.to_sym,
+              converter_options: PdfOptionsNode.new(doctype, @compile_options),
+              outdir: @outdir },
+          ).to_html(pres)
       end
 
       def concatenate1(out, ext)
-        out.directives << ::Metanorma::Collection::Config::Directive.new(key: "documents-inline")
+        out.directives << ::Metanorma::Collection::Config::Directive
+          .new(key: "documents-inline")
         out.bibdatas.each_key do |ident|
           id = @isodoc.docid_prefix(nil, ident.dup)
           @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
           out.documents[Util::key id] =
-            Metanorma::Collection::Document.raw_file(@files.get(id,
-                                                                :outputs)[ext])
+            Metanorma::Collection::Document
+              .raw_file(@files.get(id, :outputs)[ext])
         end
         out
       end
@@ -139,7 +163,6 @@ module Metanorma
           dt = docid.sub(/\s.*$/, "").lowercase
         else return "standoc"
         end
-        @registry = Metanorma::Registry.instance
         @registry.alias(dt.to_sym)&.to_s || dt
       end
 
