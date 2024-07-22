@@ -12,6 +12,7 @@ require "equivalent-xml"
 require "rspec-command"
 require "mnconvert"
 require "mn2pdf"
+require "xml-c14n"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -37,20 +38,6 @@ RSpec.configure do |config|
   end
 
   config.include RSpecCommand
-end
-
-def xmlpp(xml)
-  xsl = <<~XSL
-    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-      <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
-      <xsl:strip-space elements="*"/>
-      <xsl:template match="/">
-        <xsl:copy-of select="."/>
-      </xsl:template>
-    </xsl:stylesheet>
-  XSL
-  Nokogiri::XSLT(xsl).transform(Nokogiri::XML(xml, &:noblanks))
-    .to_xml(indent: 2, encoding: "UTF-8")
 end
 
 ASCIIDOC_BLANK_HDR = <<~HDR

@@ -46,4 +46,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop", "~> 1.5.2"
   spec.add_development_dependency "sassc", "~> 2.4.0"
   spec.add_development_dependency "simplecov", "~> 0.15"
+  spec.add_development_dependency "xml-c14n"
 end

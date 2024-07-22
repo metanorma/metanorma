@@ -39,10 +39,10 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
-      expect(xmlpp(concat_file.gsub("><", ">\n<"))
+      expect(Xml::C14n.format(concat_file.gsub("><", ">\n<"))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'"))
-        .to be_equivalent_to xmlpp(concat_text.gsub("><", ">\n<"))
+        .to be_equivalent_to Xml::C14n.format(concat_text.gsub("><", ">\n<"))
           .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
@@ -334,43 +334,43 @@ RSpec.describe Metanorma::Collection do
       file2.xpath("//xmlns:emf").each(&:remove)
       expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
       expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
-      expect(xmlpp(file2
+      expect(Xml::C14n.format(file2
        .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
-        .to be_equivalent_to xmlpp(<<~OUTPUT)
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref>
         OUTPUT
-      expect(xmlpp(file2
+      expect(Xml::C14n.format(file2
        .at("//xmlns:note[@id = 'N1']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
         .to_xml))
-        .to be_equivalent_to xmlpp(<<~OUTPUT)
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
         OUTPUT
-      expect(xmlpp(file2
+      expect(Xml::C14n.format(file2
        .at("//xmlns:note[@id = 'N2']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
         .to_xml))
-        .to be_equivalent_to xmlpp(<<~OUTPUT)
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
         OUTPUT
       expect(file2
        .at("//xmlns:bibitem[@id = 'R1']"))
         .to be_nil
-      expect(xmlpp(file2
+      expect(Xml::C14n.format(file2
        .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
-        .to be_equivalent_to xmlpp(<<~OUTPUT)
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <bibitem id="#{m[1]}_A" type="internal">
           <docidentifier type="repository">#{m[1]}/A</docidentifier>
           </bibitem>
         OUTPUT
-      expect(xmlpp(file2
+      expect(Xml::C14n.format(file2
        .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-        .to be_equivalent_to xmlpp(<<~OUTPUT)
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <bibitem id="#{m[1]}_R1" type="internal">
           <docidentifier type="repository">#{m[1]}/R1</docidentifier>
           </bibitem>
         OUTPUT
-      expect(xmlpp(file2
+      expect(Xml::C14n.format(file2
        .at("//xmlns:svgmap[1]").to_xml))
-        .to be_equivalent_to xmlpp(<<~OUTPUT)
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <svgmap><figure>
           <image src="" mimetype="image/svg+xml" height="auto" width="auto">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
@@ -385,9 +385,9 @@ RSpec.describe Metanorma::Collection do
           </figure>
           <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}">A<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
         OUTPUT
-      expect(xmlpp(file2
+      expect(Xml::C14n.format(file2
        .at("//xmlns:svgmap[2]").to_xml))
-        .to be_equivalent_to xmlpp(<<~OUTPUT)
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
                <svgmap><figure>
            <image src="" mimetype="image/svg+xml" height="auto" width="auto">
            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
@@ -401,9 +401,9 @@ RSpec.describe Metanorma::Collection do
       expect(file2.at("//xmlns:annex")).to be_nil
       expect(file2.at("//xmlns:indexsect")).to be_nil
       #     file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
-      #     expect(xmlpp(file4
+      #     expect(Xml::C14n.format(file4
       #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-      #       .to be_equivalent_to xmlpp(<<~OUTPUT)
+      #       .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
       # <bibitem id="#{m[1]}_R1">
       #   <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
       #   <docidentifier>R1</docidentifier>
@@ -807,10 +807,10 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
       concat_text = cleanup_guid(read_and_cleanup("#{INPATH}/bilingual.presentation.xml"))
       concat_file = cleanup_guid(read_and_cleanup("#{OUTPATH}/collection.presentation.xml"))
-      expect(xmlpp(concat_file.gsub("><", ">\n<"))
+      expect(Xml::C14n.format(concat_file.gsub("><", ">\n<"))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'"))
-        .to be_equivalent_to xmlpp(concat_text.gsub("><", ">\n<"))
+        .to be_equivalent_to Xml::C14n.format(concat_text.gsub("><", ">\n<"))
           .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
                "xlink:href='data:image/gif;base64,_'")
     end
