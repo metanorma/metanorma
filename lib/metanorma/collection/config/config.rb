@@ -1,4 +1,4 @@
-require "shale"
+require "lutaml/model"
 require_relative "../../shale_monkeypatch"
 require_relative "../../array_monkeypatch"
 require_relative "compile_options"
@@ -11,30 +11,34 @@ module Metanorma
   class Collection
     module Config
       require "shale/adapter/nokogiri"
-      ::Shale.xml_adapter = ::Shale::Adapter::Nokogiri
+      #::Lutaml::Model.xml_adapter = ::Lutaml::Model::Adapter::Nokogiri
+      Lutaml::Model::Config.configure do |config|
+  config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
+end
 
-      class Config < ::Shale::Mapper
+
+      class Config < ::Lutaml::Model::Serializable
         attr_accessor :path, :collection, :from_xml
 
         attribute :bibdata, Bibdata
         attribute :directive, Directive, collection: true
         attribute :manifest, Manifest
-        attribute :format, ::Shale::Type::String, collection: true,
+        attribute :format, ::Lutaml::Model::Type::String, collection: true,
                                                   default: -> { [:html] }
-        attribute :output_folder, ::Shale::Type::String
-        attribute :coverpage, ::Shale::Type::String, default: -> {
+        attribute :output_folder, ::Lutaml::Model::Type::String
+        attribute :coverpage, ::Lutaml::Model::Type::String, default: -> {
                                                                 "cover.html"
                                                               }
         attribute :compile, CompileOptions
-        attribute :prefatory_content, ::Shale::Type::String
-        attribute :final_content, ::Shale::Type::String
+        attribute :prefatory_content, ::Lutaml::Model::Type::String
+        attribute :final_content, ::Lutaml::Model::Type::String
         attribute :documents, Bibdata, collection: true
-        attribute :xmlns, ::Shale::Type::String, default: -> { "http://metanorma.org" }
+        attribute :xmlns, ::Lutaml::Model::Type::String, default: -> { "http://metanorma.org" }
 
         yaml do
-          map "directives", using: { from: :directives_from_yaml,
+          map "directives", to: :directives, with: { from: :directives_from_yaml,
                                      to: :directives_to_yaml }
-          map "bibdata", using: { from: :bibdata_from_yaml,
+          map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
                                   to: :bibdata_to_yaml }
           map "manifest", to: :manifest
           map "format", to: :format
@@ -49,22 +53,22 @@ module Metanorma
           root "metanorma-collection"
           # namespace "http://metanorma.org", "m"
           # map_attribute "xmlns", to: :xmlns
-          map_element "bibdata", using: { from: :bibdata_from_xml,
+          map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
                                           to: :bibdata_to_xml }
-          map_element "directive", using: { from: :directive_from_xml,
+          map_element "directive", to: :directive, with: { from: :directive_from_xml,
                                             to: :directive_to_xml }
-          map_element "entry", using: { from: :manifest_from_xml,
+          map_element "entry", to: :entry, with: { from: :manifest_from_xml,
                                         to: :manifest_to_xml }
           map_element "format", to: :format
           map_element "output_folder", to: :output_folder
           map_element "coverpage", to: :coverpage
           map_element "compile", to: :compile
-          map_element "prefatory-content", using: { from: :prefatory_from_xml,
+          map_element "prefatory-content", to: :"prefatory-content", with: { from: :prefatory_from_xml,
                                                     to: :prefatory_to_xml }
-          map_element "doc-container",
-                      using: { from: :documents_from_xml,
+          map_element "doc-container", to: :"doc-container",
+                      with: { from: :documents_from_xml,
                                to: :documents_to_xml }
-          map_element "final-content", using: { from: :final_from_xml,
+          map_element "final-content", to: :"final-content", with: { from: :final_from_xml,
                                                 to: :final_to_xml }
         end
 
@@ -135,7 +139,7 @@ module Metanorma
         end
 
         def documents_from_xml(model, value)
-          x = if value.is_a?(Shale::Adapter::Nokogiri::Node)
+          x = if value.is_a?(Lutaml::Model::Adapter::Nokogiri::Node)
                 value.content
               else Nokogiri::XML(value)
               end
