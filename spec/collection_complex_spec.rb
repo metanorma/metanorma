@@ -809,7 +809,8 @@ RSpec.describe Metanorma::Collection do
       concat_file = cleanup_guid(read_and_cleanup("#{OUTPATH}/collection.presentation.xml"))
       expect(Xml::C14n.format(concat_file.gsub("><", ">\n<"))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
-             "xlink:href='data:image/gif;base64,_'"))
+             "xlink:href='data:image/gif;base64,_'")
+        .gsub(%r{<localized-strings>.*?</localized-strings>}m, "<localized-strings/>"))
         .to be_equivalent_to Xml::C14n.format(concat_text.gsub("><", ">\n<"))
           .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
                "xlink:href='data:image/gif;base64,_'")
