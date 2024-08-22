@@ -16,8 +16,8 @@ module Metanorma
       @aliases = { csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa }
     end
 
-    def alias(x)
-      @aliases[x]
+    def alias(flavour)
+      @aliases[flavour]
     end
 
     def register(processor)

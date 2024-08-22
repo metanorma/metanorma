@@ -123,7 +123,7 @@ module Metanorma
       def url_in_css_styles(doc, document_suffix)
         doc.xpath("//*[@style]").each do |s|
           s["style"] = s["style"]
-            .gsub(%r{url\(#([^)]+)\)}, "url(#\\1_#{document_suffix})")
+            .gsub(%r{url\(#([^()]+)\)}, "url(#\\1_#{document_suffix})")
         end
       end
 
