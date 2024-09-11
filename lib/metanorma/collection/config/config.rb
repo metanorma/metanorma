@@ -36,7 +36,7 @@ end
         attribute :xmlns, ::Lutaml::Model::Type::String, default: -> { "http://metanorma.org" }
 
         yaml do
-          map "directives", to: :directives, with: { from: :directives_from_yaml,
+          map "directives", to: :directive, with: { from: :directives_from_yaml,
                                      to: :directives_to_yaml }
           map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
                                   to: :bibdata_to_yaml }

@@ -22,6 +22,7 @@ end
         attribute :type, ::Lutaml::Model::Type::String
         attribute :title, ::Lutaml::Model::Type::String
         attribute :url, ::Lutaml::Model::Type::String
+        attribute :level, ::Lutaml::Model::Type::String
         attribute :attachment, ::Lutaml::Model::Type::Boolean
         attribute :sectionsplit, ::Lutaml::Model::Type::Boolean
         attribute :index, ::Lutaml::Model::Type::Boolean, default: -> { true }
@@ -38,10 +39,10 @@ end
           map "sectionsplit", to: :sectionsplit
           map "index", to: :index
           map "file", to: :file
-          map "fileref", to: :fileref, with: { from: :fileref_from_yaml, to: :nop_to_yaml }
+          map "fileref", to: :file, with: { from: :fileref_from_yaml, to: :nop_to_yaml }
           map "entry", to: :entry
-          map "docref", to: :docref, with: { from: :docref_from_yaml, to: :nop_to_yaml }
-          map "manifest", to: :manifest, with: { from: :docref_from_yaml, to: :nop_to_yaml }
+          map "docref", to: :entry, with: { from: :docref_from_yaml, to: :nop_to_yaml }
+          map "manifest", to: :entry, with: { from: :docref_from_yaml, to: :nop_to_yaml }
           map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
                                   to: :bibdata_to_yaml }
         end
