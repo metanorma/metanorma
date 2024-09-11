@@ -110,6 +110,7 @@ module Metanorma
 
       def svgmap_resolve_eref(eref, isodoc, _docxml, ids)
         href = isodoc.eref_target(eref) or return
+        href = href[:link]
         href == "##{eref['bibitemid']}" ||
           (href =~ /^#/ && !ids[href.sub(/^#/, "")]) and return
         eref["target"] = href.strip

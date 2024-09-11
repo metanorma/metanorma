@@ -28,8 +28,8 @@ module Metanorma
     def compile(filename, options = {})
       options_process(filename, options)
       @processor = @registry.find_processor(options[:type].to_sym)
-      extensions = get_extensions(options) or return nil
       (file, isodoc = process_input(filename, options)) or return nil
+      extensions = get_extensions(options) or return nil
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
       process_exts(filename, extensions, file, isodoc, options)
