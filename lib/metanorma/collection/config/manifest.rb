@@ -60,11 +60,12 @@ end
           map_element "title", to: :title
           map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
                                           to: :bibdata_to_xml }
-          map_element "entry", to: :entry # using: { from: :entry_from_xml, to: :entry_to_xml }
+          #map_element "entry", to: :entry # using: { from: :entry_from_xml, to: :entry_to_xml }
+          map_element "entry", to: :entry #, with: { from: :entry_from_xml, to: :entry_to_xml }
         end
 
         def entry_from_xml(model, node)
-          model.entry = Manifest.from_xml(node.content)
+          model.entry = node # Manifest.from_xml(node.content)
         end
 
         def entry_to_xml(model, parent, doc)

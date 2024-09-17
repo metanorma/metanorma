@@ -73,7 +73,7 @@ end
         end
 
         def manifest_from_xml(model, node)
-          model.manifest = Manifest.from_xml(node.to_xml)
+          model.manifest = node # Manifest.from_xml(node.to_xml)
         end
 
         def manifest_to_xml(model, parent, doc)
@@ -111,7 +111,8 @@ end
 
         def directive_from_xml(model, node)
           model.directive ||= []
-          model.directive << Directive.from_xml(node.to_xml)
+          #model.directive << Directive.from_xml(node.to_xml)
+          model.directive += node
         end
 
         def directive_to_xml(model, parent, doc)
