@@ -445,9 +445,9 @@ RSpec.describe Metanorma::Collection do
             - fileref: test_sectionsplit.html.3.xml
               identifier: 2 Clause 4
             - fileref: test_sectionsplit.html.5.xml
-              identifier: Annex A <span class="obligation">(normative)</span>  Annex (informative)
+              identifier: Annex A (normative)  Annex (informative)
             - fileref: test_sectionsplit.html.6.xml
-              identifier: Annex B <span class="obligation">(normative)</span>  Annex 2
+              identifier: Annex B (normative)  Annex 2
             - fileref: test_sectionsplit.html.7.xml
               identifier: Bibliography
 
