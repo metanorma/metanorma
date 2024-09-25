@@ -173,7 +173,9 @@ module Metanorma
         title = section.at(ns("./title")) or return "[Untitled]"
         t = title.dup
         t.xpath(ns(".//tab | .//br")).each { |x| x.replace(" ") }
-        t.xpath(ns(".//strong")).each { |x| x.replace(x.children) }
+        t.xpath(ns(".//bookmark")).each(&:remove)
+        t.xpath(ns(".//strong | .//span"))
+          .each { |x| x.replace(x.children) }
         t.children.to_xml
       end
 
