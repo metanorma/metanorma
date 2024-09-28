@@ -34,7 +34,8 @@ module Metanorma
 
       def wrapping_doc_body(doc)
         doc.xpath(ns("//annex | //preface | //bibliography")).each(&:remove)
-        s = doc.at(ns("//sections"))
+        s = doc.at(ns("//sections")) ||
+          doc.root.elements[-1].after("<sections/>").next
         repl = <<~BODY
           <sections><clause id='_collection_placeholder'><p>PLACEHOLDER</p></clause></sections>
         BODY
