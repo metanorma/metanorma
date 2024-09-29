@@ -32,6 +32,7 @@ module Metanorma
           { format: %i(html), output_folder: "#{@output_filename}_collection",
             coverpage: File.join(@dir, "cover.html") }.merge(@compile_opts),
         )
+        section_split_attachments(out: "#{@output_filename}_collection")
       end
 
       def collection_manifest(filename, files, origxml, _presxml, dir)
@@ -71,8 +72,8 @@ module Metanorma
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
         SPLITSECTIONS.each_with_object([]) do |n, ret|
           conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
-            ret << sectionfile(xml, emptydoc(xml), "#{@base}.#{ret.size}", s,
-                               n[1])
+            ret << sectionfile(xml, emptydoc(xml, ret.size),
+                               "#{@base}.#{ret.size}", s, n[1])
           end
         end
       end
@@ -111,6 +112,7 @@ module Metanorma
         type = xml.root.name.sub("-standard", "").to_sym
         sectionsplit_update_xrefs(xml)
         xml1 = sectionsplit_write_semxml(filename, xml)
+        @tmp_filename = xml1
         [xml1, type]
       end
 
@@ -133,13 +135,15 @@ module Metanorma
         outname
       end
 
-      def emptydoc(xml)
+      def emptydoc(xml, ordinal)
         out = xml.dup
         out.xpath(
           ns("//preface | //sections | //annex | //bibliography/clause | " \
-             "//bibliography/references[not(@hidden = 'true')] | //indexsect | " \
-             "//colophon"),
+             "//bibliography/references[not(@hidden = 'true')] | " \
+             "//indexsect | //colophon"),
         ).each(&:remove)
+        ordinal.zero? or out.xpath(ns("//metanorma-ext//attachment"))
+          .each(&:remove) # keep only one copy of attachments
         out
       end
 
@@ -155,9 +159,7 @@ module Metanorma
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc)
         outname = "#{file}.xml"
-        File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
-          f.write(out)
-        end
+        File.open(File.join(@splitdir, outname), "w:UTF-8") { |f| f.write(out) }
         outname
       end
 
@@ -210,10 +212,30 @@ module Metanorma
           .new(col, dir, output_folder: "#{ident}_collection",
                          format: %i(html), coverpage: File.join(dir, "cover.html"))
         r.coverpage
+        section_split_cover1(ident, r, dir, _one_doc_coll)
+      end
+
+      def att_dir(file)
+        "_#{File.basename(file, '.*')}_attachments"
+      end
+
+      def section_split_attachments(out: nil)
+        attachments = att_dir(@tmp_filename)
+        File.directory?(attachments) or return
+        dir = out || File.dirname(@input_filename)
+        ret = File.join(dir, att_dir(@output_filename))
+        FileUtils.rm_rf ret
+        FileUtils.mv attachments, ret
+        File.basename(ret)
+      end
+
+      def section_split_cover1(ident, renderer, dir, _one_doc_coll)
         # filename = one_doc_coll ? "#{ident}_index.html" : "index.html"
-        filename = File.basename("#{ident}_index.html") # ident can be a directory with YAML indirection
-        FileUtils.mv File.join(r.outdir, "index.html"), File.join(dir, filename)
-        FileUtils.rm_rf r.outdir
+        filename = File.basename("#{ident}_index.html")
+        # ident can be a directory with YAML indirection
+        FileUtils.mv File.join(renderer.outdir, "index.html"),
+                     File.join(dir, filename)
+        FileUtils.rm_rf renderer.outdir
         filename
       end
     end

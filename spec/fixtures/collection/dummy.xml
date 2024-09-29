@@ -56,6 +56,39 @@
 <stagename>International standard</stagename>
 </ext>
 </bibdata>
+    <metanorma-extension>
+      <attachment name="_dummy_attachments/LICENSE1.TXT">data:application/octet-stream;base64,QlNEIDItQ2xhdXNlIExpY2V
+uc2UKCkNvcHlyaWdodCAoYykgMjAxOCwgUmlib3NlCkFsbCByaWdodHMgcmV
+zZXJ2ZWQuCgpSZWRpc3RyaWJ1dGlvbiBhbmQgdXNlIGluIHNvdXJjZSBhbmQ
+gYmluYXJ5IGZvcm1zLCB3aXRoIG9yIHdpdGhvdXQKbW9kaWZpY2F0aW9uLCB
+hcmUgcGVybWl0dGVkIHByb3ZpZGVkIHRoYXQgdGhlIGZvbGxvd2luZyBjb25
+kaXRpb25zIGFyZSBtZXQ6CgoqIFJlZGlzdHJpYnV0aW9ucyBvZiBzb3VyY2U
+gY29kZSBtdXN0IHJldGFpbiB0aGUgYWJvdmUgY29weXJpZ2h0IG5vdGljZSw
+gdGhpcwogIGxpc3Qgb2YgY29uZGl0aW9ucyBhbmQgdGhlIGZvbGxvd2luZyB
+kaXNjbGFpbWVyLgoKKiBSZWRpc3RyaWJ1dGlvbnMgaW4gYmluYXJ5IGZvcm0
+gbXVzdCByZXByb2R1Y2UgdGhlIGFib3ZlIGNvcHlyaWdodCBub3RpY2UsCiA
+gdGhpcyBsaXN0IG9mIGNvbmRpdGlvbnMgYW5kIHRoZSBmb2xsb3dpbmcgZGl
+zY2xhaW1lciBpbiB0aGUgZG9jdW1lbnRhdGlvbgogIGFuZC9vciBvdGhlciB
+tYXRlcmlhbHMgcHJvdmlkZWQgd2l0aCB0aGUgZGlzdHJpYnV0aW9uLgoKVEh
+JUyBTT0ZUV0FSRSBJUyBQUk9WSURFRCBCWSBUSEUgQ09QWVJJR0hUIEhPTER
+FUlMgQU5EIENPTlRSSUJVVE9SUyAiQVMgSVMiCkFORCBBTlkgRVhQUkVTUyB
+PUiBJTVBMSUVEIFdBUlJBTlRJRVMsIElOQ0xVRElORywgQlVUIE5PVCBMSU1
+JVEVEIFRPLCBUSEUKSU1QTElFRCBXQVJSQU5USUVTIE9GIE1FUkNIQU5UQUJ
+JTElUWSBBTkQgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UgQVJ
+FCkRJU0NMQUlNRUQuIElOIE5PIEVWRU5UIFNIQUxMIFRIRSBDT1BZUklHSFQ
+gSE9MREVSIE9SIENPTlRSSUJVVE9SUyBCRSBMSUFCTEUKRk9SIEFOWSBESVJ
+FQ1QsIElORElSRUNULCBJTkNJREVOVEFMLCBTUEVDSUFMLCBFWEVNUExBUlk
+sIE9SIENPTlNFUVVFTlRJQUwKREFNQUdFUyAoSU5DTFVESU5HLCBCVVQgTk9
+UIExJTUlURUQgVE8sIFBST0NVUkVNRU5UIE9GIFNVQlNUSVRVVEUgR09PRFM
+gT1IKU0VSVklDRVM7IExPU1MgT0YgVVNFLCBEQVRBLCBPUiBQUk9GSVRTOyB
+PUiBCVVNJTkVTUyBJTlRFUlJVUFRJT04pIEhPV0VWRVIKQ0FVU0VEIEFORCB
+PTiBBTlkgVEhFT1JZIE9GIExJQUJJTElUWSwgV0hFVEhFUiBJTiBDT05UUkF
+DVCwgU1RSSUNUIExJQUJJTElUWSwKT1IgVE9SVCAoSU5DTFVESU5HIE5FR0x
+JR0VOQ0UgT1IgT1RIRVJXSVNFKSBBUklTSU5HIElOIEFOWSBXQVkgT1VUIE9
+GIFRIRSBVU0UKT0YgVEhJUyBTT0ZUV0FSRSwgRVZFTiBJRiBBRFZJU0VEIE9
+GIFRIRSBQT1NTSUJJTElUWSBPRiBTVUNIIERBTUFHRS4K
+</attachment>
+    </metanorma-extension>
 <boilerplate>
   <copyright-statement>
     <clause>
@@ -183,6 +216,9 @@ end
 <p id="_5bbe5050-8dc1-4b7b-936c-d63ca93fa72a">What?</p>
 </li>
 </ol>
+<note id="N3">
+           <p id="_3cfcdeb7-bba1-0265-29d1-cc6b3c1e1810"><eref type="inline" bibitemid="License_A" citeas="[LICENSE.TXT]">License A</eref></p>
+         </note>
 </clause>
   <clause id="E2" type="express-schema">
 <figure id="A2">
@@ -298,4 +334,22 @@ module Metanorma
 end
 </pre>
 </figure></clause></sections>
+<bibliography>
+         <references id="T" obligation="informative" normative="false">
+
+
+
+<bibitem id="License_A" hidden="true">
+  <formattedref format="application/x-isodoc+xml">attachment description</formattedref>
+  <uri type="attachment">_dumm_attachments/LICENSE1.TXT</uri>
+  <uri type="citation">_dummy_attachments/LICENSE1.TXT</uri>
+  <docidentifier type="metanorma">[LICENSE.TXT]</docidentifier>
+</bibitem>
+
+
+
+
+
+       </references>
+     </bibliography>
 </iso-standard>

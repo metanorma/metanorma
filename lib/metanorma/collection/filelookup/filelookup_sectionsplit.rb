@@ -19,6 +19,8 @@ module Metanorma
         s.each_with_index do |f1, i|
           add_section_split_instance(f1, manifest, key, i)
         end
+        a = add_section_split_attachments(sectionsplit_manifest, key) and
+          manifest["#{key}:attachments"] = a
         manifest["#{key}:index.html"] =
           add_section_split_cover(sectionsplit_manifest, key)
       end
@@ -47,6 +49,15 @@ module Metanorma
           docs += 1
         end
         docs > 1
+      end
+
+      def add_section_split_attachments(manifest, ident)
+        attachments = @sectionsplit
+          .section_split_attachments(out: File.dirname(manifest.file))
+        attachments or return
+        @files[ident][:out_path] = attachments
+        { attachment: true, index: false, out_path: attachments,
+          ref: File.join(File.dirname(manifest.file), attachments) }
       end
 
       def add_section_split_instance(file, manifest, key, idx)

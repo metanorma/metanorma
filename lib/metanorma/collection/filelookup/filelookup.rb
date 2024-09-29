@@ -104,7 +104,7 @@ module Metanorma
         %w(attachment sectionsplit index presentation-xml url
            bare-after-first).each do |s|
           ref.respond_to?(s.to_sym) and
-            ret[s.gsub("-", "").to_sym] = ref.send(s)
+            ret[s.delete("-").to_sym] = ref.send(s)
         end
       end
 

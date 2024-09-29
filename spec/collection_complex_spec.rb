@@ -315,6 +315,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
       expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
       expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
+      expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
       f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
       expect(File.exist?("#{f}/cover.html")).to be true
       expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
@@ -350,6 +351,12 @@ RSpec.describe Metanorma::Collection do
         .to_xml))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+        OUTPUT
+      expect(Xml::C14n.format(file2
+       .at("//xmlns:note[@id = 'N3']//xmlns:link")
+        .to_xml))
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+          <link attachment="true" target="_test_sectionsplit_attachments/LICENSE.TXT">License A</link>
         OUTPUT
       expect(file2
        .at("//xmlns:bibitem[@id = 'R1']"))
@@ -497,6 +504,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
         .to be true
+      expect(File.exist?("#{OUTPATH}/_dummy_attachments/LICENSE1.TXT")).to be true
       rice = File.read("#{OUTPATH}/rice-en.final.xml.1.html")
       expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
       expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="rice-en.final.xml.2.html#anotherclause_ISO_17301-1_2016_ISO_17301-1_2016_2_This_is_another_clause"><span class="citesec">Clause 2</span></a> or <a href="rice-en.final.xml.3.html#thirdclause_ISO_17301-1_2016_ISO_17301-1_2016_3_This_is_another_clause"><span class="citesec">Clause 3</span></a>.</p>)
