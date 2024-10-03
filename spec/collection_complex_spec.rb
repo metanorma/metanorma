@@ -331,8 +331,15 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
       expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
       m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
+      file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
+      expect(file2.at("//xmlns:semantic__introduction")).not_to be_nil
+      expect(file2.at("//xmlns:semantic__clause/@id = 'semantic__M'")).to be_nil
+      expect(file2.at("//xmlns:p/@id = 'semantic__middletitle'")).to be_nil
       file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
       file2.xpath("//xmlns:emf").each(&:remove)
+      expect(file2.at("//xmlns:semantic__introduction")).to be_nil
+      expect(file2.at("//xmlns:semantic__clause/@id = 'semantic__M'")).not_to be_nil
+      expect(file2.at("//xmlns:p/@id = 'semantic__middletitle'")).not_to be_nil
       expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
       expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
       expect(Xml::C14n.format(file2
