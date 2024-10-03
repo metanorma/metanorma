@@ -106,7 +106,7 @@ module Metanorma
              "//bibliography/references[not(@hidden = 'true')] | " \
              "//indexsect | //colophon"),
         ).each(&:remove)
-        ordinal.zero? or out.xpath(ns("//metanorma-ext//attachment || " \
+        ordinal.zero? or out.xpath(ns("//metanorma-ext//attachment | " \
                       "//semantic__metanorma-ext//semantic__attachment"))
           .each(&:remove) # keep only one copy of attachments
         out
