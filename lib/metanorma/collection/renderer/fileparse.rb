@@ -52,7 +52,6 @@ module Metanorma
       def update_sectionsplit_eref_to_doc(eref, internal_refs, doclist, opts)
         a = eref.at(ns("./localityStack/locality[@type = 'anchor']/" \
                        "referenceFrom")) or return
-        require "debug"; binding.b unless internal_refs[opts[:key]]
         doc = internal_refs[opts[:key]]["#{a.text}_#{opts[:target_suffix]}"]
         bibitemid = Metanorma::Utils::to_ncname("#{doc}_#{opts[:source_suffix]}")
         eref["bibitemid"] = bibitemid
