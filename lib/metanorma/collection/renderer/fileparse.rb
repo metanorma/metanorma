@@ -232,6 +232,19 @@ module Metanorma
         ref.content = anchor
       end
 
+      def update_anchor_loc(bib, eref, docid)
+        loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
+          return update_anchor_create_loc(bib, eref, docid)
+        #ref = loc.at("./xmlns:referenceFrom") or return
+        ref = loc.elements&.first or return
+        anchor = suffix_anchor(ref, docid)
+        a = @files.get(docid, :anchors) or return
+        #a.inject([]) { |m, (_, x)| m + x.values }
+          #.include?(anchor) or return
+        a.values.detect { |x| x.value?(anchor) } or return
+        ref.content = anchor
+      end
+
       def suffix_anchor(ref, docid)
         @ncnames[docid] ||= Metanorma::Utils::to_ncname(docid)
         anchor = ref.text
