@@ -172,10 +172,9 @@ module Metanorma
       def indirect_ref_key(schema, id, docxml)
         /^#{schema}_/.match?(id) and return id
         ret = "#{schema}_#{id}"
-        suffix = docxml.root["document_suffix"]
-        (k = docxml.root["type"]) && k != schema && suffix and
-          ret = "#{ret}_#{suffix}"
-        ret
+        suffix = docxml.root["document_suffix"] or return ret
+        (k = docxml.root["type"]) && k != schema or return ret
+        "#{ret}_#{suffix}"
       end
 
       def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
@@ -221,6 +220,7 @@ module Metanorma
         end
       end
 
+=begin
       def update_anchor_loc(bib, eref, docid)
         loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
           return update_anchor_create_loc(bib, eref, docid)
@@ -231,21 +231,22 @@ module Metanorma
           .include?(anchor) or return
         ref.content = anchor
       end
+=end
 
       def update_anchor_loc(bib, eref, docid)
         loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
           return update_anchor_create_loc(bib, eref, docid)
         a = @files.get(docid, :anchors) or return
         ref = loc.elements&.first or return
-        anchor = suffix_anchor(ref, docid)
+        anchor = suffix_anchor(ref.text, docid)
         a.values.detect { |x| x.value?(anchor) } or return
         ref.content = anchor
       end
 
       def suffix_anchor(ref, docid)
         @ncnames[docid] ||= "#{Metanorma::Utils::to_ncname(docid)}_"
-        ret = @files.url?(docid) ? "" : @ncnames[docid]
-        ret + ref.text
+        @files.url?(docid) or return ref
+        @ncnames[docid] + ref
       end
 
       # if there is a crossref to another document, with no anchor, retrieve the
