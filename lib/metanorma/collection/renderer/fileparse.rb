@@ -157,8 +157,9 @@ module Metanorma
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
         bibitems, erefs = update_indirect_refs_to_docs_prep(docxml)
         internal_refs.each do |schema, ids|
+          s = "#{schema}_"
           ids.each do |id, file|
-            k = indirect_ref_key(schema, id, docxml)
+            k = indirect_ref_key(s, id, docxml)
             update_indirect_refs_to_docs1(docxml, k, file, bibitems, erefs)
           end
         end
@@ -170,8 +171,8 @@ module Metanorma
       end
 
       def indirect_ref_key(schema, id, docxml)
-        /^#{schema}_/.match?(id) and return id
-        ret = "#{schema}_#{id}"
+        /^#{schema}/.match?(id) and return id
+        ret = schema + id
         suffix = docxml.root["document_suffix"] or return ret
         (k = docxml.root["type"]) && k != schema or return ret
         "#{ret}_#{suffix}"
