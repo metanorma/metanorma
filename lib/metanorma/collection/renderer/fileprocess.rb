@@ -84,7 +84,7 @@ module Metanorma
       # gather internal bibitem references
       def gather_internal_refs
         @files.keys.each_with_object({}) do |i, refs|
-          @files.get(i, :attachment) ||  @files.get(k, :sectionsplit) and next
+          @files.get(i, :attachment) ||  @files.get(i, :sectionsplit) and next
           file, = @files.targetfile_id(i, read: true)
           gather_internal_refs1(file, i, refs)
         end
