@@ -331,8 +331,15 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
       expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
       m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
+      file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
+      expect(file2.at("//xmlns:semantic__introduction")).not_to be_nil
+      expect(file2.at("//xmlns:semantic__clause[@id = 'semantic__M']")).to be_nil
+      expect(file2.at("//xmlns:semantic__p[@id = 'semantic__middletitle']")).to be_nil
       file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
       file2.xpath("//xmlns:emf").each(&:remove)
+      expect(file2.at("//xmlns:semantic__introduction")).to be_nil
+      expect(file2.at("//xmlns:semantic__clause[@id = 'semantic__M']")).not_to be_nil
+      expect(file2.at("//xmlns:semantic__p[@id = 'semantic__middletitle']")).not_to be_nil
       expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
       expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
       expect(Xml::C14n.format(file2
@@ -626,6 +633,8 @@ RSpec.describe Metanorma::Collection do
       mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
+      FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
+      FileUtils.rm_f "#{INPATH}/document-2/document-2.xml"
       file = "#{INPATH}/collection_new.yml"
       # xml = file.read file, encoding: "utf-8"
       of = OUTPATH
@@ -667,6 +676,8 @@ RSpec.describe Metanorma::Collection do
       a = File.read(f).sub(%r{fileref: \S+/img/action_schemaexpg3.svg},
                            "fileref: #{File.expand_path(INPATH)}/document-2/img/action_schemaexpg2.svg")
       File.open(f, "w") { |x| x.write(a) }
+      FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
+      FileUtils.rm_f "#{INPATH}/document-2/document-2.xml"
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation html xml],
@@ -686,6 +697,21 @@ RSpec.describe Metanorma::Collection do
       # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg2.svg :
       # ambiguous name
       expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.1.svg")).to be true
+    end
+
+    it "recompiles XML" do
+      mock_pdf
+      FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
+      file = "#{INPATH}/document-1/collection.yml"
+      Metanorma::Collection.parse file
+      expect(File.exist?("#{INPATH}/document-1/document-1.xml")).to be true
+      time = File.mtime("#{INPATH}/document-1/document-1.xml")
+      Metanorma::Collection.parse file
+      expect(File.mtime("#{INPATH}/document-1/document-1.xml")).to be_within(0.1).of time
+      a = File.read(file).sub(/- documents-inline/, "- recompile-xml\n- documents-inline")
+      File.open(file, "w") { |x| x.write(a) }
+      Metanorma::Collection.parse file
+      expect(File.mtime("#{INPATH}/document-1/document-1.xml")).not_to be_within(0.1).of time
     end
   end
 

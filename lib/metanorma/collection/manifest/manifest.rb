@@ -153,7 +153,7 @@ module Metanorma
       def set_adoc2xml(fileref)
         File.join(
           File.dirname(fileref),
-          File.basename(fileref).gsub(/.adoc$/, ".xml"),
+          File.basename(fileref).gsub(/\.adoc$/, ".xml"),
         )
       end
 
@@ -161,15 +161,20 @@ module Metanorma
       # @raise [AdocFileNotFoundException]
       def compile_adoc_file(file)
         f = (Pathname.new file).absolute? ? file : File.join(@dir, file)
-        unless File.exist? f
-          raise AdocFileNotFoundException.new "#{f} not found!"
-        end
-
+        File.exist?(f) or raise AdocFileNotFoundException.new "#{f} not found!"
+        compile_adoc_file?(file) or return
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...", :info)
         ::Metanorma::Compile.new
           .compile(f, agree_to_terms: true, install_fonts: false,
                       extension_keys: [:xml])
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...done!", :info)
+      end
+
+      def compile_adoc_file?(file)
+        @collection.directives.detect do |d|
+          d.key == "recompile-xml"
+        end and return true
+        !File.exist?(file.sub(/\.adoc$/, ".xml"))
       end
 
       def documents(mnf = @config)

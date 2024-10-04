@@ -33,6 +33,7 @@ module Metanorma
       relaton_export(isodoc, options)
       extract(isodoc, options[:extract], options[:extract_type])
       process_exts(filename, extensions, file, isodoc, options)
+    ensure
       clean_exit(options)
     end
 
