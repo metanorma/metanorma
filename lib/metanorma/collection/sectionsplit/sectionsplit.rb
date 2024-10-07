@@ -18,6 +18,7 @@ module Metanorma
         @fileslookup = opts[:fileslookup]
         @ident = opts[:ident]
         @isodoc = opts[:isodoc]
+        @document_suffix = opts[:document_suffix]
       end
 
       def ns(xpath)
@@ -146,7 +147,6 @@ module Metanorma
       end
 
       def truncate_semxml(out, chunks)
-        # require  "debug"; binding.b
         nodes = semantic_xml_ids_gather(out) or return
         semxml_presxml_nodes_match(nodes, chunks)
         nodes.each_value(&:remove)

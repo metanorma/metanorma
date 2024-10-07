@@ -61,8 +61,7 @@ module Metanorma
       end
 
       def add_section_split_instance(file, manifest, key, idx)
-        presfile, newkey, xml =
-          add_section_split_instance_prep(file, key)
+        presfile, newkey, xml = add_section_split_instance_prep(file, key)
         manifest[newkey] =
           { parentid: key, presentationxml: true, type: "fileref",
             rel_path: file[:url], out_path: File.basename(file[:url]),
@@ -70,6 +69,7 @@ module Metanorma
             sectionsplit_output: true,
             bibdata: @files[key][:bibdata], ref: presfile }
         @files_to_delete << file[:url]
+        manifest[newkey][:indirect_key] = @sectionsplit.key
         manifest[newkey][:bare] = true unless idx.zero?
       end
 
@@ -84,9 +84,11 @@ module Metanorma
       def sectionsplit(ident)
         file = @files[ident][:ref]
         @sectionsplit = ::Metanorma::Collection::Sectionsplit
-          .new(input: file, base: @files[ident][:out_path], dir: File.dirname(file),
-               output: @files[ident][:out_path], compile_opts: @parent.compile_options,
-               fileslookup: self, ident: ident, isodoc: @isodoc)
+          .new(input: file, base: @files[ident][:out_path],
+               dir: File.dirname(file), output: @files[ident][:out_path],
+               compile_opts: @parent.compile_options,
+               fileslookup: self, ident: ident, isodoc: @isodoc,
+               document_suffix: @files[ident][:document_suffix])
         coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
         xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)
         [coll, @sectionsplit
