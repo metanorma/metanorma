@@ -89,7 +89,9 @@ module Metanorma
 
     def render(opts)
       opts[:format].nil? || opts[:format].empty? and opts[:format] = [:html]
-      ::Metanorma::Collection::Renderer.render self, opts.merge(log: @log)
+      opts[:log] = @log
+      opts[:flavor] = @flavor
+      ::Metanorma::Collection::Renderer.render self, opts
       clean_exit
     end
 

@@ -38,7 +38,7 @@ module Metanorma
         @script = collection.bibdata.script.first || "Latn"
         @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
         @registry = Metanorma::Registry.instance
-        @flavor = flavor
+        @flavor = options[:flavor] || flavor
         @compile = Compile.new
         @compile.load_flavor(@flavor)
 

@@ -789,7 +789,8 @@ RSpec.describe Metanorma::Collection do
       coverpage: "../#{INPATH}/collection_cover.html",
       compile: { install_fonts: false },
     )
-    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+    # manifest docid has docid type iso
+    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
 
     File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: standoc")) }
     col = Metanorma::Collection.parse newyaml
@@ -801,7 +802,8 @@ RSpec.describe Metanorma::Collection do
     )
     expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
 
-    File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: iso")) }
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: iso").sub("type: iso", "type: fred")) }
+    # get flavor from directive not docid
     col = Metanorma::Collection.parse newyaml
     col.render(
       format: %i[presentation xml],
@@ -809,10 +811,11 @@ RSpec.describe Metanorma::Collection do
       coverpage: "../#{INPATH}/collection_cover.html",
       compile: { install_fonts: false },
     )
-    FileUtils.cp "#{of}/collection.xml", "/Users/nickn/Documents/Arbeit/upwork/ribose/metanorma/3.xml"
     expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
 
     File.open(newyaml, "w") { |x| x.write(yaml.sub("type: iso", "type: fred")) }
+    # ignorable flavor from docid
+    col = Metanorma::Collection.parse newyaml
     col.render(
       format: %i[presentation xml],
       output_folder: of,
