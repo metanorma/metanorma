@@ -3,8 +3,8 @@ module Metanorma
     class Renderer
       def docconv
         @tempfile_cache ||= []
-        doctype = @doctype.to_sym
-        x = Asciidoctor.load nil, backend: doctype
+        flavor = @flavor.to_sym
+        x = Asciidoctor.load nil, backend: flavor
         x.converter.doc_converter(DocOptionsNode.new(@directives, @dirname))
       end
 

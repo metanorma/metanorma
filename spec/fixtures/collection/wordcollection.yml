@@ -4,6 +4,7 @@ directives:
   - collection-word-intropage: null
   - document-word-coverpage: null
   - document-word-intropage: null
+  - flavor: iso
 bibdata:
   title:
     type: title-main

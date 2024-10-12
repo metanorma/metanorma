@@ -30,8 +30,7 @@ module Metanorma
           end
         end
 
-        def add_suffix_to_attributes(doc, suffix, tag_name, attr_name,
-isodoc)
+        def add_suffix_to_attrs(doc, suffix, tag_name, attr_name, isodoc)
           (suffix.nil? || suffix.empty?) and return
           doc.xpath(isodoc.ns("//#{tag_name}[@#{attr_name}]")).each do |elem|
             a = elem.attributes[attr_name].value
@@ -62,8 +61,8 @@ isodoc)
           def attr(_key); end
         end
 
-        def load_isodoc(doctype)
-          x = Asciidoctor.load nil, backend: doctype.to_sym
+        def load_isodoc(flavor)
+          x = Asciidoctor.load nil, backend: flavor.to_sym
           x.converter.html_converter(Dummy.new) # to obtain Isodoc class
         end
       end

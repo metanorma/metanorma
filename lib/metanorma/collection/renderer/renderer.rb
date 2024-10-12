@@ -38,9 +38,9 @@ module Metanorma
         @script = collection.bibdata.script.first || "Latn"
         @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
         @registry = Metanorma::Registry.instance
-        @doctype = doctype
+        @flavor = flavor
         @compile = Compile.new
-        @compile.load_flavor(@doctype)
+        @compile.load_flavor(@flavor)
 
         @isodoc = isodoc_create # output processor for flavour
         @outdir = dir_name_cleanse(options[:output_folder])
@@ -136,8 +136,8 @@ module Metanorma
         @directives.detect { |d| d.key == "bilingual" } &&
           options[:format].include?(:html) and
           Metanorma::Collection::Multilingual.new(
-            { doctype: doctype.to_sym,
-              converter_options: PdfOptionsNode.new(doctype, @compile_options),
+            { flavor: flavor.to_sym,
+              converter_options: PdfOptionsNode.new(flavor, @compile_options),
               outdir: @outdir },
           ).to_html(pres)
       end
@@ -155,14 +155,9 @@ module Metanorma
         out
       end
 
-      # infer the flavour from the first document identifier; relaton does that
-      def doctype
-        if (docid = @xml.at("//bibdata/docidentifier/@type")&.text)
-          dt = docid.downcase
-        elsif (docid = @xml.at("//bibdata/docidentifier")&.text)
-          dt = docid.sub(/\s.*$/, "").lowercase
-        else return "standoc"
-        end
+      # TODO: infer flavor from publisher when available
+      def flavor
+        dt = @xml.at("//bibdata/ext/flavor")&.text or return "standoc"
         @registry.alias(dt.to_sym)&.to_s || dt
       end
 

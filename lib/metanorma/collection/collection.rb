@@ -37,6 +37,7 @@ module Metanorma
       @bibdatas.merge! @manifest.documents
       @documents.transform_keys { |k| Util::key(k) }
       @bibdatas.transform_keys { |k| Util::key(k) }
+      validate_flavor(flavor)
     end
 
     def initialize_vars
@@ -59,11 +60,16 @@ module Metanorma
       d = @directives.each_with_object({}) { |x, m| m[x.key] = x.value }
       @coverpage = d["coverpage"]
       @coverpage_style = d["coverpage-style"]
+      @flavor = d["flavor"]
       if (@documents.any? || @manifest) && !d.key?("documents-inline") &&
           !d.key?("documents-external")
         @directives << ::Metanorma::Collection::Config::Directive
           .new(key: "documents-inline")
       end
+    end
+
+    def validate_flavor(flavor)
+      ::Metanorma::Compile.new.load_flavor(flavor)
     end
 
     def clean_exit
@@ -103,7 +109,7 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def content_to_xml(elm, builder)
       (cnt = send(elm)) or return
-      @compile.load_flavor(doctype)
+      @compile.load_flavor(flavor)
       out = sections(dummy_header + cnt.strip)
       builder.send("#{elm}-content") { |b| b << out }
     end
@@ -111,13 +117,12 @@ module Metanorma
     # @param cnt [String] prefatory/final content
     # @return [String] XML
     def sections(cnt)
-      c = Asciidoctor.convert(cnt, backend: doctype.to_sym, header_footer: true)
+      c = Asciidoctor.convert(cnt, backend: flavor.to_sym, header_footer: true)
       Nokogiri::XML(c, &:huge).at("//xmlns:sections").children.to_xml
     end
 
     # @param builder [Nokogiri::XML::Builder]
     def doccontainer(builder)
-      # Array(@directives).include? "documents-inline" or return
       @directives.detect { |d| d.key == "documents-inline" } or return
       documents.each_with_index do |(_, d), i|
         doccontainer1(builder, d, i)
@@ -136,14 +141,19 @@ module Metanorma
       end
     end
 
-    def doctype
-      @doctype ||= fetch_doctype || "standoc"
+    def flavor
+      @flavor ||= fetch_flavor || "standoc"
     end
 
-    def fetch_doctype
-      docid = @bibdata.docidentifier.first
-      docid or return
-      docid.type&.downcase || docid.id&.sub(/\s.*$/, "")&.downcase
+    # TODO: retrieve flavor based on @bibdata publisher when lookup implemented
+    # Will still infer based on docid, but will validate it before proceeding
+    def fetch_flavor
+      docid = @bibdata.docidentifier.first or return
+      f = docid.type.downcase || docid.id.sub(/\s.*$/, "").downcase or return
+      require ::Metanorma::Compile.new.stdtype2flavor(f)
+      f
+    rescue LoadError
+      nil
     end
 
     class << self

@@ -33,14 +33,14 @@ module Metanorma
                  "support the standard type #{stdtype}. Exiting.", :fatal)
     end
 
-    private
-
-    STDTYPE2FLAVOR = {}.freeze
-
     def stdtype2flavor(stdtype)
       flavor = STDTYPE2FLAVOR[stdtype] || stdtype
       "metanorma-#{flavor}"
     end
+
+    private
+
+    STDTYPE2FLAVOR = {}.freeze
 
     def require_flavor(flavor)
       require flavor

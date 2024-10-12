@@ -111,9 +111,9 @@ module Metanorma
       end
 
       def pdfconv
-        doctype = @doctype.to_sym
-        x = Asciidoctor.load nil, backend: doctype
-        x.converter.pdf_converter(PdfOptionsNode.new(doctype,
+        flavor = @flavor.to_sym
+        x = Asciidoctor.load nil, backend: flavor
+        x.converter.pdf_converter(PdfOptionsNode.new(flavor,
                                                      @compile_options))
       end
 
@@ -153,8 +153,8 @@ module Metanorma
       end
 
       class PdfOptionsNode
-        def initialize(doctype, options)
-          p = Metanorma::Registry.instance.find_processor(doctype)
+        def initialize(flavor, options)
+          p = Metanorma::Registry.instance.find_processor(flavor)
           if ::Metanorma::Util::FontistHelper.has_custom_fonts?(p, options, {})
             @fonts_manifest =
               ::Metanorma::Util::FontistHelper.location_manifest(p, options)
@@ -169,7 +169,7 @@ module Metanorma
       end
 
       def isodoc_create
-        isodoc = Util::load_isodoc(@doctype)
+        isodoc = Util::load_isodoc(@flavor)
         isodoc.i18n_init(@lang, @script, @locale) # read in internationalisation
         isodoc.metadata_init(@lang, @script, @locale, isodoc.i18n)
         isodoc.info(@xml, nil)
