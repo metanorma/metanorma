@@ -67,15 +67,15 @@ module Metanorma
         i = x.at("//xmlns:bibdata/xmlns:docidentifier[@primary = 'true']") ||
           x.at("//xmlns:bibdata/xmlns:docidentifier")
         i or return nil
-        @doctype ||= i["type"]&.downcase || "standoc"
+        @flavor = @collection.flavor
         load_isodoc
         Util::key(@isodoc.docid_prefix(i["type"], i.text))
       end
 
       def load_isodoc
         @isodoc and return
-        @collection.compile.load_flavor(@doctype)
-        @isodoc = Util::load_isodoc(@doctype)
+        @collection.compile.load_flavor(@flavor)
+        @isodoc = Util::load_isodoc(@flavor)
         @isodoc.i18n_init(@lang, @script, nil) # for @i18n.all_parts in docid
       end
 
@@ -153,7 +153,7 @@ module Metanorma
       def set_adoc2xml(fileref)
         File.join(
           File.dirname(fileref),
-          File.basename(fileref).gsub(/.adoc$/, ".xml"),
+          File.basename(fileref).gsub(/\.adoc$/, ".xml"),
         )
       end
 
@@ -161,15 +161,20 @@ module Metanorma
       # @raise [AdocFileNotFoundException]
       def compile_adoc_file(file)
         f = (Pathname.new file).absolute? ? file : File.join(@dir, file)
-        unless File.exist? f
-          raise AdocFileNotFoundException.new "#{f} not found!"
-        end
-
+        File.exist?(f) or raise AdocFileNotFoundException.new "#{f} not found!"
+        compile_adoc_file?(file) or return
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...", :info)
         ::Metanorma::Compile.new
           .compile(f, agree_to_terms: true, install_fonts: false,
                       extension_keys: [:xml])
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...done!", :info)
+      end
+
+      def compile_adoc_file?(file)
+        @collection.directives.detect do |d|
+          d.key == "recompile-xml"
+        end and return true
+        !File.exist?(file.sub(/\.adoc$/, ".xml"))
       end
 
       def documents(mnf = @config)

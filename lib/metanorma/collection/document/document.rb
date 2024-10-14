@@ -1,3 +1,5 @@
+require "relaton-cli"
+
 module Metanorma
   class Collection
     class Document
@@ -48,16 +50,16 @@ module Metanorma
 
         def mn2relaton_parser(tag)
           case tag.sub(/-standard/, "")
-          when "bipm" then RelatonBipm::XMLParser
-          when "bsi" then RelatonBsi::XMLParser
-          when "ietf" then RelatonIetf::XMLParser
-          when "iho" then RelatonIho::XMLParser
-          when "itu" then RelatonItu::XMLParser
-          when "iec" then RelatonIec::XMLParser
-          when "iso" then RelatonIsoBib::XMLParser
-          when "nist" then RelatonNist::XMLParser
-          when "ogc" then RelatonOgc::XMLParser
-          else RelatonBib::XMLParser
+          when "bipm" then ::RelatonBipm::XMLParser
+          when "bsi" then ::RelatonBsi::XMLParser
+          when "ietf" then ::RelatonIetf::XMLParser
+          when "iho" then ::RelatonIho::XMLParser
+          when "itu" then ::RelatonItu::XMLParser
+          when "iec" then ::RelatonIec::XMLParser
+          when "iso" then ::RelatonIsoBib::XMLParser
+          when "nist" then ::RelatonNist::XMLParser
+          when "ogc" then ::RelatonOgc::XMLParser
+          else ::RelatonBib::XMLParser
           end
         end
 

@@ -53,7 +53,7 @@ module Metanorma
         dest = File.join(@outdir, @disambig.source2dest_filename(out.to_s))
         FileUtils.mkdir_p(File.dirname(dest))
         source = @files.get(identifier, :ref)
-        source != dest and FileUtils.cp source, dest
+        source != dest and FileUtils.cp_r source, dest, remove_destination: true
       end
 
       # process each file in the collection
@@ -85,6 +85,7 @@ module Metanorma
       def gather_internal_refs
         @files.keys.each_with_object({}) do |i, refs|
           @files.get(i, :attachment) and next
+          @files.get(i, :sectionsplit) and next
           file, = @files.targetfile_id(i, read: true)
           gather_internal_refs1(file, i, refs)
         end

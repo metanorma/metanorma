@@ -157,8 +157,9 @@ module Metanorma
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
         bibitems, erefs = update_indirect_refs_to_docs_prep(docxml)
         internal_refs.each do |schema, ids|
+          s = "#{schema}_"
           ids.each do |id, file|
-            k = indirect_ref_key(schema, id, docxml)
+            k = indirect_ref_key(s, schema, id, docxml)
             update_indirect_refs_to_docs1(docxml, k, file, bibitems, erefs)
           end
         end
@@ -169,7 +170,16 @@ module Metanorma
         [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml)]
       end
 
-      def indirect_ref_key(schema, id, docxml)
+      def indirect_ref_key(schema_, schema, id, docxml)
+        /^#{schema_}/.match?(id) and return id
+        ret = schema_ + id
+        suffix = docxml.root["document_suffix"] or return ret
+        (k = docxml.root["type"]) && k != schema or return ret
+        "#{ret}_#{suffix}"
+      end
+
+      #OLD
+      def indirect_ref_key1(schema, id, docxml)
         /^#{schema}_/.match?(id) and return id
         ret = "#{schema}_#{id}"
         suffix = docxml.root["document_suffix"]
@@ -224,6 +234,17 @@ module Metanorma
       def update_anchor_loc(bib, eref, docid)
         loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
           return update_anchor_create_loc(bib, eref, docid)
+        a = @files.get(docid, :anchors) or return
+        ref = loc.elements&.first or return
+        anchor = suffix_anchor(ref.text, docid)
+        a.values.detect { |x| x.value?(anchor) } or return
+        ref.content = anchor
+      end
+
+      #OLD
+      def update_anchor_loc1(bib, eref, docid)
+        loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
+          return update_anchor_create_loc(bib, eref, docid)
         ref = loc.at("./xmlns:referenceFrom") or return
         anchor = suffix_anchor(ref, docid)
         a = @files.get(docid, :anchors) or return
@@ -233,6 +254,13 @@ module Metanorma
       end
 
       def suffix_anchor(ref, docid)
+        @ncnames[docid] ||= "#{Metanorma::Utils::to_ncname(docid)}_"
+        @files.url?(docid) or return ref
+        @ncnames[docid] + ref
+      end
+
+      #OLD
+       def suffix_anchor1(ref, docid)
         @ncnames[docid] ||= Metanorma::Utils::to_ncname(docid)
         anchor = ref.text
         @files.url?(docid) or anchor = "#{@ncnames[docid]}_#{anchor}"

@@ -104,15 +104,15 @@ module Metanorma
         %w(attachment sectionsplit index presentation-xml url
            bare-after-first).each do |s|
           ref.respond_to?(s.to_sym) and
-            ret[s.gsub("-", "").to_sym] = ref.send(s)
+            ret[s.delete("-").to_sym] = ref.send(s)
         end
       end
 
       def add_document_suffix(identifier, doc)
         document_suffix = Metanorma::Utils::to_ncname(identifier)
-        Metanorma::Utils::anchor_attributes.each do |(tag_name, attribute_name)|
-          Util::add_suffix_to_attributes(doc, document_suffix, tag_name,
-                                         attribute_name, @isodoc)
+        Metanorma::Utils::anchor_attributes.each do |(tag_name, attr_name)|
+          Util::add_suffix_to_attrs(doc, document_suffix, tag_name, attr_name,
+                                    @isodoc)
         end
         url_in_css_styles(doc, document_suffix)
         doc.root["document_suffix"] ||= ""

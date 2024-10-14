@@ -1,6 +1,7 @@
 require "yaml"
 require_relative "../../util/util"
 require_relative "../xrefprocess/xrefprocess"
+require_relative "collection"
 
 module Metanorma
   class Collection
@@ -17,46 +18,11 @@ module Metanorma
         @fileslookup = opts[:fileslookup]
         @ident = opts[:ident]
         @isodoc = opts[:isodoc]
+        @document_suffix = opts[:document_suffix]
       end
 
       def ns(xpath)
         @isodoc.ns(xpath)
-      end
-
-      def build_collection
-        collection_setup(@base, @dir)
-        files = sectionsplit # (@input_filename, @base, @dir, @compile_opts)
-        input_xml = Nokogiri::XML(File.read(@input_filename,
-                                            encoding: "UTF-8"), &:huge)
-        collection_manifest(@base, files, input_xml, @xml, @dir).render(
-          { format: %i(html), output_folder: "#{@output_filename}_collection",
-            coverpage: File.join(@dir, "cover.html") }.merge(@compile_opts),
-        )
-      end
-
-      def collection_manifest(filename, files, origxml, _presxml, dir)
-        File.open(File.join(dir, "#{filename}.html.yaml"), "w:UTF-8") do |f|
-          f.write(collectionyaml(files, origxml))
-        end
-        Metanorma::Collection.parse File.join(dir, "#{filename}.html.yaml")
-      end
-
-      def collection_setup(filename, dir)
-        FileUtils.mkdir_p "#{filename}_collection" if filename
-        FileUtils.mkdir_p dir
-        File.open(File.join(dir, "cover.html"), "w:UTF-8") do |f|
-          f.write(coll_cover)
-        end
-      end
-
-      def coll_cover
-        <<~COVER
-          <html><head><meta charset="UTF-8"/></head><body>
-                <h1>{{ doctitle }}</h1>
-                <h2>{{ docnumber }}</h2>
-                <nav>{{ navigation }}</nav>
-              </body></html>
-        COVER
       end
 
       SPLITSECTIONS =
@@ -71,15 +37,15 @@ module Metanorma
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
         SPLITSECTIONS.each_with_object([]) do |n, ret|
           conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
-            ret << sectionfile(xml, emptydoc(xml), "#{@base}.#{ret.size}", s,
-                               n[1])
+            ret << sectionfile(xml, emptydoc(xml, ret.size),
+                               "#{@base}.#{ret.size}", s, n[1])
           end
         end
       end
 
       def block?(node)
         %w(p table formula admonition ol ul dl figure quote sourcecode example
-           pre note pagebrreak hr bookmark requirement recommendation permission
+           pre note pagebreak hr bookmark requirement recommendation permission
            svgmap inputform toc passthrough review imagemap).include?(node.name)
       end
 
@@ -111,6 +77,7 @@ module Metanorma
         type = xml.root.name.sub("-standard", "").to_sym
         sectionsplit_update_xrefs(xml)
         xml1 = sectionsplit_write_semxml(filename, xml)
+        @tmp_filename = xml1
         [xml1, type]
       end
 
@@ -133,13 +100,16 @@ module Metanorma
         outname
       end
 
-      def emptydoc(xml)
+      def emptydoc(xml, ordinal)
         out = xml.dup
         out.xpath(
           ns("//preface | //sections | //annex | //bibliography/clause | " \
-             "//bibliography/references[not(@hidden = 'true')] | //indexsect | " \
-             "//colophon"),
+             "//bibliography/references[not(@hidden = 'true')] | " \
+             "//indexsect | //colophon"),
         ).each(&:remove)
+        ordinal.zero? or out.xpath(ns("//metanorma-ext//attachment | " \
+                      "//semantic__metanorma-ext//semantic__attachment"))
+          .each(&:remove) # keep only one copy of attachments
         out
       end
 
@@ -154,11 +124,32 @@ module Metanorma
         sectionfile_insert(ins, chunks, parentnode)
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc)
+        truncate_semxml(out, chunks)
         outname = "#{file}.xml"
-        File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
-          f.write(out)
-        end
+        File.open(File.join(@splitdir, outname), "w:UTF-8") { |f| f.write(out) }
         outname
+      end
+
+      def semantic_xml_ids_gather(out)
+        out.at(ns("//semantic__bibdata")) or return
+        SPLITSECTIONS.each_with_object({}) do |s, m|
+          out.xpath(ns(s[0].sub("//", "//semantic__"))).each do |x|
+            x["id"] or next
+            m[x["id"].sub(/^semantic__/, "")] = x
+          end
+        end
+      end
+
+      def semxml_presxml_nodes_match(nodes, chunks)
+        chunks.each do |x|
+          nodes[x["id"]] and nodes.delete(x["id"])
+        end
+      end
+
+      def truncate_semxml(out, chunks)
+        nodes = semantic_xml_ids_gather(out) or return
+        semxml_presxml_nodes_match(nodes, chunks)
+        nodes.each_value(&:remove)
       end
 
       def sectionfile_insert(ins, chunks, parentnode)
@@ -173,46 +164,10 @@ module Metanorma
         title = section.at(ns("./title")) or return "[Untitled]"
         t = title.dup
         t.xpath(ns(".//tab | .//br")).each { |x| x.replace(" ") }
-        t.xpath(ns(".//strong")).each { |x| x.replace(x.children) }
+        t.xpath(ns(".//bookmark")).each(&:remove)
+        t.xpath(ns(".//strong | .//span"))
+          .each { |x| x.replace(x.children) }
         t.children.to_xml
-      end
-
-      def collectionyaml(files, xml)
-        ret = {
-          directives: ["presentation-xml", "bare-after-first"],
-          bibdata: {
-            title: {
-              type: "title-main", language: @lang,
-              content: xml.at(ns("//bibdata/title")).text
-            },
-            type: "collection",
-            docid: {
-              type: xml.at(ns("//bibdata/docidentifier/@type")).text,
-              id: xml.at(ns("//bibdata/docidentifier")).text,
-            },
-          },
-          manifest: {
-            level: "collection", title: "Collection",
-            docref: files.sort_by { |f| f[:order] }.each.map do |f|
-              { fileref: f[:url], identifier: f[:title] }
-            end
-          },
-        }
-        ::Metanorma::Util::recursive_string_keys(ret).to_yaml
-      end
-
-      def section_split_cover(col, ident, _one_doc_coll)
-        dir = File.dirname(col.file)
-        collection_setup(nil, dir)
-        r = ::Metanorma::Collection::Renderer
-          .new(col, dir, output_folder: "#{ident}_collection",
-                         format: %i(html), coverpage: File.join(dir, "cover.html"))
-        r.coverpage
-        # filename = one_doc_coll ? "#{ident}_index.html" : "index.html"
-        filename = File.basename("#{ident}_index.html") # ident can be a directory with YAML indirection
-        FileUtils.mv File.join(r.outdir, "index.html"), File.join(dir, filename)
-        FileUtils.rm_rf r.outdir
-        filename
       end
     end
   end

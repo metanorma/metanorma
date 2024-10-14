@@ -10,9 +10,9 @@ module Metanorma
           key = (0...8).map { rand(65..90).chr }.join # random string
           xml.root["type"] = key
           Metanorma::Utils::anchor_attributes
-            .each do |(tag_name, attribute_name)|
-            ::Metanorma::Collection::Util::add_suffix_to_attributes(
-              xml, xml.root["document_suffix"], tag_name, attribute_name, isodoc
+            .each do |(tag_name, attr_name)|
+            ::Metanorma::Collection::Util::add_suffix_to_attrs(
+              xml, xml.root["document_suffix"], tag_name, attr_name, isodoc
             )
           end
           key

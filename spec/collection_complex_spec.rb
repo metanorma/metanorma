@@ -315,6 +315,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
       expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
       expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
+      expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
       f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
       expect(File.exist?("#{f}/cover.html")).to be true
       expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
@@ -330,8 +331,15 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
       expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
       m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
+      file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.2.xml"))
+      expect(file2.at("//xmlns:semantic__introduction")).not_to be_nil
+      expect(file2.at("//xmlns:semantic__clause[@id = 'semantic__M']")).to be_nil
+      expect(file2.at("//xmlns:semantic__p[@id = 'semantic__middletitle']")).to be_nil
       file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
       file2.xpath("//xmlns:emf").each(&:remove)
+      expect(file2.at("//xmlns:semantic__introduction")).to be_nil
+      expect(file2.at("//xmlns:semantic__clause[@id = 'semantic__M']")).not_to be_nil
+      expect(file2.at("//xmlns:semantic__p[@id = 'semantic__middletitle']")).not_to be_nil
       expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
       expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
       expect(Xml::C14n.format(file2
@@ -350,6 +358,12 @@ RSpec.describe Metanorma::Collection do
         .to_xml))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+        OUTPUT
+      expect(Xml::C14n.format(file2
+       .at("//xmlns:note[@id = 'N3']//xmlns:link")
+        .to_xml))
+        .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+          <link attachment="true" target="_test_sectionsplit_attachments/LICENSE.TXT">License A</link>
         OUTPUT
       expect(file2
        .at("//xmlns:bibitem[@id = 'R1']"))
@@ -445,9 +459,9 @@ RSpec.describe Metanorma::Collection do
             - fileref: test_sectionsplit.html.3.xml
               identifier: 2 Clause 4
             - fileref: test_sectionsplit.html.5.xml
-              identifier: Annex A <span class="obligation">(normative)</span>  Annex (informative)
+              identifier: Annex A (normative)  Annex (informative)
             - fileref: test_sectionsplit.html.6.xml
-              identifier: Annex B <span class="obligation">(normative)</span>  Annex 2
+              identifier: Annex B (normative)  Annex 2
             - fileref: test_sectionsplit.html.7.xml
               identifier: Bibliography
 
@@ -497,6 +511,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
         .to be true
+      expect(File.exist?("#{OUTPATH}/_dummy_attachments/LICENSE1.TXT")).to be true
       rice = File.read("#{OUTPATH}/rice-en.final.xml.1.html")
       expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
       expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="rice-en.final.xml.2.html#anotherclause_ISO_17301-1_2016_ISO_17301-1_2016_2_This_is_another_clause"><span class="citesec">Clause 2</span></a> or <a href="rice-en.final.xml.3.html#thirdclause_ISO_17301-1_2016_ISO_17301-1_2016_3_This_is_another_clause"><span class="citesec">Clause 3</span></a>.</p>)
@@ -618,6 +633,8 @@ RSpec.describe Metanorma::Collection do
       mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
+      FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
+      FileUtils.rm_f "#{INPATH}/document-2/document-2.xml"
       file = "#{INPATH}/collection_new.yml"
       # xml = file.read file, encoding: "utf-8"
       of = OUTPATH
@@ -659,6 +676,8 @@ RSpec.describe Metanorma::Collection do
       a = File.read(f).sub(%r{fileref: \S+/img/action_schemaexpg3.svg},
                            "fileref: #{File.expand_path(INPATH)}/document-2/img/action_schemaexpg2.svg")
       File.open(f, "w") { |x| x.write(a) }
+      FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
+      FileUtils.rm_f "#{INPATH}/document-2/document-2.xml"
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation html xml],
@@ -678,6 +697,21 @@ RSpec.describe Metanorma::Collection do
       # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg2.svg :
       # ambiguous name
       expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.1.svg")).to be true
+    end
+
+    it "recompiles XML" do
+      mock_pdf
+      FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
+      file = "#{INPATH}/document-1/collection.yml"
+      Metanorma::Collection.parse file
+      expect(File.exist?("#{INPATH}/document-1/document-1.xml")).to be true
+      time = File.mtime("#{INPATH}/document-1/document-1.xml")
+      Metanorma::Collection.parse file
+      expect(File.mtime("#{INPATH}/document-1/document-1.xml")).to be_within(0.1).of time
+      a = File.read(file).sub(/- documents-inline/, "- recompile-xml\n- documents-inline")
+      File.open(file, "w") { |x| x.write(a) }
+      Metanorma::Collection.parse file
+      expect(File.mtime("#{INPATH}/document-1/document-1.xml")).not_to be_within(0.1).of time
     end
   end
 
@@ -739,6 +773,65 @@ RSpec.describe Metanorma::Collection do
                              "transport conditions"
     # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
     # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
+    FileUtils.rm_rf of
+  end
+
+  it "processes flavor directive" do
+    Dir.chdir("spec")
+    yaml = File.read "../#{INPATH}/collection_solo.yml"
+    of = "../#{OUTPATH}"
+    newyaml = "../#{INPATH}/collection_new1.yml"
+    File.open(newyaml, "w") { |x| x.write(yaml) }
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    # manifest docid has docid type iso
+    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: standoc")) }
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: iso").sub("type: iso", "type: fred")) }
+    # get flavor from directive not docid
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("type: iso", "type: fred")) }
+    # ignorable flavor from docid
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: fred")) }
+    begin
+      expect do
+        Metanorma::Collection.parse newyaml
+      end.to raise_error(SystemExit)
+    rescue SystemExit, RuntimeError
+    end
+
     FileUtils.rm_rf of
   end
 

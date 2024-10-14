@@ -611,13 +611,13 @@ module Metanorma
       def initialize(options)
         options[:align_cross_elements] ||= %w(note p)
         @align_cross_elements = " #{options[:align_cross_elements].join(' ')} "
-        @doctype = options[:doctype]
+        @flavor = options[:flavor]
         @outdir = options[:outdir]
         @converter_opt = options[:converter_options]
       end
 
       def htmlconv
-        x = Asciidoctor.load nil, backend: @doctype
+        x = Asciidoctor.load nil, backend: @flavor
         x.converter.html_converter(@converter_opt)
       end
 
