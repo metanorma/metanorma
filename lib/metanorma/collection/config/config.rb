@@ -11,11 +11,9 @@ module Metanorma
   class Collection
     module Config
       require "shale/adapter/nokogiri"
-      #::Lutaml::Model.xml_adapter = ::Lutaml::Model::Adapter::Nokogiri
       Lutaml::Model::Config.configure do |config|
-  config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
-end
-
+        config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
+      end
 
       class Config < ::Lutaml::Model::Serializable
         attr_accessor :path, :collection, :from_xml
@@ -30,8 +28,8 @@ end
                                                                 "cover.html"
                                                               }
         attribute :compile, CompileOptions
-        attribute :prefatory_content, ::Lutaml::Model::Type::String
-        attribute :final_content, ::Lutaml::Model::Type::String
+        attribute :prefatory_content, :string, raw: true
+        attribute :final_content, :string, raw: true
         attribute :documents, Bibdata, collection: true
         attribute :xmlns, ::Lutaml::Model::Type::String, default: -> { "http://metanorma.org" }
 
@@ -55,25 +53,24 @@ end
           # map_attribute "xmlns", to: :xmlns
           map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
                                           to: :bibdata_to_xml }
-          map_element "directive", to: :directive, with: { from: :directive_from_xml,
-                                            to: :directive_to_xml }
-          map_element "entry", to: :entry, with: { from: :manifest_from_xml,
+          map_element "directive", to: :directive
+          map_element "entry", to: :manifest, with: { from: :manifest_from_xml,
                                         to: :manifest_to_xml }
           map_element "format", to: :format
           map_element "output_folder", to: :output_folder
           map_element "coverpage", to: :coverpage
           map_element "compile", to: :compile
-          map_element "prefatory-content", to: :"prefatory-content", with: { from: :prefatory_from_xml,
+          map_element "prefatory-content", to: :"prefatory_content" , with: { from: :prefatory_from_xml,
                                                     to: :prefatory_to_xml }
-          map_element "doc-container", to: :"doc-container",
+          map_element "doc-container", to: :documents,
                       with: { from: :documents_from_xml,
                                to: :documents_to_xml }
-          map_element "final-content", to: :"final-content", with: { from: :final_from_xml,
+          map_element "final-content", to: :"final_content" , with: { from: :final_from_xml,
                                                 to: :final_to_xml }
         end
 
         def manifest_from_xml(model, node)
-          model.manifest = node # Manifest.from_xml(node.to_xml)
+          model.manifest = node
         end
 
         def manifest_to_xml(model, parent, doc)
@@ -82,7 +79,8 @@ end
         end
 
         def prefatory_from_xml(model, node)
-          model.prefatory_content = node.to_xml
+          require 'debug'; binding.b
+          model.prefatory_content = node
         end
 
         def prefatory_to_xml(model, parent, doc)
@@ -96,7 +94,9 @@ end
         def content_to_xml(model, parent, doc, type)
           x = model.send("#{type}_content") or return
           n = Nokogiri::XML(x)
-          elem = if n.elements.size == 1 then n.root
+          elem = if n.elements.size == 1
+                   require "debug"; binding.b
+                   "<#{type}-content>#{x}</#{type}-content>" #n.root
                  else
                    b = Nokogiri::XML::Builder.new
                    model.collection.content_to_xml(type, b)
@@ -106,20 +106,7 @@ end
         end
 
         def final_from_xml(model, node)
-          model.final_content = node.to_xml
-        end
-
-        def directive_from_xml(model, node)
-          model.directive ||= []
-          #model.directive << Directive.from_xml(node.to_xml)
-          model.directive += node
-        end
-
-        def directive_to_xml(model, parent, doc)
-          Array(model.directive).each do |e|
-            elem = e.to_xml
-            doc.add_element(parent, elem)
-          end
+          model.final_content = node
         end
 
         def directives_from_yaml(model, value)
@@ -140,17 +127,14 @@ end
         end
 
         def documents_from_xml(model, value)
-          x = if value.is_a?(Lutaml::Model::Adapter::Nokogiri::Node)
-                value.content
-              else Nokogiri::XML(value)
-              end
-          model.documents = x.xpath(".//bibdata")
+          model.documents = value
             .each_with_object([]) do |b, m|
             m << Bibdata.from_xml(b.to_xml)
           end
         end
 
         def documents_to_xml(model, parent, doc)
+          doc.parent.elements.detect { |x| x.name == "doc-container" } and return
           b = Nokogiri::XML::Builder.new do |xml|
             xml.document do |m|
               model.collection.doccontainer(m) or return
