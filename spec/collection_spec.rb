@@ -85,7 +85,7 @@ RSpec.describe Metanorma::Collection do
             title: Amendments
             index: true
             entry:
-            - identifier: ISO 17301-1:2016/Amd.1:2017
+              identifier: ISO 17301-1:2016/Amd.1:2017
               index: true
               file: rice-amd.final.xml
               entry: []
@@ -109,7 +109,8 @@ RSpec.describe Metanorma::Collection do
               bibdata:
             bibdata:
           bibdata:
-        format: []
+        format: 
+        - html
         coverpage: cover.html
         prefatory-content: |2
 
