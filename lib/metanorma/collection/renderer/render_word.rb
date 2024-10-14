@@ -3,8 +3,8 @@ module Metanorma
     class Renderer
       def docconv
         @tempfile_cache ||= []
-        doctype = @doctype.to_sym
-        x = Asciidoctor.load nil, backend: doctype
+        flavor = @flavor.to_sym
+        x = Asciidoctor.load nil, backend: flavor
         x.converter.doc_converter(DocOptionsNode.new(@directives, @dirname))
       end
 
@@ -51,8 +51,8 @@ module Metanorma
         doc
       end
 
-      SECTION_BREAK = '<p class="MsoNormal"><br clear="all" class="section"/></p>'
-        .freeze
+      SECTION_BREAK =
+        '<p class="MsoNormal"><br clear="all" class="section"/></p>'.freeze
       DIV1 = '<div class="WordSection1">&#xa0;</div>'.freeze
       DIV2 = '<div class="WordSection2">&#xa0;</div>'.freeze
 
@@ -70,10 +70,10 @@ module Metanorma
       end
 
       def collection_coverpages(conv, docs)
-        conv.wordintropage and [DIV2, SECTION_BREAK].reverse.each do |s|
+        conv.wordintropage and [DIV2, SECTION_BREAK].reverse_each do |s|
           docs.unshift(Nokogiri::XML(s).root)
         end
-        conv.wordcoverpage and [DIV1, SECTION_BREAK].reverse.each do |s|
+        conv.wordcoverpage and [DIV1, SECTION_BREAK].reverse_each do |s|
           docs.unshift(Nokogiri::XML(s).root)
         end
         docs

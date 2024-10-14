@@ -4,6 +4,7 @@ directives:
   - collection-word-intropage: cover2.html
   - document-word-coverpage: cover3.html
   - document-word-intropage: cover4.html
+  - flavor: iso
 bibdata:
   title:
     type: title-main

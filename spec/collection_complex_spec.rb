@@ -776,6 +776,65 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
+  it "processes flavor directive" do
+    Dir.chdir("spec")
+    yaml = File.read "../#{INPATH}/collection_solo.yml"
+    of = "../#{OUTPATH}"
+    newyaml = "../#{INPATH}/collection_new1.yml"
+    File.open(newyaml, "w") { |x| x.write(yaml) }
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    # manifest docid has docid type iso
+    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: standoc")) }
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: iso").sub("type: iso", "type: fred")) }
+    # get flavor from directive not docid
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("type: iso", "type: fred")) }
+    # ignorable flavor from docid
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: fred")) }
+    begin
+      expect do
+        Metanorma::Collection.parse newyaml
+      end.to raise_error(SystemExit)
+    rescue SystemExit, RuntimeError
+    end
+
+    FileUtils.rm_rf of
+  end
+
   context "Word collection" do
     it "builds Word collection, no coverpages" do
       file = "#{INPATH}/wordcollection.yml"

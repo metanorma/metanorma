@@ -67,15 +67,15 @@ module Metanorma
         i = x.at("//xmlns:bibdata/xmlns:docidentifier[@primary = 'true']") ||
           x.at("//xmlns:bibdata/xmlns:docidentifier")
         i or return nil
-        @doctype ||= i["type"]&.downcase || "standoc"
+        @flavor = @collection.flavor
         load_isodoc
         Util::key(@isodoc.docid_prefix(i["type"], i.text))
       end
 
       def load_isodoc
         @isodoc and return
-        @collection.compile.load_flavor(@doctype)
-        @isodoc = Util::load_isodoc(@doctype)
+        @collection.compile.load_flavor(@flavor)
+        @isodoc = Util::load_isodoc(@flavor)
         @isodoc.i18n_init(@lang, @script, nil) # for @i18n.all_parts in docid
       end
 
