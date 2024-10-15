@@ -593,6 +593,7 @@ RSpec.describe Metanorma::Collection do
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_sectionsplit_solo.yml"
       of = OUTPATH.to_s
+      FileUtils.rm_rf "#{OUTPATH}/index.html"
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation html xml],

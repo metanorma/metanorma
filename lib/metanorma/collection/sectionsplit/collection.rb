@@ -91,7 +91,6 @@ module Metanorma
         # ident can be a directory with YAML indirection
         dest = File.join(dir, filename)
         FileUtils.mv File.join(renderer.outdir, "index.html"), dest
-        one_doc_coll and FileUtils.cp dest, File.join(dir, "index.html")
         FileUtils.rm_rf renderer.outdir
         filename
       end
