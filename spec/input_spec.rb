@@ -204,6 +204,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
     expect(Metanorma::Input::Asciidoc.new
       .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq output
 
+    expect(Metanorma::Input::Asciidoc.new
+      .extract_metanorma_options(input.sub(/document-class/, "flavor"))
+      .sort.to_h.to_s + "\n").to eq output
+
     input = <<~INPUT
       = Document title
       Author

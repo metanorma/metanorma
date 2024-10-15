@@ -1,8 +1,7 @@
 module Metanorma
   class Compile
     def relaton_export(isodoc, options)
-      return unless options[:relaton]
-
+      options[:relaton] or return
       xml = Nokogiri::XML(isodoc, &:huge)
       bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
       # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
@@ -18,8 +17,7 @@ module Metanorma
     end
 
     def extract(isodoc, dirname, extract_types)
-      return unless dirname
-
+      dirname or return
       extract_types.nil? || extract_types.empty? and
         extract_types = %i[sourcecode image requirement]
       FileUtils.rm_rf dirname
