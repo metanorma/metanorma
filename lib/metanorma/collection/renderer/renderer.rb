@@ -74,6 +74,7 @@ module Metanorma
 
       def flush_files
         warn "\n\n\n\n\nDone: #{DateTime.now.strftime('%H:%M:%S')}"
+        warn "\nFiles to delete:\n"
         warn @files.files_to_delete
         @files.files_to_delete.each { |f| FileUtils.rm_f(f) }
         @files_to_delete.each { |f| FileUtils.rm_f(f) }

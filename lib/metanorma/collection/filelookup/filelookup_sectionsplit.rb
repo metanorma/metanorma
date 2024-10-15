@@ -21,8 +21,7 @@ module Metanorma
         end
         a = add_section_split_attachments(sectionsplit_manifest, key) and
           manifest["#{key}:attachments"] = a
-        manifest["#{key}:index.html"] =
-          add_section_split_cover(sectionsplit_manifest, key)
+        add_section_split_cover(manifest, sectionsplit_manifest, key)
       end
 
       def cleanup_section_split_instance(key, manifest)
@@ -31,24 +30,34 @@ module Metanorma
         @files[key][:indirect_key] = @sectionsplit.key
       end
 
-      def add_section_split_cover(manifest, ident)
+      def add_section_split_cover(manifest, sectionsplit_manifest, ident)
         cover = @sectionsplit
-          .section_split_cover(manifest, @parent.dir_name_cleanse(ident),
+          .section_split_cover(sectionsplit_manifest,
+                               @parent.dir_name_cleanse(ident),
                                one_doc_collection?)
         @files[ident][:out_path] = cover
-        { attachment: true, index: false, out_path: cover,
-          ref: File.join(File.dirname(manifest.file), cover) }
+        src = File.join(File.dirname(sectionsplit_manifest.file), cover)
+        m = { attachment: true, index: false, out_path: cover, ref: src }
+        manifest["#{ident}:index.html"] = m
+        one_doc_collection? and
+          add_cover_one_doc_coll(manifest, sectionsplit_manifest, ident, m)
+      end
+
+      def add_cover_one_doc_coll(manifest, sectionsplit_manifest, key, entry)
+        idx = File.join(File.dirname(sectionsplit_manifest.file), "index.html")
+        FileUtils.cp entry[:ref], idx
+        manifest["#{key}:index1.html"] =
+          entry.merge(out_path: "index.html", ref: idx)
       end
 
       def one_doc_collection?
-        return false
         docs = 0
         @files.each_value do |v|
           v[:attachment] and next
           v[:presentationxml] and next
           docs += 1
         end
-        docs > 1
+        docs <= 1
       end
 
       def add_section_split_attachments(manifest, ident)
