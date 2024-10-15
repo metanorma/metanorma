@@ -41,7 +41,6 @@ module Metanorma
       end
 
       def one_doc_collection?
-        return false
         docs = 0
         @files.each_value do |v|
           v[:attachment] and next

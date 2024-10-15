@@ -588,7 +588,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    xit "YAML collection with single document sectionsplit" do
+    it "YAML collection with single document sectionsplit" do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_sectionsplit_solo.yml"
@@ -604,7 +604,7 @@ RSpec.describe Metanorma::Collection do
       )
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
-      expect(File.exist?("#{OUTPATH}/ISO_17301-1_2016_index.html")).to be false
+      expect(File.exist?("#{OUTPATH}/ISO_17301-1_2016_index.html")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO Collection 1"
@@ -621,7 +621,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
         .to include %(This document is updated in <b>** Unresolved reference to document ISO 17301-1:2016/Amd.1:2017 from eref</b>.</p>)
       expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
-        .to include %(This document uses schemas E0/A0, E1/A1 and E2/A2.)
+        .to include %(This document uses schemas E0/A0, E1/A1 and express-schema/E2.)
       expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
         .to include %(This document is also unrelated to <a href="dummy.html#what">)
       FileUtils.rm_rf of
