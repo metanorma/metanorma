@@ -54,6 +54,8 @@ module Metanorma
       @final = config.final_content
       @manifest = ::Metanorma::Collection::Manifest
         .new(config.manifest, self, @dirname) # feeds initialize_directives
+      @format = config.format
+      @format&.empty? and @format = nil
     end
 
     def initialize_directives
@@ -88,7 +90,9 @@ module Metanorma
     end
 
     def render(opts)
-      opts[:format].nil? || opts[:format].empty? and opts[:format] = [:html]
+      if opts[:format].nil? || opts[:format].empty?
+        opts[:format] = @format || [:html]
+      end
       opts[:log] = @log
       opts[:flavor] = @flavor
       ::Metanorma::Collection::Renderer.render self, opts
