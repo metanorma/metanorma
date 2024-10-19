@@ -7815,7 +7815,41 @@ The standard uncertainty of this estimate is <semantic__stem type="MathML" block
 <semantic__index-xref also="false"><semantic__primary>uncertainty</semantic__primary><semantic__secondary>definition of the term</semantic__secondary><semantic__target>uncertainty of measurement</semantic__target></semantic__index-xref>
 <semantic__index-xref also="false"><semantic__primary>variance</semantic__primary><semantic__secondary>analysis of</semantic__secondary><semantic__target>ANOVA</semantic__target></semantic__index-xref></semantic__p>
 </semantic__indexsect>
-</semantic__iso-standard></source></metanorma><render><preprocess-xslt format="html">
+</semantic__iso-standard></source></metanorma><render>
+               <preprocess-xslt format="presentation">
+                  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+                     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
+                     <xsl:template match="@* | node()">
+                        <xsl:copy>
+                           <xsl:apply-templates select="@* | node()"/>
+                        </xsl:copy>
+                     </xsl:template>
+                     <xsl:template match="*[local-name() = 'passthrough']">
+                        <xsl:if test="contains(@formats,',presentation,')">
+                           <xsl:copy>
+                              <xsl:apply-templates select="@* | node()"/>
+                           </xsl:copy>
+                        </xsl:if>
+                     </xsl:template>
+                  </xsl:stylesheet>
+               </preprocess-xslt>
+               <preprocess-xslt format="presentation">
+                  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+                     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
+                     <xsl:template match="@* | node()">
+                        <xsl:copy>
+                           <xsl:apply-templates select="@* | node()"/>
+                        </xsl:copy>
+                     </xsl:template>
+                     <xsl:template match="*[local-name() = 'math-with-linebreak']">
+
+</xsl:template>
+                     <xsl:template match="*[local-name() = 'math-no-linebreak']">
+                        <xsl:apply-templates select="node()"/>
+                     </xsl:template>
+                  </xsl:stylesheet>
+               </preprocess-xslt>
+<preprocess-xslt format="html">
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
   <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
   <xsl:template match="@* | node()"><xsl:copy><xsl:apply-templates select="@* | node()"/></xsl:copy></xsl:template>
