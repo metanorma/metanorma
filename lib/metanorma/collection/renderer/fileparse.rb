@@ -213,7 +213,7 @@ ret
         a = eref.at(ns(".//locality[@type = 'anchor']/referenceFrom")) or return
         suffix = file
         @files.get(file) && p = @files.get(file, :parentid) and
-          suffix = "#{p}_#{suffix}"
+          suffix = "#{Metanorma::Utils::to_ncname p}_#{suffix}"
         existing = a.text
 =begin
         anchor = existing
@@ -282,8 +282,9 @@ anchor = suffix_anchor(existing, file, existing, suffix)
       def suffix_anchor(ref, docid, prefix, suffix)
         @files.url?(docid) and return ref
         @ncnames[prefix] ||= Metanorma::Utils::to_ncname(prefix)
-        @ncnames[suffix] ||= Metanorma::Utils::to_ncname(suffix)
-        "#{@ncnames[prefix]}_#{@ncnames[suffix]}"
+        #@ncnames[suffix] ||= Metanorma::Utils::to_ncname(suffix)
+        #"#{@ncnames[prefix]}_#{@ncnames[suffix]}"
+        "#{@ncnames[prefix]}_#{suffix}"
       end
 
       #OLD
