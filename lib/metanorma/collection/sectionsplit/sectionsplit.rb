@@ -35,9 +35,13 @@ module Metanorma
       def sectionsplit
         xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
+        empty = empty_doc(xml)
+        empty1 = empty_attachments(empty)
         SPLITSECTIONS.each_with_object([]) do |n, ret|
           conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
-            ret << sectionfile(xml, emptydoc(xml, ret.size),
+            ret << sectionfile(xml, 
+                               #emptydoc(xml, ret.size), 
+                               ret.empty? ? empty : empty1,
                                "#{@base}.#{ret.size}", s, n[1])
           end
         end
@@ -108,6 +112,24 @@ module Metanorma
              "//indexsect | //colophon"),
         ).each(&:remove)
         ordinal.zero? or out.xpath(ns("//metanorma-ext//attachment | " \
+                      "//semantic__metanorma-ext//semantic__attachment"))
+          .each(&:remove) # keep only one copy of attachments
+        out
+      end
+
+      def empty_doc(xml)
+        out = xml.dup
+        out.xpath(
+          ns("//preface | //sections | //annex | //bibliography/clause | " \
+             "//bibliography/references[not(@hidden = 'true')] | " \
+             "//indexsect | //colophon"),
+        ).each(&:remove)
+        out
+      end
+
+      def empty_attachments(xml)
+        out = xml.dup
+        out.xpath(ns("//metanorma-ext//attachment | " \
                       "//semantic__metanorma-ext//semantic__attachment"))
           .each(&:remove) # keep only one copy of attachments
         out

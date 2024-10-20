@@ -19,6 +19,7 @@ module Metanorma
         @nested || sso or
           Metanorma::Collection::XrefProcess::xref_process(xml, xml, nil, docid,
                                                            @isodoc)
+        @ncnames = {}
         @nested or update_indirect_refs_to_docs(xml, docid, internal_refs)
         @files.add_document_suffix(docid, xml)
         @nested or update_sectionsplit_refs_to_docs(xml, internal_refs)
@@ -135,7 +136,6 @@ module Metanorma
       end
 
       def update_direct_refs_to_docs_prep(docxml)
-        @ncnames = {}
         [Util::gather_citeases(docxml), Util::gather_bibitemids(docxml)]
       end
 
@@ -156,10 +156,11 @@ module Metanorma
       # to an anchor eref (direct link)
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
         bibitems, erefs = update_indirect_refs_to_docs_prep(docxml)
+        doc_suffix = docxml.root["document_suffix"]
+        doc_type = docxml.root["type"]
         internal_refs.each do |schema, ids|
-          s = "#{schema}_"
           ids.each do |id, file|
-            k = indirect_ref_key(s, schema, id, docxml)
+            k = indirect_ref_key(schema, id, doc_suffix, doc_type)
             update_indirect_refs_to_docs1(docxml, k, file, bibitems, erefs)
           end
         end
@@ -170,12 +171,12 @@ module Metanorma
         [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml)]
       end
 
-      def indirect_ref_key(schema_, schema, id, docxml)
-        /^#{schema_}/.match?(id) and return id
-        ret = schema_ + id
-        suffix = docxml.root["document_suffix"] or return ret
-        (k = docxml.root["type"]) && k != schema or return ret
-        "#{ret}_#{suffix}"
+      def indirect_ref_key(schema, id, doc_suffix, doc_type)
+        /^#{schema}_/.match?(id) and return id
+        ret = "#{schema}_#{id}"
+        doc_suffix or return ret
+        doc_type && doc_type != schema or return ret
+        "#{ret}_#{doc_suffix}"
       end
 
       #OLD
@@ -202,9 +203,18 @@ module Metanorma
         @files.get(file) && p = @files.get(file, :parentid) and
           suffix = "#{p}_#{suffix}"
         existing = a.text
+=begin
         anchor = existing
         @files.url?(file) or
           anchor = Metanorma::Utils::to_ncname("#{anchor}_#{suffix}")
+=end
+
+
+anchor = suffix_anchor(existing, file, existing, suffix)
+
+
+
+
         @updated_anchors[existing] or a.children = anchor
         @updated_anchors[anchor] = true
       end
@@ -219,25 +229,29 @@ module Metanorma
       # update crossrefences to other documents, to include
       # disambiguating document suffix on id
       def update_anchors(bib, docid, erefs)
+        f = @files.get(docid)
         erefs.each do |e|
-          if @files.get(docid) then update_anchor_loc(bib, e, docid)
-          else
-            msg = "<strong>** Unresolved reference to document #{docid} " \
-                  "from eref</strong>"
-            e << msg
-            strip_eref(e)
-            @log&.add("Cross-References", e, msg)
+          if f then update_anchor_loc(bib, e, docid, f[:anchors])
+          else error_anchor(e, docid)
           end
         end
       end
 
-      def update_anchor_loc(bib, eref, docid)
+      def error_anchor(eref, docid)
+            msg = "<strong>** Unresolved reference to document #{docid} " \
+                  "from eref</strong>"
+            eref << msg
+            strip_eref(eref)
+            @log&.add("Cross-References", eref, msg)
+      end
+
+      def update_anchor_loc(bib, eref, docid, anchors)
         loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
           return update_anchor_create_loc(bib, eref, docid)
-        a = @files.get(docid, :anchors) or return
+        anchors or return
         ref = loc.elements&.first or return
-        anchor = suffix_anchor(ref.text, docid)
-        a.values.detect { |x| x.value?(anchor) } or return
+        anchor = suffix_anchor(ref.text, docid, docid, ref.text)
+        anchors.values.detect { |x| x.value?(anchor) } or return
         ref.content = anchor
       end
 
@@ -253,10 +267,11 @@ module Metanorma
         ref.content = anchor
       end
 
-      def suffix_anchor(ref, docid)
-        @ncnames[docid] ||= "#{Metanorma::Utils::to_ncname(docid)}_"
-        @files.url?(docid) or return ref
-        @ncnames[docid] + ref
+      def suffix_anchor(ref, docid, prefix, suffix)
+        @files.url?(docid) and return ref
+        @ncnames[prefix] ||= Metanorma::Utils::to_ncname(prefix)
+        @ncnames[suffix] ||= Metanorma::Utils::to_ncname(suffix)
+        "#{@ncnames[prefix]}_#{@ncnames[suffix]}"
       end
 
       #OLD
