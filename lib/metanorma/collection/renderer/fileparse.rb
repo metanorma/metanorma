@@ -158,6 +158,7 @@ module Metanorma
         bibitems, erefs = update_indirect_refs_to_docs_prep(docxml)
         doc_suffix = docxml.root["document_suffix"]
         doc_type = docxml.root["type"]
+        @indirect_keys ||= {}
         internal_refs.each do |schema, ids|
           ids.each do |id, file|
             k = indirect_ref_key(schema, id, doc_suffix, doc_type)
@@ -172,6 +173,17 @@ module Metanorma
       end
 
       def indirect_ref_key(schema, id, doc_suffix, doc_type)
+        /^#{schema}_/.match?(id) and return id
+        key = [schema, id, doc_suffix, doc_type].join("::")
+        x = @indirect_keys[key] and return x
+        ret = "#{schema}_#{id}"
+        doc_suffix && doc_type && doc_type != schema and
+          ret = "#{ret}_#{doc_suffix}"
+@indirect_keys[key] = ret
+ret
+      end
+
+      def indirect_ref_key2(schema, id, doc_suffix, doc_type)
         /^#{schema}_/.match?(id) and return id
         ret = "#{schema}_#{id}"
         doc_suffix or return ret
@@ -231,7 +243,7 @@ anchor = suffix_anchor(existing, file, existing, suffix)
       def update_anchors(bib, docid, erefs)
         f = @files.get(docid)
         erefs.each do |e|
-          if f then update_anchor_loc(bib, e, docid, f[:anchors])
+          if f then update_anchor_loc(bib, e, docid, f)
           else error_anchor(e, docid)
           end
         end
@@ -245,10 +257,10 @@ anchor = suffix_anchor(existing, file, existing, suffix)
             @log&.add("Cross-References", eref, msg)
       end
 
-      def update_anchor_loc(bib, eref, docid, anchors)
+      def update_anchor_loc(bib, eref, docid, file_entry)
         loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
           return update_anchor_create_loc(bib, eref, docid)
-        anchors or return
+        anchors = file_entry[:anchors] or return
         ref = loc.elements&.first or return
         anchor = suffix_anchor(ref.text, docid, docid, ref.text)
         anchors.values.detect { |x| x.value?(anchor) } or return
