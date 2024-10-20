@@ -281,10 +281,9 @@ anchor = suffix_anchor(existing, file, existing, suffix)
 
       def suffix_anchor(ref, docid, prefix, suffix)
         @files.url?(docid) and return ref
-        @ncnames[prefix] ||= Metanorma::Utils::to_ncname(prefix)
-        #@ncnames[suffix] ||= Metanorma::Utils::to_ncname(suffix)
-        #"#{@ncnames[prefix]}_#{@ncnames[suffix]}"
-        "#{@ncnames[prefix]}_#{suffix}"
+        k = "#{prefix}_#{suffix}"
+        @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
+        @ncnames[k]
       end
 
       #OLD
