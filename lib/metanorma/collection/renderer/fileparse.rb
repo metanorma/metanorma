@@ -244,30 +244,29 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
       # update crossrefences to other documents, to include
       # disambiguating document suffix on id
       def update_anchors(bib, docid, ncname_docid, erefs)
-        f = @files.get(docid)
+        f = @files.get(docid) or return error_anchor
         url = @files.url?(docid)
         erefs.each do |e|
-          if f
-            if loc = e.at(".//xmlns:locality[@type = 'anchor']")
-            update_anchor_loc(loc, f, url, ncname_docid )
-            else update_anchor_create_loc(bib, e, docid) end
-          else error_anchor(e, docid)
+          if loc = e.at(".//xmlns:locality[@type = 'anchor']")
+            e = loc.elements&.first and
+              update_anchor_loc(e, f, url, ncname_docid )
+          else update_anchor_create_loc(bib, e, docid)
           end
         end
       end
 
-      def error_anchor(eref, docid)
+      def error_anchor(erefs, docid)
+        erefs.each do |e|
             msg = "<strong>** Unresolved reference to document #{docid} " \
                   "from eref</strong>"
-            eref << msg
-            strip_eref(eref)
-            @log&.add("Cross-References", eref, msg)
+            e << msg
+            strip_eref(e)
+            @log&.add("Cross-References", e, msg)
+        end
       end
 j
-      def update_anchor_loc(loc, file_entry, url, ncname_docid)
-        ref = loc.elements&.first&.text or return
-        anchor = url ? ref : "#{ncname_docid}_#{ref}" #suffix_anchor_direct(docid, ref.text)
-        # anchors.values.detect { |x| x.value?(anchor) } or return
+      def update_anchor_loc(ref, file_entry, url, ncname_docid)
+          anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}" #suffix_anchor_direct(docid, ref.text)
         file_entry.dig(:anchors_lookup, anchor) or return
         ref.content = anchor
       end
@@ -281,6 +280,7 @@ j
         a = @files.get(docid, :anchors) or return
         a.inject([]) { |m, (_, x)| m + x.values }
           .include?(anchor) or return
+        # anchors.values.detect { |x| x.value?(anchor) } or return
         ref.content = anchor
       end
 
