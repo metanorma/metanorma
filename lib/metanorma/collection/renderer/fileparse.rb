@@ -19,6 +19,7 @@ module Metanorma
         @nested || sso or
           Metanorma::Collection::XrefProcess::xref_process(xml, xml, nil, docid,
                                                            @isodoc)
+        @ncnames = {}
         @nested or update_indirect_refs_to_docs(xml, docid, internal_refs)
         @files.add_document_suffix(docid, xml)
         @nested or update_sectionsplit_refs_to_docs(xml, internal_refs)
@@ -130,12 +131,12 @@ module Metanorma
           strip_unresolved_repo_erefs(identifier, docid, erefs1, b) or next
           update_bibitem(b, identifier)
           docid = docid_to_citeas(b) or next
-          erefs[docid] and update_anchors(b, docid, erefs[docid])
+          erefs[docid] and
+            update_anchors(b, docid, Metanorma::Utils::to_ncname(docid), erefs[docid])
         end
       end
 
       def update_direct_refs_to_docs_prep(docxml)
-        @ncnames = {}
         [Util::gather_citeases(docxml), Util::gather_bibitemids(docxml)]
       end
 
@@ -155,27 +156,42 @@ module Metanorma
       # Resolve erefs to a container of ids in another doc,
       # to an anchor eref (direct link)
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
-        bibitems, erefs = update_indirect_refs_to_docs_prep(docxml)
+        bibitems, erefs, doc_suffix, doc_type =
+          update_indirect_refs_to_docs_prep(docxml)
+        url = {}
         internal_refs.each do |schema, ids|
-          s = "#{schema}_"
           ids.each do |id, file|
-            k = indirect_ref_key(s, schema, id, docxml)
-            update_indirect_refs_to_docs1(docxml, k, file, bibitems, erefs)
+            url.has_key?(file) or url[file] = @files.url?(file)
+            k = indirect_ref_key(schema, id, doc_suffix, doc_type)
+            update_indirect_refs_to_docs1(url[file], k, file, bibitems, erefs)
           end
         end
       end
 
       def update_indirect_refs_to_docs_prep(docxml)
         @updated_anchors = {}
-        [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml)]
+        @indirect_keys ||= {}
+        [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml),
+        docxml.root["document_suffix"], docxml.root["type"]]
       end
 
-      def indirect_ref_key(schema_, schema, id, docxml)
-        /^#{schema_}/.match?(id) and return id
-        ret = schema_ + id
-        suffix = docxml.root["document_suffix"] or return ret
-        (k = docxml.root["type"]) && k != schema or return ret
-        "#{ret}_#{suffix}"
+      def indirect_ref_key(schema, id, doc_suffix, doc_type)
+        /^#{schema}_/.match?(id) and return id
+        key = [schema, id, doc_suffix, doc_type].join("::")
+        x = @indirect_keys[key] and return x
+        ret = "#{schema}_#{id}"
+        doc_suffix && doc_type && doc_type != schema and
+          ret = "#{ret}_#{doc_suffix}"
+@indirect_keys[key] = ret
+ret
+      end
+
+      def indirect_ref_key2(schema, id, doc_suffix, doc_type)
+        /^#{schema}_/.match?(id) and return id
+        ret = "#{schema}_#{id}"
+        doc_suffix or return ret
+        doc_type && doc_type != schema or return ret
+        "#{ret}_#{doc_suffix}"
       end
 
       #OLD
@@ -188,23 +204,32 @@ module Metanorma
         ret
       end
 
-      def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
+      def update_indirect_refs_to_docs1(url, key, file, bibitems, erefs)
         erefs[key]&.each do |e|
           e["citeas"] = file
-          update_indirect_refs_to_docs_anchor(e, file)
+          update_indirect_refs_to_docs_anchor(e, file, url)
         end
         update_indirect_refs_to_docs_docid(bibitems[key], file)
       end
 
-      def update_indirect_refs_to_docs_anchor(eref, file)
+      def update_indirect_refs_to_docs_anchor(eref, file, url)
         a = eref.at(ns(".//locality[@type = 'anchor']/referenceFrom")) or return
         suffix = file
         @files.get(file) && p = @files.get(file, :parentid) and
-          suffix = "#{p}_#{suffix}"
+          suffix = "#{Metanorma::Utils::to_ncname p}_#{suffix}"
         existing = a.text
+=begin
         anchor = existing
         @files.url?(file) or
           anchor = Metanorma::Utils::to_ncname("#{anchor}_#{suffix}")
+=end
+
+
+anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
+
+
+
+
         @updated_anchors[existing] or a.children = anchor
         @updated_anchors[anchor] = true
       end
@@ -218,26 +243,91 @@ module Metanorma
 
       # update crossrefences to other documents, to include
       # disambiguating document suffix on id
-      def update_anchors(bib, docid, erefs)
+      def update_anchors(bib, docid, ncname_docid, erefs)
+        #f = @files.get(docid) or return error_anchor(erefs, docid)
+        @files.get(docid) or return error_anchor(erefs, docid)
+        url = @files.url?(docid)
         erefs.each do |e|
-          if @files.get(docid) then update_anchor_loc(bib, e, docid)
-          else
-            msg = "<strong>** Unresolved reference to document #{docid} " \
-                  "from eref</strong>"
-            e << msg
-            strip_eref(e)
-            @log&.add("Cross-References", e, msg)
+          iter(e, url, ncname_docid, docid, bib)
+          next
+          if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+            f[:anchors] or next
+            anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
+            f.dig(:anchors_lookup, anchor) and ref.content = anchor
+          else update_anchor_create_loc(bib, e, docid)
           end
         end
       end
 
-      def update_anchor_loc(bib, eref, docid)
-        loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
-          return update_anchor_create_loc(bib, eref, docid)
-        a = @files.get(docid, :anchors) or return
-        ref = loc.elements&.first or return
-        anchor = suffix_anchor(ref.text, docid)
-        a.values.detect { |x| x.value?(anchor) } or return
+      def update_anchors(bib, docid, ncname_docid, erefs)
+        @files.get(docid) or return error_anchor(erefs, docid)
+        if @files.url?(docid)
+        erefs.each do |e|
+          iter01(e, ncname_docid, docid, bib)
+        end
+        else
+        erefs.each do |e|
+          iter02(e, ncname_docid, docid, bib)
+        end
+        end
+        return
+          if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+            f[:anchors] or return
+            anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
+            f.dig(:anchors_lookup, anchor) and ref.content = anchor
+          else update_anchor_create_loc(bib, e, docid)
+          end
+      end
+
+
+      def iter(e, url, ncname_docid, docid, bib)
+        if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+          @files.get(docid).key?(:anchors) or return
+            anchor = iter1(url, ref, ncname_docid) #url ? ref.text : "#{ncname_docid}_#{ref.text}"
+            @files.get(docid,:anchors_lookup)&.dig(anchor) and ref.content = anchor
+          else update_anchor_create_loc(bib, e, docid)
+          end
+      end
+
+      def iter01(e, ncname_docid, docid, bib)
+        if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+          @files.get(docid).key?(:anchors) or return
+            @files.get(docid,:anchors_lookup)&.dig(ref.text) and ref.content = ref.text
+          else update_anchor_create_loc(bib, e, docid)
+          end
+      end
+
+      def iter02(e, ncname_docid, docid, bib)
+        if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+          @files.get(docid).key?(:anchors) or return
+            anchor = "#{ncname_docid}_#{ref.text}"
+            @files.get(docid,:anchors_lookup)&.dig(anchor) and ref.content = anchor
+          else update_anchor_create_loc(bib, e, docid)
+          end
+      end
+
+      def iter1(url, ref, ncname_docid)
+        url ? ref.text : "#{ncname_docid}_#{ref.text}"
+      end
+
+      def error_anchor(erefs, docid)
+        erefs.each do |e|
+          msg = "<strong>** Unresolved reference to document #{docid} " \
+                  "from eref</strong>"
+            e << msg
+            strip_eref(e)
+            @log&.add("Cross-References", e, msg)
+        end
+      end
+j
+      def update_anchor_loc(ref, file_entry, url, ncname_docid)
+          anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}" #suffix_anchor_direct(docid, ref.text)
+        file_entry.dig(:anchors_lookup, anchor) or return
         ref.content = anchor
       end
 
@@ -250,13 +340,28 @@ module Metanorma
         a = @files.get(docid, :anchors) or return
         a.inject([]) { |m, (_, x)| m + x.values }
           .include?(anchor) or return
+        # anchors.values.detect { |x| x.value?(anchor) } or return
         ref.content = anchor
       end
 
-      def suffix_anchor(ref, docid)
-        @ncnames[docid] ||= "#{Metanorma::Utils::to_ncname(docid)}_"
-        @files.url?(docid) or return ref
-        @ncnames[docid] + ref
+      # for efficiency, assume suffix is fine for NCName,
+      # and NCName is done already for prefix
+      def suffix_anchor_direct(prefix, suffix)
+        @ncnames[prefix] ||= Metanorma::Utils::to_ncname(prefix)
+        "#{@ncnames[prefix]}_#{suffix}"
+      end
+
+      # encode both prefix and suffix to NCName
+      def suffix_anchor_indirect(prefix, suffix)
+        k = "#{prefix}_#{suffix}"
+        @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
+      end
+
+       def suffix_anchor(prefix, suffix)
+        #@files.url?(docid) and return ref
+        k = "#{prefix}_#{suffix}"
+        @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
+        #@ncnames[k]
       end
 
       #OLD
