@@ -247,9 +247,10 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         f = @files.get(docid) or return error_anchor
         url = @files.url?(docid)
         erefs.each do |e|
-          if loc = e.at(".//xmlns:locality[@type = 'anchor']")
-            e = loc.elements&.first and
-              update_anchor_loc(e, f, url, ncname_docid )
+          if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+            anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
+            f.dig(:anchors_lookup, anchor) and ref.content = anchor
           else update_anchor_create_loc(bib, e, docid)
           end
         end
