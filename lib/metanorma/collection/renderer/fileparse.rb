@@ -263,10 +263,11 @@ anchor = url ? existing : suffix_anchor(existing, suffix)
       def update_anchor_loc(bib, eref, docid, file_entry, url)
         loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
           return update_anchor_create_loc(bib, eref, docid)
-        anchors = file_entry[:anchors] or return
+        #anchors = file_entry[:anchors] or return
         ref = loc.elements&.first or return
         anchor = url ? ref.text : suffix_anchor(docid, ref.text)
-        anchors.values.detect { |x| x.value?(anchor) } or return
+        # anchors.values.detect { |x| x.value?(anchor) } or return
+        file_entry.dig(:anchors_lookup, anchor) or return
         ref.content = anchor
       end
 
@@ -286,7 +287,7 @@ anchor = url ? existing : suffix_anchor(existing, suffix)
         #@files.url?(docid) and return ref
         k = "#{prefix}_#{suffix}"
         @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
-        @ncnames[k]
+        #@ncnames[k]
       end
 
       #OLD
