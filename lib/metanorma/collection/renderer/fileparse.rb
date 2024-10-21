@@ -260,6 +260,28 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         end
       end
 
+      def update_anchors(bib, docid, ncname_docid, erefs)
+        @files.get(docid) or return error_anchor(erefs, docid)
+        if @files.url?(docid)
+        erefs.each do |e|
+          iter01(e, ncname_docid, docid, bib)
+        end
+        else
+        erefs.each do |e|
+          iter02(e, url, ncname_docid, docid, bib)
+        end
+        end
+          next
+          if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+            f[:anchors] or next
+            anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
+            f.dig(:anchors_lookup, anchor) and ref.content = anchor
+          else update_anchor_create_loc(bib, e, docid)
+          end
+      end
+
+
       def iter(e, url, ncname_docid, docid, bib)
         if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
               #update_anchor_loc(ref, f, url, ncname_docid )
