@@ -155,21 +155,22 @@ module Metanorma
       # Resolve erefs to a container of ids in another doc,
       # to an anchor eref (direct link)
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
-        bibitems, erefs = update_indirect_refs_to_docs_prep(docxml)
-        doc_suffix = docxml.root["document_suffix"]
-        doc_type = docxml.root["type"]
+        bibitems, erefs, doc_suffix, doc_type =
+          update_indirect_refs_to_docs_prep(docxml)
         @indirect_keys ||= {}
         internal_refs.each do |schema, ids|
           ids.each do |id, file|
+            url = @files.url?(file)
             k = indirect_ref_key(schema, id, doc_suffix, doc_type)
-            update_indirect_refs_to_docs1(docxml, k, file, bibitems, erefs)
+            update_indirect_refs_to_docs1(url, k, file, bibitems, erefs)
           end
         end
       end
 
       def update_indirect_refs_to_docs_prep(docxml)
         @updated_anchors = {}
-        [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml)]
+        [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml),
+        docxml.root["document_suffix"], docxml.root["type"]]
       end
 
       def indirect_ref_key(schema, id, doc_suffix, doc_type)
@@ -201,8 +202,7 @@ ret
         ret
       end
 
-      def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
-        url = @files.url?(file)
+      def update_indirect_refs_to_docs1(url, key, file, bibitems, erefs)
         erefs[key]&.each do |e|
           e["citeas"] = file
           update_indirect_refs_to_docs_anchor(e, file, url)
