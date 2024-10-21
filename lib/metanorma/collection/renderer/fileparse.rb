@@ -202,14 +202,15 @@ ret
       end
 
       def update_indirect_refs_to_docs1(_docxml, key, file, bibitems, erefs)
+        url = @files.url?(file)
         erefs[key]&.each do |e|
           e["citeas"] = file
-          update_indirect_refs_to_docs_anchor(e, file)
+          update_indirect_refs_to_docs_anchor(e, file, url)
         end
         update_indirect_refs_to_docs_docid(bibitems[key], file)
       end
 
-      def update_indirect_refs_to_docs_anchor(eref, file)
+      def update_indirect_refs_to_docs_anchor(eref, file, url)
         a = eref.at(ns(".//locality[@type = 'anchor']/referenceFrom")) or return
         suffix = file
         @files.get(file) && p = @files.get(file, :parentid) and
@@ -222,7 +223,7 @@ ret
 =end
 
 
-anchor = suffix_anchor(existing, file, existing, suffix)
+anchor = url ? existing : suffix_anchor(existing, suffix)
 
 
 
@@ -242,8 +243,9 @@ anchor = suffix_anchor(existing, file, existing, suffix)
       # disambiguating document suffix on id
       def update_anchors(bib, docid, erefs)
         f = @files.get(docid)
+        url = @files.url?(docid)
         erefs.each do |e|
-          if f then update_anchor_loc(bib, e, docid, f)
+          if f then update_anchor_loc(bib, e, docid, f, url)
           else error_anchor(e, docid)
           end
         end
@@ -257,12 +259,12 @@ anchor = suffix_anchor(existing, file, existing, suffix)
             @log&.add("Cross-References", eref, msg)
       end
 
-      def update_anchor_loc(bib, eref, docid, file_entry)
+      def update_anchor_loc(bib, eref, docid, file_entry, url)
         loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
           return update_anchor_create_loc(bib, eref, docid)
         anchors = file_entry[:anchors] or return
         ref = loc.elements&.first or return
-        anchor = suffix_anchor(ref.text, docid, docid, ref.text)
+        anchor = url ? ref.text : suffix_anchor(docid, ref.text)
         anchors.values.detect { |x| x.value?(anchor) } or return
         ref.content = anchor
       end
@@ -279,8 +281,8 @@ anchor = suffix_anchor(existing, file, existing, suffix)
         ref.content = anchor
       end
 
-      def suffix_anchor(ref, docid, prefix, suffix)
-        @files.url?(docid) and return ref
+      def suffix_anchor(prefix, suffix)
+        #@files.url?(docid) and return ref
         k = "#{prefix}_#{suffix}"
         @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
         @ncnames[k]
