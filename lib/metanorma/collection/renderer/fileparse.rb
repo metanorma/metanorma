@@ -263,11 +263,34 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
       def iter(e, url, ncname_docid, docid, bib)
         if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
               #update_anchor_loc(ref, f, url, ncname_docid )
-             @files.get(docid, :anchors) or return
-            anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
+          @files.get(docid).key?(:anchors) or return
+            anchor = iter1(url, ref, ncname_docid) #url ? ref.text : "#{ncname_docid}_#{ref.text}"
             @files.get(docid,:anchors_lookup)&.dig(anchor) and ref.content = anchor
           else update_anchor_create_loc(bib, e, docid)
           end
+      end
+
+      def iter01(e, ncname_docid, docid, bib)
+        if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+          @files.get(docid).key?(:anchors) or return
+            @files.get(docid,:anchors_lookup)&.dig(ref.text) and ref.content = ref.text
+          else update_anchor_create_loc(bib, e, docid)
+          end
+      end
+
+      def iter02(e, ncname_docid, docid, bib)
+        if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+              #update_anchor_loc(ref, f, url, ncname_docid )
+          @files.get(docid).key?(:anchors) or return
+            anchor = "#{ncname_docid}_#{ref.text}"
+            @files.get(docid,:anchors_lookup)&.dig(anchor) and ref.content = anchor
+          else update_anchor_create_loc(bib, e, docid)
+          end
+      end
+
+      def iter1(url, ref, ncname_docid)
+        url ? ref.text : "#{ncname_docid}_#{ref.text}"
       end
 
       def error_anchor(erefs, docid)
