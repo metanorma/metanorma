@@ -244,10 +244,11 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
       # update crossrefences to other documents, to include
       # disambiguating document suffix on id
       def update_anchors(bib, docid, ncname_docid, erefs)
-        f = @files.get(docid) or return error_anchor(erefs, docid)
+        #f = @files.get(docid) or return error_anchor(erefs, docid)
+        @files.get(docid) or return error_anchor(erefs, docid)
         url = @files.url?(docid)
         erefs.each do |e|
-          iter(e, f, url, ncname_docid, docid, bib)
+          iter(e, url, ncname_docid, docid, bib)
           next
           if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
               #update_anchor_loc(ref, f, url, ncname_docid )
@@ -259,12 +260,12 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         end
       end
 
-      def iter(e, f, url, ncname_docid, docid, bib)
+      def iter(e, url, ncname_docid, docid, bib)
         if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
               #update_anchor_loc(ref, f, url, ncname_docid )
-            f[:anchors] or return
+             @files.get(docid, :anchors) or return
             anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
-            f.dig(:anchors_lookup, anchor) and ref.content = anchor
+            @files.get(docid,:anchors_lookup)&.dig(anchor) and ref.content = anchor
           else update_anchor_create_loc(bib, e, docid)
           end
       end
