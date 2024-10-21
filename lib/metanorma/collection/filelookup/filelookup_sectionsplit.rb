@@ -1,5 +1,5 @@
 require_relative "../sectionsplit/sectionsplit"
-require "concurrent-ruby"
+#require "concurrent-ruby"
 
 module Metanorma
   class Collection
@@ -17,10 +17,10 @@ module Metanorma
 
       def process_section_split_instance(key, manifest)
         s, sectionsplit_manifest = sectionsplit(key)
-        section_split_instance_threads(s, manifest, key)
-        #s.each_with_index do |f1, i|
-          #add_section_split_instance(f1, manifest, key, i)
-        #end
+        #section_split_instance_threads(s, manifest, key)
+        s.each_with_index do |f1, i|
+          add_section_split_instance(f1, manifest, key, i)
+        end
         a = add_section_split_attachments(sectionsplit_manifest, key) and
           manifest["#{key}:attachments"] = a
         add_section_split_cover(manifest, sectionsplit_manifest, key)
@@ -92,10 +92,8 @@ pool.wait_for_termination
             sectionsplit_output: true, indirect_key: @sectionsplit.key,
             bibdata: @files[key][:bibdata], ref: presfile }
         m[:bare] = true unless idx.zero?
-        @mutex.synchronize do
         manifest[newkey] = m
         @files_to_delete << file[:url]
-        end
       end
 
       def add_section_split_instance_prep(file, key)

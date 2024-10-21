@@ -131,7 +131,8 @@ module Metanorma
           strip_unresolved_repo_erefs(identifier, docid, erefs1, b) or next
           update_bibitem(b, identifier)
           docid = docid_to_citeas(b) or next
-          erefs[docid] and update_anchors(b, docid, erefs[docid])
+          erefs[docid] and
+            update_anchors(b, docid, Metanorma::Utils::to_ncname(docid), erefs[docid])
         end
       end
 
@@ -242,11 +243,12 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
 
       # update crossrefences to other documents, to include
       # disambiguating document suffix on id
-      def update_anchors(bib, docid, erefs)
+      def update_anchors(bib, docid, ncname_docid, erefs)
         f = @files.get(docid)
         url = @files.url?(docid)
         erefs.each do |e|
-          if f then update_anchor_loc(bib, e, docid, f, url)
+          if f then update_anchor_loc(bib, e, docid, f,
+              { url: url, ncname_docid: ncname_docid })
           else error_anchor(e, docid)
           end
         end
@@ -259,13 +261,13 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
             strip_eref(eref)
             @log&.add("Cross-References", eref, msg)
       end
-
-      def update_anchor_loc(bib, eref, docid, file_entry, url)
+j
+      def update_anchor_loc(bib, eref, docid, file_entry, opt)
         loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
           return update_anchor_create_loc(bib, eref, docid)
         #anchors = file_entry[:anchors] or return
         ref = loc.elements&.first or return
-        anchor = url ? ref.text : suffix_anchor_direct(docid, ref.text)
+        anchor = opt[:url] ? ref.text : "#{opt[:ncname_docid]}_#{ref.text}" #suffix_anchor_direct(docid, ref.text)
         # anchors.values.detect { |x| x.value?(anchor) } or return
         file_entry.dig(:anchors_lookup, anchor) or return
         ref.content = anchor
@@ -283,7 +285,8 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         ref.content = anchor
       end
 
-      # for efficiency, assume suffix is fine for NCName
+      # for efficiency, assume suffix is fine for NCName,
+      # and NCName is done already for prefix
       def suffix_anchor_direct(prefix, suffix)
         @ncnames[prefix] ||= Metanorma::Utils::to_ncname(prefix)
         "#{@ncnames[prefix]}_#{suffix}"
