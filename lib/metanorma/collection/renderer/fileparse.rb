@@ -268,7 +268,7 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         end
         else
         erefs.each do |e|
-          iter02(e, url, ncname_docid, docid, bib)
+          iter02(e, ncname_docid, docid, bib)
         end
         end
         return
