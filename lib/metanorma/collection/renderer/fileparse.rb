@@ -157,18 +157,19 @@ module Metanorma
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
         bibitems, erefs, doc_suffix, doc_type =
           update_indirect_refs_to_docs_prep(docxml)
-        @indirect_keys ||= {}
+        url = {}
         internal_refs.each do |schema, ids|
           ids.each do |id, file|
-            url = @files.url?(file)
+            url.has_key?(file) or url[file] = @files.url?(file)
             k = indirect_ref_key(schema, id, doc_suffix, doc_type)
-            update_indirect_refs_to_docs1(url, k, file, bibitems, erefs)
+            update_indirect_refs_to_docs1(url[file], k, file, bibitems, erefs)
           end
         end
       end
 
       def update_indirect_refs_to_docs_prep(docxml)
         @updated_anchors = {}
+        @indirect_keys ||= {}
         [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml),
         docxml.root["document_suffix"], docxml.root["type"]]
       end
