@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 3.1.0"
 
   spec.add_runtime_dependency "asciidoctor"
+  spec.add_runtime_dependency "concurrent-ruby"
   spec.add_runtime_dependency "fontist", ">= 1.14.3"
   spec.add_runtime_dependency "htmlentities"
   spec.add_runtime_dependency "isodoc", ">= 2.6.3"
