@@ -271,10 +271,10 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
           iter02(e, url, ncname_docid, docid, bib)
         end
         end
-          next
+        return
           if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
               #update_anchor_loc(ref, f, url, ncname_docid )
-            f[:anchors] or next
+            f[:anchors] or return
             anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
             f.dig(:anchors_lookup, anchor) and ref.content = anchor
           else update_anchor_create_loc(bib, e, docid)
