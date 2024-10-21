@@ -249,6 +249,7 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         erefs.each do |e|
           if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
               #update_anchor_loc(ref, f, url, ncname_docid )
+            f[:anchors] or next
             anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
             f.dig(:anchors_lookup, anchor) and ref.content = anchor
           else update_anchor_create_loc(bib, e, docid)
@@ -258,7 +259,7 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
 
       def error_anchor(erefs, docid)
         erefs.each do |e|
-            msg = "<strong>** Unresolved reference to document #{docid} " \
+          msg = "<strong>** Unresolved reference to document #{docid} " \
                   "from eref</strong>"
             e << msg
             strip_eref(e)
