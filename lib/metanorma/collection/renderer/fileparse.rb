@@ -224,7 +224,7 @@ ret
 =end
 
 
-anchor = url ? existing : suffix_anchor(existing, suffix)
+anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
 
 
 
@@ -265,7 +265,7 @@ anchor = url ? existing : suffix_anchor(existing, suffix)
           return update_anchor_create_loc(bib, eref, docid)
         #anchors = file_entry[:anchors] or return
         ref = loc.elements&.first or return
-        anchor = url ? ref.text : suffix_anchor(docid, ref.text)
+        anchor = url ? ref.text : suffix_anchor_direct(docid, ref.text)
         # anchors.values.detect { |x| x.value?(anchor) } or return
         file_entry.dig(:anchors_lookup, anchor) or return
         ref.content = anchor
@@ -283,7 +283,19 @@ anchor = url ? existing : suffix_anchor(existing, suffix)
         ref.content = anchor
       end
 
-      def suffix_anchor(prefix, suffix)
+      # for efficiency, assume suffix is fine for NCName
+      def suffix_anchor_direct(prefix, suffix)
+        @ncnames[prefix] ||= Metanorma::Utils::to_ncname(prefix)
+        "#{@ncnames[prefix]}_#{suffix}"
+      end
+
+      # encode both prefix and suffix to NCName
+      def suffix_anchor_indirect(prefix, suffix)
+        k = "#{prefix}_#{suffix}"
+        @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
+      end
+
+       def suffix_anchor(prefix, suffix)
         #@files.url?(docid) and return ref
         k = "#{prefix}_#{suffix}"
         @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
