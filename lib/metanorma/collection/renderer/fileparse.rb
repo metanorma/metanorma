@@ -244,7 +244,7 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
       # update crossrefences to other documents, to include
       # disambiguating document suffix on id
       def update_anchors(bib, docid, ncname_docid, erefs)
-        f = @files.get(docid) or return error_anchor
+        f = @files.get(docid) or return error_anchor(erefs, docid)
         url = @files.url?(docid)
         erefs.each do |e|
           if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
