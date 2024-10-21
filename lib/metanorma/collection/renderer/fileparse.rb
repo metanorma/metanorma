@@ -247,8 +247,10 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         f = @files.get(docid)
         url = @files.url?(docid)
         erefs.each do |e|
-          if f then update_anchor_loc(bib, e, docid, f,
-              { url: url, ncname_docid: ncname_docid })
+          if f
+            if loc = e.at(".//xmlns:locality[@type = 'anchor']")
+            update_anchor_loc(loc, f, url, ncname_docid )
+            else update_anchor_create_loc(bib, e, docid) end
           else error_anchor(e, docid)
           end
         end
@@ -262,12 +264,9 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
             @log&.add("Cross-References", eref, msg)
       end
 j
-      def update_anchor_loc(bib, eref, docid, file_entry, opt)
-        loc = eref.at(".//xmlns:locality[@type = 'anchor']") or
-          return update_anchor_create_loc(bib, eref, docid)
-        #anchors = file_entry[:anchors] or return
-        ref = loc.elements&.first or return
-        anchor = opt[:url] ? ref.text : "#{opt[:ncname_docid]}_#{ref.text}" #suffix_anchor_direct(docid, ref.text)
+      def update_anchor_loc(loc, file_entry, url, ncname_docid)
+        ref = loc.elements&.first&.text or return
+        anchor = url ? ref : "#{ncname_docid}_#{ref}" #suffix_anchor_direct(docid, ref.text)
         # anchors.values.detect { |x| x.value?(anchor) } or return
         file_entry.dig(:anchors_lookup, anchor) or return
         ref.content = anchor
