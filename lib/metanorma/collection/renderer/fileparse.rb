@@ -125,19 +125,34 @@ module Metanorma
       # Preferably with anchor, and is a job to realise dynamic lookup
       # of localities.
       def update_direct_refs_to_docs(docxml, identifier)
-        erefs, erefs1 = update_direct_refs_to_docs_prep(docxml)
+        erefs, erefs_no_anchor, erefs_anchors, erefs1 = update_direct_refs_to_docs_prep(docxml)
         docxml.xpath(ns("//bibitem")).each do |b|
           docid = b.at(ns("./docidentifier[@type = 'repository']")) or next
           strip_unresolved_repo_erefs(identifier, docid, erefs1, b) or next
           update_bibitem(b, identifier)
           docid = docid_to_citeas(b) or next
           erefs[docid] and
-            update_anchors(b, docid, Metanorma::Utils::to_ncname(docid), erefs[docid])
+            update_anchors(b, docid, Metanorma::Utils::to_ncname(docid), erefs[docid], erefs_no_anchor[docid], erefs_anchors[docid])
         end
       end
 
+      # Hash(docid) of arrays
       def update_direct_refs_to_docs_prep(docxml)
-        [Util::gather_citeases(docxml), Util::gather_bibitemids(docxml)]
+        erefs = Util::gather_citeases(docxml)
+        no_anchor = {}
+        anchors = {}
+        erefs.each do |k, v|
+          no_anchor[k] ||= []
+          anchors[k] ||= []
+          v.each do |e|
+            if loc = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
+            anchors[k] << loc
+          else no_anchor[k] << e
+            end
+          end
+        end
+        #[Util::gather_citeases(docxml), Util::gather_bibitemids(docxml)]
+        [erefs, no_anchor, anchors, Util::gather_bibitemids(docxml)]
       end
 
       # strip erefs if they are repository erefs, but do not point to a document
@@ -243,11 +258,11 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
 
       # update crossrefences to other documents, to include
       # disambiguating document suffix on id
+=begin
       def update_anchors(bib, docid, ncname_docid, erefs)
         #f = @files.get(docid) or return error_anchor(erefs, docid)
         @files.get(docid) or return error_anchor(erefs, docid)
         url = @files.url?(docid)
-        @concatenate_anchors = {}
         erefs.each do |e|
           iter(e, url, ncname_docid, docid, bib)
           next
@@ -260,36 +275,36 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
           end
         end
       end
+=end
 
       # bottleneck
-      def update_anchors(bib, docid, ncn_docid, erefs)
-        @files.get(docid) or return error_anchor(erefs, docid)
+      def update_anchors(bib, docid, ncn_docid, erefs, erefs_no_anchor, erefs_anchors)
+        unless @files.get(docid)
+          error_anchor(erefs, docid)
+        end
         has_anchors, url = update_anchors_prep(docid)
-        erefs.each do |e|
+        erefs_no_anchor.each do |e|
+          update_anchor_create_loc(bib, e, docid)
+        end
+        !url && has_anchors or return
+        erefs_anchors.each do |e|
 update_anchors1(bib, docid, ncn_docid, e, has_anchors, url)
         end
       end
 
-      def update_anchors1(bib, docid, ncn_docid, e, has_anchors, url)
-          xml = e.to_xml
-          if @cached_eref[xml]
-            e.content = @cached_eref[xml]
-          elsif r = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
-            has_anchors or return
-            a = url ? r.text : (@concat_anchors[r.text] ||= "#{ncn_docid}_#{r.text}")
-            if @files.get(docid).dig(:anchors_lookup, a)
-              r.content = a
-        require 'debug'; binding.b
-              @cached_eref[xml] = e.to_xml
+      def update_anchors1(bib, docid, ncn_docid, r, has_anchors, url)
+          #if r = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
+            !url && has_anchors or return
+            @concat_anchors[r.text] ||= "#{ncn_docid}_#{r.text}"
+            if @files.get(docid).dig(:anchors_lookup, @concat_anchors[r.text])
+              r.content = @concat_anchors[r.text]
             end
-          else update_anchor_create_loc(bib, e, docid)
-          end
       end
 
       def update_anchors_prep(docid)
         @concat_anchors = {}
         @cached_eref = {}
-        [@files.get(docid).key?(:anchors_lookup), @files.url?(docid)]
+        [@files.get(docid)&.key?(:anchors_lookup), @files.url?(docid)]
       end
 
 
