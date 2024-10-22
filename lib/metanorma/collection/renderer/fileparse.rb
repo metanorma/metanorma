@@ -279,6 +279,7 @@ update_anchors1(bib, docid, ncn_docid, e, has_anchors, url)
             a = url ? r.text : (@concat_anchors[r.text] ||= "#{ncn_docid}_#{r.text}")
             if @files.get(docid).dig(:anchors_lookup, a)
               r.content = a
+        require 'debug'; binding.b
               @cached_eref[xml] = e.to_xml
             end
           else update_anchor_create_loc(bib, e, docid)

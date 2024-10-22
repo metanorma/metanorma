@@ -66,12 +66,15 @@ module Metanorma
         end
       end
 
-      def bibdata_extract(xml)
-        anchors = read_anchors(xml)
-        anchors_lookup = anchors.values.each_with_object({}) do |v, m|
+      def anchors_lookup(anchors)
+        anchors.values.each_with_object({}) do |v, m|
           v.each_value { |v1| m[v1] = true }
         end
-        { anchors: anchors, anchors_lookup: anchors_lookup,
+      end
+
+      def bibdata_extract(xml)
+        anchors = read_anchors(xml)
+        { anchors: anchors, anchors_lookup: anchors_lookup(anchors),
           ids: read_ids(xml),
           bibdata: xml.at(ns("//bibdata")),
           document_suffix: xml.root["document_suffix"] }
