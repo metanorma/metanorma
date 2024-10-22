@@ -81,13 +81,13 @@ module Metanorma
         collection_setup(nil, dir)
         r = ::Metanorma::Collection::Renderer
           .new(col, dir, output_folder: "#{ident}_collection",
-               format: %i(html),
-               coverpage: File.join(dir, "cover.html"))
+                         format: %i(html),
+                         coverpage: File.join(dir, "cover.html"))
         r.coverpage
         section_split_cover1(ident, r, dir, one_doc_coll)
       end
 
-      def section_split_cover1(ident, renderer, dir, one_doc_coll)
+      def section_split_cover1(ident, renderer, dir, _one_doc_coll)
         filename = File.basename("#{ident}_index.html")
         # ident can be a directory with YAML indirection
         dest = File.join(dir, filename)

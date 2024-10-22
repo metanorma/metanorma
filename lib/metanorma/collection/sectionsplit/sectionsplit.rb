@@ -33,27 +33,13 @@ module Metanorma
          ["//indexsect", nil], ["//colophon", nil]].freeze
 
       # Input XML is Semantic
-      def sectionsplitx
-        xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
-        @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
-        empty = empty_doc(xml)
-        empty1 = empty_attachments(empty)
-        SPLITSECTIONS.each_with_object([]) do |n, ret|
-          conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
-            ret << sectionfile(xml, ret.empty? ? empty : empty1,
-                               "#{@base}.#{ret.size}", s, n[1])
-          end
-        end
-      end
-
-      # Input XML is Semantic
       def sectionsplit
         xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
         empty = empty_doc(xml)
         empty1 = empty_attachments(empty)
         @mutex = Mutex.new
-        @pool = Concurrent::FixedThreadPool.new(6)
+        @pool = Concurrent::FixedThreadPool.new(4)
         sectionsplit1(xml, empty, empty1, 0)
       end
 
