@@ -264,6 +264,7 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
       def update_anchors(bib, docid, ncname_docid, erefs)
         @files.get(docid) or return error_anchor(erefs, docid)
         if @files.url?(docid)
+        @concatenate_anchors = {}
         erefs.each do |e|
           iter01(e, ncname_docid, docid, bib)
         end
