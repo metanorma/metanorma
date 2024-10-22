@@ -266,6 +266,11 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         @files.get(docid) or return error_anchor(erefs, docid)
         has_anchors, url = update_anchors_prep(docid)
         erefs.each do |e|
+update_anchors1(bib, docid, ncn_docid, e, has_anchors, url)
+        end
+      end
+
+      def update_anchors1(bib, docid, ncn_docid, e, has_anchors, url)
           xml = e.to_xml
           if @cached_eref[xml]
             e.content = @cached_eref[xml]
@@ -278,7 +283,6 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
             end
           else update_anchor_create_loc(bib, e, docid)
           end
-        end
       end
 
       def update_anchors_prep(docid)
