@@ -267,7 +267,7 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         has_anchors, url = update_anchors_prep(docid)
         erefs.each do |e|
           xml = e.to_xml
-          if @cached_eref[to_xml]
+          if @cached_eref[xml]
             e.content = @cached_eref[xml]
           elsif r = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
             has_anchors or next
