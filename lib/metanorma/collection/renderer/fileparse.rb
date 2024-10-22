@@ -275,7 +275,7 @@ update_anchors1(bib, docid, ncn_docid, e, has_anchors, url)
           if @cached_eref[xml]
             e.content = @cached_eref[xml]
           elsif r = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
-            has_anchors or next
+            has_anchors or return
             a = url ? r.text : (@concat_anchors[r.text] ||= "#{ncn_docid}_#{r.text}")
             if @files.get(docid).dig(:anchors_lookup, a)
               r.content = a
