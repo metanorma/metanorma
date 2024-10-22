@@ -44,7 +44,7 @@ module Metanorma
 
         xml do
           root "entry"
-          map_attribute "id", to: :id
+          map_attribute "target", to: :id
           map_attribute "attachment", to: :attachment
           map_attribute "sectionsplit", to: :sectionsplit
           map_attribute "index", to: :index
@@ -55,7 +55,7 @@ module Metanorma
           map_element "title", to: :title
           map_element "bibdata", using: { from: :bibdata_from_xml,
                                           to: :bibdata_to_xml }
-          map_element "entry", to: :entry # using: { from: :entry_from_xml, to: :entry_to_xml }
+          map_element "entry", to: :entry
         end
 
         def entry_from_xml(model, node)

@@ -17,7 +17,7 @@
       </organization>
     </owner>
   </copyright>
-</bibdata><directive><key>documents-inline</key></directive><directive><key>bilingual</key></directive><directive><key>documents-inline</key></directive><entry index="true"><identifier>9939b1cc-b636-4252-8f87-08a1b91c0ccb</identifier><type>collection</type><title>JCGM Collection</title><entry id="doc000000000" index="true" fileref="bilingual-en.xml"><identifier>ISO JCGM 100:2008(EN)</identifier><bibdata type="standard" schema-version="v1.2.8">  <title type="title-main" format="text/plain" language="en">Evaluation of measurement data</title>
+</bibdata><directive><key>documents-inline</key></directive><directive><key>bilingual</key></directive><directive><key>documents-inline</key></directive><entry index="true"><identifier>9939b1cc-b636-4252-8f87-08a1b91c0ccb</identifier><type>collection</type><title>JCGM Collection</title><entry target="doc000000000" index="true" fileref="bilingual-en.xml"><identifier>ISO JCGM 100:2008(EN)</identifier><bibdata type="standard" schema-version="v1.2.8">  <title type="title-main" format="text/plain" language="en">Evaluation of measurement data</title>
   <title type="title-part" format="text/plain" language="en">Guide to the expression of uncertainty in measurement</title>
   <title type="title-provenance" format="text/plain" language="en">GUM 1995 with minor corrections</title>
   <title type="title-main" format="text/plain" language="fr">Évaluation des données de mesure</title>
@@ -66,7 +66,7 @@
       <project-number>100</project-number>
     </structuredidentifier>
   </ext>
-</bibdata></entry><entry id="doc000000001" index="true" fileref="bilingual-fr.xml"><identifier>ISO JCGM 100:2008(FR)</identifier><bibdata type="standard" schema-version="v1.2.8">
+</bibdata></entry><entry target="doc000000001" index="true" fileref="bilingual-fr.xml"><identifier>ISO JCGM 100:2008(FR)</identifier><bibdata type="standard" schema-version="v1.2.8">
   <title type="title-main" format="text/plain" language="en">Evaluation of measurement data</title>
   <title type="title-part" format="text/plain" language="en">Guide to the expression of uncertainty in measurement</title>
   <title type="title-main" format="text/plain" language="fr">Évaluation des données de mesure</title>

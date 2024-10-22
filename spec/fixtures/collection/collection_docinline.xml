@@ -30,7 +30,7 @@
       <identifier>_</identifier>
       <type>subcollection</type>
       <title>Standards</title>
-      <entry id="doc000000000" index="true" fileref="rice-en.final.xml">
+      <entry target="doc000000000" index="true" fileref="rice-en.final.xml">
         <identifier>ISO 17301-1:2016</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
@@ -97,7 +97,7 @@
           </ext>
         </bibdata>
       </entry>
-      <entry id="doc000000001" index="true" fileref="dummy.xml">
+      <entry target="doc000000001" index="true" fileref="dummy.xml">
         <identifier>ISO 17302</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Dummy document</title>
@@ -155,7 +155,7 @@
           </ext>
         </bibdata>
       </entry>
-      <entry id="doc000000002" index="true" fileref="rice1-en.final.xml">
+      <entry target="doc000000002" index="true" fileref="rice1-en.final.xml">
         <identifier>ISO 1701:1974</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
@@ -222,7 +222,7 @@
       <identifier>_</identifier>
       <type>subcollection</type>
       <title>Amendments</title>
-      <entry id="doc000000003" index="true" fileref="rice-amd.final.xml">
+      <entry target="doc000000003" index="true" fileref="rice-amd.final.xml">
         <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
@@ -296,7 +296,7 @@
       <identifier>_</identifier>
       <type>attachments</type>
       <title>Attachments</title>
-      <entry id="doc000000004" attachment="true" index="true" fileref="pics/action_schemaexpg1.svg">
+      <entry target="doc000000004" attachment="true" index="true" fileref="pics/action_schemaexpg1.svg">
         <identifier>action_schemaexpg1.svg</identifier>
       </entry>
     </entry>
