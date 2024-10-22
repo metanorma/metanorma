@@ -263,20 +263,21 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
 
       def update_anchors(bib, docid, ncname_docid, erefs)
         @files.get(docid) or return error_anchor(erefs, docid)
-        if @files.url?(docid)
         @concatenate_anchors = {}
+        has_anchors = @files.get(docid).key?(:anchors)
+        if @files.url?(docid)
         erefs.each do |e|
-          iter01(e, ncname_docid, docid, bib)
+          iter01(e, ncname_docid, docid, bib, has_anchors)
         end
         else
         erefs.each do |e|
-          iter02(e, ncname_docid, docid, bib)
+          iter02(e, ncname_docid, docid, bib, has_anchors)
         end
         end
         return
-          if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+          if ref = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
               #update_anchor_loc(ref, f, url, ncname_docid )
-            f[:anchors] or return
+            has_anchors or return
             anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
             f.dig(:anchors_lookup, anchor) and ref.content = anchor
           else update_anchor_create_loc(bib, e, docid)
@@ -294,19 +295,19 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
           end
       end
 
-      def iter01(e, ncname_docid, docid, bib)
-        if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
+      def iter01(e, ncname_docid, docid, bib, has_anchors)
+        if ref = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
               #update_anchor_loc(ref, f, url, ncname_docid )
-          @files.get(docid).key?(:anchors) or return
+          has_anchors or return
             @files.get(docid,:anchors_lookup)&.dig(ref.text) and ref.content = ref.text
           else update_anchor_create_loc(bib, e, docid)
           end
       end
 
-      def iter02(e, ncname_docid, docid, bib)
-        if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))&.text
+      def iter02(e, ncname_docid, docid, bib, has_anchors)
+        if ref = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")&.text
               #update_anchor_loc(ref, f, url, ncname_docid )
-          @files.get(docid).key?(:anchors) or return
+          has_anchors or return
             @concatenate_anchors[ref] ||= "#{ncname_docid}_#{ref}"
             @files.get(docid,:anchors_lookup)&.dig(@concatenate_anchors[ref] ) and ref.content = @concatenate_anchors[ref] 
           else update_anchor_create_loc(bib, e, docid)
