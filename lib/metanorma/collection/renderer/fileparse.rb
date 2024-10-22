@@ -252,7 +252,7 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
           iter(e, url, ncname_docid, docid, bib)
           next
           if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
-              #update_anchor_loc(ref, f, url, ncname_docid )
+            #update_anchor_loc(ref, f, url, ncname_docid )
             f[:anchors] or next
             anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
             f.dig(:anchors_lookup, anchor) and ref.content = anchor
@@ -261,57 +261,60 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         end
       end
 
-      def update_anchors(bib, docid, ncname_docid, erefs)
+      # bottleneck
+      def update_anchors(bib, docid, ncn_docid, erefs)
         @files.get(docid) or return error_anchor(erefs, docid)
-        @concatenate_anchors = {}
-        has_anchors = @files.get(docid).key?(:anchors)
-        if @files.url?(docid)
+        has_anchors, url = update_anchors_prep(docid)
         erefs.each do |e|
-          iter01(e, ncname_docid, docid, bib, has_anchors)
-        end
-        else
-        erefs.each do |e|
-          iter02(e, ncname_docid, docid, bib, has_anchors)
-        end
-        end
-        return
-          if ref = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
-              #update_anchor_loc(ref, f, url, ncname_docid )
-            has_anchors or return
-            anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}"
-            f.dig(:anchors_lookup, anchor) and ref.content = anchor
+          xml = e.to_xml
+          if @cached_eref[to_xml]
+            e.content = @cached_eref[xml]
+          elsif r = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
+            has_anchors or next
+            a = url ? r.text : (@concat_anchors[r.text] ||= "#{ncn_docid}_#{r.text}")
+            if @files.get(docid).dig(:anchors_lookup, a)
+              r.content = a
+              @cached_eref[xml] = e.to_xml
+            end
           else update_anchor_create_loc(bib, e, docid)
           end
+        end
+      end
+
+      def update_anchors_prep(docid)
+        @concat_anchors = {}
+        @cached_eref = {}
+        [@files.get(docid).key?(:anchors_lookup), @files.url?(docid)]
       end
 
 
       def iter(e, url, ncname_docid, docid, bib)
         if ref = e.at(ns(".//locality[@type = 'anchor']/referenceFrom"))
-              #update_anchor_loc(ref, f, url, ncname_docid )
+          #update_anchor_loc(ref, f, url, ncname_docid )
           @files.get(docid).key?(:anchors) or return
-            anchor = iter1(url, ref, ncname_docid) #url ? ref.text : "#{ncname_docid}_#{ref.text}"
-            @files.get(docid,:anchors_lookup)&.dig(anchor) and ref.content = anchor
-          else update_anchor_create_loc(bib, e, docid)
-          end
+          anchor = iter1(url, ref, ncname_docid) #url ? ref.text : "#{ncname_docid}_#{ref.text}"
+          @files.get(docid,:anchors_lookup)&.dig(anchor) and ref.content = anchor
+        else update_anchor_create_loc(bib, e, docid)
+        end
       end
 
       def iter01(e, ncname_docid, docid, bib, has_anchors)
         if ref = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
-              #update_anchor_loc(ref, f, url, ncname_docid )
+          #update_anchor_loc(ref, f, url, ncname_docid )
           has_anchors or return
-            @files.get(docid,:anchors_lookup)&.dig(ref.text) and ref.content = ref.text
-          else update_anchor_create_loc(bib, e, docid)
-          end
+          @files.get(docid,:anchors_lookup)&.dig(ref.text) and ref.content = ref.text
+        else update_anchor_create_loc(bib, e, docid)
+        end
       end
 
       def iter02(e, ncname_docid, docid, bib, has_anchors)
-        if ref = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")&.text
-              #update_anchor_loc(ref, f, url, ncname_docid )
+        if ref = e.at(".//xmlns:locality[@type = 'anchor']/xmlns:referenceFrom")
+          #update_anchor_loc(ref, f, url, ncname_docid )
           has_anchors or return
-            @concatenate_anchors[ref] ||= "#{ncname_docid}_#{ref}"
-            @files.get(docid,:anchors_lookup)&.dig(@concatenate_anchors[ref] ) and ref.content = @concatenate_anchors[ref] 
-          else update_anchor_create_loc(bib, e, docid)
-          end
+          @concatenate_anchors[ref.text] ||= "#{ncname_docid}_#{ref.text}"
+          @files.get(docid,:anchors_lookup)&.dig(@concatenate_anchors[ref] ) and ref.content = @concatenate_anchors[ref] 
+        else update_anchor_create_loc(bib, e, docid)
+        end
       end
 
       def iter1(url, ref, ncname_docid)
@@ -321,15 +324,15 @@ anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
       def error_anchor(erefs, docid)
         erefs.each do |e|
           msg = "<strong>** Unresolved reference to document #{docid} " \
-                  "from eref</strong>"
-            e << msg
-            strip_eref(e)
-            @log&.add("Cross-References", e, msg)
+            "from eref</strong>"
+          e << msg
+          strip_eref(e)
+          @log&.add("Cross-References", e, msg)
         end
       end
-j
+      j
       def update_anchor_loc(ref, file_entry, url, ncname_docid)
-          anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}" #suffix_anchor_direct(docid, ref.text)
+        anchor = url ? ref.text : "#{ncname_docid}_#{ref.text}" #suffix_anchor_direct(docid, ref.text)
         file_entry.dig(:anchors_lookup, anchor) or return
         ref.content = anchor
       end
@@ -360,7 +363,7 @@ j
         @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
       end
 
-       def suffix_anchor(prefix, suffix)
+      def suffix_anchor(prefix, suffix)
         #@files.url?(docid) and return ref
         k = "#{prefix}_#{suffix}"
         @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
@@ -368,7 +371,7 @@ j
       end
 
       #OLD
-       def suffix_anchor1(ref, docid)
+      def suffix_anchor1(ref, docid)
         @ncnames[docid] ||= Metanorma::Utils::to_ncname(docid)
         anchor = ref.text
         @files.url?(docid) or anchor = "#{@ncnames[docid]}_#{anchor}"
@@ -384,7 +387,7 @@ j
         ref = ins.at(ns("./locality/referenceFrom"))&.text
         a = @files.get(docid, :anchors).dig(type, ref) or return
         ins << "<locality type='anchor'><referenceFrom>#{a.sub(/^_/, '')}" \
-               "</referenceFrom></locality>"
+          "</referenceFrom></locality>"
       end
     end
   end
