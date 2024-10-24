@@ -15,7 +15,7 @@ module Metanorma
 
       def extract_metanorma_options(file)
         headerextract = file.sub(/\n\n.*$/m, "\n")
-        /\n:mn-document-class:\s+(?<type>\S[^\n]*)\n/ =~ headerextract
+        /\n:mn-(?:document-class|flavor):\s+(?<type>\S[^\n]*)\n/ =~ headerextract
         /\n:mn-output-extensions:\s+(?<extensions>\S[^\n]*)\n/ =~ headerextract
         /\n:mn-relaton-output-file:\s+(?<relaton>\S[^\n]*)\n/ =~ headerextract
         /\n(?<asciimath>:mn-keep-asciimath:[^\n]*)\n/ =~ headerextract
@@ -62,7 +62,7 @@ module Metanorma
            toc-tables toc-recommendations).freeze
 
       def attr_name_normalise(name)
-        name.gsub("-", "").sub(/override$/, "_override").sub(/pdf$/, "_pdf")
+        name.delete("-").sub(/override$/, "_override").sub(/pdf$/, "_pdf")
           .to_sym
       end
 
