@@ -310,7 +310,8 @@
             <identifier>rice_image1.png</identifier>
          </entry>
       </entry>
-   </entry>
+    </entry>
+    <format>html</format>
    <coverpage>cover.html</coverpage>
    <prefatory-content>
       <clause id="_clause" inline-header="false" obligation="normative">

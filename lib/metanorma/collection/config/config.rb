@@ -22,11 +22,13 @@ module Metanorma
         attribute :directive, Directive, collection: true
         attribute :manifest, Manifest
         attribute :format, ::Lutaml::Model::Type::String, collection: true,
-                                                  default: -> { [:html] }
+                                                          default: -> {
+                                                            [:html]
+                                                          }
         attribute :output_folder, ::Lutaml::Model::Type::String
         attribute :coverpage, ::Lutaml::Model::Type::String, default: -> {
-                                                                "cover.html"
-                                                              }
+          "cover.html"
+        }
         attribute :compile, CompileOptions
         attribute :prefatory_content, :string, raw: true
         attribute :final_content, :string, raw: true
@@ -35,9 +37,9 @@ module Metanorma
 
         yaml do
           map "directives", to: :directive, with: { from: :directives_from_yaml,
-                                     to: :directives_to_yaml }
+                                                    to: :directives_to_yaml }
           map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
-                                  to: :bibdata_to_yaml }
+                                               to: :bibdata_to_yaml }
           map "manifest", to: :manifest
           map "format", to: :format
           map "output_folder", to: :output_folder
@@ -52,21 +54,21 @@ module Metanorma
           # namespace "http://metanorma.org", "m"
           # map_attribute "xmlns", to: :xmlns
           map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
-                                          to: :bibdata_to_xml }
+                                                       to: :bibdata_to_xml }
           map_element "directive", to: :directive
           map_element "entry", to: :manifest, with: { from: :manifest_from_xml,
-                                        to: :manifest_to_xml }
+                                                      to: :manifest_to_xml }
           map_element "format", to: :format
           map_element "output_folder", to: :output_folder
           map_element "coverpage", to: :coverpage
           map_element "compile", to: :compile
-          map_element "prefatory-content", to: :"prefatory_content" , with: { from: :prefatory_from_xml,
-                                                    to: :prefatory_to_xml }
+          map_element "prefatory-content", to: :prefatory_content,
+            with: { from: :prefatory_from_xml, to: :prefatory_to_xml }
           map_element "doc-container", to: :documents,
-                      with: { from: :documents_from_xml,
-                               to: :documents_to_xml }
-          map_element "final-content", to: :"final_content" , with: { from: :final_from_xml,
-                                                to: :final_to_xml }
+                                       with: { from: :documents_from_xml,
+                                               to: :documents_to_xml }
+          map_element "final-content", to: :final_content,
+            with: { from: :final_from_xml, to: :final_to_xml }
         end
 
         def manifest_from_xml(model, node)
@@ -79,7 +81,6 @@ module Metanorma
         end
 
         def prefatory_from_xml(model, node)
-          require 'debug'; binding.b
           model.prefatory_content = node
         end
 
@@ -95,8 +96,7 @@ module Metanorma
           x = model.send("#{type}_content") or return
           n = Nokogiri::XML(x)
           elem = if n.elements.size == 1
-                   require "debug"; binding.b
-                   "<#{type}-content>#{x}</#{type}-content>" #n.root
+                   "<#{type}-content>#{x}</#{type}-content>" # n.root
                  else
                    b = Nokogiri::XML::Builder.new
                    model.collection.content_to_xml(type, b)
@@ -134,7 +134,9 @@ module Metanorma
         end
 
         def documents_to_xml(model, parent, doc)
-          doc.parent.elements.detect { |x| x.name == "doc-container" } and return
+          doc.parent.elements.detect do |x|
+            x.name == "doc-container"
+          end and return
           b = Nokogiri::XML::Builder.new do |xml|
             xml.document do |m|
               model.collection.doccontainer(m) or return

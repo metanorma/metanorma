@@ -14,10 +14,12 @@ module Metanorma
         end
 
         def bibdata_from_xml(model, node)
+          require "debug"; binding.b
           model.bibdata = node # Relaton::Cli.parse_xml(node.content)
         end
 
         def bibdata_to_xml(model, parent, doc)
+          require "debug"; binding.b
           b = model.bibdata or return
           elem = b.to_xml(bibdata: true, date_format: :full)
           doc.add_element(parent, elem)
