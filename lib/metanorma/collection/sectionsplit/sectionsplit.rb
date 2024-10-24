@@ -2,6 +2,7 @@ require "yaml"
 require_relative "../../util/util"
 require_relative "../xrefprocess/xrefprocess"
 require_relative "collection"
+require "concurrent-ruby"
 
 module Metanorma
   class Collection
@@ -35,11 +36,31 @@ module Metanorma
       def sectionsplit
         xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
-        SPLITSECTIONS.each_with_object([]) do |n, ret|
+        empty = empty_doc(xml)
+        empty1 = empty_attachments(empty)
+        @mutex = Mutex.new
+        @pool = Concurrent::FixedThreadPool.new(4)
+        sectionsplit1(xml, empty, empty1, 0)
+      end
+
+      def sectionsplit1(xml, empty, empty1, idx)
+        ret = SPLITSECTIONS.each_with_object([]) do |n, m|
           conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
-            ret << sectionfile(xml, emptydoc(xml, ret.size),
-                               "#{@base}.#{ret.size}", s, n[1])
+            sectionsplit2(xml, idx.zero? ? empty : empty1, s, n[1],
+                          { acc: m, idx: idx })
+            idx += 1
           end
+        end
+        @pool.shutdown
+        @pool.wait_for_termination
+        ret
+      end
+
+      def sectionsplit2(xml, empty, chunks, parentnode, opt)
+        @pool.post do
+          a = sectionfile(xml, empty, "#{@base}.#{opt[:idx]}", chunks,
+                          parentnode)
+          @mutex.synchronize { opt[:acc] << a }
         end
       end
 
@@ -108,7 +129,25 @@ module Metanorma
              "//indexsect | //colophon"),
         ).each(&:remove)
         ordinal.zero? or out.xpath(ns("//metanorma-ext//attachment | " \
-                      "//semantic__metanorma-ext//semantic__attachment"))
+                                      "//semantic__metanorma-ext//semantic__attachment"))
+          .each(&:remove) # keep only one copy of attachments
+        out
+      end
+
+      def empty_doc(xml)
+        out = xml.dup
+        out.xpath(
+          ns("//preface | //sections | //annex | //bibliography/clause | " \
+             "//bibliography/references[not(@hidden = 'true')] | " \
+             "//indexsect | //colophon"),
+        ).each(&:remove)
+        out
+      end
+
+      def empty_attachments(xml)
+        out = xml.dup
+        out.xpath(ns("//metanorma-ext//attachment | " \
+                     "//semantic__metanorma-ext//semantic__attachment"))
           .each(&:remove) # keep only one copy of attachments
         out
       end
@@ -126,7 +165,9 @@ module Metanorma
                                                          @ident, @isodoc)
         truncate_semxml(out, chunks)
         outname = "#{file}.xml"
-        File.open(File.join(@splitdir, outname), "w:UTF-8") { |f| f.write(out) }
+        File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
+          f.write(out)
+        end
         outname
       end
 

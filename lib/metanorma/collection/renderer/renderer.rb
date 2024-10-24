@@ -8,6 +8,7 @@ require_relative "../multilingual/multilingual"
 require_relative "utils"
 require_relative "render_word"
 require_relative "navigation"
+require_relative "svg"
 
 module Metanorma
   class Collection

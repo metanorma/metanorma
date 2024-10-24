@@ -1,4 +1,5 @@
 require_relative "../sectionsplit/sectionsplit"
+# require "concurrent-ruby"
 
 module Metanorma
   class Collection
@@ -16,12 +17,25 @@ module Metanorma
 
       def process_section_split_instance(key, manifest)
         s, sectionsplit_manifest = sectionsplit(key)
+        # section_split_instance_threads(s, manifest, key)
         s.each_with_index do |f1, i|
           add_section_split_instance(f1, manifest, key, i)
         end
         a = add_section_split_attachments(sectionsplit_manifest, key) and
           manifest["#{key}:attachments"] = a
         add_section_split_cover(manifest, sectionsplit_manifest, key)
+      end
+
+      def section_split_instance_threads(s, manifest, key)
+        @mutex = Mutex.new
+        pool = Concurrent::FixedThreadPool.new(6)
+        s.each_with_index do |f1, i|
+          pool.post do
+            add_section_split_instance(f1, manifest, key, i)
+          end
+        end
+        pool.shutdown
+        pool.wait_for_termination
       end
 
       def cleanup_section_split_instance(key, manifest)
@@ -71,15 +85,16 @@ module Metanorma
 
       def add_section_split_instance(file, manifest, key, idx)
         presfile, newkey, xml = add_section_split_instance_prep(file, key)
-        manifest[newkey] =
-          { parentid: key, presentationxml: true, type: "fileref",
-            rel_path: file[:url], out_path: File.basename(file[:url]),
-            anchors: read_anchors(xml), ids: read_ids(xml),
-            sectionsplit_output: true,
-            bibdata: @files[key][:bibdata], ref: presfile }
+        anchors = read_anchors(xml)
+        m = { parentid: key, presentationxml: true, type: "fileref",
+              rel_path: file[:url], out_path: File.basename(file[:url]),
+              anchors: anchors, anchors_lookup: anchors_lookup(anchors),
+              ids: read_ids(xml),
+              sectionsplit_output: true, indirect_key: @sectionsplit.key,
+              bibdata: @files[key][:bibdata], ref: presfile }
+        m[:bare] = true unless idx.zero?
+        manifest[newkey] = m
         @files_to_delete << file[:url]
-        manifest[newkey][:indirect_key] = @sectionsplit.key
-        manifest[newkey][:bare] = true unless idx.zero?
       end
 
       def add_section_split_instance_prep(file, key)
