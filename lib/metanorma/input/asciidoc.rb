@@ -15,10 +15,10 @@ module Metanorma
 
       def extract_metanorma_options(file)
         hdr = file.sub(/\n\n.*$/m, "\n")
-        /\n:(?:mn-)(?:document-class|flavor):\s+(?<type>\S[^\n]*)\n/ =~ hdr
-        /\n:(?:mn-)output-extensions:\s+(?<extensions>\S[^\n]*)\n/ =~ hdr
-        /\n:(?:mn-)relaton-output-file:\s+(?<relaton>\S[^\n]*)\n/ =~ hdr
-        /\n(?<asciimath>:(?:mn-)keep-asciimath:[^\n]*)\n/ =~ hdr
+        /\n:(?:mn-)?(?:document-class|flavor):\s+(?<type>\S[^\n]*)\n/ =~ hdr
+        /\n:(?:mn-)?output-extensions:\s+(?<extensions>\S[^\n]*)\n/ =~ hdr
+        /\n:(?:mn-)?relaton-output-file:\s+(?<relaton>\S[^\n]*)\n/ =~ hdr
+        /\n(?<asciimath>:(?:mn-)?keep-asciimath:[^\n]*)\n/ =~ hdr
         /\n(?<novalid>:novalid:[^\n]*)\n/ =~ hdr
         if defined?(asciimath)
           asciimath =
