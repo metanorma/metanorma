@@ -159,26 +159,24 @@ module Metanorma
         /^#{schema}_/.match?(id) and return id
         key = "#{schema}_#{id}"
         @indirect_keys[key] ||= if doc_suffix && doc_type && doc_type != schema
-                                "#{key}_#{doc_suffix}"
-                              else
-                                key
-                              end
+                                  "#{key}_#{doc_suffix}"
+                                else
+                                  key
+                                end
       end
 
       def update_indirect_refs_to_docs1(url, key, file, bibitems, erefs)
+        @files.get(file) and parentid = @files.get(file, :parentid)
         erefs[key]&.each do |e|
           e["citeas"] = file
-          update_indirect_refs_to_docs_anchor(e, file, url)
+          update_indirect_refs_to_docs_anchor(e, file, url, parentid)
         end
         update_indirect_refs_to_docs_docid(bibitems[key], file)
       end
 
-      def update_indirect_refs_to_docs_anchor(eref, file, url)
+      def update_indirect_refs_to_docs_anchor(eref, file, url, parentid)
         a = eref.at(".//#{ANCHOR_XPATH}") or return
-        suffix = if p = @files.get(file, :parentid)
-                   "#{p}_#{suffix}"
-                 else file
-                 end
+        suffix = parentid ? "#{parentid}_#{file}" : file
         existing = a.text
         anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         @updated_anchors[existing] or a.children = anchor
