@@ -99,7 +99,7 @@ module Metanorma
       def update_direct_refs_to_docs_prep(docxml)
         erefs = Util::gather_citeases(docxml)
         no_anchor = erefs.keys.each_with_object({}) { |k, m| m[k] = [] }
-        anchors = no_anchor.dup
+        anchors = erefs.keys.each_with_object({}) { |k, m| m[k] = [] }
         erefs.each do |k, v|
           v.each do |e|
             if loc = e.at(".//#{ANCHOR_XPATH}") then anchors[k] << loc
@@ -157,12 +157,13 @@ module Metanorma
 
       def indirect_ref_key(schema, id, doc_suffix, doc_type)
         /^#{schema}_/.match?(id) and return id
-        key = "#{schema}_#{id}"
-        x = @indirect_keys[key] and return x
-        @indirect_keys[key] = if doc_suffix && doc_type && doc_type != schema
-                                  "#{key}_#{doc_suffix}"
+        #key = "#{schema}_#{id}"
+        x = @indirect_keys.dig(schema, id) and return x
+        @indirect_keys[schema] ||= {}
+        @indirect_keys[schema][id] = if doc_suffix && doc_type && doc_type != schema
+                                  "#{schema}_#{id}_#{doc_suffix}"
                                 else
-                                  key
+                                   "#{schema}_#{id}"
                                 end
       end
 
