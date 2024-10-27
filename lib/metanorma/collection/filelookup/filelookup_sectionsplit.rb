@@ -28,7 +28,7 @@ module Metanorma
 
       def section_split_instance_threads(s, manifest, key)
         @mutex = Mutex.new
-        pool = Concurrent::FixedThreadPool.new(6)
+        pool = Concurrent::FixedThreadPool.new(4)
         s.each_with_index do |f1, i|
           pool.post do
             add_section_split_instance(f1, manifest, key, i)

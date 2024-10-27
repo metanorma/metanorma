@@ -130,7 +130,7 @@ module Metanorma
         url = {}
         internal_refs.each do |schema, ids|
           ids.each do |id, file|
-            url.has_key?(file) or url[file] = @files.url?(file)
+            url[file] ||= @files.url?(file)
             k = indirect_ref_key(schema, id, doc_suffix, doc_type)
             update_indirect_refs_to_docs1(url[file], k, file, bibitems, erefs)
           end
@@ -139,7 +139,7 @@ module Metanorma
 
       def update_indirect_refs_to_docs_prep(docxml)
         @updated_anchors = {}
-        @indirect_keys ||= {}
+        @indirect_keys = {}
         [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml),
          docxml.root["document_suffix"], docxml.root["type"]]
       end
@@ -155,6 +155,16 @@ module Metanorma
         ret
       end
 
+      def indirect_ref_key(schema, id, doc_suffix, doc_type)
+        /^#{schema}_/.match?(id) and return id
+        key = "#{schema}_#{id}"
+        @indirect_keys[key] ||= if doc_suffix && doc_type && doc_type != schema
+                                "#{key}_#{doc_suffix}"
+                              else
+                                key
+                              end
+      end
+
       def update_indirect_refs_to_docs1(url, key, file, bibitems, erefs)
         erefs[key]&.each do |e|
           e["citeas"] = file
@@ -165,9 +175,10 @@ module Metanorma
 
       def update_indirect_refs_to_docs_anchor(eref, file, url)
         a = eref.at(".//#{ANCHOR_XPATH}") or return
-        suffix = file
-        @files.get(file) && p = @files.get(file, :parentid) and
-          suffix = "#{Metanorma::Utils::to_ncname p}_#{suffix}"
+        suffix = if p = @files.get(file, :parentid)
+                   "#{p}_#{suffix}"
+                 else file
+                 end
         existing = a.text
         anchor = url ? existing : suffix_anchor_indirect(existing, suffix)
         @updated_anchors[existing] or a.children = anchor
