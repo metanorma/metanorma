@@ -125,23 +125,23 @@ module Metanorma
       # Resolve erefs to a container of ids in another doc,
       # to an anchor eref (direct link)
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
-        bibitems, erefs, doc_suffix, doc_type =
-          update_indirect_refs_to_docs_prep(docxml)
-        url = {}
+        bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml)
         internal_refs.each do |schema, ids|
           ids.each do |id, file|
-            url[file] ||= @files.url?(file)
+            f[file] ||= { url: @files.url?(file),
+                          parentid: @files.get(file) && @files.get(file,
+                                                                   :parentid) }
             k = indirect_ref_key(schema, id, doc_suffix, doc_type)
-            update_indirect_refs_to_docs1(url[file], k, file, bibitems, erefs)
+            update_indirect_refs_to_docs1(f[file], k, file, bib, erefs)
           end
         end
       end
 
-      def update_indirect_refs_to_docs_prep(docxml)
+      def update_indirect_refs_prep(docxml)
         @updated_anchors = {}
         @indirect_keys = {}
         [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml),
-         docxml.root["document_suffix"], docxml.root["type"]]
+         docxml.root["document_suffix"], docxml.root["type"], {}]
       end
 
       def indirect_ref_key(schema, id, doc_suffix, doc_type)
@@ -165,11 +165,11 @@ module Metanorma
                                 end
       end
 
-      def update_indirect_refs_to_docs1(url, key, file, bibitems, erefs)
-        @files.get(file) and parentid = @files.get(file, :parentid)
+      def update_indirect_refs_to_docs1(filec, key, file, bibitems, erefs)
         erefs[key]&.each do |e|
           e["citeas"] = file
-          update_indirect_refs_to_docs_anchor(e, file, url, parentid)
+          update_indirect_refs_to_docs_anchor(e, file, filec[:url],
+                                              filec[:parentid])
         end
         update_indirect_refs_to_docs_docid(bibitems[key], file)
       end
