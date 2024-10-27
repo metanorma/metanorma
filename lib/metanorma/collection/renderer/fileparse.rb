@@ -158,7 +158,8 @@ module Metanorma
       def indirect_ref_key(schema, id, doc_suffix, doc_type)
         /^#{schema}_/.match?(id) and return id
         key = "#{schema}_#{id}"
-        @indirect_keys[key] ||= if doc_suffix && doc_type && doc_type != schema
+        x = @indirect_keys[key] and return x
+        @indirect_keys[key] = if doc_suffix && doc_type && doc_type != schema
                                   "#{key}_#{doc_suffix}"
                                 else
                                   key
