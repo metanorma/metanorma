@@ -127,11 +127,12 @@ module Metanorma
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
         bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml)
         internal_refs.each do |schema, ids|
+          add_suffix = doc_suffix && doc_type && doc_type != schema
           ids.each do |id, file|
             f[file] ||= { url: @files.url?(file),
                           parentid: @files.get(file) && @files.get(file,
                                                                    :parentid) }
-            k = indirect_ref_key(schema, id, doc_suffix, doc_type)
+            k = indirect_ref_key(schema, id, doc_suffix, add_suffix)
             update_indirect_refs_to_docs1(f[file], k, file, bib, erefs)
           end
         end
@@ -139,7 +140,7 @@ module Metanorma
 
       def update_indirect_refs_prep(docxml)
         @updated_anchors = {}
-        @indirect_keys ||= {}
+        @indirect_keys = {}
         [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml),
          docxml.root["document_suffix"], docxml.root["type"], {}]
       end
@@ -155,12 +156,12 @@ module Metanorma
         ret
       end
 
-      def indirect_ref_key(schema, id, doc_suffix, doc_type)
+      def indirect_ref_key(schema, id, doc_suffix, add_suffix)
         /^#{schema}_/.match?(id) and return id
         #key = "#{schema}_#{id}"
         x = @indirect_keys.dig(schema, id) and return x
         @indirect_keys[schema] ||= {}
-        @indirect_keys[schema][id] = if doc_suffix && doc_type && doc_type != schema
+        @indirect_keys[schema][id] = if add_suffix
                                   "#{schema}_#{id}_#{doc_suffix}"
                                 else
                                    "#{schema}_#{id}"
