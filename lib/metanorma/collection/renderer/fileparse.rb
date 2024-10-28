@@ -139,7 +139,7 @@ module Metanorma
 
       def update_indirect_refs_prep(docxml)
         @updated_anchors = {}
-        @indirect_keys = {}
+        @indirect_keys ||= {}
         [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml),
          docxml.root["document_suffix"], docxml.root["type"], {}]
       end
@@ -167,7 +167,7 @@ module Metanorma
                                 end
       end
 
-      def indirect_ref_key(schema, id, doc_suffix, doc_type)
+      def indirect_ref_keyx(schema, id, doc_suffix, doc_type)
         /^#{schema}_/.match?(id) and return id
         ret = "#{schema}_#{id}"
         doc_suffix && doc_type && doc_type != schema and
