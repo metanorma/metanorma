@@ -114,7 +114,7 @@ module Metanorma
             files.each { |f| docrefs(f, u) }
           end
         end
-        r.doc.root&.to_html&.gsub("\n", " ")
+        r.doc.root&.to_html&.tr("\n", " ")
       end
 
       def liquid_docrefs(mnfs)
