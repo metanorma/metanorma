@@ -28,16 +28,20 @@ module Metanorma
     def initialize(**args)
       @file = args[:file]
       @dirname = File.expand_path(File.dirname(@file)) # feeds @manifest
-      @documents = args[:documents] || {} # feeds initialize_directives
+      @documents = args[:documents] || {} # feeds initialize_directives, initialize_docs
       @bibdatas = args[:documents] || {}
       initialize_vars
       initialize_config(args[:config])
       initialize_directives
+      initialize_docs
+      validate_flavor(flavor)
+    end
+
+    def initialize_docs
       @documents.merge! @manifest.documents
       @bibdatas.merge! @manifest.documents
       @documents.transform_keys { |k| Util::key(k) }
       @bibdatas.transform_keys { |k| Util::key(k) }
-      validate_flavor(flavor)
     end
 
     def initialize_vars
@@ -54,6 +58,8 @@ module Metanorma
       @final = config.final_content
       @manifest = ::Metanorma::Collection::Manifest
         .new(config.manifest, self, @dirname) # feeds initialize_directives
+      @format = config.format.map(&:to_sym)
+      @format&.empty? and @format = nil
     end
 
     def initialize_directives
@@ -88,7 +94,9 @@ module Metanorma
     end
 
     def render(opts)
-      opts[:format].nil? || opts[:format].empty? and opts[:format] = [:html]
+      if opts[:format].nil? || opts[:format].empty?
+        opts[:format] = @format || [:html]
+      end
       opts[:log] = @log
       opts[:flavor] = @flavor
       ::Metanorma::Collection::Renderer.render self, opts

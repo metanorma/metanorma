@@ -17,7 +17,7 @@
       </organization>
     </owner>
   </copyright>
-</bibdata><directive><key>documents-inline</key></directive><directive><key>bilingual</key></directive><directive><key>documents-inline</key></directive><entry index="true"><identifier>9939b1cc-b636-4252-8f87-08a1b91c0ccb</identifier><type>collection</type><title>JCGM Collection</title><entry id="doc000000000" index="true" fileref="bilingual-en.xml"><identifier>ISO JCGM 100:2008(EN)</identifier><bibdata type="standard" schema-version="v1.2.8">  <title type="title-main" format="text/plain" language="en">Evaluation of measurement data</title>
+</bibdata><directive><key>documents-inline</key></directive><directive><key>bilingual</key></directive><directive><key>documents-inline</key></directive><entry index="true"><identifier>9939b1cc-b636-4252-8f87-08a1b91c0ccb</identifier><type>collection</type><title>JCGM Collection</title><entry target="doc000000000" index="true" fileref="bilingual-en.xml"><identifier>ISO JCGM 100:2008(EN)</identifier><bibdata type="standard" schema-version="v1.2.8">  <title type="title-main" format="text/plain" language="en">Evaluation of measurement data</title>
   <title type="title-part" format="text/plain" language="en">Guide to the expression of uncertainty in measurement</title>
   <title type="title-provenance" format="text/plain" language="en">GUM 1995 with minor corrections</title>
   <title type="title-main" format="text/plain" language="fr">Évaluation des données de mesure</title>
@@ -66,7 +66,7 @@
       <project-number>100</project-number>
     </structuredidentifier>
   </ext>
-</bibdata></entry><entry id="doc000000001" index="true" fileref="bilingual-fr.xml"><identifier>ISO JCGM 100:2008(FR)</identifier><bibdata type="standard" schema-version="v1.2.8">
+</bibdata></entry><entry target="doc000000001" index="true" fileref="bilingual-fr.xml"><identifier>ISO JCGM 100:2008(FR)</identifier><bibdata type="standard" schema-version="v1.2.8">
   <title type="title-main" format="text/plain" language="en">Evaluation of measurement data</title>
   <title type="title-part" format="text/plain" language="en">Guide to the expression of uncertainty in measurement</title>
   <title type="title-main" format="text/plain" language="fr">Évaluation des données de mesure</title>
@@ -7816,7 +7816,41 @@ The standard uncertainty of this estimate is <semantic__stem type="MathML" block
 <semantic__index-xref also="false"><semantic__primary>uncertainty</semantic__primary><semantic__secondary>definition of the term</semantic__secondary><semantic__target>uncertainty of measurement</semantic__target></semantic__index-xref>
 <semantic__index-xref also="false"><semantic__primary>variance</semantic__primary><semantic__secondary>analysis of</semantic__secondary><semantic__target>ANOVA</semantic__target></semantic__index-xref></semantic__p>
 </semantic__indexsect>
-</semantic__iso-standard></source></metanorma><render><preprocess-xslt format="html">
+</semantic__iso-standard></source></metanorma><render>
+               <preprocess-xslt format="presentation">
+                  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+                     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
+                     <xsl:template match="@* | node()">
+                        <xsl:copy>
+                           <xsl:apply-templates select="@* | node()"/>
+                        </xsl:copy>
+                     </xsl:template>
+                     <xsl:template match="*[local-name() = 'passthrough']">
+                        <xsl:if test="contains(@formats,',presentation,')">
+                           <xsl:copy>
+                              <xsl:apply-templates select="@* | node()"/>
+                           </xsl:copy>
+                        </xsl:if>
+                     </xsl:template>
+                  </xsl:stylesheet>
+               </preprocess-xslt>
+               <preprocess-xslt format="presentation">
+                  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+                     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
+                     <xsl:template match="@* | node()">
+                        <xsl:copy>
+                           <xsl:apply-templates select="@* | node()"/>
+                        </xsl:copy>
+                     </xsl:template>
+                     <xsl:template match="*[local-name() = 'math-with-linebreak']">
+
+</xsl:template>
+                     <xsl:template match="*[local-name() = 'math-no-linebreak']">
+                        <xsl:apply-templates select="node()"/>
+                     </xsl:template>
+                  </xsl:stylesheet>
+               </preprocess-xslt>
+<preprocess-xslt format="html">
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
   <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
   <xsl:template match="@* | node()"><xsl:copy><xsl:apply-templates select="@* | node()"/></xsl:copy></xsl:template>

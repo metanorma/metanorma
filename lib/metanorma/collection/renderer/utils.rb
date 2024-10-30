@@ -203,6 +203,22 @@ module Metanorma
         end.doc.root.to_html
       end
 
+      def eref2link(docxml)
+        isodoc = IsoDoc::PresentationXMLConvert.new({})
+        isodoc.bibitem_lookup(docxml)
+        isodoc.eref2link(docxml)
+      end
+
+      def error_anchor(erefs, docid)
+        erefs.each do |e|
+          msg = "<strong>** Unresolved reference to document #{docid} " \
+            "from eref</strong>"
+          e << msg
+          strip_eref(e)
+          @log&.add("Cross-References", e, msg)
+        end
+      end
+
       def ns(xpath)
         @isodoc.ns(xpath)
       end

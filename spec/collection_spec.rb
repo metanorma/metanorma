@@ -206,7 +206,7 @@ RSpec.describe Metanorma::Collection do
                       <identifier>5a254d10-6c28-4721-872e-4974dfc035a3</identifier>
                       <type>document</type>
                       <title>Document</title>
-                      <entry id="doc000000000" sectionsplit="true" index="true" fileref="document-1/document-1.xml">
+                      <entry target="doc000000000" sectionsplit="true" index="true" fileref="document-1/document-1.xml">
                         <identifier>ISO 12345-1:2024</identifier>
                       </entry>
                     </entry>
@@ -214,10 +214,10 @@ RSpec.describe Metanorma::Collection do
                       <identifier>eb779c1d-f770-47e4-9d5f-83958e59be0f</identifier>
                       <type>attachments</type>
                       <title>Attachments</title>
-                      <entry id="doc000000001" attachment="true" index="true" fileref="document-1/img/action_schemaexpg2.svg">
+                      <entry target="doc000000001" attachment="true" index="true" fileref="document-1/img/action_schemaexpg2.svg">
                         <identifier>action_schemaexpg2.svg</identifier>
                       </entry>
-                      <entry id="doc000000002" attachment="true" index="true" fileref="../../assets/rice_image1.png">
+                      <entry target="doc000000002" attachment="true" index="true" fileref="../../assets/rice_image1.png">
                         <identifier>rice_image1.png</identifier>
                       </entry>
                     </entry>
@@ -233,7 +233,7 @@ RSpec.describe Metanorma::Collection do
                       <identifier>862b2f9e-0e7a-4a01-9916-27500e141a46</identifier>
                       <type>document</type>
                       <title>Document</title>
-                      <entry id="doc000000003" sectionsplit="true" index="true" fileref="document-2/document-2.xml">
+                      <entry target="doc000000003" sectionsplit="true" index="true" fileref="document-2/document-2.xml">
                         <identifier>ISO 12345-2:2024</identifier>
                       </entry>
                     </entry>
@@ -241,7 +241,7 @@ RSpec.describe Metanorma::Collection do
                       <identifier>380c7f48-59e5-44c8-b5db-5ac5d79c12f3</identifier>
                       <type>attachments</type>
                       <title>Attachments</title>
-                      <entry id="doc000000004" attachment="true" index="true" fileref="document-2/img/action_schemaexpg3.svg">
+                      <entry target="doc000000004" attachment="true" index="true" fileref="document-2/img/action_schemaexpg3.svg">
                         <identifier>action_schemaexpg3.svg</identifier>
                       </entry>
                     </entry>
@@ -284,7 +284,7 @@ RSpec.describe Metanorma::Collection do
           end
           Metanorma::Collection.set_fileref_resolver(&my_fileref_proc)
           xml = Nokogiri::XML(ccm)
-          id = xml.at("//entry[@id = 'doc000000001']/@fileref")
+          id = xml.at("//entry[@target = 'doc000000001']/@fileref")
           expect(id.text).to eq "document-1/image/action_schemaexpg2.svg"
         end
       end
@@ -424,6 +424,136 @@ RSpec.describe Metanorma::Collection do
       xml = cleanup_id File.read(file, encoding: "UTF-8")
       expect(Xml::C14n.format(cleanup_id(mc.to_xml))).to be_equivalent_to Xml::C14n.format(xml)
     end
+  end
+
+  it "disambiguates destination filenames" do
+    file = "#{INPATH}/collection.dup.yml"
+    of = OUTPATH
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "#{INPATH}/collection_cover.html",
+      compile: {
+        install_fonts: false,
+      },
+    )
+    expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.1.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.2.xml")).to be true
+    FileUtils.rm_rf of
+  end
+
+  it "skips indexing of files in coverpage on request" do
+    file = "#{INPATH}/collection.dup.yml"
+    of = OUTPATH
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation xml html],
+      output_folder: of,
+      coverpage: "#{INPATH}/collection_cover.html",
+      compile: {
+        install_fonts: false,
+      },
+    )
+    index = File.read("#{OUTPATH}/index.html")
+    expect(index).to include "ISO&nbsp;44001"
+    expect(index).not_to include "ISO&nbsp;44002"
+    expect(index).to include "ISO&nbsp;44003"
+    FileUtils.rm_rf of
+  end
+
+  it "inject repository identifiers" do
+    Dir.chdir("spec")
+    file = "../#{INPATH}/collection1.norepo.yml"
+    of = "../#{OUTPATH}"
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation xml html],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: {
+        install_fonts: false,
+      },
+    )
+    Dir.chdir("..")
+    index = File.read("#{OUTPATH}/rice-en.final.norepo.xml")
+    expect(index).to include "Mass fraction of extraneous matter, milled rice " \
+                             "(nonglutinous), sample dividers and " \
+                             "recommendations relating to storage and " \
+                             "transport conditions"
+    # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
+    # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
+    FileUtils.rm_rf of
+  end
+
+  it "processes flavor directive" do
+    Dir.chdir("spec")
+    yaml = File.read "../#{INPATH}/collection_solo.yml"
+    of = "../#{OUTPATH}"
+    newyaml = "../#{INPATH}/collection_new1.yml"
+    File.open(newyaml, "w") { |x| x.write(yaml) }
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    # manifest docid has docid type iso
+    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") do |x|
+      x.write(yaml.sub("  - documents-inline",
+                       "  - documents-inline\n  - flavor: standoc"))
+    end
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") do |x|
+      x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: iso").sub(
+                "type: iso", "type: fred"
+              ))
+    end
+    # get flavor from directive not docid
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") { |x| x.write(yaml.sub("type: iso", "type: fred")) }
+    # ignorable flavor from docid
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "../#{INPATH}/collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") do |x|
+      x.write(yaml.sub("  - documents-inline",
+                       "  - documents-inline\n  - flavor: fred"))
+    end
+    begin
+      expect do
+        Metanorma::Collection.parse newyaml
+      end.to raise_error(SystemExit)
+    rescue SystemExit, RuntimeError
+    end
+
+    FileUtils.rm_rf of
   end
 
   private

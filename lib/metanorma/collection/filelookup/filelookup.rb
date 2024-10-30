@@ -62,10 +62,22 @@ module Metanorma
           file, _filename = targetfile(entry, read: true)
           xml = Nokogiri::XML(file, &:huge)
           add_document_suffix(ident, xml)
-          entry.merge!(anchors: read_anchors(xml), ids: read_ids(xml),
-                       bibdata: xml.at(ns("//bibdata")),
-                       document_suffix: xml.root["document_suffix"])
+          entry.merge!(bibdata_extract(xml))
         end
+      end
+
+      def anchors_lookup(anchors)
+        anchors.values.each_with_object({}) do |v, m|
+          v.each_value { |v1| m[v1] = true }
+        end
+      end
+
+      def bibdata_extract(xml)
+        anchors = read_anchors(xml)
+        { anchors: anchors, anchors_lookup: anchors_lookup(anchors),
+          ids: read_ids(xml),
+          bibdata: xml.at(ns("//bibdata")),
+          document_suffix: xml.root["document_suffix"] }
       end
 
       def bibitem_process(entry)
@@ -76,7 +88,7 @@ module Metanorma
       end
 
       # ref is the absolute source file address
-      # rel_path is the relative source file address, relative to the YAML locaton
+      # rel_path is the relative source file address, relative to the YAML location
       # out_path is the destination file address, with any references outside
       # the working directory (../../...) truncated, and based on relative path
       # identifier is the id with only spaces, no nbsp

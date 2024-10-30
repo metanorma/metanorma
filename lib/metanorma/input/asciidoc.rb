@@ -14,15 +14,16 @@ module Metanorma
       end
 
       def extract_metanorma_options(file)
-        headerextract = file.sub(/\n\n.*$/m, "\n")
-        /\n:mn-(?:document-class|flavor):\s+(?<type>\S[^\n]*)\n/ =~ headerextract
-        /\n:mn-output-extensions:\s+(?<extensions>\S[^\n]*)\n/ =~ headerextract
-        /\n:mn-relaton-output-file:\s+(?<relaton>\S[^\n]*)\n/ =~ headerextract
-        /\n(?<asciimath>:mn-keep-asciimath:[^\n]*)\n/ =~ headerextract
-        /\n(?<novalid>:novalid:[^\n]*)\n/ =~ headerextract
-        asciimath = if defined?(asciimath)
-                      !asciimath.nil? && asciimath != ":mn-keep-asciimath: false"
-                    end
+        hdr = file.sub(/\n\n.*$/m, "\n")
+        /\n:(?:mn-)?(?:document-class|flavor):\s+(?<type>\S[^\n]*)\n/ =~ hdr
+        /\n:(?:mn-)?output-extensions:\s+(?<extensions>\S[^\n]*)\n/ =~ hdr
+        /\n:(?:mn-)?relaton-output-file:\s+(?<relaton>\S[^\n]*)\n/ =~ hdr
+        /\n(?<asciimath>:(?:mn-)?keep-asciimath:[^\n]*)\n/ =~ hdr
+        /\n(?<novalid>:novalid:[^\n]*)\n/ =~ hdr
+        if defined?(asciimath)
+          asciimath =
+            !asciimath.nil? && !/keep-asciimath: false/.match?(asciimath)
+        end
         asciimath = nil if asciimath == false
         {
           type: defined?(type) ? type&.strip : nil,
