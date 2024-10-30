@@ -311,8 +311,10 @@
          </entry>
       </entry>
     </entry>
+    <!--
     <format>html</format>
-   <coverpage>cover.html</coverpage>
+    <coverpage>cover.html</coverpage>
+    -->
    <prefatory-content>
       <clause id="_clause" inline-header="false" obligation="normative">
          <title>Clause</title>
