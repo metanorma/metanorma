@@ -21,19 +21,14 @@ module Metanorma
         attribute :bibdata, Bibdata
         attribute :directive, Directive, collection: true
         attribute :manifest, Manifest
-        attribute :format, ::Lutaml::Model::Type::String, collection: true,
-                                                          default: -> {
-                                                            [:html]
-                                                          }
-        attribute :output_folder, ::Lutaml::Model::Type::String
-        attribute :coverpage, ::Lutaml::Model::Type::String, default: -> {
-          "cover.html"
-        }
+        attribute :coverpage, :string, default: -> { "cover.html" }
+        attribute :format, :string, collection: true, default: -> { [:html] }
+        attribute :output_folder, :string
         attribute :compile, CompileOptions
         attribute :prefatory_content, :string, raw: true
         attribute :final_content, :string, raw: true
         attribute :documents, Bibdata, collection: true
-        attribute :xmlns, ::Lutaml::Model::Type::String, default: -> { "http://metanorma.org" }
+        attribute :xmlns, :string, default: -> { "http://metanorma.org" }
 
         yaml do
           map "directives", to: :directive, with: { from: :directives_from_yaml,
@@ -41,9 +36,9 @@ module Metanorma
           map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
                                                to: :bibdata_to_yaml }
           map "manifest", to: :manifest
-          map "format", to: :format
+          map "format", to: :format, render_default: true
           map "output_folder", to: :output_folder
-          map "coverpage", to: :coverpage
+          map "coverpage", to: :coverpage, render_default: true
           map "compile", to: :compile
           map "prefatory-content", to: :prefatory_content
           map "final-content", to: :final_content
@@ -58,17 +53,22 @@ module Metanorma
           map_element "directive", to: :directive
           map_element "entry", to: :manifest, with: { from: :manifest_from_xml,
                                                       to: :manifest_to_xml }
-          map_element "format", to: :format
+          map_element "format", to: :format, render_default: true
           map_element "output_folder", to: :output_folder
-          map_element "coverpage", to: :coverpage
+          map_element "coverpage", to: :coverpage, render_default: true
           map_element "compile", to: :compile
-          map_element "prefatory-content", to: :prefatory_content,
-            with: { from: :prefatory_from_xml, to: :prefatory_to_xml }
-          map_element "doc-container", to: :documents,
-                                       with: { from: :documents_from_xml,
-                                               to: :documents_to_xml }
-          map_element "final-content", to: :final_content,
-            with: { from: :final_from_xml, to: :final_to_xml }
+          map_element "prefatory-content",
+                      to: :prefatory_content,
+                      with: { from: :prefatory_from_xml,
+                              to: :prefatory_to_xml }
+          map_element "doc-container",
+                      to: :documents,
+                      with: { from: :documents_from_xml,
+                              to: :documents_to_xml }
+          map_element "final-content",
+                      to: :final_content,
+                      with: { from: :final_from_xml,
+                              to: :final_to_xml }
         end
 
         def manifest_from_xml(model, node)

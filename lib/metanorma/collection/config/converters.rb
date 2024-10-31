@@ -14,7 +14,8 @@ module Metanorma
         end
 
         def bibdata_from_xml(model, node)
-          model.bibdata = node # Relaton::Cli.parse_xml(node.content)
+          require 'debug'; binding.b
+          model.bibdata = Relaton::Cli.parse_xml(node.node.adapter_node)
         end
 
         def bibdata_to_xml(model, parent, doc)

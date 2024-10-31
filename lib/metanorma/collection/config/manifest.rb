@@ -55,7 +55,7 @@ end
           map_attribute "index", to: :index
           map_attribute "url", to: :url
           map_attribute "fileref", to: :file
-          map_element "identifier", to: :identifier
+          map_element "identifier", to: :identifier, render_default: true
           map_element "type", to: :type
           map_element "title", to: :title
           map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,

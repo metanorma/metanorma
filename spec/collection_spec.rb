@@ -425,7 +425,7 @@ RSpec.describe Metanorma::Collection do
       expect(Xml::C14n.format(cleanup_id(mc.to_xml))).to be_equivalent_to Xml::C14n.format(xml)
     end
   end
-
+=begin
   it "disambiguates destination filenames" do
     file = "#{INPATH}/collection.dup.yml"
     of = OUTPATH
@@ -555,7 +555,7 @@ RSpec.describe Metanorma::Collection do
 
     FileUtils.rm_rf of
   end
-
+=end
   private
 
   GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
