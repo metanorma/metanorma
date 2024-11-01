@@ -39,7 +39,7 @@ module Metanorma
           map "format", to: :format, render_default: true
           map "output_folder", to: :output_folder
           map "coverpage", to: :coverpage, render_default: true
-          map "compile", to: :compile
+          map "compile", to: :compile, render_default: true
           map "prefatory-content", to: :prefatory_content
           map "final-content", to: :final_content
         end
@@ -56,7 +56,7 @@ module Metanorma
           map_element "format", to: :format, render_default: true
           map_element "output_folder", to: :output_folder
           map_element "coverpage", to: :coverpage, render_default: true
-          map_element "compile", to: :compile
+          map_element "compile", to: :compile, render_default: true
           map_element "prefatory-content",
                       to: :prefatory_content,
                       with: { from: :prefatory_from_xml,
@@ -72,7 +72,7 @@ module Metanorma
         end
 
         def manifest_from_xml(model, node)
-          model.manifest = node
+          model.manifest = Manifest.from_xml(node.node.to_xml)
         end
 
         def manifest_to_xml(model, parent, doc)

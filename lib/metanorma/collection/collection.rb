@@ -239,7 +239,6 @@ module Metanorma
                    pre_parse_model(y)
                    ::Metanorma::Collection::Config::Config.from_yaml(y.to_yaml)
                  end
-        require 'debug'; binding.b
         new(file: file, config: config)
       end
     end
