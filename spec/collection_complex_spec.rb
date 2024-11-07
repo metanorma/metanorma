@@ -464,8 +464,11 @@ RSpec.describe Metanorma::Collection do
               identifier: Bibliography
 
         OUTPUT
+      system "pwd"
       system "ls ."
       FileUtils.rm_f "tmp_test_sectionsplit.presentation.xml"
+      system "pwd"
+      system "ls ."
     end
 
     it "YAML collection with multiple documents sectionsplit (source document for links)" do
