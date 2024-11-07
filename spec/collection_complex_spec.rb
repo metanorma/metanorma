@@ -708,7 +708,8 @@ RSpec.describe Metanorma::Collection do
       system "chmod 755 tmp_document-2.presentation.xml"
       FileUtils.rm_f("tmp_document-2.presentation.xml")
       system "pwd"
-      system "ls ."
+      system "whoami"
+      system "ls -l ."
     end
 
     it "recompiles XML" do
