@@ -131,7 +131,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(Xml::C14n.format(xml))).to be_equivalent_to Xml::C14n.format(xml_content)
+      expect(cleanup_id(Xml::C14n.format(xml)))
+        .to be_equivalent_to Xml::C14n.format(xml_content)
     end
 
     it "YAML collection with no document identifiers" do
@@ -142,7 +143,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(Xml::C14n.format(xml))).to be_equivalent_to Xml::C14n.format(xml_content)
+      expect(cleanup_id(Xml::C14n.format(xml)))
+        .to be_equivalent_to Xml::C14n.format(xml_content)
     end
 
     it "YAML collection with docs inline" do
@@ -176,7 +178,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(Xml::C14n.format(cleanup_id(xml))).to be_equivalent_to Xml::C14n.format(xml_content)
+      expect(Xml::C14n.format(cleanup_id(xml)))
+        .to be_equivalent_to Xml::C14n.format(xml_content)
     end
 
     context "YAML collection with new format" do
@@ -391,6 +394,7 @@ RSpec.describe Metanorma::Collection do
             expect(generated_files).to include("#{OUTPATH}/#{k}")
             expect(File.read("#{OUTPATH}/#{k}", encoding: "utf-8"))
               .to include(v)
+            FileUtils.rm_f("#{INPATH}/tmp_document-2.presentation.xml")
           end
         end
       end
@@ -402,7 +406,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(cleanup_id(Xml::C14n.format(mc.to_xml))).to be_equivalent_to Xml::C14n.format(xml)
+      expect(cleanup_id(Xml::C14n.format(mc.to_xml)))
+        .to be_equivalent_to Xml::C14n.format(xml)
     end
 
     it "XML collection with interleaved documents and manifests" do
@@ -420,7 +425,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(Xml::C14n.format(cleanup_id(mc.to_xml))).to be_equivalent_to Xml::C14n.format(xml)
+      expect(Xml::C14n.format(cleanup_id(mc.to_xml)))
+        .to be_equivalent_to Xml::C14n.format(xml)
     end
   end
 
@@ -481,7 +487,8 @@ RSpec.describe Metanorma::Collection do
                              "recommendations relating to storage and " \
                              "transport conditions"
     # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
-    # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
+    # rice-en.final.norepo.xml to the file in the collection,
+    # and imported its bibdata
     FileUtils.rm_rf of
   end
 
@@ -499,7 +506,8 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     # manifest docid has docid type iso
-    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
+    expect(File.read("#{of}/collection.xml"))
+      .to include("ISO and IEC maintain terminology databases for use in standardization")
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline",
@@ -512,7 +520,8 @@ RSpec.describe Metanorma::Collection do
       coverpage: "../#{INPATH}/collection_cover.html",
       compile: { install_fonts: false },
     )
-    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+    expect(File.read("#{of}/collection.xml"))
+      .not_to include("ISO and IEC maintain terminology databases for use in standardization")
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: iso").sub(
@@ -527,7 +536,8 @@ RSpec.describe Metanorma::Collection do
       coverpage: "../#{INPATH}/collection_cover.html",
       compile: { install_fonts: false },
     )
-    expect(File.read("#{of}/collection.xml")).to include("ISO and IEC maintain terminology databases for use in standardization")
+    expect(File.read("#{of}/collection.xml"))
+      .to include("ISO and IEC maintain terminology databases for use in standardization")
 
     File.open(newyaml, "w") { |x| x.write(yaml.sub("type: iso", "type: fred")) }
     # ignorable flavor from docid
@@ -538,7 +548,8 @@ RSpec.describe Metanorma::Collection do
       coverpage: "../#{INPATH}/collection_cover.html",
       compile: { install_fonts: false },
     )
-    expect(File.read("#{of}/collection.xml")).not_to include("ISO and IEC maintain terminology databases for use in standardization")
+    expect(File.read("#{of}/collection.xml"))
+      .not_to include("ISO and IEC maintain terminology databases for use in standardization")
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline",
