@@ -466,6 +466,7 @@ RSpec.describe Metanorma::Collection do
         OUTPUT
       system "pwd"
       system "ls ."
+      system "chmod 755 tmp_document-2.presentation.xml"
       FileUtils.rm_f "tmp_test_sectionsplit.presentation.xml"
       system "pwd"
       system "ls ."
@@ -700,9 +701,14 @@ RSpec.describe Metanorma::Collection do
       # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg2.svg :
       # ambiguous name
       expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.1.svg")).to be true
+      system "pwd"
       system "ls ."
+      system "chmod 755 tmp_document-1.presentation.xml"
       FileUtils.rm_f("tmp_document-1.presentation.xml")
+      system "chmod 755 tmp_document-2.presentation.xml"
       FileUtils.rm_f("tmp_document-2.presentation.xml")
+      system "pwd"
+      system "ls ."
     end
 
     it "recompiles XML" do

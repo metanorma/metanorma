@@ -397,6 +397,7 @@ RSpec.describe Metanorma::Collection do
           end
             system "pwd"
             system "ls ."
+            system "chmod 755 tmp_document-2.presentation.xml"
             FileUtils.rm_f("tmp_document-2.presentation.xml")
             system "pwd"
             system "ls ."
