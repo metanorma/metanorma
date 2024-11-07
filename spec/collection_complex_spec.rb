@@ -464,7 +464,8 @@ RSpec.describe Metanorma::Collection do
               identifier: Bibliography
 
         OUTPUT
-      FileUtils.rm_f "#{INPATH}/tmp_test_sectionsplit.presentation.xml"
+      system "ls ."
+      FileUtils.rm_f "tmp_test_sectionsplit.presentation.xml"
     end
 
     it "YAML collection with multiple documents sectionsplit (source document for links)" do
@@ -696,8 +697,9 @@ RSpec.describe Metanorma::Collection do
       # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg2.svg :
       # ambiguous name
       expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.1.svg")).to be true
-      FileUtils.rm_f("#{INPATH}/tmp_document-1.presentation.xml")
-      FileUtils.rm_f("#{INPATH}/tmp_document-2.presentation.xml")
+      system "ls ."
+      FileUtils.rm_f("tmp_document-1.presentation.xml")
+      FileUtils.rm_f("tmp_document-2.presentation.xml")
     end
 
     it "recompiles XML" do

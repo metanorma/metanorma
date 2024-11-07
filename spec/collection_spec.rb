@@ -394,7 +394,8 @@ RSpec.describe Metanorma::Collection do
             expect(generated_files).to include("#{OUTPATH}/#{k}")
             expect(File.read("#{OUTPATH}/#{k}", encoding: "utf-8"))
               .to include(v)
-            FileUtils.rm_f("#{INPATH}/tmp_document-2.presentation.xml")
+            system "ls ."
+            FileUtils.rm_f("tmp_document-2.presentation.xml")
           end
         end
       end
