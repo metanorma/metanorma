@@ -115,7 +115,6 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "extracts metadata from collection for Liquid" do
-      mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
@@ -226,7 +225,6 @@ RSpec.describe Metanorma::Collection do
     end
 
     it "uses presentation XML directive, markup in identifiers" do
-      mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
@@ -478,6 +476,7 @@ RSpec.describe Metanorma::Collection do
               identifier: Bibliography
 
         OUTPUT
+      FileUtils.rm_f "tmp_test_sectionsplit.presentation.xml"
     end
 
     it "YAML collection with multiple documents sectionsplit (source document for links)" do
@@ -643,7 +642,6 @@ RSpec.describe Metanorma::Collection do
     it "YAML collection with nested YAMLs, directory changes, attachments " \
     "with absolute paths, attachments with paths outside working directory, " \
     "implicit identifier for files, svg links outside current file" do
-      mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
       FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
@@ -710,10 +708,11 @@ RSpec.describe Metanorma::Collection do
       # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg2.svg :
       # ambiguous name
       expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.1.svg")).to be true
+      FileUtils.rm_f("tmp_document-1.presentation.xml")
+      FileUtils.rm_f("tmp_document-2.presentation.xml")
     end
 
     it "recompiles XML" do
-      mock_pdf
       FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
       file = "#{INPATH}/document-1/collection.yml"
       Metanorma::Collection.parse file
@@ -777,7 +776,6 @@ RSpec.describe Metanorma::Collection do
 
   context "bilingual document" do
     it "YAML collection" do
-      mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
       file = "#{INPATH}/bilingual.yml"

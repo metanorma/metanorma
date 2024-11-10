@@ -1,4 +1,5 @@
-require "shale"
+require "lutaml/model"
+require "lutaml/model/xml_adapter/nokogiri_adapter"
 require_relative "../../shale_monkeypatch"
 require_relative "../../array_monkeypatch"
 require_relative "converters"
@@ -8,38 +9,45 @@ module Metanorma
   class Collection
     module Config
       require "shale/adapter/nokogiri"
-      ::Shale.xml_adapter = ::Shale::Adapter::Nokogiri
+      Lutaml::Model::Config.configure do |config|
+        config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
+      end
 
-      class Manifest < ::Shale::Mapper
-        attribute :identifier, ::Shale::Type::String,
-                  default: -> { UUIDTools::UUID.random_create.to_s }
-        attribute :id, ::Shale::Type::String
+      class Manifest < ::Lutaml::Model::Serializable
+        attribute :identifier, :string,
+          default: -> { UUIDTools::UUID.random_create.to_s }
+        attribute :id, :string
         attribute :bibdata, Bibdata
-        attribute :type, ::Shale::Type::String
-        attribute :title, ::Shale::Type::String
-        attribute :url, ::Shale::Type::String
-        attribute :attachment, ::Shale::Type::Boolean
-        attribute :sectionsplit, ::Shale::Type::Boolean
-        attribute :index, ::Shale::Type::Boolean, default: -> { true }
+        attribute :type, :string
+        attribute :title, :string
+        attribute :url, :string
+        attribute :level, :string
+        attribute :attachment, :boolean
+        attribute :sectionsplit, :boolean
+        attribute :index, :boolean, default: -> { true }
         attribute :entry, Manifest, collection: true
-        attribute :file, ::Shale::Type::String
+        attribute :file, :string
 
         yaml do
           map "identifier", to: :identifier
           map "type", to: :type
-          map "level", using: { from: :level_from_yaml, to: :nop_to_yaml }
+          map "level", to: :level,
+                       with: { from: :level_from_yaml, to: :nop_to_yaml }
           map "title", to: :title
           map "url", to: :url
           map "attachment", to: :attachment
           map "sectionsplit", to: :sectionsplit
           map "index", to: :index
           map "file", to: :file
-          map "fileref", using: { from: :fileref_from_yaml, to: :nop_to_yaml }
+          map "fileref", to: :file,
+                         with: { from: :fileref_from_yaml, to: :nop_to_yaml }
           map "entry", to: :entry
-          map "docref", using: { from: :docref_from_yaml, to: :nop_to_yaml }
-          map "manifest", using: { from: :docref_from_yaml, to: :nop_to_yaml }
-          map "bibdata", using: { from: :bibdata_from_yaml,
-                                  to: :bibdata_to_yaml }
+          map "docref", to: :entry,
+                        with: { from: :docref_from_yaml, to: :nop_to_yaml }
+          map "manifest", to: :entry,
+                          with: { from: :docref_from_yaml, to: :nop_to_yaml }
+          map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
+                                               to: :bibdata_to_yaml }
         end
 
         xml do
@@ -50,16 +58,16 @@ module Metanorma
           map_attribute "index", to: :index
           map_attribute "url", to: :url
           map_attribute "fileref", to: :file
-          map_element "identifier", to: :identifier
+          map_element "identifier", to: :identifier, render_default: true
           map_element "type", to: :type
           map_element "title", to: :title
-          map_element "bibdata", using: { from: :bibdata_from_xml,
-                                          to: :bibdata_to_xml }
+          map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
+                                                       to: :bibdata_to_xml }
           map_element "entry", to: :entry
         end
 
         def entry_from_xml(model, node)
-          model.entry = Manifest.from_xml(node.content)
+          model.entry = Manifest.from_xml(node.node.to_xml)
         end
 
         def entry_to_xml(model, parent, doc)

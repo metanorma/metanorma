@@ -1,4 +1,4 @@
-require "shale"
+require "lutaml/model"
 require_relative "../../shale_monkeypatch"
 require_relative "../../array_monkeypatch"
 require_relative "compile_options"
@@ -11,36 +11,35 @@ module Metanorma
   class Collection
     module Config
       require "shale/adapter/nokogiri"
-      ::Shale.xml_adapter = ::Shale::Adapter::Nokogiri
+      Lutaml::Model::Config.configure do |config|
+        config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
+      end
 
-      class Config < ::Shale::Mapper
+      class Config < ::Lutaml::Model::Serializable
         attr_accessor :path, :collection, :from_xml
 
         attribute :bibdata, Bibdata
         attribute :directive, Directive, collection: true
         attribute :manifest, Manifest
-        attribute :format, ::Shale::Type::String, collection: true,
-                                                  default: -> { [:html] }
-        attribute :output_folder, ::Shale::Type::String
-        attribute :coverpage, ::Shale::Type::String, default: -> {
-                                                                "cover.html"
-                                                              }
+        attribute :coverpage, :string, default: -> { "cover.html" }
+        attribute :format, :string, collection: true, default: -> { [:html] }
+        attribute :output_folder, :string
         attribute :compile, CompileOptions
-        attribute :prefatory_content, ::Shale::Type::String
-        attribute :final_content, ::Shale::Type::String
+        attribute :prefatory_content, :string, raw: true
+        attribute :final_content, :string, raw: true
         attribute :documents, Bibdata, collection: true
-        attribute :xmlns, ::Shale::Type::String, default: -> { "http://metanorma.org" }
+        attribute :xmlns, :string, default: -> { "http://metanorma.org" }
 
         yaml do
-          map "directives", using: { from: :directives_from_yaml,
-                                     to: :directives_to_yaml }
-          map "bibdata", using: { from: :bibdata_from_yaml,
-                                  to: :bibdata_to_yaml }
+          map "directives", to: :directive, with: { from: :directives_from_yaml,
+                                                    to: :directives_to_yaml }
+          map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
+                                               to: :bibdata_to_yaml }
           map "manifest", to: :manifest
-          map "format", to: :format
+          map "format", to: :format, render_default: true
           map "output_folder", to: :output_folder
-          map "coverpage", to: :coverpage
-          map "compile", to: :compile
+          map "coverpage", to: :coverpage, render_default: true
+          map "compile", to: :compile, render_default: true
           map "prefatory-content", to: :prefatory_content
           map "final-content", to: :final_content
         end
@@ -49,27 +48,31 @@ module Metanorma
           root "metanorma-collection"
           # namespace "http://metanorma.org", "m"
           # map_attribute "xmlns", to: :xmlns
-          map_element "bibdata", using: { from: :bibdata_from_xml,
-                                          to: :bibdata_to_xml }
-          map_element "directive", using: { from: :directive_from_xml,
-                                            to: :directive_to_xml }
-          map_element "entry", using: { from: :manifest_from_xml,
-                                        to: :manifest_to_xml }
-          map_element "format", to: :format
+          map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
+                                                       to: :bibdata_to_xml }
+          map_element "directive", to: :directive
+          map_element "entry", to: :manifest, with: { from: :manifest_from_xml,
+                                                      to: :manifest_to_xml }
+          map_element "format", to: :format, render_default: true
           map_element "output_folder", to: :output_folder
-          map_element "coverpage", to: :coverpage
-          map_element "compile", to: :compile
-          map_element "prefatory-content", using: { from: :prefatory_from_xml,
-                                                    to: :prefatory_to_xml }
+          map_element "coverpage", to: :coverpage, render_default: true
+          map_element "compile", to: :compile, render_default: true
+          map_element "prefatory-content",
+                      to: :prefatory_content,
+                      with: { from: :prefatory_from_xml,
+                              to: :prefatory_to_xml }
           map_element "doc-container",
-                      using: { from: :documents_from_xml,
-                               to: :documents_to_xml }
-          map_element "final-content", using: { from: :final_from_xml,
-                                                to: :final_to_xml }
+                      to: :documents,
+                      with: { from: :documents_from_xml,
+                              to: :documents_to_xml }
+          map_element "final-content",
+                      to: :final_content,
+                      with: { from: :final_from_xml,
+                              to: :final_to_xml }
         end
 
         def manifest_from_xml(model, node)
-          model.manifest = Manifest.from_xml(node.to_xml)
+          model.manifest = Manifest.from_xml(node.node.to_xml)
         end
 
         def manifest_to_xml(model, parent, doc)
@@ -78,7 +81,7 @@ module Metanorma
         end
 
         def prefatory_from_xml(model, node)
-          model.prefatory_content = node.to_xml
+          model.prefatory_content = node
         end
 
         def prefatory_to_xml(model, parent, doc)
@@ -92,7 +95,8 @@ module Metanorma
         def content_to_xml(model, parent, doc, type)
           x = model.send("#{type}_content") or return
           n = Nokogiri::XML(x)
-          elem = if n.elements.size == 1 then n.root
+          elem = if n.elements.size == 1
+                   "<#{type}-content>#{x}</#{type}-content>" # n.root
                  else
                    b = Nokogiri::XML::Builder.new
                    model.collection.content_to_xml(type, b)
@@ -102,19 +106,7 @@ module Metanorma
         end
 
         def final_from_xml(model, node)
-          model.final_content = node.to_xml
-        end
-
-        def directive_from_xml(model, node)
-          model.directive ||= []
-          model.directive << Directive.from_xml(node.to_xml)
-        end
-
-        def directive_to_xml(model, parent, doc)
-          Array(model.directive).each do |e|
-            elem = e.to_xml
-            doc.add_element(parent, elem)
-          end
+          model.final_content = node
         end
 
         def directives_from_yaml(model, value)
@@ -131,28 +123,6 @@ module Metanorma
         def directives_to_yaml(model, doc)
           doc["directives"] = model.directive.each_with_object([]) do |d, m|
             m << { d.key => d.value }
-          end
-        end
-
-        def documents_from_xml(model, value)
-          x = if value.is_a?(Shale::Adapter::Nokogiri::Node)
-                value.content
-              else Nokogiri::XML(value)
-              end
-          model.documents = x.xpath(".//bibdata")
-            .each_with_object([]) do |b, m|
-            m << Bibdata.from_xml(b.to_xml)
-          end
-        end
-
-        def documents_to_xml(model, parent, doc)
-          b = Nokogiri::XML::Builder.new do |xml|
-            xml.document do |m|
-              model.collection.doccontainer(m) or return
-            end
-          end
-          b.parent.elements.first.elements.each do |x|
-            doc.add_element(parent, x)
           end
         end
 

@@ -1,10 +1,10 @@
 require "relaton"
-require "shale"
+require "lutaml/model"
 
 module Metanorma
   class Collection
     module Config
-      class Bibdata < ::Shale::Mapper
+      class Bibdata < ::Lutaml::Model::Serializable
         model ::RelatonBib::BibliographicItem
       end
     end
