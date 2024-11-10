@@ -182,7 +182,7 @@ module Metanorma
       def isodoc_populate
         @isodoc.info(@xml, nil)
         { navigation: indexfile(@manifest), nav_object: index_object(@manifest),
-          docrefs: liquid_docrefs(@manifest),
+          bibdata: @bibdata.to_hash, docrefs: liquid_docrefs(@manifest),
           "prefatory-content": isodoc_builder(@xml.at("//prefatory-content")),
           "final-content": isodoc_builder(@xml.at("//final-content")),
           doctitle: @bibdata.title.first.title.content,

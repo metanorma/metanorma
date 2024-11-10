@@ -130,6 +130,18 @@ RSpec.describe Metanorma::Collection do
                 compile: {
                   install_fonts: false,
                 })
+      expect(cr.isodoc.meta.get[:bibdata])
+        .to eq(
+          { "copyright" => [{ "from" => "2020", "owner" => [{ "abbreviation" => { "content" => "ISO" }, "name" => [{ "content" => "International Organization for Standardization" }] }] }],
+            "date" => [{ "type" => "created", "value" => "2020" }, { "type" => "issued", "value" => "2020" }],
+            "docid" => [{ "id" => "ISO 12345", "type" => "iso" }],
+            "edition" => { "content" => "1" },
+            "ext" => { "schema-version" => "v1.0.3" },
+            "id" => "ISO12345",
+            "schema-version" => "v1.2.9",
+            "title" => [{ "content" => "ISO Collection 1", "format" => "text/plain", "language" => ["en"], "type" => "title-main" }],
+            "type" => "collection" },
+        )
       expect(cr.isodoc.meta.get[:docrefs])
         .to be_equivalent_to [
           { "identifier" => "ISO 17301-1:2016", "file" => "rice-en.final.html",
