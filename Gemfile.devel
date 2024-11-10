@@ -1,0 +1,1 @@
+#gem "lutaml-model", git: "https://github.com/lutaml/lutaml-model", branch: "main"

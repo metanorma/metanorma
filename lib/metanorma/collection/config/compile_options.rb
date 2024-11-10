@@ -1,12 +1,11 @@
-require "shale"
+require "lutaml/model"
 
 module Metanorma
   class Collection
     module Config
-      class CompileOptions < ::Shale::Mapper
-        attribute :install_fonts, ::Shale::Type::Boolean,
-                  default: -> { false }
-        attribute :agree_to_terms, ::Shale::Type::Boolean, default: -> { true }
+      class CompileOptions < ::Lutaml::Model::Serializable
+        attribute :install_fonts, :boolean, default: -> { false }
+        attribute :agree_to_terms, :boolean, default: -> { true }
       end
     end
   end

@@ -68,29 +68,23 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: rice-en.final.xml
               entry: []
-              bibdata:
             - identifier: ISO 17302:2016
               url: example/url
               index: true
               file: dummy.xml
               entry: []
-              bibdata:
             - identifier: ISO 1701:1974
               index: true
               file: rice1-en.final.xml
               entry: []
-              bibdata:
-            bibdata:
           - type: subcollection
             title: Amendments
             index: true
             entry:
-            - identifier: ISO 17301-1:2016/Amd.1:2017
+              identifier: ISO 17301-1:2016/Amd.1:2017
               index: true
               file: rice-amd.final.xml
               entry: []
-              bibdata:
-            bibdata:
           - type: attachments
             title: Attachments
             index: true
@@ -100,16 +94,13 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: pics/action_schemaexpg1.svg
               entry: []
-              bibdata:
             - identifier: rice_image1.png
               attachment: true
               index: true
               file: "../../assets/rice_image1.png"
               entry: []
-              bibdata:
-            bibdata:
-          bibdata:
-        format: []
+        format: 
+        - html
         coverpage: cover.html
         prefatory-content: |2
 
