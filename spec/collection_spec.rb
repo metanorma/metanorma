@@ -386,6 +386,7 @@ RSpec.describe Metanorma::Collection do
             expect(File.read("#{OUTPATH}/#{k}", encoding: "utf-8"))
               .to include(v)
           end
+          FileUtils.rm_f("tmp_document-2.presentation.xml")
         end
       end
     end
@@ -477,7 +478,8 @@ RSpec.describe Metanorma::Collection do
                              "recommendations relating to storage and " \
                              "transport conditions"
     # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
-    # rice-en.final.norepo.xml to the file in the collection, and imported its bibdata
+    # rice-en.final.norepo.xml to the file in the collection,
+    # and imported its bibdata
     FileUtils.rm_rf of
   end
 

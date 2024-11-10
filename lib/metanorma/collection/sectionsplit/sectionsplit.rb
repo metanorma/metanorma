@@ -82,13 +82,13 @@ module Metanorma
 
       def sectionsplit_prep(file, filename, dir)
         @splitdir = dir
-        xml1, type = sectionsplit_preprocess_semxml(file, filename)
+        xml, type = sectionsplit_preprocess_semxml(file, filename)
         flags = { format: :asciidoc, extension_keys: [:presentation],
                   type: type }.merge(@compile_opts)
-        Compile.new.compile(xml1, flags)
-        f = File.open(xml1.sub(/\.xml$/, ".presentation.xml"),
-                      encoding: "utf-8")
+        Compile.new.compile(xml, flags)
+        f = File.open(xml.sub(/\.xml$/, ".presentation.xml"), encoding: "utf-8")
         r = Nokogiri::XML(f, &:huge)
+        f.close
         r.xpath("//xmlns:svgmap1").each { |x| x.name = "svgmap" }
         r
       end
