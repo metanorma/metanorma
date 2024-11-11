@@ -63,11 +63,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :toclevels: ba
       :source-highlighter: bb
     INPUT
-    output = <<~OUTPUT
+    output = 
       {:aligncrosselements=>"ab", :bare=>"w", :baseassetpath=>"aa", :bodyfont=>"b", :breakupurlsintables=>true, :datauriimage=>false, :doctoclevels=>"s", :documentscheme=>"av", :fontlicenseagreement=>"at", :fonts=>"as", :header=>"m", :headerfont=>"c", :hierarchicalassets=>true, :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :ieeedtd=>"aw", :isowordbgstripcolor=>"ay", :isowordtemplate=>"au", :localizenumber=>"ax", :modspecidentifierbase=>"az", :olstyle=>"q", :pdfallowaccesscontent=>"an", :pdfallowassembledocument=>"ai", :pdfallowcopycontent=>"ag", :pdfalloweditannotations=>"aj", :pdfalloweditcontent=>"ah", :pdfallowfillinforms=>"am", :pdfallowprint=>"ak", :pdfallowprinthq=>"al", :pdfencrypt=>"ac", :pdfencryptionlength=>"ad", :pdfencryptmetadata=>"ao", :pdfownerpassword=>"af", :pdfuserpassword=>"ae", :scripts=>"i", :scripts_override=>"z", :scripts_pdf=>"j", :sectionsplit=>"a", :sourcehighlighter=>true, :standardstylesheet=>"l", :suppressasciimathdup=>true, :titlefont=>"d", :tocfigures=>true, :toclevels=>"ba", :tocrecommendations=>true, :toctables=>true, :ulstyle=>"p", :usexinclude=>true, :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
-    OUTPUT
     expect(Metanorma::Input::Asciidoc.new
-        .extract_options(input).sort.to_h.to_s + "\n").to eq output
+        .extract_options(input)).to eq output
 
     input = <<~INPUT
       = Document title
@@ -130,7 +129,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :source-highlighter:   bb
     INPUT
     expect(Metanorma::Input::Asciidoc.new
-        .extract_options(input).sort.to_h.to_s + "\n").to eq output
+        .extract_options(input)).to eq output
   end
 
   it "extracts Asciidoctor document attributes with default values" do
@@ -139,11 +138,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
       Author
 
     INPUT
-    output = <<~OUTPUT
+    output = 
       {:breakupurlsintables=>false, :datauriimage=>true, :hierarchicalassets=>false, :sourcehighlighter=>true, :suppressasciimathdup=>true, :tocfigures=>false, :tocrecommendations=>false, :toctables=>false, :usexinclude=>true}
-    OUTPUT
     expect(Metanorma::Input::Asciidoc.new
-      .extract_options(input).sort.to_h.to_s + "\n").to eq output
+      .extract_options(input)).to eq output
   end
 
   it "extracts Asciidoctor document attributes with default values and empty settings" do
@@ -160,11 +158,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :datauriimage:
       :source-highlighter:
     INPUT
-    output = <<~OUTPUT
+    output = 
       {:breakupurlsintables=>true, :datauriimage=>true, :hierarchicalassets=>true, :sourcehighlighter=>true, :suppressasciimathdup=>true, :tocfigures=>true, :tocrecommendations=>false, :toctables=>true, :usexinclude=>true}
-    OUTPUT
     expect(Metanorma::Input::Asciidoc.new
-      .extract_options(input).sort.to_h.to_s + "\n").to eq output
+      .extract_options(input)).to eq output
   end
 
   it "extracts Asciidoctor document attributes with default values and contrary settings" do
@@ -181,11 +178,10 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :data-uri-image: false
       :source-highlighter: false
     INPUT
-    output = <<~OUTPUT
+    output = 
       {:breakupurlsintables=>true, :datauriimage=>false, :hierarchicalassets=>false, :sourcehighlighter=>false, :suppressasciimathdup=>true, :tocfigures=>false, :tocrecommendations=>false, :toctables=>false, :usexinclude=>false}
-    OUTPUT
     expect(Metanorma::Input::Asciidoc.new
-      .extract_options(input).sort.to_h.to_s + "\n").to eq output
+      .extract_options(input)).to eq output
   end
 
   it "extracts Asciidoctor document attributes for Metanorma" do
@@ -198,30 +194,29 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :mn-keep-asciimath:
       :novalid:
     INPUT
-    output = <<~OUTPUT
+    output = 
       {:asciimath=>true, :extensions=>"b", :novalid=>true, :relaton=>"c", :type=>"a"}
-    OUTPUT
     expect(Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq output
+      .extract_metanorma_options(input)).to eq output
 
     expect(Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(input.gsub(":mn-", ":")).sort.to_h.to_s + "\n")
+      .extract_metanorma_options(input.gsub(":mn-", ":")))
       .to eq output
 
     expect(Metanorma::Input::Asciidoc.new
       .extract_metanorma_options(input.sub(/document-class/, "flavor"))
-      .sort.to_h.to_s + "\n").to eq output
+      ).to eq output
 
     expect(Metanorma::Input::Asciidoc.new
       .extract_metanorma_options(input.gsub(":mn-", ":").sub(/document-class/, "flavor"))
-      .sort.to_h.to_s + "\n").to eq output
+      ).to eq output
 
     input = <<~INPUT
       = Document title
       Author
     INPUT
     expect(Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq "{}\n"
+      .extract_metanorma_options(input)).to eq({})
   end
 
   it "extracts Asciidoctor document attributes for Metanorma" do
@@ -229,10 +224,9 @@ RSpec.describe Metanorma::Input::Asciidoc do
       = Document title
       Author
     INPUT
-    output = <<~OUTPUT
+    output = 
       {}
-    OUTPUT
     expect(Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(input).sort.to_h.to_s + "\n").to eq output
+      .extract_metanorma_options(input)).to eq output
   end
 end
