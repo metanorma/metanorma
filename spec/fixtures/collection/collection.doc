@@ -578,8 +578,8 @@
            </div>
            <div class="Note"><a name="N3_ISO_17302" id="N3_ISO_17302"></a>
              <p class="Note">
-               <span class="note_label">NOTE</span>
-               <span style="mso-tab-count:1">&#xA0; </span>
+               <span class="note_label">NOTE
+               <span style="mso-tab-count:1">&#xA0; </span></span>
                <a href="_dummy_attachments/LICENSE1.TXT">License A</a>
              </p>
            </div>
@@ -707,7 +707,7 @@
                <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
              </p>
              <div class="Section3">
-               <div><a name="_exordium" id="_exordium"></a><p class="a2">Exordium</p>
+               <div><a name="_exordium" id="_exordium"></a><h1>Exordium</h1>
      
        <p class="MsoNormal"><a name="_" id="_"></a>Hic explicit</p>
        </div>

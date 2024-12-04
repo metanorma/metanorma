@@ -39,10 +39,10 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
-      expect(Xml::C14n.format(concat_file.gsub("><", ">\n<"))
+      expect(Xml::C14n.format(cleanup_guid(concat_file.gsub("><", ">\n<")))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'"))
-        .to be_equivalent_to Xml::C14n.format(concat_text.gsub("><", ">\n<"))
+        .to be_equivalent_to Xml::C14n.format(cleanup_guid(concat_text.gsub("><", ">\n<")))
           .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
@@ -748,8 +748,8 @@ RSpec.describe Metanorma::Collection do
       expect(output).to include "Content-Type: image/png"
       output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
         .sub!(%r{<style>.+</style>}m, "<style/>")
-      expect(cleanup_guid(cleanup_id(output)))
-        .to be_equivalent_to cleanup_guid(expected)
+      expect(Xml::C14n.format(cleanup_guid(cleanup_id(output))))
+        .to be_equivalent_to Xml::C14n.format(cleanup_guid(expected))
       FileUtils.rm_rf of
     end
 
@@ -768,8 +768,8 @@ RSpec.describe Metanorma::Collection do
       expected = File.read("#{INPATH}/collection1.doc")
       output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
         .sub!(%r{<style>.+</style>}m, "<style/>")
-      expect(cleanup_guid(cleanup_id(output)))
-        .to be_equivalent_to cleanup_guid(expected)
+      expect(Xml::C14n.format(cleanup_guid(cleanup_id(output))))
+        .to be_equivalent_to Xml::C14n.format(cleanup_guid(expected))
       FileUtils.rm_rf of
     end
   end
@@ -808,6 +808,7 @@ RSpec.describe Metanorma::Collection do
       .gsub(%r{cid:#{GUID}}o, "cid:_")
       .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
       .gsub(%r{ target="_#{GUID}"}o, ' name="_"')
+      .gsub(%r{ source="_#{GUID}"}o, ' source="_"')
       .gsub(%r{ name="_#{GUID}"}o, ' name="_"')
       .gsub(%r{_Toc[0-9]{9}}o, "_Toc")
   end

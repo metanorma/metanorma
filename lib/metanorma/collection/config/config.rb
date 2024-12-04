@@ -1,5 +1,4 @@
 require "lutaml/model"
-require_relative "../../shale_monkeypatch"
 require_relative "../../array_monkeypatch"
 require_relative "compile_options"
 require_relative "converters"

@@ -210,10 +210,10 @@ module Metanorma
         ret[val[:type]] ||= {}
         index = if val[:container] || val[:label].nil? || val[:label].empty?
                   UUIDTools::UUID.random_create.to_s
-                else val[:label]
+                else val[:label].gsub(%r{<[^>]+>}, "")
                 end
         ret[val[:type]][index] = key
-        ret[val[:type]][val[:value]] = key if val[:value]
+        v = val[:value] and ret[val[:type]][v.gsub(%r{<[^>]+>}, "")] = key
       end
 
       # Also parse all ids in doc (including ones which won't be xref targets)
@@ -228,8 +228,8 @@ module Metanorma
       end
 
       def key(ident)
-        @c.decode(ident).gsub(/(\p{Zs})+/, " ").sub(/^metanorma-collection /,
-                                                    "")
+        @c.decode(ident).gsub(/(\p{Zs})+/, " ")
+          .sub(/^metanorma-collection /, "")
       end
 
       def keys

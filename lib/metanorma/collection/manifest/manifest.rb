@@ -6,7 +6,7 @@ module Metanorma
   class Collection
     class Manifest
       # @return [Metanorma::Collection]
-      attr_reader :collection, :config
+      attr_reader :collection, :config, :lang, :script
 
       # @param level [String]
       # @param dir [String]

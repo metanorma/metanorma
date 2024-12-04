@@ -1,6 +1,5 @@
 require "lutaml/model"
 require "lutaml/model/xml_adapter/nokogiri_adapter"
-require_relative "../../shale_monkeypatch"
 require_relative "../../array_monkeypatch"
 require_relative "converters"
 require_relative "bibdata"

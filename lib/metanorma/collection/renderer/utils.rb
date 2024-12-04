@@ -168,14 +168,6 @@ module Metanorma
         end
       end
 
-      def isodoc_create
-        isodoc = Util::load_isodoc(@flavor)
-        isodoc.i18n_init(@lang, @script, @locale) # read in internationalisation
-        isodoc.metadata_init(@lang, @script, @locale, isodoc.i18n)
-        isodoc.info(@xml, nil)
-        isodoc
-      end
-
       # create the @meta class of isodoc, for populating Liquid,
       # with "navigation" set to the index bar.
       # extracted from the manifest
