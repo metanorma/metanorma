@@ -794,7 +794,6 @@ RSpec.describe Metanorma::Collection do
       x = Nokogiri::XML(concat_file).at(".//xmlns:doc-container")
       x.at(".//*[local-name() = 'metanorma-extension']")&.remove
       x.at(".//*[local-name() = 'localized-strings']")&.remove
-      warn cleanup_guid(x.to_xml)
       a = Xml::C14n.format(cleanup_guid(x.to_xml))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'")
