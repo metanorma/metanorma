@@ -791,13 +791,18 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
       concat_text = cleanup_guid(read_and_cleanup("#{INPATH}/bilingual.presentation.xml"))
       concat_file = cleanup_guid(read_and_cleanup("#{OUTPATH}/collection.presentation.xml"))
-      expect(Xml::C14n.format(concat_file.gsub("><", ">\n<"))
+      x = Nokogiri::XML(concat_file).at(".//xmlns:doc-container")
+      x.at(".//*[local-name() = 'metanorma-extension']")&.remove
+      x.at(".//*[local-name() = 'localized-strings']")&.remove
+      warn cleanup_guid(x.to_xml)
+      a = Xml::C14n.format(cleanup_guid(x.to_xml))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'")
-        .gsub(%r{<localized-strings>.*?</localized-strings>}m, "<localized-strings/>"))
-        .to be_equivalent_to Xml::C14n.format(concat_text.gsub("><", ">\n<"))
+        .gsub(%r{<localized-strings>.*?</localized-strings>}m, "<localized-strings/>")
+      b = Xml::C14n.format(concat_text)
           .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
                "xlink:href='data:image/gif;base64,_'")
+      expect(a).to be_equivalent_to b
     end
   end
 

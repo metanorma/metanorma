@@ -622,7 +622,6 @@ module Metanorma
       end
 
       def to_bilingual(input)
-        require "debug"; binding.b
         presxml = Nokogiri::XML(input)
         doc_first_input = xmldoc(presxml.at("//xmlns:doc-container[1]"))
         doc_first_step1 =
