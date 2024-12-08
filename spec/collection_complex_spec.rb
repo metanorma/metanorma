@@ -78,7 +78,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1"
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "ISO 17301-1:2016/Amd.1:2017"
+        .to include "ISOO&nbsp;17301-1:2016/Amd.1:2017"
       expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
       expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
@@ -154,7 +154,7 @@ RSpec.describe Metanorma::Collection do
             "title" => "Test conditions for milling machines with table of " \
                        "variable height, with horizontal or vertical spindle",
             "level" => nil },
-          { "identifier" => "ISO 17301-1:2016/Amd.1:2017",
+          { "identifier" => "ISO&nbsp;17301-1:2016/Amd.1:2017",
             "file" => "rice-amd.final.html",
             "title" => "Specification and test methods&#x2009;&#x2014;&#x2009;" \
                        "Rice&#x2009;&#x2014;&#x2009;Mass fraction of " \
@@ -524,7 +524,7 @@ RSpec.describe Metanorma::Collection do
         .to be true
       expect(File.exist?("#{OUTPATH}/_dummy_attachments/LICENSE1.TXT")).to be true
       rice = File.read("#{OUTPATH}/rice-en.final.xml.1.html")
-      expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+      expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
       expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="rice-en.final.xml.2.html#anotherclause_ISO_17301-1_2016_ISO_17301-1_2016_2_This_is_another_clause"><span class="citesec">Clause 2</span></a> or <a href="rice-en.final.xml.3.html#thirdclause_ISO_17301-1_2016_ISO_17301-1_2016_3_This_is_another_clause"><span class="citesec">Clause 3</span></a>.</p>)
       # resolves SVG references to Express
       expect(rice).to match %r{<a xlink:href="dummy.html#express-schema_E1_ISO_17302">\s+<rect x="324\.69" y="450\.52"}m
@@ -813,6 +813,7 @@ RSpec.describe Metanorma::Collection do
       .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
       .gsub(%r{ target="_#{GUID}"}o, ' name="_"')
       .gsub(%r{ source="_#{GUID}"}o, ' source="_"')
+      .gsub(%r{ original-id="_#{GUID}"}o, ' original-id="_"')
       .gsub(%r{ name="_#{GUID}"}o, ' name="_"')
       .gsub(%r{_Toc[0-9]{9}}o, "_Toc")
   end
