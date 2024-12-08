@@ -1,0 +1,6 @@
+gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "feature/presxml-autonum"
+gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "feature/presxml-autonum"
+gem "isodoc-i18n", git: "https://github.com/metanorma/isodoc-i18n", branch: "main"
+gem "mn-requirements", git: "https://github.com/metanorma/mn-requirements", branch: "main"
+gem "metanorma-cli"
+

@@ -25,8 +25,9 @@ module Metanorma
         def gather_citeases(xml)
           xml.xpath("//*[@citeas]").each_with_object({}) do |e, m|
             /^semantic__/.match?(e.name) and next
-            m[e["citeas"]] ||= []
-            m[e["citeas"]] << e
+            k = key(e["citeas"])
+            m[k] ||= []
+            m[k] << e
           end
         end
 
@@ -61,10 +62,23 @@ module Metanorma
           def attr(_key); end
         end
 
-        def load_isodoc(flavor)
+        def load_isodoc(flavor, presxml: false)
           x = Asciidoctor.load nil, backend: flavor.to_sym
+          if presxml
+          x.converter.presentation_xml_converter(Dummy.new)
+          else
           x.converter.html_converter(Dummy.new) # to obtain Isodoc class
+          end
         end
+
+        def isodoc_create(flavor, lang, script, xml, presxml: false)
+        isodoc = Util::load_isodoc(flavor, presxml: presxml)
+        isodoc.i18n_init(lang, script, nil) # read in internationalisation
+        # TODO locale?
+        isodoc.metadata_init(lang, script, nil, isodoc.i18n)
+        isodoc.info(xml, nil)
+        isodoc
+      end
       end
     end
   end

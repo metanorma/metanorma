@@ -122,8 +122,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(Xml::C14n.format(xml)))
-        .to be_equivalent_to Xml::C14n.format(xml_content)
+      expect(cleanup_id(Xml::C14n.format(cleanup_guid(xml))))
+        .to be_equivalent_to Xml::C14n.format(cleanup_guid(xml_content))
     end
 
     it "YAML collection with no document identifiers" do
@@ -134,8 +134,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(Xml::C14n.format(xml)))
-        .to be_equivalent_to Xml::C14n.format(xml_content)
+      expect(cleanup_id(Xml::C14n.format(cleanup_guid(xml))))
+        .to be_equivalent_to Xml::C14n.format(cleanup_guid(xml_content))
     end
 
     it "YAML collection with docs inline" do
@@ -146,8 +146,8 @@ RSpec.describe Metanorma::Collection do
       xml = mc.to_xml
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
-      expect(Xml::C14n.format(cleanup_id(xml)))
-        .to be_equivalent_to Xml::C14n.format(read_and_cleanup(xml_file))
+      expect(Xml::C14n.format(cleanup_guid(cleanup_id(xml))))
+        .to be_equivalent_to Xml::C14n.format(cleanup_guid(read_and_cleanup(xml_file)))
 
       newyaml = "#{INPATH}/collection_docinline1.yml"
       File.open newyaml, "w" do |f|
@@ -157,8 +157,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse(newyaml)
       xml = mc.to_xml
       FileUtils.rm_rf newyaml
-      expect(Xml::C14n.format(cleanup_id(xml)))
-        .to be_equivalent_to Xml::C14n.format(read_and_cleanup(xml_file))
+      expect(Xml::C14n.format(cleanup_guid(cleanup_id(xml))))
+        .to be_equivalent_to Xml::C14n.format(cleanup_guid(read_and_cleanup(xml_file)))
     end
 
     it "YAML collection with interleaved documents and manifests" do
@@ -564,6 +564,7 @@ RSpec.describe Metanorma::Collection do
     content
       .gsub(%r{cid:#{GUID}}o, "cid:_")
       .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
+      .gsub(%r{ source="_#{GUID}"}o, ' source="_"')
       .gsub(%r{ name="_#{GUID}"}o, ' name="_"')
       .gsub(%r{_Toc[0-9]{9}}o, "_Toc")
   end

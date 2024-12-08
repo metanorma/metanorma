@@ -202,13 +202,11 @@ module Metanorma
       end
 
       def titlerender(section)
-        title = section.at(ns("./title")) or return "[Untitled]"
+        title = section.at(ns("./fmt-title")) or return "[Untitled]"
         t = title.dup
         t.xpath(ns(".//tab | .//br")).each { |x| x.replace(" ") }
         t.xpath(ns(".//bookmark")).each(&:remove)
-        t.xpath(ns(".//strong | .//span"))
-          .each { |x| x.replace(x.children) }
-        t.children.to_xml
+        t.xpath('.//text()').map(&:text).join
       end
     end
   end

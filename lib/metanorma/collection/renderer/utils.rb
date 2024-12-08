@@ -55,7 +55,7 @@ module Metanorma
       def docid_to_citeas(bib)
         docid = bib.at(ns("./docidentifier[@primary = 'true']")) ||
           bib.at(ns("./docidentifier")) or return
-        docid_prefix(docid)
+        ::Metanorma::Collection::Util::key(docid_prefix(docid))
       end
 
       def collect_erefs(docxml)
@@ -166,14 +166,6 @@ module Metanorma
             @fonts_manifest
           end
         end
-      end
-
-      def isodoc_create
-        isodoc = Util::load_isodoc(@flavor)
-        isodoc.i18n_init(@lang, @script, @locale) # read in internationalisation
-        isodoc.metadata_init(@lang, @script, @locale, isodoc.i18n)
-        isodoc.info(@xml, nil)
-        isodoc
       end
 
       # create the @meta class of isodoc, for populating Liquid,

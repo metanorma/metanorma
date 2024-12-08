@@ -6,7 +6,7 @@ module Metanorma
   class Collection
     class Manifest
       # @return [Metanorma::Collection]
-      attr_reader :collection, :config
+      attr_reader :collection, :config, :lang, :script
 
       # @param level [String]
       # @param dir [String]
@@ -17,7 +17,6 @@ module Metanorma
         @collection = collection
         @dir = dir
         @disambig = ::Metanorma::Collection::Util::DisambigFiles.new
-        #require "debug"; binding.b
         @config = manifest_postprocess(config)
       end
 

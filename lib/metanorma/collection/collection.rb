@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "relaton"
 require "relaton/cli"
 require "metanorma-utils"
@@ -128,7 +126,14 @@ module Metanorma
     # @return [String] XML
     def sections(cnt)
       c = Asciidoctor.convert(cnt, backend: flavor.to_sym, header_footer: true)
-      Nokogiri::XML(c, &:huge).at("//xmlns:sections").children.to_xml
+      x = Nokogiri::XML(c)
+      x.xpath("//xmlns:clause").each { |n| n["unnumbered"] = true }
+      file = Tempfile.new(%w(foo presentation.xml))
+      file.write(x.to_xml(indent: 0))
+      file.close
+      c1 = Util::isodoc_create(@flavor, @manifest.lang, @manifest.script, x, presxml: true)
+        .convert(file.path, nil, true)
+      Nokogiri::XML(c1).at("//xmlns:sections").children.to_xml
     end
 
     # @param builder [Nokogiri::XML::Builder]

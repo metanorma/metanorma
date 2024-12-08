@@ -43,7 +43,8 @@ module Metanorma
         @compile = Compile.new
         @compile.load_flavor(@flavor)
 
-        @isodoc = isodoc_create # output processor for flavour
+        # output processor for flavour
+        @isodoc = Util::isodoc_create(@flavor, @lang, @scropt, @xml)
         @outdir = dir_name_cleanse(options[:output_folder])
         @coverpage = options[:coverpage] || collection.coverpage
         @format = ::Metanorma::Util.sort_extensions_execution(options[:format])

@@ -163,6 +163,7 @@ end
 def update_bibitem(b, identifier)
   docid = b&.at(ns("./docidentifier"))&.text
   unless @files[docid]
+    require "debug"; binding.b
     warn "Cannot find crossreference to document #{docid} in document #{identifier}!"
     abort
   end

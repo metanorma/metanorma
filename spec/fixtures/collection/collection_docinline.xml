@@ -303,12 +303,15 @@
   </entry>
   <format>html</format>
   <coverpage>cover.html</coverpage>
-  <prefatory-content>
-    <clause id="_clause" inline-header="false" obligation="normative">
-      <title>Clause</title>
-      <p id="">Welcome to our collection</p>
-    </clause>
-  </prefatory-content>
+          <prefatory-content>
+             <clause id="_clause" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
+                <title id="_">Clause</title>
+                <fmt-title depth="1">
+                   <semx element="title" source="_">Clause</semx>
+                </fmt-title>
+                <p id="">Welcome to our collection</p>
+             </clause>
+          </prefatory-content>
   <doc-container id="doc000000000">
     <iso-standard>
       <bibdata type="standard">
@@ -575,10 +578,13 @@
     </bibdata>
     <attachment>data:image/svg+xml</attachment>
   </doc-container>
-  <final-content>
-    <clause id="_exordium" inline-header="false" obligation="normative">
-      <title>Exordium</title>
-      <p id="">Hic explicit</p>
-    </clause>
-  </final-content>
+          <final-content>
+             <clause id="_exordium" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
+                <title id="_">Exordium</title>
+                <fmt-title depth="1">
+                   <semx element="title" source="_">Exordium</semx>
+                </fmt-title>
+                <p id="">Hic explicit</p>
+             </clause>
+          </final-content>
 </metanorma-collection>
