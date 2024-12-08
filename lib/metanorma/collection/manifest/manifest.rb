@@ -17,7 +17,6 @@ module Metanorma
         @collection = collection
         @dir = dir
         @disambig = ::Metanorma::Collection::Util::DisambigFiles.new
-        #require "debug"; binding.b
         @config = manifest_postprocess(config)
       end
 
