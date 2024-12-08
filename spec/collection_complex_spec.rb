@@ -78,7 +78,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1"
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
-        .to include "ISOO&nbsp;17301-1:2016/Amd.1:2017"
+        .to include "ISO&nbsp;17301-1:2016/Amd.1:2017"
       expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
       expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
@@ -105,7 +105,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
         .to be true
       rice = File.read("#{OUTPATH}/rice-en.final.html")
-      expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+      expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
       expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
       # demonstrate that erefs are removed if they point to another document in the repository,
       # but that document is not supplied
@@ -145,22 +145,18 @@ RSpec.describe Metanorma::Collection do
       expect(cr.isodoc.meta.get[:docrefs])
         .to be_equivalent_to [
           { "identifier" => "ISO 17301-1:2016", "file" => "rice-en.final.html",
-            "title" => "Cereals and pulses&#x2009;&#x2014;&#x2009;" \
-                       "Specifications and test methods&#x2009;&#x2014;" \
-                       "&#x2009;Rice (Final)", "level" => nil },
+            "title" => "Cereals and pulses — Specifications and test methods — Rice (Final)",
+                       "level" => nil },
           { "identifier" => "ISO 17302:2016", "file" => "dummy.html",
             "title" => "Dummy document", "level" => nil },
           { "identifier" => "ISO 1701:1974", "file" => "rice1-en.final.html",
             "title" => "Test conditions for milling machines with table of " \
                        "variable height, with horizontal or vertical spindle",
             "level" => nil },
-          { "identifier" => "ISO&nbsp;17301-1:2016/Amd.1:2017",
+          { "identifier" => "ISO 17301-1:2016/Amd.1:2017",
             "file" => "rice-amd.final.html",
-            "title" => "Specification and test methods&#x2009;&#x2014;&#x2009;" \
-                       "Rice&#x2009;&#x2014;&#x2009;Mass fraction of " \
-                       "extraneous matter, milled rice (nonglutinous), sample " \
-                       "dividers and recommendations relating to storage and " \
-                       "transport conditions", "level" => nil },
+            "title" => "Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions",
+                       "level" => nil },
           { "identifier" => "action_schemaexpg1.svg",
             "file" => "pics/action_schemaexpg1.svg", "title" => nil,
             "level" => nil },
@@ -177,7 +173,7 @@ RSpec.describe Metanorma::Collection do
           <li><a href="rice1-en.final.html">ISO&nbsp;1701:1974</a></li>
           </ul>
           </li>
-          <li>Amendments<ul><li><a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a></li></ul>
+          <li>Amendments<ul><li><a href="rice-amd.final.html">ISO&nbsp;17301-1:2016/Amd.1:2017</a></li></ul>
           </li>
           <li>Attachments<ul>
           <li><a href="pics/action_schemaexpg1.svg">action_schemaexpg1.svg</a></li>
@@ -538,7 +534,7 @@ RSpec.describe Metanorma::Collection do
       p = xml.xpath("//xmlns:sections//xmlns:p")[4]
       p.delete("id")
       expect(p.to_xml).to be_equivalent_to <<~OUTPUT
-        <p>This document is updated in <link target="rice-amd.final.html"><span class="stdpublisher">ISO</span> <span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</link>.</p>
+        <p>This document is updated in <link target="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</link>.</p>
       OUTPUT
       FileUtils.rm_rf of
     end
@@ -587,7 +583,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
         .to be true
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
-        .to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+        .to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
         .to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
       # demonstrate that erefs are removed if they point to another document in the repository,
@@ -595,7 +591,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
         .to include %(This document is also unrelated to <a href="dummy.xml.3.html#what">)
       expect(File.read("#{OUTPATH}/rice-en.final.html"))
-        .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302:2016 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas E0/A0, <a href="dummy.xml.2.html#A1_ISO_17302_2016_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_2016_ISO_17302_2016_4">E2</a>.</p>}
+        .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302:2016 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas E0/A0, <a href="dummy.xml.2.html#A1_ISO_17302_2016_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_2016_ISO_17302_2016_4">E2</a>.</p>}
       FileUtils.rm_rf of
     end
 

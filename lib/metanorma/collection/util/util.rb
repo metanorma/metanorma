@@ -25,8 +25,9 @@ module Metanorma
         def gather_citeases(xml)
           xml.xpath("//*[@citeas]").each_with_object({}) do |e, m|
             /^semantic__/.match?(e.name) and next
-            m[e["citeas"]] ||= []
-            m[e["citeas"]] << e
+            k = key(e["citeas"])
+            m[k] ||= []
+            m[k] << e
           end
         end
 
