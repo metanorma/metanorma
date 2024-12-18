@@ -1033,12 +1033,12 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         </em>
                      </p>
                   </fn>
-                  <xref type="inline" target="International1993_ISO_JCGM_100_2008_FR_">[6]</xref>
+                  <xref type="inline" target="International1993_ISO_JCGM_100_2008_FR_">[13]</xref>
                   . En complément, l’
                   <xref target="annexC_ISO_JCGM_100_2008_FR_">[annexC_ISO_JCGM_100_2008_FR_]</xref>
                   donne les définitions d’un certain nombre de termes statistiques fondamentaux provenant principalement de la Norme internationale ISO 3534-1
                   <bookmark id="_"/>
-                  <xref type="inline" target="ISO_3534-1_ISO_JCGM_100_2008_FR_">[7]</xref>
+                  <xref type="inline" target="ISO_3534-1_ISO_JCGM_100_2008_FR_">[14]</xref>
                   . À partir de l’
                   <xref target="cls_3_ISO_JCGM_100_2008_FR_">
                      <span class="citesec">
@@ -1379,7 +1379,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   et adoptée par le VIM
                   <bookmark id="_"/>
                   :1993, définition 3.9
-                  <xref type="inline" target="International1993_ISO_JCGM_100_2008_FR_">[6]</xref>
+                  <xref type="inline" target="International1993_ISO_JCGM_100_2008_FR_">[13]</xref>
                   est la suivante:
                </p>
             </align-cell>
@@ -12805,7 +12805,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   s de la courbe et de tout point prédit peuvent habituellement être calculées par des procédures statistiques bien connues (voir
                   <xref target="scls_H-3_ISO_JCGM_100_2008_FR_">[scls_H-3_ISO_JCGM_100_2008_FR_]</xref>
                   et
-                  <xref type="inline" target="FULLER1987_ISO_JCGM_100_2008_FR_">[8]</xref>
+                  <xref type="inline" target="FULLER1987_ISO_JCGM_100_2008_FR_">[15]</xref>
                   ).
                </p>
                <clause id="scls_4-2-6_ISO_JCGM_100_2008_FR_" obligation="normative" inline-header="true" element-number="sections_clause4_clause2_clause6_"/>
@@ -13297,7 +13297,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         On utilise de telles méthodes spéciales pour traiter les mesurages d’étalons de fréquence. Il est cependant possible, pour d’autres grandeurs métrologiques, lorsqu’on passe de mesurages à court terme à des mesurages à long terme, que l’hypothèse de variations aléatoires
                         <bookmark id="_"/>
                         non corrélées ne soit plus valable et qu’on puisse aussi utiliser ces méthodes spéciales pour traiter ces mesurages. (Voir Référence
-                        <xref type="inline" target="ALLAN1987_ISO_JCGM_100_2008_FR_">[9]</xref>
+                        <xref type="inline" target="ALLAN1987_ISO_JCGM_100_2008_FR_">[16]</xref>
                         , par exemple, pour une présentation détaillée de la variance d’Allan
                         <bookmark id="_"/>
                         .)
@@ -23305,7 +23305,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         La loi trapézoïdale est équivalente à la convolution
                         <bookmark id="_"/>
                         de deux lois rectangulaires
-                        <xref type="inline" target="DIETRICH1991_ISO_JCGM_100_2008_FR_">[10]</xref>
+                        <xref type="inline" target="DIETRICH1991_ISO_JCGM_100_2008_FR_">[17]</xref>
                         , de demi-largeur
                         <stem type="MathML" block="false">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -29140,9 +29140,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </fn>
                      , Organisation internationale de normalisation (Genève, Suisse)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[6]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[13]</docidentifier>
                   <biblio-tag>
-                     [6]
+                     [13]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29410,9 +29410,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Statistiques — Vocabulaire et symboles — Partie 1: Probabilité et termes statistiques généraux</em>
                      , Organisation internationale de normalisation (Genève, Suisse)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[7]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[14]</docidentifier>
                   <biblio-tag>
-                     [7]
+                     [14]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29440,9 +29440,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Measurement error models</em>
                      , John Wiley (New York, N.Y.)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[8]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[15]</docidentifier>
                   <biblio-tag>
-                     [8]
+                     [15]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29472,9 +29472,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>IM-36</strong>
                      , 646-654
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[9]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[16]</docidentifier>
                   <biblio-tag>
-                     [9]
+                     [16]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29502,9 +29502,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Uncertainty, calibration and probability</em>
                      , second edition, Adam-Hilger (Bristol)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[10]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[17]</docidentifier>
                   <biblio-tag>
-                     [10]
+                     [17]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29534,9 +29534,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>163</strong>
                      , 241-251
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[11]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[18]</docidentifier>
                   <biblio-tag>
-                     [11]
+                     [18]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29564,9 +29564,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Precision measurement and fundamental constants II</em>
                      , Taylor, B. N., and Phillips, W. D., eds., Natl. Bur. Stand. (U.S.) Spec. Publ. 617, US GPO (Washington, D.C.), 375-381
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[12]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[19]</docidentifier>
                   <biblio-tag>
-                     [12]
+                     [19]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29594,9 +29594,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Theory of probability</em>
                      , troisième édition, Oxford University Press (Oxford)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[13]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[20]</docidentifier>
                   <biblio-tag>
-                     [13]
+                     [20]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29624,9 +29624,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Bayesian statistics: principles, models, and applications</em>
                      , John Wiley (New York, N.Y.)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[14]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[21]</docidentifier>
                   <biblio-tag>
-                     [14]
+                     [21]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29654,9 +29654,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Statistics for experimenters</em>
                      , John Wiley (New York, N.Y.)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[15]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[22]</docidentifier>
                   <biblio-tag>
-                     [15]
+                     [22]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29698,9 +29698,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>34</strong>
                      , 28-35
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[16]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[23]</docidentifier>
                   <biblio-tag>
-                     [16]
+                     [23]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29730,9 +29730,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>9</strong>
                      (3), 211
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[17]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[24]</docidentifier>
                   <biblio-tag>
-                     [17]
+                     [24]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29768,9 +29768,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>2</strong>
                      (6), 110-114
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[18]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[25]</docidentifier>
                   <biblio-tag>
-                     [18]
+                     [25]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29810,9 +29810,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Certification des matériaux de référence — Principes généraux et statistiques</em>
                      , deuxième édition, Organisation internationale de normalisation (Genève, Suisse)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[19]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[26]</docidentifier>
                   <biblio-tag>
-                     [19]
+                     [26]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29840,9 +29840,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Quality by experimental design</em>
                      , Marcel Dekker (New York, N.Y.)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[20]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[27]</docidentifier>
                   <biblio-tag>
-                     [20]
+                     [27]
                      <tab/>
                   </biblio-tag>
                </bibitem>

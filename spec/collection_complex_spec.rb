@@ -136,7 +136,6 @@ RSpec.describe Metanorma::Collection do
             "date" => [{ "type" => "created", "value" => "2020" }, { "type" => "issued", "value" => "2020" }],
             "docid" => [{ "id" => "ISO 12345", "type" => "iso" }],
             "edition" => { "content" => "1" },
-            "ext" => { "schema-version" => "v1.0.3" },
             "id" => "ISO12345",
             "schema-version" => "v1.2.9",
             "title" => [{ "content" => "ISO Collection 1", "format" => "text/plain", "language" => ["en"], "type" => "title-main" }],
