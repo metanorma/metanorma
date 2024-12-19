@@ -106,11 +106,19 @@ module Metanorma
           end
         end
 
+        def select_citation_uri(bib, lang)
+          url = bib.at(ns("./uri[@type = 'citation']" \
+                          "[@language = '#{lang}']")) ||
+            bib.at(ns("./uri[@type = 'citation']"))
+          url&.text
+        end
+
         def eref_to_internal_eref(section, xml, key)
-          bibitems, indirect, bibids = eref_to_internal_eref_prep(section, xml)
+          bibitems, indirect, bibids, lang =
+            eref_to_internal_eref_prep(section, xml)
           eref_to_internal_eref_select(section, xml, bibitems)
             .each_with_object([]) do |x, m|
-              url = bibitems[x]&.at(ns("./uri[@type = 'citation']"))&.text
+              url = select_citation_uri(bibitems[x], lang)
               bibids[x]&.each do |e|
                 e.at(ns("./localityStack | ./locality")) and next
                 id = eref_to_internal_eref1(e, key, url, indirect) and m << id
@@ -124,7 +132,8 @@ module Metanorma
           indirect = ::Metanorma::Collection::Util::gather_bibitems(xml)
             .select { |_, v| indirect_bib?(v) }
           bibitemids = ::Metanorma::Collection::Util::gather_bibitemids(section)
-          [bibitems, indirect, bibitemids]
+          lang = xml.at(ns("//bibdata/language"))&.text || "en"
+          [bibitems, indirect, bibitemids, lang]
         end
 
         def eref_to_internal_eref1(elem, key, url, indirect)
