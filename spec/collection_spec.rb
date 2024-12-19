@@ -54,8 +54,7 @@ RSpec.describe Metanorma::Collection do
               abbreviation:
                 content: ISO
             from: '2020'
-          ext:
-            manifest:
+        manifest:
           type: collection
           title: ISO Collection
           index: true
@@ -99,7 +98,7 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: "../../assets/rice_image1.png"
               entry: []
-        format: 
+        format:
         - html
         coverpage: cover.html
         prefatory-content: |2
