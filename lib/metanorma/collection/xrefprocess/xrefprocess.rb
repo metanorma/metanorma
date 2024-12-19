@@ -107,6 +107,7 @@ module Metanorma
         end
 
         def select_citation_uri(bib, lang)
+          bib or return
           url = bib.at(ns("./uri[@type = 'citation']" \
                           "[@language = '#{lang}']")) ||
             bib.at(ns("./uri[@type = 'citation']"))
