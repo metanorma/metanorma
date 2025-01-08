@@ -1,0 +1,1 @@
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/i18nyaml_path"
