@@ -2,6 +2,7 @@
 Author
 :docfile: test2.adoc
 :imagesdir: spec/assets
+:i18nyaml: i.yaml
 
 embed::test1.adoc[]
 include::test3.adoc[]

@@ -40,6 +40,7 @@ RSpec.describe Metanorma::Compile do
         tocfigures: true,
         toctables: true,
         tocrecommendations: true,
+        i18nyaml: "spec/assets/i.yaml",
         output_formats: {
           presentation: "presentation.xml",
         },
@@ -58,6 +59,7 @@ RSpec.describe Metanorma::Compile do
                                    toctables: true,
                                    tocrecommendations: true,
                                    agree_to_terms: true,
+                                   i18nyaml: "spec/assets/i.yaml",
                                    output_formats: { doc: "doc",
                                                      html: "html",
                                                      html_alt: "alt.html",
