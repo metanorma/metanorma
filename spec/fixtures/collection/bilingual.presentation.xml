@@ -1033,12 +1033,12 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         </em>
                      </p>
                   </fn>
-                  <xref type="inline" target="International1993_ISO_JCGM_100_2008_FR_">[13]</xref>
+                  <xref type="inline" target="International1993_ISO_JCGM_100_2008_FR_">[6]</xref>
                   . En complément, l’
                   <xref target="annexC_ISO_JCGM_100_2008_FR_">[annexC_ISO_JCGM_100_2008_FR_]</xref>
                   donne les définitions d’un certain nombre de termes statistiques fondamentaux provenant principalement de la Norme internationale ISO 3534-1
                   <bookmark id="_"/>
-                  <xref type="inline" target="ISO_3534-1_ISO_JCGM_100_2008_FR_">[14]</xref>
+                  <xref type="inline" target="ISO_3534-1_ISO_JCGM_100_2008_FR_">[7]</xref>
                   . À partir de l’
                   <xref target="cls_3_ISO_JCGM_100_2008_FR_">
                      <span class="citesec">
@@ -1379,7 +1379,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   et adoptée par le VIM
                   <bookmark id="_"/>
                   :1993, définition 3.9
-                  <xref type="inline" target="International1993_ISO_JCGM_100_2008_FR_">[13]</xref>
+                  <xref type="inline" target="International1993_ISO_JCGM_100_2008_FR_">[6]</xref>
                   est la suivante:
                </p>
             </align-cell>
@@ -1858,13 +1858,32 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      <span class="fmt-autonum-delim">.</span>
                      <semx element="autonum" source="scls_2-3-1_ISO_JCGM_100_2008_EN_">1</semx>
                   </fmt-xref-label>
-                  <preferred>
-                     <strong>standard uncertainty</strong>
-                     <bookmark id="_"/>
+                  <preferred id="_">
+                     <expression>
+                        <name>
+                           standard uncertainty
+                           <bookmark original-id="_"/>
+                        </name>
+                     </expression>
                   </preferred>
-                  <definition>
-                     <p id="" cross-align="true" element-number="sections_clause2_terms_term1_definition1_p1_">uncertainty of the result of a measurement expressed as a standard deviation</p>
+                  <fmt-preferred>
+                     <p cross-align="true" element-number="sections_clause2_terms_term1_fmt-preferred1_p1_">
+                        <semx element="preferred" source="_">
+                           <strong>standard uncertainty</strong>
+                           <bookmark id="_"/>
+                        </semx>
+                     </p>
+                  </fmt-preferred>
+                  <definition id="_">
+                     <verbal-definition>
+                        <p original-id="_f848e828-a730-4f3c-a72d-fe4aed916101_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause2_terms_term1_definition1_verbal-definition1_p1_">uncertainty of the result of a measurement expressed as a standard deviation</p>
+                     </verbal-definition>
                   </definition>
+                  <fmt-definition>
+                     <semx element="definition" source="_">
+                        <p id="" cross-align="true" element-number="sections_clause2_terms_term1_fmt-definition1_semx1_p1_">uncertainty of the result of a measurement expressed as a standard deviation</p>
+                     </semx>
+                  </fmt-definition>
                   <term id="scls_2-3-2_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="sections_clause2_terms_term2_"/>
                   <fmt-name>
                      <span class="fmt-caption-label">
@@ -1882,13 +1901,32 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      <span class="fmt-autonum-delim">.</span>
                      <semx element="autonum" source="scls_2-3-2_ISO_JCGM_100_2008_EN_">2</semx>
                   </fmt-xref-label>
-                  <preferred>
-                     <strong>Type A evaluation (of uncertainty)</strong>
-                     <bookmark id="_"/>
+                  <preferred id="_">
+                     <expression>
+                        <name>
+                           Type A evaluation (of uncertainty)
+                           <bookmark original-id="_"/>
+                        </name>
+                     </expression>
                   </preferred>
-                  <definition>
-                     <p id="" cross-align="true" element-number="sections_clause2_terms_term2_definition1_p1_">method of evaluation of uncertainty by the statistical analysis of series of observations</p>
+                  <fmt-preferred>
+                     <p cross-align="true" element-number="sections_clause2_terms_term2_fmt-preferred1_p1_">
+                        <semx element="preferred" source="_">
+                           <strong>Type A evaluation (of uncertainty)</strong>
+                           <bookmark id="_"/>
+                        </semx>
+                     </p>
+                  </fmt-preferred>
+                  <definition id="_">
+                     <verbal-definition>
+                        <p original-id="_b221d830-57b3-a697-9df6-a300ed1877fe_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause2_terms_term2_definition1_verbal-definition1_p1_">method of evaluation of uncertainty by the statistical analysis of series of observations</p>
+                     </verbal-definition>
                   </definition>
+                  <fmt-definition>
+                     <semx element="definition" source="_">
+                        <p id="" cross-align="true" element-number="sections_clause2_terms_term2_fmt-definition1_semx1_p1_">method of evaluation of uncertainty by the statistical analysis of series of observations</p>
+                     </semx>
+                  </fmt-definition>
                   <term id="scls_2-3-3_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="sections_clause2_terms_term3_"/>
                   <fmt-name>
                      <span class="fmt-caption-label">
@@ -1906,13 +1944,32 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      <span class="fmt-autonum-delim">.</span>
                      <semx element="autonum" source="scls_2-3-3_ISO_JCGM_100_2008_EN_">3</semx>
                   </fmt-xref-label>
-                  <preferred>
-                     <strong>Type B evaluation (of uncertainty)</strong>
-                     <bookmark id="_"/>
+                  <preferred id="_">
+                     <expression>
+                        <name>
+                           Type B evaluation (of uncertainty)
+                           <bookmark original-id="_"/>
+                        </name>
+                     </expression>
                   </preferred>
-                  <definition>
-                     <p id="" cross-align="true" element-number="sections_clause2_terms_term3_definition1_p1_">method of evaluation of uncertainty by means other than the statistical analysis of series of observations</p>
+                  <fmt-preferred>
+                     <p cross-align="true" element-number="sections_clause2_terms_term3_fmt-preferred1_p1_">
+                        <semx element="preferred" source="_">
+                           <strong>Type B evaluation (of uncertainty)</strong>
+                           <bookmark id="_"/>
+                        </semx>
+                     </p>
+                  </fmt-preferred>
+                  <definition id="_">
+                     <verbal-definition>
+                        <p original-id="_37595bba-0d7d-8a68-a519-efe169483379_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause2_terms_term3_definition1_verbal-definition1_p1_">method of evaluation of uncertainty by means other than the statistical analysis of series of observations</p>
+                     </verbal-definition>
                   </definition>
+                  <fmt-definition>
+                     <semx element="definition" source="_">
+                        <p id="" cross-align="true" element-number="sections_clause2_terms_term3_fmt-definition1_semx1_p1_">method of evaluation of uncertainty by means other than the statistical analysis of series of observations</p>
+                     </semx>
+                  </fmt-definition>
                   <term id="scls_2-3-4_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="sections_clause2_terms_term4_"/>
                   <fmt-name>
                      <span class="fmt-caption-label">
@@ -1930,13 +1987,32 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      <span class="fmt-autonum-delim">.</span>
                      <semx element="autonum" source="scls_2-3-4_ISO_JCGM_100_2008_EN_">4</semx>
                   </fmt-xref-label>
-                  <preferred>
-                     <strong>combined standard uncertainty</strong>
-                     <bookmark id="_"/>
+                  <preferred id="_">
+                     <expression>
+                        <name>
+                           combined standard uncertainty
+                           <bookmark original-id="_"/>
+                        </name>
+                     </expression>
                   </preferred>
-                  <definition>
-                     <p id="" cross-align="true" element-number="sections_clause2_terms_term4_definition1_p1_">standard uncertainty of the result of a measurement when that result is obtained from the values of a number of other quantities, equal to the positive square root of a sum of terms, the terms being the variances or covariances of these other quantities weighted according to how the measurement result varies with changes in these quantities</p>
+                  <fmt-preferred>
+                     <p cross-align="true" element-number="sections_clause2_terms_term4_fmt-preferred1_p1_">
+                        <semx element="preferred" source="_">
+                           <strong>combined standard uncertainty</strong>
+                           <bookmark id="_"/>
+                        </semx>
+                     </p>
+                  </fmt-preferred>
+                  <definition id="_">
+                     <verbal-definition>
+                        <p original-id="_cb07a3db-ec78-27a4-0dc0-5c59b6eee599_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause2_terms_term4_definition1_verbal-definition1_p1_">standard uncertainty of the result of a measurement when that result is obtained from the values of a number of other quantities, equal to the positive square root of a sum of terms, the terms being the variances or covariances of these other quantities weighted according to how the measurement result varies with changes in these quantities</p>
+                     </verbal-definition>
                   </definition>
+                  <fmt-definition>
+                     <semx element="definition" source="_">
+                        <p id="" cross-align="true" element-number="sections_clause2_terms_term4_fmt-definition1_semx1_p1_">standard uncertainty of the result of a measurement when that result is obtained from the values of a number of other quantities, equal to the positive square root of a sum of terms, the terms being the variances or covariances of these other quantities weighted according to how the measurement result varies with changes in these quantities</p>
+                     </semx>
+                  </fmt-definition>
                   <term id="scls_2-3-5_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="sections_clause2_terms_term5_"/>
                   <fmt-name>
                      <span class="fmt-caption-label">
@@ -1954,13 +2030,32 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      <span class="fmt-autonum-delim">.</span>
                      <semx element="autonum" source="scls_2-3-5_ISO_JCGM_100_2008_EN_">5</semx>
                   </fmt-xref-label>
-                  <preferred>
-                     <strong>expanded uncertainty</strong>
-                     <bookmark id="_"/>
+                  <preferred id="_">
+                     <expression>
+                        <name>
+                           expanded uncertainty
+                           <bookmark original-id="_"/>
+                        </name>
+                     </expression>
                   </preferred>
-                  <definition>
-                     <p id="" cross-align="true" element-number="sections_clause2_terms_term5_definition1_p1_">quantity defining an interval about the result of a measurement that may be expected to encompass a large fraction of the distribution of values that could reasonably be attributed to the measurand</p>
+                  <fmt-preferred>
+                     <p cross-align="true" element-number="sections_clause2_terms_term5_fmt-preferred1_p1_">
+                        <semx element="preferred" source="_">
+                           <strong>expanded uncertainty</strong>
+                           <bookmark id="_"/>
+                        </semx>
+                     </p>
+                  </fmt-preferred>
+                  <definition id="_">
+                     <verbal-definition>
+                        <p original-id="_83c179c0-0e94-bed4-ab3f-b5fe00c112f8_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause2_terms_term5_definition1_verbal-definition1_p1_">quantity defining an interval about the result of a measurement that may be expected to encompass a large fraction of the distribution of values that could reasonably be attributed to the measurand</p>
+                     </verbal-definition>
                   </definition>
+                  <fmt-definition>
+                     <semx element="definition" source="_">
+                        <p id="" cross-align="true" element-number="sections_clause2_terms_term5_fmt-definition1_semx1_p1_">quantity defining an interval about the result of a measurement that may be expected to encompass a large fraction of the distribution of values that could reasonably be attributed to the measurand</p>
+                     </semx>
+                  </fmt-definition>
                   <termnote id="_49888e25-31af-6205-b3e3-269d2cc55cfb_ISO_JCGM_100_2008_EN_" autonum="1">
                      <fmt-name>
                         <span class="fmt-caption-label">
@@ -2076,13 +2171,32 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      <span class="fmt-autonum-delim">.</span>
                      <semx element="autonum" source="scls_2-3-6_ISO_JCGM_100_2008_EN_">6</semx>
                   </fmt-xref-label>
-                  <preferred>
-                     <strong>coverage factor</strong>
-                     <bookmark id="_"/>
+                  <preferred id="_">
+                     <expression>
+                        <name>
+                           coverage factor
+                           <bookmark original-id="_"/>
+                        </name>
+                     </expression>
                   </preferred>
-                  <definition>
-                     <p id="" cross-align="true" element-number="sections_clause2_terms_term6_definition1_p1_">numerical factor used as a multiplier of the combined standard uncertainty in order to obtain an expanded uncertainty</p>
+                  <fmt-preferred>
+                     <p cross-align="true" element-number="sections_clause2_terms_term6_fmt-preferred1_p1_">
+                        <semx element="preferred" source="_">
+                           <strong>coverage factor</strong>
+                           <bookmark id="_"/>
+                        </semx>
+                     </p>
+                  </fmt-preferred>
+                  <definition id="_">
+                     <verbal-definition>
+                        <p original-id="_ce877c0f-c910-9a93-d5b7-6c2e62f5e479_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause2_terms_term6_definition1_verbal-definition1_p1_">numerical factor used as a multiplier of the combined standard uncertainty in order to obtain an expanded uncertainty</p>
+                     </verbal-definition>
                   </definition>
+                  <fmt-definition>
+                     <semx element="definition" source="_">
+                        <p id="" cross-align="true" element-number="sections_clause2_terms_term6_fmt-definition1_semx1_p1_">numerical factor used as a multiplier of the combined standard uncertainty in order to obtain an expanded uncertainty</p>
+                     </semx>
+                  </fmt-definition>
                   <termnote id="_bfe852b5-98d2-1274-64a2-f35a9b7f9ae5_ISO_JCGM_100_2008_EN_" autonum="1">
                      <fmt-name>
                         <span class="fmt-caption-label">
@@ -12805,7 +12919,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   s de la courbe et de tout point prédit peuvent habituellement être calculées par des procédures statistiques bien connues (voir
                   <xref target="scls_H-3_ISO_JCGM_100_2008_FR_">[scls_H-3_ISO_JCGM_100_2008_FR_]</xref>
                   et
-                  <xref type="inline" target="FULLER1987_ISO_JCGM_100_2008_FR_">[15]</xref>
+                  <xref type="inline" target="FULLER1987_ISO_JCGM_100_2008_FR_">[8]</xref>
                   ).
                </p>
                <clause id="scls_4-2-6_ISO_JCGM_100_2008_FR_" obligation="normative" inline-header="true" element-number="sections_clause4_clause2_clause6_"/>
@@ -13297,7 +13411,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         On utilise de telles méthodes spéciales pour traiter les mesurages d’étalons de fréquence. Il est cependant possible, pour d’autres grandeurs métrologiques, lorsqu’on passe de mesurages à court terme à des mesurages à long terme, que l’hypothèse de variations aléatoires
                         <bookmark id="_"/>
                         non corrélées ne soit plus valable et qu’on puisse aussi utiliser ces méthodes spéciales pour traiter ces mesurages. (Voir Référence
-                        <xref type="inline" target="ALLAN1987_ISO_JCGM_100_2008_FR_">[16]</xref>
+                        <xref type="inline" target="ALLAN1987_ISO_JCGM_100_2008_FR_">[9]</xref>
                         , par exemple, pour une présentation détaillée de la variance d’Allan
                         <bookmark id="_"/>
                         .)
@@ -23305,7 +23419,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         La loi trapézoïdale est équivalente à la convolution
                         <bookmark id="_"/>
                         de deux lois rectangulaires
-                        <xref type="inline" target="DIETRICH1991_ISO_JCGM_100_2008_FR_">[17]</xref>
+                        <xref type="inline" target="DIETRICH1991_ISO_JCGM_100_2008_FR_">[10]</xref>
                         , de demi-largeur
                         <stem type="MathML" block="false">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -29140,9 +29254,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </fn>
                      , Organisation internationale de normalisation (Genève, Suisse)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[13]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[6]</docidentifier>
                   <biblio-tag>
-                     [13]
+                     [6]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29410,9 +29524,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Statistiques — Vocabulaire et symboles — Partie 1: Probabilité et termes statistiques généraux</em>
                      , Organisation internationale de normalisation (Genève, Suisse)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[14]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[7]</docidentifier>
                   <biblio-tag>
-                     [14]
+                     [7]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29440,9 +29554,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Measurement error models</em>
                      , John Wiley (New York, N.Y.)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[15]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[8]</docidentifier>
                   <biblio-tag>
-                     [15]
+                     [8]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29472,9 +29586,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>IM-36</strong>
                      , 646-654
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[16]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[9]</docidentifier>
                   <biblio-tag>
-                     [16]
+                     [9]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29502,9 +29616,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Uncertainty, calibration and probability</em>
                      , second edition, Adam-Hilger (Bristol)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[17]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[10]</docidentifier>
                   <biblio-tag>
-                     [17]
+                     [10]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29534,9 +29648,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>163</strong>
                      , 241-251
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[18]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[11]</docidentifier>
                   <biblio-tag>
-                     [18]
+                     [11]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29564,9 +29678,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Precision measurement and fundamental constants II</em>
                      , Taylor, B. N., and Phillips, W. D., eds., Natl. Bur. Stand. (U.S.) Spec. Publ. 617, US GPO (Washington, D.C.), 375-381
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[19]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[12]</docidentifier>
                   <biblio-tag>
-                     [19]
+                     [12]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29594,9 +29708,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Theory of probability</em>
                      , troisième édition, Oxford University Press (Oxford)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[20]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[13]</docidentifier>
                   <biblio-tag>
-                     [20]
+                     [13]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29624,9 +29738,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Bayesian statistics: principles, models, and applications</em>
                      , John Wiley (New York, N.Y.)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[21]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[14]</docidentifier>
                   <biblio-tag>
-                     [21]
+                     [14]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29654,9 +29768,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Statistics for experimenters</em>
                      , John Wiley (New York, N.Y.)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[22]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[15]</docidentifier>
                   <biblio-tag>
-                     [22]
+                     [15]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29698,9 +29812,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>34</strong>
                      , 28-35
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[23]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[16]</docidentifier>
                   <biblio-tag>
-                     [23]
+                     [16]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29730,9 +29844,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>9</strong>
                      (3), 211
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[24]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[17]</docidentifier>
                   <biblio-tag>
-                     [24]
+                     [17]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29768,9 +29882,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <strong>2</strong>
                      (6), 110-114
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[25]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[18]</docidentifier>
                   <biblio-tag>
-                     [25]
+                     [18]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29810,9 +29924,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Certification des matériaux de référence — Principes généraux et statistiques</em>
                      , deuxième édition, Organisation internationale de normalisation (Genève, Suisse)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[26]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[19]</docidentifier>
                   <biblio-tag>
-                     [26]
+                     [19]
                      <tab/>
                   </biblio-tag>
                </bibitem>
@@ -29840,9 +29954,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      <em>Quality by experimental design</em>
                      , Marcel Dekker (New York, N.Y.)
                   </formattedref>
-                  <docidentifier type="metanorma-ordinal">[27]</docidentifier>
+                  <docidentifier type="metanorma-ordinal">[20]</docidentifier>
                   <biblio-tag>
-                     [27]
+                     [20]
                      <tab/>
                   </biblio-tag>
                </bibitem>
