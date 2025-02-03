@@ -9,7 +9,6 @@ require_relative "manifest"
 module Metanorma
   class Collection
     module Config
-      require "shale/adapter/nokogiri"
       Lutaml::Model::Config.configure do |config|
         config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
       end
