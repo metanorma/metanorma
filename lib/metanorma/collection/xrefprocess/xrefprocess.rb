@@ -5,12 +5,14 @@ module Metanorma
         # xml.root["type"] = key # to force recognition of internal refs
         # bookmarks etc as new id elements introduced in Presentation XML:
         # add doc suffix
+        # Run on Semantic XML
         def xref_preprocess(xml, isodoc)
           @isodoc = isodoc
           key = (0...8).map { rand(65..90).chr }.join # random string
           xml.root["type"] = key
           Metanorma::Utils::anchor_attributes
             .each do |(tag_name, attr_name)|
+              #tag_name == "xref" and tag_name = "fmt-xref"
             ::Metanorma::Collection::Util::add_suffix_to_attrs(
               xml, xml.root["document_suffix"], tag_name, attr_name, isodoc
             )
@@ -22,21 +24,21 @@ module Metanorma
           @isodoc.ns(xpath)
         end
 
-        def xref_process(section, xml, key, ident, isodoc)
+        def xref_process(section, xml, key, ident, isodoc, presxml)
           @isodoc ||= isodoc
-          svg_preprocess(section, Metanorma::Utils::to_ncname(ident))
-          refs = eref_to_internal_eref(section, xml, key)
-          refs += xref_to_internal_eref(section, xml, key)
+          svg_preprocess(section, Metanorma::Utils::to_ncname(ident), presxml)
+          refs = eref_to_internal_eref(section, xml, key, presxml)
+          refs += xref_to_internal_eref(section, xml, key, presxml)
           ins = new_hidden_ref(section)
           copied_refs = copy_repo_items_biblio(ins, section, xml)
           insert_indirect_biblio(ins, refs - copied_refs, key, xml)
         end
 
-        def svg_preprocess(xml, doc_suffix)
+        def svg_preprocess(xml, doc_suffix, presxml)
           suffix = doc_suffix.nil? || doc_suffix.blank? ? "" : "_#{doc_suffix}"
           xml.xpath("//m:svg", "m" => "http://www.w3.org/2000/svg").each do |s|
             m = svgmap_wrap(s)
-            svg_xrefs(s, m, suffix)
+            svg_xrefs(s, m, suffix, presxml)
           end
           xml
         end
@@ -48,12 +50,13 @@ module Metanorma
           svg.at("./ancestor::xmlns:svgmap")
         end
 
-        def svg_xrefs(svg, svgmap, suffix)
+        def svg_xrefs(svg, svgmap, suffix, presxml)
+          tag = presxml ? "fmt-xref" : "xref"
           svg.xpath(".//m:a", "m" => "http://www.w3.org/2000/svg").each do |a|
             /^#/.match? a["href"] or next
             a["href"] = a["href"].sub(/^#/, "")
             svgmap << "<target href='#{a['href']}'>" \
-              "<xref target='#{a['href']}#{suffix}'/></target>"
+              "<#{tag} target='#{a['href']}#{suffix}'/></target>"
           end
         end
 
@@ -65,15 +68,16 @@ module Metanorma
               "#{anchor}</referenceFrom></locality></localityStack>"
         end
 
-        def xref_to_internal_eref(section, xml, key)
+        def xref_to_internal_eref(section, xml, key, presxml)
           key or return [] # no sectionsplit, no playing with xrefs
           bibitems, indirect = xref_to_internal_eref_prep(section, xml)
-          section.xpath(ns("//xref")).each_with_object({}) do |x, m|
+          tag = presxml ? "fmt-xref" : "xref"
+          section.xpath(ns("//#{tag}")).each_with_object({}) do |x, m|
             xref_prefix_key(x, key, indirect)
             x["bibitemid"] = x["target"]
             m[x["bibitemid"]] = true
             xref_to_internal_eref_anchor(x, key, bibitems,
-                                         xml.root["document_suffix"])
+                                         xml.root["document_suffix"], presxml)
           end.keys
         end
 
@@ -84,7 +88,7 @@ module Metanorma
           [bibitems, indirect_bibitems]
         end
 
-        def xref_to_internal_eref_anchor(xref, key, bibitems, document_suffix)
+        def xref_to_internal_eref_anchor(xref, key, bibitems, document_suffix, presxml)
           t = xref["target"]
           if d = bibitems[t]&.at(ns("./docidentifier[@type = 'repository']"))
             m = %r{^([^/]+)}.match(d.text) and
@@ -93,7 +97,7 @@ module Metanorma
           key and t.sub!(%r{^#{key}_}, "")
           make_anchor(xref, t.sub(%r(_#{document_suffix}$), ""))
           xref.delete("target")
-          xref.name = "eref"
+          xref.name = presxml ? "fmt-eref" : "eref"
         end
 
         def xref_prefix_key(xref, key, indirect)
@@ -114,32 +118,32 @@ module Metanorma
           url&.text
         end
 
-        def eref_to_internal_eref(section, xml, key)
+        def eref_to_internal_eref(section, xml, key, presxml)
           bibitems, indirect, bibids, lang =
-            eref_to_internal_eref_prep(section, xml)
-          eref_to_internal_eref_select(section, xml, bibitems)
+            eref_to_internal_eref_prep(section, xml, presxml)
+          eref_to_internal_eref_select(section, xml, bibitems, presxml)
             .each_with_object([]) do |x, m|
               url = select_citation_uri(bibitems[x], lang)
               bibids[x]&.each do |e|
                 e.at(ns("./localityStack | ./locality")) and next
-                id = eref_to_internal_eref1(e, key, url, indirect) and m << id
+                id = eref_to_internal_eref1(e, key, url, indirect, presxml) and m << id
               end
             end
         end
 
-        def eref_to_internal_eref_prep(section, xml)
+        def eref_to_internal_eref_prep(section, xml, presxml)
           bibitems = ::Metanorma::Collection::Util::gather_bibitems(xml)
             .delete_if { |_, v| internal_bib?(v) }
           indirect = ::Metanorma::Collection::Util::gather_bibitems(xml)
             .select { |_, v| indirect_bib?(v) }
-          bibitemids = ::Metanorma::Collection::Util::gather_bibitemids(section)
+          bibitemids = ::Metanorma::Collection::Util::gather_bibitemids(section, presxml)
           lang = xml.at(ns("//bibdata/language"))&.text || "en"
           [bibitems, indirect, bibitemids, lang]
         end
 
-        def eref_to_internal_eref1(elem, key, url, indirect)
+        def eref_to_internal_eref1(elem, key, url, indirect, presxml)
           if url
-            elem.name = "link"
+            elem.name = presxml ? "fmt-link" : "link"
             elem["target"] = url
             nil
           elsif !indirect[elem["bibitemid"]]
@@ -162,8 +166,8 @@ module Metanorma
           elem["bibitemid"]
         end
 
-        def eref_to_internal_eref_select(section, _xml, bibitems)
-          refs = ::Metanorma::Collection::Util::gather_bibitemids(section).keys
+        def eref_to_internal_eref_select(section, _xml, bibitems, presxml)
+          refs = ::Metanorma::Collection::Util::gather_bibitemids(section, presxml).keys
           refs.uniq.reject do |x|
             b = bibitems[x] and (indirect_bib?(b) || internal_bib?(b))
           end

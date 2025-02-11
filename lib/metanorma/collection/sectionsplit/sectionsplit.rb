@@ -39,7 +39,8 @@ module Metanorma
         empty = empty_doc(xml)
         empty1 = empty_attachments(empty)
         @mutex = Mutex.new
-        @pool = Concurrent::FixedThreadPool.new(4)
+        #@pool = Concurrent::FixedThreadPool.new(4)
+        @pool = Concurrent::FixedThreadPool.new(1)
         sectionsplit1(xml, empty, empty1, 0)
       end
 
@@ -85,6 +86,7 @@ module Metanorma
         xml, type = sectionsplit_preprocess_semxml(file, filename)
         flags = { format: :asciidoc, extension_keys: [:presentation],
                   type: type }.merge(@compile_opts)
+        #require "debug"; binding.b
         Compile.new.compile(xml, flags)
         f = File.open(xml.sub(/\.xml$/, ".presentation.xml"), encoding: "utf-8")
         r = Nokogiri::XML(f, &:huge)
@@ -95,7 +97,8 @@ module Metanorma
 
       def sectionsplit_preprocess_semxml(file, filename)
         xml = Nokogiri::XML(file, &:huge)
-        type = xml.root.name.sub("-standard", "").to_sym
+        type = xml.root["flavor"]
+        type ||= xml.root.name.sub("-standard", "").to_sym
         sectionsplit_update_xrefs(xml)
         xml1 = sectionsplit_write_semxml(filename, xml)
         @tmp_filename = xml1
@@ -106,6 +109,7 @@ module Metanorma
         if c = @fileslookup&.parent
           n = c.nested
           c.nested = true # so unresolved erefs are not deleted
+        #require "debug"; binding.b
           c.update_xrefs(xml, @ident, {})
           c.nested = n
           xml.xpath("//xmlns:svgmap").each { |x| x.name = "svgmap1" }
@@ -160,10 +164,11 @@ module Metanorma
 
       def create_sectionfile(xml, out, file, chunks, parentnode)
         ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
+        #require "debug"; binding.b
         sectionfile_insert(ins, chunks, parentnode)
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
-                                                         @ident, @isodoc)
-        truncate_semxml(out, chunks)
+                                                         @ident, @isodoc, true)
+        #truncate_semxml(out, chunks)
         outname = "#{file}.xml"
         File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
           f.write(out)
@@ -171,6 +176,7 @@ module Metanorma
         outname
       end
 
+      # KILL
       def semantic_xml_ids_gather(out)
         out.at(ns("//semantic__bibdata")) or return
         SPLITSECTIONS.each_with_object({}) do |s, m|
@@ -181,12 +187,14 @@ module Metanorma
         end
       end
 
+      # KILL
       def semxml_presxml_nodes_match(nodes, chunks)
         chunks.each do |x|
           nodes[x["id"]] and nodes.delete(x["id"])
         end
       end
 
+      # KILL
       def truncate_semxml(out, chunks)
         nodes = semantic_xml_ids_gather(out) or return
         semxml_presxml_nodes_match(nodes, chunks)

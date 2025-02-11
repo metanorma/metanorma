@@ -58,8 +58,9 @@ module Metanorma
         ::Metanorma::Collection::Util::key(docid_prefix(docid))
       end
 
-      def collect_erefs(docxml)
-        docxml.xpath(ns("//eref"))
+      def collect_erefs(docxml, presxml)
+        tag = presxml ? "fmt-eref" : "eref"
+        docxml.xpath(ns("//#{tag}"))
           .each_with_object({ citeas: {}, bibitemid: {} }) do |i, m|
           m[:citeas][i["citeas"]] = true
           m[:bibitemid][i["bibitemid"]] = true
@@ -195,7 +196,7 @@ module Metanorma
         end.doc.root.to_html
       end
 
-      def eref2link(docxml)
+      def eref2link(docxml, presxml)
         isodoc = IsoDoc::PresentationXMLConvert.new({})
         isodoc.bibitem_lookup(docxml)
         isodoc.eref2link(docxml)

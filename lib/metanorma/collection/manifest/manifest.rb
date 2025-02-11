@@ -14,6 +14,7 @@ module Metanorma
       # @param docref [Array<Hash{String=>String}>]
       # @param manifest [Array<Metanorma::Collection::Manifest>]
       def initialize(config, collection, dir)
+        #require "debug"; binding.b
         @collection = collection
         @dir = dir
         @disambig = ::Metanorma::Collection::Util::DisambigFiles.new
@@ -21,6 +22,7 @@ module Metanorma
       end
 
       def manifest_postprocess(config)
+        #require "debug"; binding.b
         manifest_bibdata(config)
         manifest_expand_yaml(config, @dir)
         manifest_compile_adoc(config)
@@ -94,6 +96,7 @@ module Metanorma
 
       def manifest_filexist(config)
         if config.file
+        #require "debug"; binding.b
           file = @collection.class.resolve_fileref(@dir, config.file)
           @collection.class.check_file_existence(file)
           config.file = Pathname.new(file).relative_path_from(Pathname.new(@dir))
@@ -108,6 +111,7 @@ module Metanorma
           currdir = dir
           /\.ya?ml$/.match?(e.file) and
             currdir = manifest_expand_yaml_entry(e, dir)
+          #require "debug"; binding.b
           manifest_expand_yaml(e, currdir)
         end
         config
@@ -118,8 +122,10 @@ module Metanorma
         currdir = File.dirname(f)
         @collection.class.check_file_existence(f)
         entry.file = nil
+        #require 'debug'; binding.b
         entry.entry = ::Metanorma::Collection::Config::Config.from_yaml(File.read(f)).manifest
         if currdir != dir
+          #require "debug"; binding.b
           prefix = Pathname.new(currdir).relative_path_from(Pathname.new(dir))
           update_filepaths(entry.entry, prefix.to_s)
         end
@@ -127,6 +133,7 @@ module Metanorma
       end
 
       def update_filepaths(entry, prefix)
+        #require "debug"; binding.b
         entry.file && !(Pathname.new entry.file).absolute? and
           entry.file = File.join(prefix, entry.file)
         entry.entry.each do |f|

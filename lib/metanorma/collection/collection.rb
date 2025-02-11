@@ -214,6 +214,9 @@ module Metanorma
       # @param fileref [String]
       # @return [String]
       def resolve_fileref(ref_folder, fileref)
+        warn ref_folder
+        warn fileref
+        #require "debug"; binding.b
         unless @fileref_resolver
           (Pathname.new fileref).absolute? or
             fileref = File.join(ref_folder, fileref)

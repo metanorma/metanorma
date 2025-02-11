@@ -14,17 +14,19 @@ module Metanorma
           end
         end
 
-        def gather_bibitemids(xml)
+        def gather_bibitemids(xml, presxml)
           xml.xpath("//*[@bibitemid]").each_with_object({}) do |e, m|
-            /^semantic__/.match?(e.name) and next
+            #/^semantic__/.match?(e.name) and next
+            presxml && %w(xref eref link).include?(e.name) and next
             m[e["bibitemid"]] ||= []
             m[e["bibitemid"]] << e
           end
         end
 
-        def gather_citeases(xml)
+        def gather_citeases(xml, presxml)
           xml.xpath("//*[@citeas]").each_with_object({}) do |e, m|
-            /^semantic__/.match?(e.name) and next
+            #/^semantic__/.match?(e.name) and next
+            presxml && %w(xref eref link).include?(e.name) and next
             k = key(e["citeas"])
             m[k] ||= []
             m[k] << e
