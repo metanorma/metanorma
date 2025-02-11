@@ -385,7 +385,7 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <svgmap><figure>
           <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" original-id="Layer_1_000000000">
                  <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
               <a href="A">A</a>
               <a href="B">B</a>
