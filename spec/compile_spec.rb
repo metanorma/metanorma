@@ -269,7 +269,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("spec/assets/test1.alt.html")).to be false
     expect(File.exist?("spec/assets/test1.relaton.xml")).to be true
     xml = File.read("spec/assets/test1.xml", encoding: "utf-8")
-    expect(xml).to include "</iso-standard>"
+    expect(xml).to include ' flavor="iso"'
   end
 
   it "processes an asciidoc ISO document" do
@@ -309,7 +309,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("spec/assets/test.html")).to be false
     expect(File.exist?("spec/assets/test.alt.html")).to be false
     xml = File.read("spec/assets/test.xml", encoding: "utf-8")
-    expect(xml).to include "</iso-standard>"
+    expect(xml).to include ' flavor="iso"'
   end
 
   it "write documents to specified output dir" do

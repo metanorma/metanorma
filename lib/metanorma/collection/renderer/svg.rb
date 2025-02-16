@@ -10,13 +10,21 @@ module Metanorma
         datauri_encode(docxml, dir)
       end
 
-      def svgmap_resolve(docxml, docid)
+      def svgmap_resolve(docxml, docid, presxml)
+        #require "debug"; binding.b
         ids = @files.get(docid, :ids)
         docxml = svg_unnest(svg_datauri(docxml, docid))
         isodoc = IsoDoc::PresentationXMLConvert.new({})
         isodoc.bibitem_lookup(docxml)
-        docxml.xpath(ns("//svgmap//eref")).each do |e|
-          svgmap_resolve_eref(e, isodoc, docxml, ids)
+        tag = presxml ? "fmt-eref" : "eref"
+        docxml.xpath(ns("//svgmap//#{tag}")).each do |e|
+        #require "debug"; binding.b
+          svgmap_resolve_eref(e, isodoc, docxml, ids, presxml)
+        end
+        docxml.xpath(ns("//svgmap/target")).each do |t| # undo Presentation XML: Vectory takes eref not fmt-eref
+          n = t.at(ns(".//fmt-link | .//fmt-xref | .//fmt-eref")) or next
+          n.name = n.name.sub(/^fmt-/, "")
+          t.children = n
         end
         Vectory::SvgMapping.new(docxml, "").call
         docxml.xpath(ns("//svgmap")).each { |s| isodoc.svgmap_extract(s) }
@@ -30,13 +38,13 @@ module Metanorma
         docxml
       end
 
-      def svgmap_resolve_eref(eref, isodoc, _docxml, ids)
+      def svgmap_resolve_eref(eref, isodoc, _docxml, ids, presxml)
         href = isodoc.eref_target(eref) or return
         href = href[:link]
         href == "##{eref['bibitemid']}" ||
           (href =~ /^#/ && !ids[href.sub(/^#/, "")]) and return
         eref["target"] = href.strip
-        eref.name = "link"
+        eref.name = presxml ? "fmt-link" : "link"
         eref.elements&.remove
       end
     end

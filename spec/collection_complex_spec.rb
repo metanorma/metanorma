@@ -341,27 +341,27 @@ RSpec.describe Metanorma::Collection do
       expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
       expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
       expect(Xml::C14n.format(file2
-       .at("//xmlns:eref[@bibitemid = '#{m[1]}_A']").to_xml))
+        .at("//xmlns:fmt-eref[@bibitemid = '#{m[1]}_A']").to_xml.sub(/ id="[^"]+"/, "")))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
-          <eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref>
+          <fmt-eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></fmt-eref>
         OUTPUT
       expect(Xml::C14n.format(file2
-       .at("//xmlns:note[@id = 'N1']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
-        .to_xml))
+       .at("//xmlns:note[@id = 'N1']//xmlns:fmt-eref[@bibitemid = '#{m[1]}_R1']")
+        .to_xml.sub(/ id="[^"]+"/, "")))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
-          <eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+          <fmt-eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref>
         OUTPUT
       expect(Xml::C14n.format(file2
-       .at("//xmlns:note[@id = 'N2']//xmlns:eref[@bibitemid = '#{m[1]}_R1']")
-        .to_xml))
+       .at("//xmlns:note[@id = 'N2']//xmlns:fmt-eref[@bibitemid = '#{m[1]}_R1']")
+        .to_xml.sub(/ id="[^"]+"/, "")))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
-          <eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+          <fmt-eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref>
         OUTPUT
       expect(Xml::C14n.format(file2
-       .at("//xmlns:note[@id = 'N3']//xmlns:link")
-        .to_xml))
+       .at("//xmlns:note[@id = 'N3']//xmlns:fmt-link")
+        .to_xml.sub(/ id="[^"]+"/, "").sub(/ id="[^"]+"/, "")))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
-          <link attachment="true" target="_test_sectionsplit_attachments/LICENSE.TXT">License A</link>
+          <fmt-link attachment="true" target="_test_sectionsplit_attachments/LICENSE.TXT">License A</fmt-link>
         OUTPUT
       expect(file2
        .at("//xmlns:bibitem[@id = 'R1']"))
@@ -381,32 +381,40 @@ RSpec.describe Metanorma::Collection do
           </bibitem>
         OUTPUT
       expect(Xml::C14n.format(file2
-       .at("//xmlns:svgmap[1]").to_xml))
+        .at("//xmlns:svgmap[1]").to_xml.gsub(/ (source|id)="[^"]+"/, "")))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <svgmap><figure>
           <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" original-id="Layer_1_000000000">
                  <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
               <a href="A">A</a>
               <a href="B">B</a>
             </svg>
             </image>
             <target href="B">
-              <eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></eref>
+            <eref bibitemid="R1" citeas="R1"/><semx element="eref">
+              <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref></semx>
             </target>
           </figure>
-          <target href="A"><eref bibitemid="#{m[1]}_A" type="#{m[1]}">A<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></eref></target><target href="B"><eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></eref></target></svgmap>
+          <target href="A">
+            <fmt-eref bibitemid="#{m[1]}_A" type="#{m[1]}">A<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></fmt-eref>
+          </target>
+          <target href="B">
+            <fmt-eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></fmt-eref>
+          </target></svgmap>
         OUTPUT
       expect(Xml::C14n.format(file2
-       .at("//xmlns:svgmap[2]").to_xml))
+       .at("//xmlns:svgmap[2]").to_xml.gsub(/ (source|id)="[^"]+"/, "")))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
                <svgmap><figure>
            <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
                  <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
              <a href="P">P</a>
            </svg></img>
-          </figure><target href="P"><eref bibitemid="#{m[1]}_P" type="#{m[1]}">P<localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></eref></target></svgmap>
+          </figure>
+          <target href="P"><fmt-eref bibitemid="#{m[1]}_P" type="#{m[1]}">P<localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></fmt-eref>
+          </target></svgmap>
         OUTPUT
       expect(file2.at("//xmlns:preface")).to be_nil
       expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
@@ -498,6 +506,7 @@ RSpec.describe Metanorma::Collection do
         .to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
+      #require 'debug'; binding.b
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
         .to be false
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml.0.html"))
@@ -525,8 +534,8 @@ RSpec.describe Metanorma::Collection do
       xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
       p = xml.xpath("//xmlns:sections//xmlns:p")[4]
       p.delete("id")
-      expect(p.to_xml).to be_equivalent_to <<~OUTPUT
-        <p>This document is updated in <link target="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</link>.</p>
+      expect(p.to_xml.gsub(/ (source|id)="[^"]+"/, "")).to be_equivalent_to <<~OUTPUT
+        <p>This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope" citeas="ISO 17301-1:2016/Amd.1:2017"/><semx element="eref"><fmt-link target="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</fmt-link></semx>.</p>
       OUTPUT
       FileUtils.rm_rf of
     end

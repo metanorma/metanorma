@@ -16,20 +16,23 @@ module Metanorma
       # @return [String] XML content
       def update_xrefs(file, docid, internal_refs)
         xml, sso = update_xrefs_prep(file, docid)
+        #require "debug"; binding.b if /This document is also unrelated/.match?(xml.to_xml)
+        #warn (/fmt-title/.match?(xml.to_xml) ? "*** PRESENTATION" : "*** SEMANTIC")
         @nested || sso or
           Metanorma::Collection::XrefProcess::xref_process(xml, xml, nil, docid,
-                                                           @isodoc)
+                                                           @isodoc, sso)
         @ncnames = {}
-        @nested or update_indirect_refs_to_docs(xml, docid, internal_refs)
+        @nested or update_indirect_refs_to_docs(xml, docid, internal_refs, sso)
         @files.add_document_suffix(docid, xml)
-        @nested or update_sectionsplit_refs_to_docs(xml, internal_refs)
-        update_direct_refs_to_docs(xml, docid)
+        @nested or update_sectionsplit_refs_to_docs(xml, internal_refs, sso)
+        update_direct_refs_to_docs(xml, docid, sso)
         hide_refs(xml)
-        sso and eref2link(xml)
-        @nested or svgmap_resolve(xml, docid)
+        sso and eref2link(xml, sso)
+        @nested or svgmap_resolve(xml, docid, sso)
         xml.to_xml
       end
 
+      ## sso files are Presentation XML; otherwise, Semantic XML
       def update_xrefs_prep(file, docid)
         docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
         supply_repo_ids(docxml)
@@ -37,8 +40,8 @@ module Metanorma
         [docxml, sso]
       end
 
-      def update_sectionsplit_refs_to_docs(docxml, internal_refs)
-        Util::gather_citeases(docxml).each do |k, v|
+      def update_sectionsplit_refs_to_docs(docxml, internal_refs, presxml)
+        Util::gather_citeases(docxml, presxml).each do |k, v|
           (@files.get(k) && @files.get(k, :sectionsplit)) or next
           opts = { key: @files.get(k, :indirect_key),
                    source_suffix: docxml.root["document_suffix"],
@@ -81,9 +84,9 @@ module Metanorma
       # Any erefs to that bibitem id are replaced with relative URL
       # Preferably with anchor, and is a job to realise dynamic lookup
       # of localities.
-      def update_direct_refs_to_docs(docxml, identifier)
+      def update_direct_refs_to_docs(docxml, identifier, presxml)
         erefs, erefs_no_anchor, anchors, erefs1 =
-          update_direct_refs_to_docs_prep(docxml)
+          update_direct_refs_to_docs_prep(docxml, presxml)
         docxml.xpath(ns("//bibitem")).each do |b|
           docid = b.at(ns("./docidentifier[@type = 'repository']")) or next
           strip_unresolved_repo_erefs(identifier, docid, erefs1, b) or next
@@ -96,8 +99,8 @@ module Metanorma
       end
 
       # Hash(docid) of arrays
-      def update_direct_refs_to_docs_prep(docxml)
-        erefs = Util::gather_citeases(docxml)
+      def update_direct_refs_to_docs_prep(docxml, presxml)
+        erefs = Util::gather_citeases(docxml, presxml)
         no_anchor = erefs.keys.each_with_object({}) { |k, m| m[k] = [] }
         anchors = erefs.keys.each_with_object({}) { |k, m| m[k] = [] }
         erefs.each do |k, v|
@@ -106,7 +109,8 @@ module Metanorma
             else no_anchor[k] << e end
           end
         end
-        [erefs, no_anchor, anchors, Util::gather_bibitemids(docxml)]
+        #require "debug"; binding.b
+        [erefs, no_anchor, anchors, Util::gather_bibitemids(docxml, presxml)]
       end
 
       # strip erefs if they are repository erefs, but do not point to a document
@@ -124,8 +128,8 @@ module Metanorma
 
       # Resolve erefs to a container of ids in another doc,
       # to an anchor eref (direct link)
-      def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs)
-        bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml)
+      def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs, presxml)
+        bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml, presxml)
         internal_refs.each do |schema, ids|
           add_suffix = doc_suffix && doc_type && doc_type != schema
           ids.each do |id, file|
@@ -138,13 +142,14 @@ module Metanorma
         end
       end
 
-      def update_indirect_refs_prep(docxml)
+      def update_indirect_refs_prep(docxml, presxml)
         @updated_anchors = {}
         @indirect_keys = {}
-        [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml),
+        [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml, presxml),
          docxml.root["document_suffix"], docxml.root["type"], {}]
       end
 
+      # KILL
       def indirect_ref_key(schema, id, doc_suffix, doc_type)
         /^#{schema}_/.match?(id) and return id
         key = [schema, id, doc_suffix, doc_type].join("::")
@@ -168,6 +173,7 @@ module Metanorma
                                 end
       end
 
+      # KILL
       def indirect_ref_keyx(schema, id, doc_suffix, doc_type)
         /^#{schema}_/.match?(id) and return id
         ret = "#{schema}_#{id}"

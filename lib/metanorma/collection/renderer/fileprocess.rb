@@ -15,6 +15,7 @@ module Metanorma
           format: :asciidoc,
           extension_keys: @format,
           output_dir: @outdir,
+          type: @flavor,
         }.merge(compile_options_update(identifier))
         @compile.compile file, opts
         @files.set(identifier, :outputs, {})
