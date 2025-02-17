@@ -1,3 +1,0 @@
-gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "fix/eref-display-text"
-gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/eref-display-text"
-gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "fix/eref-display-text"
