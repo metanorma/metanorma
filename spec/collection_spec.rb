@@ -259,7 +259,6 @@ RSpec.describe Metanorma::Collection do
           end
           Metanorma::Collection.set_identifier_resolver(&my_identifier_proc)
           xml = Nokogiri::XML(ccm)
-          warn xml.to_xml
           id = xml.at("//entry[@fileref = 'document-1/img/" \
                       "action_schemaexpg2.svg']/identifier")
           expect(id.text).to eq "freedom"

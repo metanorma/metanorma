@@ -789,6 +789,7 @@ RSpec.describe Metanorma::Collection do
       concat_text = cleanup_guid(read_and_cleanup("#{INPATH}/bilingual.presentation.xml"))
       concat_file = cleanup_guid(read_and_cleanup("#{OUTPATH}/collection.presentation.xml"))
       x = Nokogiri::XML(concat_file).at(".//xmlns:doc-container")
+      # remember to strip these from bilingual.presentation.xml when saving new version of file
       x.at(".//*[local-name() = 'metanorma-extension']")&.remove
       x.at(".//*[local-name() = 'localized-strings']")&.remove
       a = Xml::C14n.format(cleanup_guid(x.to_xml))

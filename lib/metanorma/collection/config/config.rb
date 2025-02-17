@@ -70,7 +70,7 @@ module Metanorma
         end
 
         def manifest_from_xml(model, node)
-          model.manifest = Manifest.from_xml(node.node.to_xml)
+          model.manifest = Manifest.from_xml(node.to_xml)
         end
 
         def manifest_to_xml(model, parent, doc)
@@ -79,7 +79,7 @@ module Metanorma
         end
 
         def prefatory_from_xml(model, node)
-          model.prefatory_content = node
+          model.prefatory_content = node.children.map(&:to_xml).join
         end
 
         def prefatory_to_xml(model, parent, doc)
@@ -104,7 +104,7 @@ module Metanorma
         end
 
         def final_from_xml(model, node)
-          model.final_content = node
+          model.final_content = node.children.map(&:to_xml).join
         end
 
         def directives_from_yaml(model, value)
