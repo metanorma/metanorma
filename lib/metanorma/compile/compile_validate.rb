@@ -7,7 +7,6 @@ module Metanorma
 
     def validate_type(options)
       unless options[:type]
-        require "debug"; binding.b
         Util.log("[metanorma] Error: Please specify a standard type: "\
                  "#{@registry.supported_backends}.", :fatal)
       end
