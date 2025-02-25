@@ -15,7 +15,8 @@ Gem::Specification.new do |spec|
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features|bin|.github)/}) \
-    || f.match(%r{Rakefile|bin/rspec})
+    || f.match(%r{Rakefile|bin/rspec}) \
+    || f.match(%r{flake|\.(?:direnv|pryrc|irbrc|nix)})
   end
   spec.extra_rdoc_files = %w[README.adoc CHANGELOG.adoc LICENSE.txt]
   spec.bindir        = "bin"
