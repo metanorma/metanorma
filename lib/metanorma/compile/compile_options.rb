@@ -80,6 +80,7 @@ module Metanorma
       ret[:output_formats]&.select! do |k, _|
         options[:extension_keys].include?(k)
       end
+      ret[:log] = @log
       ret
     end
 

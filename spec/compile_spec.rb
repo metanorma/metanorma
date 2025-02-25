@@ -20,6 +20,7 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "passes asciidoc options onto isodoc" do
+    log = Metanorma::Utils::Log.new()
     mock_iso_processor_output(
       File.expand_path("spec/assets/test2.xml"),
       File.expand_path("spec/assets/test2.presentation.xml"),
@@ -44,6 +45,7 @@ RSpec.describe Metanorma::Compile do
         output_formats: {
           presentation: "presentation.xml",
         },
+        log: an_instance_of(Metanorma::Utils::Log)
       },
     )
     Metanorma::Compile.new.compile("spec/assets/test2.adoc",
@@ -60,6 +62,7 @@ RSpec.describe Metanorma::Compile do
                                    tocrecommendations: true,
                                    agree_to_terms: true,
                                    i18nyaml: "spec/assets/i.yaml",
+                                   log: log,
                                    output_formats: { doc: "doc",
                                                      html: "html",
                                                      html_alt: "alt.html",
