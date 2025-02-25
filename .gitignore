@@ -22,3 +22,6 @@ relaton/
 .vscode/
 
 .rubocop-https--*
+
+# direnv
+.direnv/
