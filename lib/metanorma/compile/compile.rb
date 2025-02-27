@@ -14,6 +14,10 @@ require_relative "../util/worker_pool"
 
 module Metanorma
   class Compile
+    include CompileValidate
+    include CompileOptions
+    include Extract
+
     # @return [Array<String>]
     attr_reader :errors, :processor
 
