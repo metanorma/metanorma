@@ -11,6 +11,7 @@ require_relative "../util/util"
 require_relative "extract"
 require_relative "../collection/sectionsplit/sectionsplit"
 require_relative "../util/worker_pool"
+require_relative "output_filename"
 
 module Metanorma
   class Compile
@@ -115,14 +116,17 @@ module Metanorma
 
     # isodoc is Raw Metanorma XML
     def process_exts(filename, extensions, file, isodoc, options)
-      f = File.expand_path(change_output_dir(options))
-      fnames = { xml: f.sub(/\.[^.]+$/, ".xml"), f: f,
+      output_filename = OutputFilename.new(filename, options[:output_dir],
+                                           @processor)
+      f = File.expand_path(output_filename.semantic_xml)
+      fnames = { xml: f,
+                 f: f,
                  orig_filename: File.expand_path(filename),
-                 presentationxml: f.sub(/\.[^.]+$/, ".presentation.xml") }
+                 presentationxml: File.expand_path(output_filename.presentation_xml) }
       if extensions == %i(presentation)
         process_ext(:presentation, file, isodoc, fnames, options)
       else
-      process_exts_queue(fnames, extensions, file, isodoc, options)
+        process_exts_queue(fnames, extensions, file, isodoc, options)
       end
     end
 
@@ -148,8 +152,12 @@ module Metanorma
     end
 
     def process_ext(ext, file, isodoc, fnames, options)
+      output_filename = OutputFilename.new(fnames[:orig_filename],
+                                           options[:output_dir], @processor)
       fnames[:ext] = @processor.output_formats[ext]
-      fnames[:out] = fnames[:f].sub(/\.[^.]+$/, ".#{fnames[:ext]}")
+      fnames[:out] =
+        output_filename.for_format(ext) || fnames[:f].sub(/\.[^.]+$/,
+                                                          ".#{fnames[:ext]}")
       isodoc_options = get_isodoc_options(file, options, ext)
       thread = true
       unless process_ext_simple(ext, isodoc, fnames, options,
@@ -163,7 +171,7 @@ module Metanorma
       if ext == :rxl
         relaton_export(isodoc, options.merge(relaton: fnames[:out]))
       elsif options[:passthrough_presentation_xml] && ext == :presentation
-        #f = File.exist?(fnames[:f]) ? fnames[:f] : fnames[:orig_filename]
+        # f = File.exist?(fnames[:f]) ? fnames[:f] : fnames[:orig_filename]
         f = File.exist?(fnames[:orig_filename]) ? fnames[:orig_filename] : fnames[:f]
         FileUtils.cp f, fnames[:presentationxml]
       elsif ext == :html && options[:sectionsplit]
