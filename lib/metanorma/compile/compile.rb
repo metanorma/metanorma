@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "fileutils"
 require "nokogiri"
 require "htmlentities"
@@ -116,8 +118,9 @@ module Metanorma
 
     # isodoc is Raw Metanorma XML
     def process_exts(filename, extensions, file, isodoc, options)
-      output_filename = OutputFilename.new(filename, options[:output_dir],
-                                           @processor)
+      output_filename = OutputFilename.new(
+        filename, options[:output_dir], @processor
+      )
       f = File.expand_path(output_filename.semantic_xml)
       fnames = { xml: f,
                  f: f,

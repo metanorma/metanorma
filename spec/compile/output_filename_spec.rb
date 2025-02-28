@@ -1,4 +1,4 @@
-require "spec_helper"
+# frozen_string_literal: true
 
 RSpec.describe Metanorma::Compile::OutputFilename do
   let(:source_filename) { "test.adoc" }

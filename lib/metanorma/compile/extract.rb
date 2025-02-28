@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Metanorma
   class Compile
     module Extract
@@ -48,7 +50,7 @@ module Metanorma
 
       REQUIREMENT_XPATH =
         "//requirement | //xmlns:requirement | //recommendation | "\
-        "//xmlns:recommendation | //permission | //xmlns:permission".freeze
+        "//xmlns:recommendation | //permission | //xmlns:permission"
 
       def requirement_export(xml, dirname)
         xml.at(REQUIREMENT_XPATH) or return
