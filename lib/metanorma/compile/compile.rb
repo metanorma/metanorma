@@ -16,6 +16,7 @@ require_relative "../util/worker_pool"
 require_relative "output_filename"
 require_relative "output_filename_config"
 require_relative "flavor"
+require_relative "relaton_drop"
 
 module Metanorma
   class Compile

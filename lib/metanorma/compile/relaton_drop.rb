@@ -3,7 +3,7 @@
 require "liquid"
 
 module Metanorma
-  module Compile
+  class Compile
     class RelatonDrop < Liquid::Drop
       def initialize(relaton_data)
         @relaton = relaton_data
@@ -52,3 +52,5 @@ module Metanorma
     end
   end
 end
+
+
