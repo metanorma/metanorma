@@ -86,24 +86,6 @@ module Metanorma
       @log.write
     end
 
-    # TODO: use it
-    # @param ext [Symbol] output format
-    def generate_output(ext)
-      output_filename = generate_output_filename(ext)
-      case ext
-      when :html, :doc, :pdf
-        process_isodoc_format(ext, output_filename)
-      when :rxl
-        process_relaton_export(output_filename)
-      end
-    end
-
-    def generate_output_filename(ext)
-      config = OutputFilenameConfig.new(options[:filename_template])
-      relaton = extract_relaton_metadata
-      config.generate_filename(relaton, @processor.output_formats[ext])
-    end
-
     # Step 1: Generate Semantic XML from input file
     # @param filename [String] input file path
     # @param options [Hash] compilation options
