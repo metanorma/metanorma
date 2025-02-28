@@ -54,19 +54,22 @@ module Metanorma
       source_file, semantic_xml = semantic_result
 
       # Step 2: Prepare output paths
-      output_paths = prepare_output_paths(filename, options)
+      xml = Nokogiri::XML(semantic_xml, &:huge)
+      bibdata = extract_relaton_metadata(xml)
+      output_paths = prepare_output_paths(filename, bibdata, options)
 
       # Step 3: Determine which output formats to generate
       extensions = get_extensions(options)
       return nil unless extensions
 
       # Step 4: Extract information from Semantic XML if requested
-      extract_information(semantic_xml, options)
+      extract_information(semantic_xml, bibdata, options)
 
       # Step 5: Generate output formats from Semantic XML
       generate_outputs(
         source_file,
         semantic_xml,
+        bibdata,
         extensions,
         output_paths,
         options,
@@ -105,9 +108,10 @@ module Metanorma
 
     # Step 2: Prepare output paths for generated files
     # @param filename [String] input file path
+    # @param bibdata [Nokogiri::XML::Element] the bibliographic data element
     # @param options [Hash] compilation options
     # @return [Hash] paths for different output formats
-    def prepare_output_paths(filename, options)
+    def prepare_output_paths(filename, bibdata, options)
       output_basename = OutputBasename.from_filename(
         filename,
         options[:output_dir],
@@ -125,7 +129,7 @@ module Metanorma
     # Step 4: Extract information from Semantic XML
     # @param semantic_xml [String] semantic XML content
     # @param options [Hash] compilation options
-    def extract_information(semantic_xml, options)
+    def extract_information(semantic_xml, bibdata, options)
       # Extract Relaton bibliographic data
       export_relaton(semantic_xml, options) if options[:relaton]
 
@@ -142,36 +146,38 @@ module Metanorma
     # Step 5: Generate output formats from Semantic XML
     # @param source_file [String] source file content
     # @param semantic_xml [String] semantic XML content
+    # @param bibdata [Nokogiri::XML::Element] the bibliographic data element
     # @param extensions [Array<Symbol>] output formats to generate
     # @param output_paths [Hash] paths for output files
     # @param options [Hash] compilation options
-    def generate_outputs(source_file, semantic_xml, extensions, output_paths,
-options)
+    def generate_outputs(
+      source_file, semantic_xml, bibdata, extensions, output_paths, options
+    )
       if extensions == %i(presentation)
         # Just generate presentation XML
         generate_presentation_xml(
-          source_file, semantic_xml, output_paths, options
+          source_file, semantic_xml, bibdata, output_paths, options
         )
       else
         # Generate multiple output formats with parallel processing
         generate_outputs_parallel(
-          source_file, semantic_xml, extensions, output_paths, options
+          source_file, semantic_xml, bibdata, extensions, output_paths, options
         )
       end
     end
 
     # Generate presentation XML from semantic XML
     def generate_presentation_xml(
-      source_file, semantic_xml, output_paths, options
+      source_file, semantic_xml, bibdata, output_paths, options
     )
       process_ext(
-        :presentation, source_file, semantic_xml, output_paths, options
+        :presentation, source_file, semantic_xml, bibdata, output_paths, options
       )
     end
 
     # Generate multiple output formats with parallel processing
     def generate_outputs_parallel(
-      source_file, semantic_xml, extensions, output_paths, options
+      source_file, semantic_xml, bibdata, extensions, output_paths, options
     )
       @queue = ::Metanorma::Util::WorkersPool.new(
         ENV["METANORMA_PARALLEL"]&.to_i || DEFAULT_NUM_WORKERS,
@@ -182,18 +188,18 @@ options)
 
       # Process each extension in order
       process_extensions_in_order(
-        source_file, semantic_xml, extensions, output_paths, options
+        source_file, semantic_xml, bibdata, extensions, output_paths, options
       )
 
       @queue.shutdown
     end
 
     def process_extensions_in_order(
-      source_file, semantic_xml, extensions, output_paths, options
+      source_file, semantic_xml, bibdata, extensions, output_paths, options
     )
       Util.sort_extensions_execution(extensions).each do |ext|
         process_ext(
-          ext, source_file, semantic_xml, output_paths, options
+          ext, source_file, semantic_xml, bibdata, output_paths, options
         ) or break
       end
     end
@@ -238,10 +244,6 @@ options)
       xml.at("//bibdata") || xml.at("//xmlns:bibdata")
     end
 
-    def extract_relaton_metadata_drop(semantic_xml)
-      RelatonDrop.new(extract_relaton_metadata(semantic_xml))
-    end
-
     def wrap_html(options, file_extension, outfilename)
       if options[:wrapper] && /html$/.match(file_extension)
         outfilename = outfilename.sub(/\.html$/, "")
@@ -261,7 +263,8 @@ options)
     end
 
     # Process a single extension (output format)
-    def process_ext(ext, source_file, semantic_xml, output_paths, options)
+    def process_ext(ext, source_file, semantic_xml, bibdata, output_paths,
+options)
       output_basename = OutputBasename.from_filename(
         output_paths[:orig_filename],
         options[:output_dir],
@@ -274,7 +277,7 @@ options)
 
       # Handle special cases first
       return true if process_ext_special(
-        ext, semantic_xml, output_paths, options, isodoc_options
+        ext, semantic_xml, bibdata, output_paths, options, isodoc_options
       )
 
       # Otherwise, determine if it uses presentation XML
@@ -291,7 +294,7 @@ options)
 
     # Process special extensions with custom handling
     def process_ext_special(
-      ext, semantic_xml, output_paths, options, isodoc_options
+      ext, semantic_xml, bibdata, output_paths, options, isodoc_options
     )
       if ext == :rxl
 
