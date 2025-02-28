@@ -1,13 +1,6 @@
 module Metanorma
   class Compile
     module Extract
-      def relaton_export(isodoc, options)
-        options[:relaton] or return
-        xml = Nokogiri::XML(isodoc, &:huge)
-        bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
-        File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
-      end
-
       def clean_sourcecode(xml)
         xml.xpath(".//callout | .//annotation | .//xmlns:callout | "\
                   ".//xmlns:annotation").each(&:remove)
