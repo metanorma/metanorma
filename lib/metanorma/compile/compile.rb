@@ -14,7 +14,7 @@ require_relative "../util/util"
 require_relative "extract"
 require_relative "../collection/sectionsplit/sectionsplit"
 require_relative "../util/worker_pool"
-require_relative "output_basename"
+require_relative "output_filename"
 require_relative "output_filename_config"
 require_relative "flavor"
 require_relative "relaton_drop"
@@ -107,22 +107,31 @@ module Metanorma
     end
 
     # Step 2: Prepare output paths for generated files
+    # Use default filename template if empty string is provided.
+    #
     # @param filename [String] input file path
     # @param bibdata [Nokogiri::XML::Element] the bibliographic data element
     # @param options [Hash] compilation options
     # @return [Hash] paths for different output formats
     def prepare_output_paths(filename, bibdata, options)
-      output_basename = OutputBasename.from_filename(
-        filename,
+      basename = if !options[:filename_template].nil?
+                   drop = RelatonDrop.new(bibdata)
+                   config = OutputFilenameConfig.new(options[:filename_template])
+                   config.generate_filename(drop)
+                 else
+                   filename.sub(/\.[^.]+$/, "")
+                 end
+
+      @output_filename = OutputFilename.new(
+        basename,
         options[:output_dir],
         @processor,
       )
 
-      f = File.expand_path(output_basename.semantic_xml)
       {
-        xml: f,
-        orig_filename: File.expand_path(filename),
-        presentationxml: File.expand_path(output_basename.presentation_xml),
+        xml: @output_filename.semantic_xml,
+        orig_filename: filename,
+        presentationxml: @output_filename.presentation_xml,
       }
     end
 
@@ -265,13 +274,8 @@ module Metanorma
     # Process a single extension (output format)
     def process_ext(ext, source_file, semantic_xml, bibdata, output_paths,
 options)
-      output_basename = OutputBasename.from_filename(
-        output_paths[:orig_filename],
-        options[:output_dir],
-        @processor,
-      )
       output_paths[:ext] = @processor.output_formats[ext]
-      output_paths[:out] = output_basename.for_format(ext) ||
+      output_paths[:out] = @output_filename.for_format(ext) ||
         output_paths[:xml].sub(/\.[^.]+$/, ".#{output_paths[:ext]}")
       isodoc_options = get_isodoc_options(source_file, options, ext)
 
