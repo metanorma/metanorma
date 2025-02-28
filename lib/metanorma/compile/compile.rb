@@ -19,7 +19,8 @@ module Metanorma
     include Extract
 
     # @return [Array<String>]
-    attr_reader :errors, :processor
+    attr_reader :errors
+    attr_reader :processor
 
     def initialize
       @registry = Metanorma::Registry.instance
