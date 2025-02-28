@@ -7,7 +7,7 @@ module Metanorma
         options&.dig(:require)&.each { |r| require r }
       end
 
-      def xml_options_extract(file)
+      def extract_xml_options(file)
         xml = Nokogiri::XML(file, &:huge)
         if xml.root
           @registry.root_tags.each do |k, v|
@@ -17,10 +17,10 @@ module Metanorma
         {}
       end
 
-      def options_extract(filename, options)
+      def extract_options(filename, options)
         content = read_file(filename)
         o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(content)
-          .merge(xml_options_extract(content))
+          .merge(extract_xml_options(content))
         options[:type] ||= o[:type]&.to_sym
         t = @registry.alias(options[:type]) and options[:type] = t
         dir = filename.sub(%r(/[^/]+$), "/")

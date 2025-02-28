@@ -3,6 +3,8 @@
 module Metanorma
   class Compile
     module Extract
+      # @param xml [Nokogiri::XML::Document] the XML document
+      # @return [String] the cleaned sourcecode
       def clean_sourcecode(xml)
         xml.xpath(".//callout | .//annotation | .//xmlns:callout | "\
                   ".//xmlns:annotation").each(&:remove)
@@ -11,6 +13,10 @@ module Metanorma
         HTMLEntities.new.decode(xml.children.to_xml)
       end
 
+      # @param isodoc [String] the XML document
+      # @param dirname [String, nil] the directory to extract to
+      # @param extract_types [Array<Symbol>, nil] the types to extract
+      # @return [void]
       def extract(isodoc, dirname, extract_types)
         dirname or return
         extract_types.nil? || extract_types.empty? and
@@ -18,13 +24,21 @@ module Metanorma
         FileUtils.rm_rf dirname
         FileUtils.mkdir_p dirname
         xml = Nokogiri::XML(isodoc, &:huge)
-        sourcecode_export(xml, dirname) if extract_types.include? :sourcecode
-        image_export(xml, dirname) if extract_types.include? :image
-        extract_types.include?(:requirement) and
-          requirement_export(xml, dirname)
+        extract_types.each do |type|
+          case type
+          when :sourcecode
+            export_sourcecode(xml, dirname)
+          when :image
+            export_image(xml, dirname)
+          when :requirement
+            export_requirement(xml, dirname)
+          end
+        end
       end
 
-      def sourcecode_export(xml, dirname)
+      private
+
+      def export_sourcecode(xml, dirname)
         xml.at("//sourcecode | //xmlns:sourcecode") or return
         FileUtils.mkdir_p "#{dirname}/sourcecode"
         xml.xpath("//sourcecode | //xmlns:sourcecode").each_with_index do |s, i|
@@ -34,7 +48,7 @@ module Metanorma
         end
       end
 
-      def image_export(xml, dirname)
+      def export_image(xml, dirname)
         xml.at("//image | //xmlns:image") or return
         FileUtils.mkdir_p "#{dirname}/image"
         xml.xpath("//image | //xmlns:image").each_with_index do |s, i|
@@ -52,7 +66,7 @@ module Metanorma
         "//requirement | //xmlns:requirement | //recommendation | "\
         "//xmlns:recommendation | //permission | //xmlns:permission"
 
-      def requirement_export(xml, dirname)
+      def export_requirement(xml, dirname)
         xml.at(REQUIREMENT_XPATH) or return
         FileUtils.mkdir_p "#{dirname}/requirement"
         xml.xpath(REQUIREMENT_XPATH).each_with_index do |s, i|

@@ -6,7 +6,7 @@ require "htmlentities"
 require "yaml"
 require "fontist"
 require "fontist/manifest/install"
-require_relative "compile_validate"
+require_relative "validator"
 require_relative "compile_options"
 require_relative "../util/fontist_helper"
 require_relative "../util/util"
@@ -14,12 +14,16 @@ require_relative "extract"
 require_relative "../collection/sectionsplit/sectionsplit"
 require_relative "../util/worker_pool"
 require_relative "output_filename"
+require_relative "output_filename_config"
+require_relative "flavor"
 
 module Metanorma
   class Compile
-    include CompileValidate
+    include Validator
     include CompileOptions
-    include Extract
+    include Flavor
+
+    DEFAULT_NUM_WORKERS = 3
 
     # @return [Array<String>]
     attr_reader :errors
@@ -33,22 +37,45 @@ module Metanorma
       @log = Metanorma::Utils::Log.new
     end
 
+    # Main compile method that orchestrates the document conversion process
+    # @param filename [String] path to the input file
+    # @param options [Hash] compilation options
     def compile(filename, options = {})
-      options_process(filename, options)
+      process_options!(filename, options)
       @processor = @registry.find_processor(options[:type].to_sym)
-      (file, isodoc = process_input(filename, options)) or return nil
-      extensions = get_extensions(options) or return nil
-      relaton_export(isodoc, options)
-      extract(isodoc, options[:extract], options[:extract_type])
-      process_exts(filename, extensions, file, isodoc, options)
+
+      # Step 1: Generate Semantic XML
+      semantic_result = generate_semantic_xml(filename, options)
+      return nil unless semantic_result
+
+      source_file, semantic_xml = semantic_result
+
+      # Step 2: Prepare output paths
+      output_paths = prepare_output_paths(filename, options)
+
+      # Step 3: Determine which output formats to generate
+      extensions = get_extensions(options)
+      return nil unless extensions
+
+      # Step 4: Extract information from Semantic XML if requested
+      extract_information(semantic_xml, options)
+
+      # Step 5: Generate output formats from Semantic XML
+      generate_outputs(
+        source_file,
+        semantic_xml,
+        extensions,
+        output_paths,
+        options,
+      )
     ensure
       clean_exit(options)
     end
 
-    def options_process(filename, options)
+    def process_options!(filename, options)
       require_libraries(options)
-      options = options_extract(filename, options)
-      validate_options(options)
+      options = extract_options(filename, options)
+      validate_options!(options)
       @log.save_to(filename, options[:output_dir])
       options[:log] = @log
     end
@@ -58,7 +85,29 @@ module Metanorma
       @log.write
     end
 
-    def process_input(filename, options)
+    # TODO: use it
+    # @param ext [Symbol] output format
+    def generate_output(ext)
+      output_filename = generate_output_filename(ext)
+      case ext
+      when :html, :doc, :pdf
+        process_isodoc_format(ext, output_filename)
+      when :rxl
+        process_relaton_export(output_filename)
+      end
+    end
+
+    def generate_output_filename(ext)
+      config = OutputFilenameConfig.new(options[:filename_template])
+      relaton = extract_relaton_metadata
+      config.generate_filename(relaton, @processor.output_formats[ext])
+    end
+
+    # Step 1: Generate Semantic XML from input file
+    # @param filename [String] input file path
+    # @param options [Hash] compilation options
+    # @return [Array, nil] tuple of [source_file, semantic_xml] or nil on failure
+    def generate_semantic_xml(filename, options)
       case extname = File.extname(filename)
       when ".adoc" then process_input_adoc(filename, options)
       when ".xml" then process_input_xml(filename, options)
@@ -66,6 +115,101 @@ module Metanorma
         Util.log("[metanorma] Error: file extension #{extname} " \
                  "is not supported.", :error)
         nil
+      end
+    end
+
+    # Step 2: Prepare output paths for generated files
+    # @param filename [String] input file path
+    # @param options [Hash] compilation options
+    # @return [Hash] paths for different output formats
+    def prepare_output_paths(filename, options)
+      output_filename = OutputFilename.new(
+        filename,
+        options[:output_dir],
+        @processor,
+      )
+
+      f = File.expand_path(output_filename.semantic_xml)
+      {
+        xml: f,
+        orig_filename: File.expand_path(filename),
+        presentationxml: File.expand_path(output_filename.presentation_xml),
+      }
+    end
+
+    # Step 4: Extract information from Semantic XML
+    # @param semantic_xml [String] semantic XML content
+    # @param options [Hash] compilation options
+    def extract_information(semantic_xml, options)
+      # Extract Relaton bibliographic data
+      export_relaton(semantic_xml, options) if options[:relaton]
+
+      # Extract other components (sourcecode, images, requirements)
+      if options[:extract]
+        Extract.extract(
+          semantic_xml,
+          options[:extract],
+          options[:extract_type],
+        )
+      end
+    end
+
+    # Step 5: Generate output formats from Semantic XML
+    # @param source_file [String] source file content
+    # @param semantic_xml [String] semantic XML content
+    # @param extensions [Array<Symbol>] output formats to generate
+    # @param output_paths [Hash] paths for output files
+    # @param options [Hash] compilation options
+    def generate_outputs(source_file, semantic_xml, extensions, output_paths,
+options)
+      if extensions == %i(presentation)
+        # Just generate presentation XML
+        generate_presentation_xml(
+          source_file, semantic_xml, output_paths, options
+        )
+      else
+        # Generate multiple output formats with parallel processing
+        generate_outputs_parallel(
+          source_file, semantic_xml, extensions, output_paths, options
+        )
+      end
+    end
+
+    # Generate presentation XML from semantic XML
+    def generate_presentation_xml(
+      source_file, semantic_xml, output_paths, options
+    )
+      process_ext(
+        :presentation, source_file, semantic_xml, output_paths, options
+      )
+    end
+
+    # Generate multiple output formats with parallel processing
+    def generate_outputs_parallel(
+      source_file, semantic_xml, extensions, output_paths, options
+    )
+      @queue = ::Metanorma::Util::WorkersPool.new(
+        ENV["METANORMA_PARALLEL"]&.to_i || DEFAULT_NUM_WORKERS,
+      )
+
+      # Install required fonts for all extensions
+      gather_and_install_fonts(source_file, options.dup, extensions)
+
+      # Process each extension in order
+      process_extensions_in_order(
+        source_file, semantic_xml, extensions, output_paths, options
+      )
+
+      @queue.shutdown
+    end
+
+    def process_extensions_in_order(
+      source_file, semantic_xml, extensions, output_paths, options
+    )
+      Util.sort_extensions_execution(extensions).each do |ext|
+        process_ext(
+          ext, source_file, semantic_xml, output_paths, options
+        ) or break
       end
     end
 
@@ -92,14 +236,25 @@ module Metanorma
       File.read(filename, encoding: "utf-8").gsub("\r\n", "\n")
     end
 
-    def relaton_export(isodoc, options)
+    # Export bibliographic data to Relaton XML
+    def export_relaton(semantic_xml, options)
       return unless options[:relaton]
 
-      xml = Nokogiri::XML(isodoc, &:huge)
-      bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
+      xml = Nokogiri::XML(semantic_xml, &:huge)
+      bibdata = extract_relaton_metadata(xml)
       # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
       # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
-      File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
+      export_output(options[:relaton], bibdata.to_xml)
+    end
+
+    # @param xml [Nokogiri::XML::Document] the XML document
+    # @return [Nokogiri::XML::Element] the bibliographic data element
+    def extract_relaton_metadata(xml)
+      xml.at("//bibdata") || xml.at("//xmlns:bibdata")
+    end
+
+    def extract_relaton_metadata_drop(semantic_xml)
+      RelatonDrop.new(extract_relaton_metadata(semantic_xml))
     end
 
     def export_output(fname, content, **options)
@@ -117,98 +272,102 @@ module Metanorma
     end
 
     # isodoc is Raw Metanorma XML
-    def process_exts(filename, extensions, file, isodoc, options)
-      output_filename = OutputFilename.new(
-        filename, options[:output_dir], @processor
-      )
-      f = File.expand_path(output_filename.semantic_xml)
-      fnames = { xml: f,
-                 f: f,
-                 orig_filename: File.expand_path(filename),
-                 presentationxml: File.expand_path(output_filename.presentation_xml) }
-      if extensions == %i(presentation)
-        process_ext(:presentation, file, isodoc, fnames, options)
-      else
-        process_exts_queue(fnames, extensions, file, isodoc, options)
-      end
-    end
 
-    def process_exts_queue(fnames, extensions, file, isodoc, options)
-      @queue = ::Metanorma::Util::WorkersPool
-        .new(ENV["METANORMA_PARALLEL"]&.to_i || 3)
-      gather_and_install_fonts(file, options.dup, extensions)
-      process_exts_run(fnames, file, isodoc, extensions, options)
-      @queue.shutdown
-    end
-
-    def process_exts_run(fnames, file, isodoc, extensions, options)
+    def gather_and_install_fonts(source_file, options, extensions)
       Util.sort_extensions_execution(extensions).each do |ext|
-        process_ext(ext, file, isodoc, fnames, options) or break
-      end
-    end
-
-    def gather_and_install_fonts(file, options, extensions)
-      Util.sort_extensions_execution(extensions).each do |ext|
-        isodoc_options = get_isodoc_options(file, options, ext)
+        isodoc_options = get_isodoc_options(source_file, options, ext)
         font_install(isodoc_options.merge(options))
       end
     end
 
-    def process_ext(ext, file, isodoc, fnames, options)
-      output_filename = OutputFilename.new(fnames[:orig_filename],
-                                           options[:output_dir], @processor)
-      fnames[:ext] = @processor.output_formats[ext]
-      fnames[:out] =
-        output_filename.for_format(ext) || fnames[:f].sub(/\.[^.]+$/,
-                                                          ".#{fnames[:ext]}")
-      isodoc_options = get_isodoc_options(file, options, ext)
-      thread = true
-      unless process_ext_simple(ext, isodoc, fnames, options,
-                                isodoc_options)
-        thread = process_exts1(ext, fnames, isodoc, options, isodoc_options)
-      end
-      thread
-    end
+    # Process a single extension (output format)
+    def process_ext(ext, source_file, semantic_xml, output_paths, options)
+      output_filename = OutputFilename.new(
+        output_paths[:orig_filename],
+        options[:output_dir],
+        @processor,
+      )
+      output_paths[:ext] = @processor.output_formats[ext]
+      output_paths[:out] = output_filename.for_format(ext) ||
+        output_paths[:xml].sub(/\.[^.]+$/, ".#{output_paths[:ext]}")
+      isodoc_options = get_isodoc_options(source_file, options, ext)
 
-    def process_ext_simple(ext, isodoc, fnames, options, isodoc_options)
-      if ext == :rxl
-        relaton_export(isodoc, options.merge(relaton: fnames[:out]))
-      elsif options[:passthrough_presentation_xml] && ext == :presentation
-        # f = File.exist?(fnames[:f]) ? fnames[:f] : fnames[:orig_filename]
-        f = File.exist?(fnames[:orig_filename]) ? fnames[:orig_filename] : fnames[:f]
-        FileUtils.cp f, fnames[:presentationxml]
-      elsif ext == :html && options[:sectionsplit]
-        sectionsplit_convert(fnames[:xml], isodoc, fnames[:out],
-                             isodoc_options)
-      else return false
-      end
-      true
-    end
+      # Handle special cases first
+      return true if process_ext_special(
+        ext, semantic_xml, output_paths, options, isodoc_options
+      )
 
-    def process_exts1(ext, fnames, isodoc, options, isodoc_options)
+      # Otherwise, determine if it uses presentation XML
       if @processor.use_presentation_xml(ext)
-        @queue.schedule(ext, fnames.dup, options.dup,
-                        isodoc_options.dup) do |a, b, c, d|
-          process_output_threaded(a, b, c, d)
-        end
+        # Format requires presentation XML first, then convert to final format
+        process_via_presentation_xml(ext, output_paths, options, isodoc_options)
       else
-        process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
+        # Format can be generated directly from semantic XML
+        process_from_semantic_xml(
+          ext, output_paths, semantic_xml, isodoc_options
+        )
       end
     end
 
-    def process_output_threaded(ext, fnames1, options1, isodoc_options1)
-      @processor.output(nil, fnames1[:presentationxml], fnames1[:out], ext,
-                        isodoc_options1)
-      wrap_html(options1, fnames1[:ext], fnames1[:out])
+    # Process special extensions with custom handling
+    def process_ext_special(
+      ext, semantic_xml, output_paths, options, isodoc_options
+    )
+      if ext == :rxl
+
+        # Special case: Relaton export
+        export_relaton(semantic_xml, options.merge(relaton: output_paths[:out]))
+        true
+
+      elsif ext == :presentation && options[:passthrough_presentation_xml]
+
+        # Special case: Pass through presentation XML
+        f = if File.exist?(output_paths[:orig_filename])
+              output_paths[:orig_filename]
+            else
+              output_paths[:xml]
+            end
+
+        FileUtils.cp f, output_paths[:presentationxml]
+        true
+
+      elsif ext == :html && options[:sectionsplit]
+
+        # Special case: Split HTML into sections
+        sectionsplit_convert(
+          output_paths[:xml], semantic_xml, output_paths[:out], isodoc_options
+        )
+        true
+      else
+        false
+      end
+    end
+
+    # Process format that requires presentation XML
+    def process_via_presentation_xml(ext, output_paths, options, isodoc_options)
+      @queue.schedule(ext, output_paths.dup, options.dup,
+                      isodoc_options.dup) do |a, b, c, d|
+        process_output_from_presentation_xml(a, b, c, d)
+      end
+    end
+
+    # Generate output format from presentation XML
+    def process_output_from_presentation_xml(ext, output_paths, options,
+isodoc_options)
+      @processor.output(nil, output_paths[:presentationxml],
+                        output_paths[:out], ext, isodoc_options)
+      wrap_html(options, output_paths[:ext], output_paths[:out])
     rescue StandardError => e
-      strict = ext == :presentation || isodoc_options1[:strict] == true
+      strict = ext == :presentation || isodoc_options[:strict] == true
       isodoc_error_process(e, strict, false)
     end
 
-    def process_output_unthreaded(ext, fnames, isodoc, isodoc_options)
-      @processor.output(isodoc, fnames[:xml], fnames[:out], ext,
-                        isodoc_options)
-      true # return as Thread
+    # Process format directly from semantic XML
+    def process_from_semantic_xml(ext, output_paths, semantic_xml,
+isodoc_options)
+      @processor.output(semantic_xml, output_paths[:xml], output_paths[:out],
+                        ext, isodoc_options)
+      true # Return as Thread equivalent
     rescue StandardError => e
       strict = ext == :presentation || isodoc_options[:strict] == "true"
       isodoc_error_process(e, strict, true)
@@ -221,7 +380,7 @@ module Metanorma
       @isodoc ||= IsoDoc::PresentationXMLConvert.new({})
       input_filename += ".xml" unless input_filename.match?(/\.xml$/)
       File.exist?(input_filename) or
-        File.open(input_filename, "w:UTF-8") { |f| f.write(file) }
+        export_output(input_filename, file)
       presxml = File.read(input_filename, encoding: "utf-8")
       _xml, filename, dir = @isodoc.convert_init(presxml, input_filename, false)
 
@@ -246,15 +405,6 @@ module Metanorma
       end
       puts err.backtrace.join("\n")
       must_abort and 1
-    end
-
-    # @param options [Hash]
-    # @return [String]
-    def change_output_dir(options)
-      if options[:output_dir]
-        File.join options[:output_dir], File.basename(options[:filename])
-      else options[:filename]
-      end
     end
   end
 end
