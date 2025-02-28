@@ -13,7 +13,7 @@ require_relative "../util/util"
 require_relative "extract"
 require_relative "../collection/sectionsplit/sectionsplit"
 require_relative "../util/worker_pool"
-require_relative "output_filename"
+require_relative "output_basename"
 require_relative "output_filename_config"
 require_relative "flavor"
 require_relative "relaton_drop"
@@ -106,17 +106,17 @@ module Metanorma
     # @param options [Hash] compilation options
     # @return [Hash] paths for different output formats
     def prepare_output_paths(filename, options)
-      output_filename = OutputFilename.new(
+      output_basename = OutputBasename.from_filename(
         filename,
         options[:output_dir],
         @processor,
       )
 
-      f = File.expand_path(output_filename.semantic_xml)
+      f = File.expand_path(output_basename.semantic_xml)
       {
         xml: f,
         orig_filename: File.expand_path(filename),
-        presentationxml: File.expand_path(output_filename.presentation_xml),
+        presentationxml: File.expand_path(output_basename.presentation_xml),
       }
     end
 
@@ -265,13 +265,13 @@ options)
 
     # Process a single extension (output format)
     def process_ext(ext, source_file, semantic_xml, output_paths, options)
-      output_filename = OutputFilename.new(
+      output_basename = OutputBasename.from_filename(
         output_paths[:orig_filename],
         options[:output_dir],
         @processor,
       )
       output_paths[:ext] = @processor.output_formats[ext]
-      output_paths[:out] = output_filename.for_format(ext) ||
+      output_paths[:out] = output_basename.for_format(ext) ||
         output_paths[:xml].sub(/\.[^.]+$/, ".#{output_paths[:ext]}")
       isodoc_options = get_isodoc_options(source_file, options, ext)
 
