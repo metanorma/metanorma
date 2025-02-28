@@ -6,6 +6,7 @@ require "htmlentities"
 require "yaml"
 require "fontist"
 require "fontist/manifest/install"
+require_relative "writeable"
 require_relative "validator"
 require_relative "compile_options"
 require_relative "../util/fontist_helper"
@@ -23,6 +24,7 @@ module Metanorma
     include Validator
     include CompileOptions
     include Flavor
+    include Writeable
 
     DEFAULT_NUM_WORKERS = 3
 
@@ -238,11 +240,6 @@ options)
 
     def extract_relaton_metadata_drop(semantic_xml)
       RelatonDrop.new(extract_relaton_metadata(semantic_xml))
-    end
-
-    def export_output(fname, content, **options)
-      mode = options[:binary] ? "wb" : "w:UTF-8"
-      File.open(fname, mode) { |f| f.write content }
     end
 
     def wrap_html(options, file_extension, outfilename)
