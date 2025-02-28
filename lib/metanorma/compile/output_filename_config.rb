@@ -11,10 +11,9 @@ module Metanorma
         @template = template || DEFAULT_TEMPLATE
       end
 
-      def generate_filename(relaton_data, extension)
+      def generate_basename(relaton_data)
         template = Liquid::Template.parse(@template)
-        base = template.render("document" => relaton_data)
-        "#{base}.#{extension}"
+        template.render("document" => relaton_data)
       end
     end
   end
