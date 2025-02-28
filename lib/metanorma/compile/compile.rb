@@ -131,7 +131,7 @@ module Metanorma
     # @param options [Hash] compilation options
     def extract_information(semantic_xml, bibdata, options)
       # Extract Relaton bibliographic data
-      export_relaton(semantic_xml, options) if options[:relaton]
+      export_relaton_from_bibdata(bibdata, options) if options[:relaton]
 
       # Extract other components (sourcecode, images, requirements)
       if options[:extract]
@@ -227,12 +227,12 @@ module Metanorma
       File.read(filename, encoding: "utf-8").gsub("\r\n", "\n")
     end
 
-    # Export bibliographic data to Relaton XML
-    def export_relaton(semantic_xml, options)
+    # Export given bibliographic data to Relaton XML on disk
+    # @param bibdata [Nokogiri::XML::Element] the bibliographic data element
+    # @param options [Hash] compilation options
+    def export_relaton_from_bibdata(bibdata, options)
       return unless options[:relaton]
 
-      xml = Nokogiri::XML(semantic_xml, &:huge)
-      bibdata = extract_relaton_metadata(xml)
       # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
       # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
       export_output(options[:relaton], bibdata.to_xml)
@@ -299,7 +299,10 @@ options)
       if ext == :rxl
 
         # Special case: Relaton export
-        export_relaton(semantic_xml, options.merge(relaton: output_paths[:out]))
+        export_relaton_from_bibdata(
+          bibdata,
+          options.merge(relaton: output_paths[:out]),
+        )
         true
 
       elsif ext == :presentation && options[:passthrough_presentation_xml]
