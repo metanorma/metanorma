@@ -4,8 +4,6 @@ module Metanorma
       options[:relaton] or return
       xml = Nokogiri::XML(isodoc, &:huge)
       bibdata = xml.at("//bibdata") || xml.at("//xmlns:bibdata")
-      # docid = bibdata&.at("./xmlns:docidentifier")&.text || options[:filename]
-      # outname = docid.sub(/^\s+/, "").sub(/\s+$/, "").gsub(/\s+/, "-") + ".xml"
       File.open(options[:relaton], "w:UTF-8") { |f| f.write bibdata.to_xml }
     end
 
@@ -13,6 +11,7 @@ module Metanorma
       xml.xpath(".//callout | .//annotation | .//xmlns:callout | "\
                 ".//xmlns:annotation").each(&:remove)
       xml.xpath(".//br | .//xmlns:br").each { |x| x.replace("\n") }
+      a = xml.at("./body | ./xmlns:body") and xml = a
       HTMLEntities.new.decode(xml.children.to_xml)
     end
 
