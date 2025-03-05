@@ -12,7 +12,7 @@ ensure
 end
 
 INPATH = "spec/fixtures/collection"
-OUTPATH = "spec/fixtures/ouput"
+OUTPATH = "spec/fixtures/output"
 GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 
 # rubocop:disable Layout/LineLength

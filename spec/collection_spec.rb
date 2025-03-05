@@ -12,7 +12,7 @@ ensure
 end
 
 INPATH = "spec/fixtures/collection"
-OUTPATH = "spec/fixtures/ouput"
+OUTPATH = "spec/fixtures/output"
 
 RSpec.describe Metanorma::Collection do
   context "parse" do

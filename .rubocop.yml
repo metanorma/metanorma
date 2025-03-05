@@ -7,4 +7,7 @@ inherit_from:
 # ...
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 3.1
+
+Lint/MissingSuper:
+  AllowedParentClasses: [Liquid::Drop]

@@ -110,6 +110,7 @@
           rubyPackages.ruby-lsp
           rubyPackages.sorbet-runtime
           wget
+          pkg-config # for building native extensions
         ] ++
         runtimeDependencies;
 

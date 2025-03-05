@@ -20,7 +20,7 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "passes asciidoc options onto isodoc" do
-    log = Metanorma::Utils::Log.new()
+    log = Metanorma::Utils::Log.new
     mock_iso_processor_output(
       File.expand_path("spec/assets/test2.xml"),
       File.expand_path("spec/assets/test2.presentation.xml"),
@@ -45,33 +45,38 @@ RSpec.describe Metanorma::Compile do
         output_formats: {
           presentation: "presentation.xml",
         },
-        log: an_instance_of(Metanorma::Utils::Log)
+        log: an_instance_of(Metanorma::Utils::Log),
       },
     )
-    Metanorma::Compile.new.compile("spec/assets/test2.adoc",
-                                   type: "iso",
-                                   extension_keys: [:presentation],
-                                   bare: nil,
-                                   baseassetpath: "spec/assets",
-                                   suppressasciimathdup: true,
-                                   sectionsplit: nil,
-                                   datauriimage: true,
-                                   aligncrosselements: "p,table",
-                                   tocfigures: true,
-                                   toctables: true,
-                                   tocrecommendations: true,
-                                   agree_to_terms: true,
-                                   i18nyaml: "spec/assets/i.yaml",
-                                   log: log,
-                                   output_formats: { doc: "doc",
-                                                     html: "html",
-                                                     html_alt: "alt.html",
-                                                     isosts: "iso.sts.xml",
-                                                     pdf: "pdf",
-                                                     presentation: "presentation.xml",
-                                                     rxl: "rxl",
-                                                     sts: "sts.xml",
-                                                     xml: "xml" })
+
+    Metanorma::Compile.new.compile(
+      "spec/assets/test2.adoc",
+      type: "iso",
+      extension_keys: [:presentation],
+      bare: nil,
+      baseassetpath: "spec/assets",
+      suppressasciimathdup: true,
+      sectionsplit: nil,
+      datauriimage: true,
+      aligncrosselements: "p,table",
+      tocfigures: true,
+      toctables: true,
+      tocrecommendations: true,
+      agree_to_terms: true,
+      i18nyaml: "spec/assets/i.yaml",
+      log: log,
+      output_formats: {
+        doc: "doc",
+        html: "html",
+        html_alt: "alt.html",
+        isosts: "iso.sts.xml",
+        pdf: "pdf",
+        presentation: "presentation.xml",
+        rxl: "rxl",
+        sts: "sts.xml",
+        xml: "xml",
+      },
+    )
   end
 
   it "fontist_install called" do
@@ -616,6 +621,190 @@ RSpec.describe Metanorma::Compile do
     end.to raise_error SystemExit
 
     expect(File.exist?(error_log_file)).to be true
+  end
+
+  describe "Output filename templating" do
+    let(:processor) do
+      double("processor").tap do |p|
+        allow(p).to receive(:output_formats).and_return(
+          {
+            rxl: "rxl",
+            xml: "xml",
+            presentation: "presentation.xml",
+          },
+        )
+        allow(p).to receive(:extract_options).and_return({})
+        allow(p).to receive(:use_presentation_xml).and_return(true)
+        allow(p).to receive(:input_to_isodoc).and_return(isodoc)
+        allow(p).to receive(:output) do |_, _, outfile, _format, _|
+          puts "output to #{outfile}"
+          FileUtils.touch(outfile)
+        end
+      end
+    end
+
+    let(:bibdata_xml) do
+      <<~XML
+        <bibdata type="standard">
+          <docidentifier>ISO/IEC FDIS 10118-3</docidentifier>
+          <docnumber>10118</docnumber>
+          <partnumber>3</partnumber>
+          <edition>2</edition>
+          <version>
+            <revision-date>2023</revision-date>
+            <draft>FDIS</draft>
+          </version>
+          <language>en</language>
+          <script>Latn</script>
+          <status>
+            <stage>50</stage>
+            <substage>00</substage>
+          </status>
+          <ext>
+            <doctype>international-standard</doctype>
+          </ext>
+        </bibdata>
+      XML
+    end
+
+    let(:source_file) { "test.adoc" }
+    let(:isodoc) { "<root>#{bibdata_xml}</root>" }
+    let(:bibdata) { Nokogiri::XML(isodoc).at("//bibdata") }
+    let(:relaton_drop) { instance_double(Metanorma::Compile::RelatonDrop) }
+
+    before(:each) do
+      allow(Metanorma::Registry.instance).to receive(:find_processor).and_return(processor)
+      FileUtils.mkdir_p(output_dir)
+      File.write(source_file, "= Test Document\n\nContent")
+      allow_any_instance_of(Metanorma::Compile).to receive(:validate_options!).and_return(true)
+      allow_any_instance_of(Metanorma::Compile).to receive(:require_libraries).and_return(true)
+      allow_any_instance_of(Metanorma::Compile).to receive(:extract_relaton_metadata).and_return(bibdata)
+      allow(Metanorma::Compile::RelatonDrop).to receive(:new).with(bibdata).and_return(relaton_drop)
+      allow(relaton_drop).to receive(:to_liquid).and_return(
+        {
+          "docidentifier" => "ISO/IEC FDIS 10118-3",
+          "language" => "en",
+          "edition" => "2",
+          "doctype" => "international-standard",
+          "docnumber" => "10118",
+          "partnumber" => "3",
+        },
+      )
+    end
+
+    let(:output_dir) { "output" }
+
+    after(:each) do
+      FileUtils.rm_f(source_file)
+      FileUtils.rm_rf(output_dir)
+    end
+
+    let(:compile_options) do
+      {
+        output_dir: output_dir,
+        filename: source_file,
+        extension_keys: %i[xml presentation html pdf],
+        type: "iso",
+        filename_template: template,
+        log: double("log", write: nil),
+        agree_to_terms: true,
+        novalid: true,
+      }
+    end
+
+    let(:compile) { Metanorma::Compile.new }
+    let(:action) { proc { compile.compile(source_file, compile_options) } }
+
+    context "with a valid template" do
+      let(:template) do
+        "{{ document.docidentifier" \
+        " | downcase" \
+        " | replace: '/' , '-'" \
+        " | replace: ' ' , '-' }}" \
+        "_{{ document.language }}_{{ document.edition }}"
+      end
+
+      it "generates filenames based on the template" do
+        action.call
+
+        expect(File.exist?("output/iso-iec-fdis-10118-3_en_2.xml")).to be true
+        expect(File.exist?("output/iso-iec-fdis-10118-3_en_2.presentation.xml")).to be true
+      end
+
+      it "does not generate files that are not specified in the output_formats" do
+        expect(File.exist?("output/iso-iec-fdis-10118-3_en_2.html")).to be false
+        expect(File.exist?("output/iso-iec-fdis-10118-3_en_2.pdf")).to be false
+      end
+    end
+
+    context "with a template that has a missing variable" do
+      let(:template) do
+        "{{ nonexistent }}_{{ document.language }}"
+      end
+
+      it "handles missing template variables gracefully" do
+        action.call
+
+        expect(File.exist?("output/_en.xml")).to be true
+        expect(File.exist?("output/_en.presentation.xml")).to be true
+      end
+    end
+
+    context "with a template that has conditionals" do
+      let(:template) do
+        "{% if document.doctype == 'international-standard' %}" \
+        "iso-"\
+        "{% else %}"\
+        "is-"\
+        "{% endif %}" \
+        "{{ document.docnumber }}-{{ document.partnumber }}"
+      end
+
+      it "supports complex template expressions" do
+        action.call
+
+        expect(File.exist?("output/iso-10118-3.xml")).to be true
+        expect(File.exist?("output/iso-10118-3.presentation.xml")).to be true
+      end
+    end
+
+    context "with an invalid template" do
+      let(:template) do
+        "{{ invalid syntax }"
+      end
+
+      it "raises Liquid::SyntaxError" do
+        expect(&action).to raise_error(Liquid::SyntaxError)
+      end
+    end
+
+    context "without filename template" do
+      let(:compile_options) do
+        {
+          output_dir: output_dir,
+          filename: source_file,
+          extension_keys: %i[xml presentation html pdf],
+          type: "iso",
+          log: double("log", write: nil),
+          agree_to_terms: true,
+          novalid: true,
+        }
+      end
+
+      it "uses default filename" do
+        action.call
+
+        expect(File.exist?("output/test.xml")).to be true
+        expect(File.exist?("output/test.presentation.xml")).to be true
+      end
+
+      it "does not generate extraneous outputs" do
+        action.call
+
+        expect(File.exist?("output/test.html")).to be false
+        expect(File.exist?("output/test.pdf")).to be false
+      end
+    end
   end
 
   private
