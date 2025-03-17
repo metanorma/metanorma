@@ -55,7 +55,7 @@ module Metanorma
 
       def index?(mnf)
         mnf.index and return true
-        mnf.entry.detect { |e| index?(e) }
+        mnf.entry&.detect { |e| index?(e) }
       end
 
       def indexfile1(mnf)

@@ -136,7 +136,7 @@ module Metanorma
         #require "debug"; binding.b
         entry.file && !(Pathname.new entry.file).absolute? and
           entry.file = File.join(prefix, entry.file)
-        entry.entry.each do |f|
+        entry&.entry&.each do |f|
           update_filepaths(f, prefix)
         end
       end
