@@ -1,4 +1,4 @@
-<doc-container id="doc000000000">
+       <doc-container id="doc000000000">
    <iso-standard xmlns="https://www.metanorma.org/ns/bipm" cross-align="true" first="" type="presentation" version="2.4.10" document_suffix="ISO_JCGM_100_2008_EN_">
       <bibdata type="standard">
          <title language="en" format="text/plain" type="title-main">Evaluation of measurement data</title>
@@ -144,6 +144,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   <fmt-fn-label>
                      <sup>
                         <semx element="autonum" source="_">1</semx>
+                        <span class="fmt-label-delim">)</span>
                      </sup>
                   </fmt-fn-label>
                </fn>
@@ -849,6 +850,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   <fmt-fn-label>
                      <sup>
                         <semx element="autonum" source="_">2</semx>
+                        <span class="fmt-label-delim">)</span>
                      </sup>
                   </fmt-fn-label>
                </fn>
@@ -890,6 +892,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">3</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -945,6 +948,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   <fmt-fn-label>
                      <sup>
                         <semx element="autonum" source="_">4</semx>
+                        <span class="fmt-label-delim">)</span>
                      </sup>
                   </fmt-fn-label>
                </fn>
@@ -1089,6 +1093,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">5</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -1222,6 +1227,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      <fmt-fn-label>
                         <sup>
                            <semx element="autonum" source="_">6</semx>
+                           <span class="fmt-label-delim">)</span>
                         </sup>
                      </fmt-fn-label>
                   </fn>
@@ -1282,6 +1288,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      <fmt-fn-label>
                         <sup>
                            <semx element="autonum" source="_">6</semx>
+                           <span class="fmt-label-delim">)</span>
                         </sup>
                      </fmt-fn-label>
                   </fn>
@@ -3228,6 +3235,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">7</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -3349,6 +3357,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">7</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -48543,7 +48552,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <span class="stddocTitle">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</span>
                      </em>
                   </formattedref>
-                  <fetched>2025-03-17</fetched>
+                  <fetched>2025-03-20</fetched>
                   <title type="title-intro" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai</title>
                   <title type="title-main" format="text/plain" language="fr" script="Latn">Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
                   <title type="main" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
@@ -48705,6 +48714,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">8</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -48761,6 +48771,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">8</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -48785,6 +48796,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">9</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -48814,6 +48826,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">9</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -49071,6 +49084,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">10</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -49096,6 +49110,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">10</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -49481,6 +49496,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">11</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
@@ -49506,6 +49522,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <fmt-fn-label>
                            <sup>
                               <semx element="autonum" source="_">11</semx>
+                              <span class="fmt-label-delim">)</span>
                            </sup>
                         </fmt-fn-label>
                      </fn>
