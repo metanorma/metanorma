@@ -100,7 +100,8 @@ module Metanorma
 
       def rxl(_options)
         @bibdata or return
-        # options[:format].include?(:rxl) or next
+        options[:site_generate] and options[:format] << :xml
+        options[:format].include?(:rxl) or next
         File.open(File.join(@outdir, "collection.rxl"), "w:UTF-8") do |f|
           f.write(@bibdata.to_xml)
         end
