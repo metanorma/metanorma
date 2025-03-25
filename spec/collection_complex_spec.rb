@@ -29,7 +29,7 @@ RSpec.describe Metanorma::Collection do
       of = OUTPATH
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[presentation html pdf xml],
+        format: %i[presentation html pdf xml rxl],
         output_folder: of,
         # coverpage: "#{INPATH}/collection_cover.html",
         compile: {
@@ -72,6 +72,9 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{INPATH}/collection1.err.html")).to be true
       expect(File.read("#{INPATH}/collection1.err.html", encoding: "utf-8"))
         .to include "Missing:​express-schema:​E0"
+      expect(File.exist?("#{OUTPATH}/collection.rxl")).to be true
+      expect(File.read("#{OUTPATH}/collection.rxl", encoding: "utf-8"))
+        .to include '<docidentifier type="iso">ISO 12345</docidentifier>'
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
