@@ -91,10 +91,19 @@ module Metanorma
         warn "\n\n\n\n\nRender Init: #{DateTime.now.strftime('%H:%M:%S')}"
         cr = new(col, File.dirname(col.file), options)
         cr.files
+        cr.rxl(options)
         cr.concatenate(col, options)
         options[:format]&.include?(:html) and cr.coverpage
         cr.flush_files
         cr
+      end
+
+      def rxl(_options)
+        @bibdata or return
+        # options[:format].include?(:rxl) or next
+        File.open(File.join(@outdir, "collection.rxl"), "w:UTF-8") do |f|
+          f.write(@bibdata.to_xml)
+        end
       end
 
       def concatenate(col, options)
