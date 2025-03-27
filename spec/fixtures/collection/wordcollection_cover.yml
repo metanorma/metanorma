@@ -1,5 +1,7 @@
 directives:
   - documents-inline
+  - individual-doc
+  - individual-pdf
   - collection-word-coverpage: cover1.html
   - collection-word-intropage: cover2.html
   - document-word-coverpage: cover3.html

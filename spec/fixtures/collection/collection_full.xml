@@ -1243,7 +1243,7 @@ end
             <references id="T_ISO_17302_2016" obligation="informative" normative="false" hidden="true">
                <bibitem id="License_A_ISO_17302_2016" hidden="true">
                   <formattedref format="application/x-isodoc+xml">attachment description</formattedref>
-                  <uri type="attachment">_dumm_attachments/LICENSE1.TXT</uri>
+                  <uri type="attachment">_dummy_attachments/LICENSE1.TXT</uri>
                   <uri type="citation">_dummy_attachments/LICENSE1.TXT</uri>
                   <docidentifier type="metanorma">[LICENSE.TXT]</docidentifier>
                </bibitem>
