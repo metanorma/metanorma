@@ -759,7 +759,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "builds Word collection, coverpage, individual-doc and individual-pdf directives" do
+    it "builds Word collection, coverpage; format overrides in manifest" do
       file = "#{INPATH}/wordcollection_cover.yml"
       of = OUTPATH
       col = Metanorma::Collection.parse file
@@ -776,10 +776,12 @@ RSpec.describe Metanorma::Collection do
         .sub!(%r{<style>.+</style>}m, "<style/>")
       expect(Xml::C14n.format(cleanup_guid(cleanup_id(output))))
         .to be_equivalent_to Xml::C14n.format(cleanup_guid(expected))
-      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
+      expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be false
       FileUtils.rm_rf of
     end
   end

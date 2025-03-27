@@ -11,9 +11,10 @@ module Metanorma
       # warn "metanorma compile -x html #{f.path}"
       def file_compile(file, filename, identifier)
         @files.get(identifier, :sectionsplit) and return
+        #require "debug"; binding.b
         opts = {
           format: :asciidoc,
-          extension_keys: allowed_extension_keys,
+          extension_keys: @files.get(identifier, :format),
           output_dir: @outdir,
           type: @flavor,
         }.merge(compile_options_update(identifier))
@@ -34,6 +35,7 @@ module Metanorma
         ret
       end
 
+=begin        
       def allowed_extension_keys
         ret = @format.dup
         @directives.detect { |d| d.key == "individual-pdf" } or
@@ -42,6 +44,7 @@ module Metanorma
           ret.delete(:doc)
         ret
       end
+=end        
 
       def file_compile_formats(filename, identifier, opts)
         f = @files.get(identifier, :outputs)

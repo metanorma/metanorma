@@ -24,14 +24,22 @@ module Metanorma
         @files_to_delete = []
         @disambig = Util::DisambigFiles.new
         @manifest = parent.manifest
-        read_files(@manifest.entry)
+        read_files(@manifest.entry, parent.manifest)
+        #warn pp @files
       end
 
-      def read_files(entries)
+      def read_files(entries, parent)
         Array(entries).each do |e|
+          derive_format(e, parent)
           e.file and read_file(e)
-          read_files(e.entry)
+          read_files(e.entry, e)
         end
+      end
+
+      def derive_format(entry, parent)
+        entry.attachment and return
+        entry.format ||= parent.format || %w(xml presentation html)
+        entry.format |= ["xml", "presentation"]
       end
 
       def read_file(manifest)
@@ -97,7 +105,8 @@ module Metanorma
         abs = @documents[Util::key identifier].file
         ret = if ref.file
                 { type: "fileref", ref: abs, rel_path: ref.file, url: ref.url,
-                  out_path: output_file_path(ref) }
+                  out_path: output_file_path(ref),
+                  format: ref.format&.map(&:to_sym) }.compact
               else { type: "id", ref: ref.id }
               end
         file_entry_copy(ref, ret)

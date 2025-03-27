@@ -89,7 +89,7 @@ module Metanorma
         m = { parentid: key, presentationxml: true, type: "fileref",
               rel_path: file[:url], out_path: File.basename(file[:url]),
               anchors: anchors, anchors_lookup: anchors_lookup(anchors),
-              ids: read_ids(xml),
+              ids: read_ids(xml), format: @files[key][:format],
               sectionsplit_output: true, indirect_key: @sectionsplit.key,
               bibdata: @files[key][:bibdata], ref: presfile }
         m[:bare] = true unless idx.zero?

@@ -108,6 +108,7 @@ module Metanorma
       end
 
       def concatenate(col, options)
+        #require "debug"; binding.b
         warn "\n\n\n\n\nConcatenate: #{DateTime.now.strftime('%H:%M:%S')}"
         concatenate_presentation?(options) and
           options[:format] << :presentation
@@ -122,6 +123,7 @@ module Metanorma
       end
 
       def concatenate_prep(col, options)
+        warn options[:format]
         %i(xml presentation).each do |e|
           options[:format].include?(e) or next
           ext = e == :presentation ? "presentation.xml" : e.to_s
@@ -161,6 +163,7 @@ module Metanorma
         out.bibdatas.each_key do |ident|
           id = @isodoc.docid_prefix(nil, ident.dup)
           @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
+          #require "debug"; binding.b
           out.documents[Util::key id] =
             Metanorma::Collection::Document
               .raw_file(@files.get(id, :outputs)[ext])

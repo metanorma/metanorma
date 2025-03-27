@@ -37,8 +37,14 @@
          <identifier>_</identifier>
          <type>subcollection</type>
          <title>Standards</title>
+      <format>xml</format>
+      <format>presentation</format>
+      <format>html</format>
          <entry target="doc000000000" index="true" fileref="rice-en.final.xml">
             <identifier>ISO 17301-1:2016</identifier>
+      <format>xml</format>
+      <format>presentation</format>
+      <format>html</format>
             <bibdata type="standard">
                <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
                <title type="title-intro" format="text/plain" language="en">Cereals and pulses</title>
@@ -106,6 +112,9 @@
          </entry>
          <entry target="doc000000001" index="true" url="example/url" fileref="dummy.xml">
             <identifier>ISO 17302:2016</identifier>
+      <format>xml</format>
+      <format>presentation</format>
+      <format>html</format>
             <bibdata type="standard">
                <title type="main" format="text/plain" language="en">Dummy document</title>
                <title type="title-main" format="text/plain" language="en">Dummy document</title>
@@ -164,6 +173,9 @@
          </entry>
          <entry target="doc000000002" index="true" fileref="rice1-en.final.xml">
             <identifier>ISO 1701:1974</identifier>
+      <format>xml</format>
+      <format>presentation</format>
+      <format>html</format>
             <bibdata type="standard">
                <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                <title type="title-main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
@@ -229,8 +241,14 @@
          <identifier>_</identifier>
          <type>subcollection</type>
          <title>Amendments</title>
+         <format>xml</format>
+        <format>presentation</format>
+        <format>html</format>
          <entry target="doc000000003" index="true" fileref="rice-amd.final.xml">
             <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
+      <format>xml</format>
+      <format>presentation</format>
+      <format>html</format>
             <bibdata type="standard">
                <title type="main" format="text/plain" language="en">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
                <title type="title-main" format="text/plain" language="en">Specification and test methods</title>
@@ -303,6 +321,9 @@
          <identifier>_</identifier>
          <type>attachments</type>
          <title>Attachments</title>
+      <format>xml</format>
+      <format>presentation</format>
+      <format>html</format>
          <entry target="doc000000004" attachment="true" index="true" fileref="pics/action_schemaexpg1.svg">
             <identifier>action_schemaexpg1.svg</identifier>
          </entry>
