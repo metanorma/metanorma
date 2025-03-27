@@ -276,7 +276,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
       # expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
         .to be true

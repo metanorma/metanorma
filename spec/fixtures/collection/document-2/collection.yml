@@ -25,6 +25,6 @@ manifest:
     - level: attachments
       title: Attachments
       docref:
-        - fileref: /Users/nickn/Documents/Arbeit/upwork/ribose/metanorma/spec/fixtures/collection/document-2/img/action_schemaexpg3.svg
+        - fileref: img/action_schemaexpg3.svg
           identifier: action_schemaexpg3.svg
           attachment: true
