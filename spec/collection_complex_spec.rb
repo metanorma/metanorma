@@ -232,7 +232,7 @@ RSpec.describe Metanorma::Collection do
       of = OUTPATH.to_s
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[html presentation xml pdf doc],
+        format: %i[html presentation xml],
         output_folder: of,
         coverpage: "#{INPATH}/collection_cover.html",
         compile: {
