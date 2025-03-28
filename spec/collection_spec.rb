@@ -290,7 +290,7 @@ RSpec.describe Metanorma::Collection do
         let(:collection_opts) do
           {
             format: [:html],
-            output_folder: OUTPATH,
+            output_folder: File.join(FileUtils.pwd, OUTPATH),
             compile: {
               install_fonts: false,
             },

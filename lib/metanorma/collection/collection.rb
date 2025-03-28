@@ -96,10 +96,15 @@ module Metanorma
         opts[:format] = @format || [:html]
       opts[:log] = @log
       opts[:flavor] = @flavor
-      opts[:output_folder] && !Pathname.new(opts[:output_folder]).absolute? and
-        opts[:output_folder] = File.join(@dirname, opts[:output_folder])
+      output_folder(opts)
       ::Metanorma::Collection::Renderer.render self, opts
       clean_exit
+    end
+
+    def output_folder(opts)
+      opts[:output_folder] ||= config.output_folder
+      opts[:output_folder] && !Pathname.new(opts[:output_folder]).absolute? and
+        opts[:output_folder] = File.join(@dirname, opts[:output_folder])
     end
 
     # @return [String, nil]
