@@ -1,0 +1,5 @@
+gem "html2doc", git: "https://github.com/metanorma/html2doc", branch: "main"
+gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "main"
+
+
+
