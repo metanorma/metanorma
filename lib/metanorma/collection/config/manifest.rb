@@ -25,6 +25,7 @@ module Metanorma
         attribute :index, :boolean, default: -> { true }
         attribute :entry, Manifest, collection: true
         attribute :file, :string
+        attribute :format, :string, collection: true
 
         yaml do
           map "identifier", to: :identifier
@@ -46,6 +47,7 @@ module Metanorma
                           with: { from: :docref_from_yaml, to: :nop_to_yaml }
           map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
                                                to: :bibdata_to_yaml }
+          map "format", to: :format, render_default: true
         end
 
         xml do
@@ -59,6 +61,7 @@ module Metanorma
           map_element "identifier", to: :identifier, render_default: true
           map_element "type", to: :type
           map_element "title", to: :title
+          map_element "format", to: :format
           map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
                                                        to: :bibdata_to_xml }
           map_element "entry", to: :entry

@@ -5,6 +5,11 @@ directives:
   - document-word-coverpage: cover3.html
   - document-word-intropage: cover4.html
   - flavor: iso
+format:
+  - presentation
+  - doc
+  - pdf
+  - html
 bibdata:
   title:
     type: title-main
@@ -29,12 +34,19 @@ bibdata:
 manifest:
   level: collection
   title: ISO Collection 
+  format:
+    - presentation
+    - doc
+    - html
   manifest:
     - level: subcollection
       title: Standards
       docref:
         - fileref: rice-amd.final.xml
           identifier: ISO 17301-1:2016/Amd.1:2017
+          format:
+            - presentation
+            - pdf
         - fileref: dummy.xml
           identifier: ISO 17302
 prefatory-content: 

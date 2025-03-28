@@ -77,6 +77,7 @@ RSpec.describe Metanorma::Collection do
         .to include '<docidentifier type="iso">ISO 12345</docidentifier>'
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.pdf")).to be true
+      #expect(File.exist?("#{OUTPATH}/collection.doc")).to be true
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1"
@@ -85,23 +86,24 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
       expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
+      #expect(File.exist?("#{OUTPATH}/dummy.doc")).to be false
       expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
       expect(File.read("#{OUTPATH}/dummy.xml"))
         .not_to be_equivalent_to File.read("#{OUTPATH}/dummy.presentation.xml")
       expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
         .to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
         .to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
         .to be true
@@ -255,7 +257,7 @@ RSpec.describe Metanorma::Collection do
       of = OUTPATH.to_s
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[presentation html pdf xml],
+        format: %i[presentation html pdf doc xml],
         output_folder: of,
         coverpage: "#{INPATH}/collection_cover.html",
         compile: {
@@ -268,19 +270,19 @@ RSpec.describe Metanorma::Collection do
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "<h1>ISO Collection 1"
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/dummy.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.doc")).to be false
+      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
       # expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
         .to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/rice-en.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.doc")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
         .to be true
@@ -291,8 +293,8 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml.2.html"))
         .to be false
       expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
-      # expect(File.exist?("#{OUTPATH}/rice1-en.final.doc")).to be true
-      expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.doc")).to be false
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
         .to be true
@@ -388,7 +390,7 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <svgmap><figure>
           <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" original-id="Layer_1_000000000">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" original-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
                  <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
               <a href="A">A</a>
               <a href="B">B</a>
@@ -411,7 +413,7 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
                <svgmap><figure>
            <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" preserveaspectratio="xMidYMin slice">
                  <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
              <a href="P">P</a>
            </svg></img>
@@ -733,7 +735,7 @@ RSpec.describe Metanorma::Collection do
       of = OUTPATH
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[presentation doc],
+        format: %i[presentation doc pdf],
         output_folder: of,
         compile: {
           install_fonts: false,
@@ -750,15 +752,19 @@ RSpec.describe Metanorma::Collection do
         .sub!(%r{<style>.+</style>}m, "<style/>")
       expect(Xml::C14n.format(cleanup_guid(cleanup_id(output))))
         .to be_equivalent_to Xml::C14n.format(cleanup_guid(expected))
+      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be false
+      expect(File.exist?("#{OUTPATH}/dummy.doc")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be false
       FileUtils.rm_rf of
     end
 
-    it "builds Word collection, coverpages" do
+    it "builds Word collection, coverpage; format overrides in manifest" do
       file = "#{INPATH}/wordcollection_cover.yml"
       of = OUTPATH
       col = Metanorma::Collection.parse file
       col.render(
-        format: %i[presentation doc],
+        format: %i[presentation doc pdf],
         output_folder: of,
         compile: {
           install_fonts: false,
@@ -770,6 +776,12 @@ RSpec.describe Metanorma::Collection do
         .sub!(%r{<style>.+</style>}m, "<style/>")
       expect(Xml::C14n.format(cleanup_guid(cleanup_id(output))))
         .to be_equivalent_to Xml::C14n.format(cleanup_guid(expected))
+      expect(File.exist?("#{OUTPATH}/dummy.doc")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
+      expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be false
       FileUtils.rm_rf of
     end
   end
