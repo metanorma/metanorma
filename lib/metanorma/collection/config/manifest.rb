@@ -13,7 +13,7 @@ module Metanorma
 
       class Manifest < ::Lutaml::Model::Serializable
         attribute :identifier, :string,
-          default: -> { UUIDTools::UUID.random_create.to_s }
+                  default: -> { UUIDTools::UUID.random_create.to_s }
         attribute :id, :string
         attribute :bibdata, Bibdata
         attribute :type, :string

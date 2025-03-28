@@ -26,7 +26,7 @@ RSpec.describe Metanorma::Collection do
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
-      of = OUTPATH
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation html pdf xml rxl],
@@ -125,7 +125,7 @@ RSpec.describe Metanorma::Collection do
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
-      of = OUTPATH
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       cr = Metanorma::Collection::Renderer
         .render(col,
@@ -224,16 +224,16 @@ RSpec.describe Metanorma::Collection do
         )
     end
 
-    it "uses presentation XML directive, markup in identifiers" do
+    it "uses presentation XML directive, markup in identifiers, output folder specification in YAML" do
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection2.yml"
-      of = OUTPATH.to_s
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[html presentation xml],
-        output_folder: of,
+        #output_folder: of,
         coverpage: "#{INPATH}/collection_cover.html",
         compile: {
           install_fonts: false,
@@ -254,7 +254,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg", "action_schemaexpg1.svg"
       file = "#{INPATH}/collection1.yml"
       # xml = file.read file, encoding: "utf-8"
-      of = OUTPATH.to_s
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation html pdf doc xml],
@@ -484,7 +484,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_sectionsplit.yml"
-      of = OUTPATH.to_s
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation html xml],
@@ -549,7 +549,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_target_sectionsplit.yml"
-      of = OUTPATH.to_s
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation html xml],
@@ -605,7 +605,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
       file = "#{INPATH}/collection_sectionsplit_solo.yml"
-      of = OUTPATH.to_s
+      of = File.join(FileUtils.pwd, OUTPATH)
       FileUtils.rm_rf "#{OUTPATH}/index.html"
       col = Metanorma::Collection.parse file
       col.render(
@@ -650,7 +650,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_f "#{INPATH}/document-2/document-2.xml"
       file = "#{INPATH}/collection_new.yml"
       # xml = file.read file, encoding: "utf-8"
-      of = OUTPATH
+      of = File.join(FileUtils.pwd, OUTPATH)
       # change file path of attachment in document-2/collection.yml to absolute
       f = "#{INPATH}/document-2/collection.yml"
       a = File.read(f).sub(/img/, "#{File.expand_path(INPATH)}/document-2/img")
@@ -732,7 +732,7 @@ RSpec.describe Metanorma::Collection do
   context "Word collection" do
     it "builds Word collection, no coverpages" do
       file = "#{INPATH}/wordcollection.yml"
-      of = OUTPATH
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation doc pdf],
@@ -761,7 +761,7 @@ RSpec.describe Metanorma::Collection do
 
     it "builds Word collection, coverpage; format overrides in manifest" do
       file = "#{INPATH}/wordcollection_cover.yml"
-      of = OUTPATH
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       col.render(
         format: %i[presentation doc pdf],
@@ -791,7 +791,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
       file = "#{INPATH}/bilingual.yml"
-      of = OUTPATH
+      of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
       col.render(
         output_folder: of,

@@ -427,7 +427,7 @@ RSpec.describe Metanorma::Collection do
 
   it "disambiguates destination filenames" do
     file = "#{INPATH}/collection.dup.yml"
-    of = OUTPATH
+    of = File.join(FileUtils.pwd, OUTPATH)
     col = Metanorma::Collection.parse file
     col.render(
       format: %i[presentation xml],
@@ -445,7 +445,7 @@ RSpec.describe Metanorma::Collection do
 
   it "skips indexing of files in coverpage on request" do
     file = "#{INPATH}/collection.dup.yml"
-    of = OUTPATH
+    of = File.join(FileUtils.pwd, OUTPATH)
     col = Metanorma::Collection.parse file
     col.render(
       format: %i[presentation xml html],
@@ -465,7 +465,7 @@ RSpec.describe Metanorma::Collection do
   it "inject repository identifiers" do
     Dir.chdir("spec")
     file = "../#{INPATH}/collection1.norepo.yml"
-    of = "../#{OUTPATH}"
+    of = File.join(FileUtils.pwd, "../#{OUTPATH}")
     col = Metanorma::Collection.parse file
     col.render(
       format: %i[presentation xml html],
@@ -490,7 +490,7 @@ RSpec.describe Metanorma::Collection do
   it "processes flavor directive" do
     Dir.chdir("spec")
     yaml = File.read "../#{INPATH}/collection_solo.yml"
-    of = "../#{OUTPATH}"
+    of = File.join(FileUtils.pwd, "../#{OUTPATH}")
     newyaml = "../#{INPATH}/collection_new1.yml"
     File.open(newyaml, "w") { |x| x.write(yaml) }
     col = Metanorma::Collection.parse newyaml

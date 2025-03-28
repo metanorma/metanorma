@@ -92,11 +92,12 @@ module Metanorma
     end
 
     def render(opts)
-      if opts[:format].nil? || opts[:format].empty?
+      opts[:format].nil? || opts[:format].empty? and
         opts[:format] = @format || [:html]
-      end
       opts[:log] = @log
       opts[:flavor] = @flavor
+      opts[:output_folder] && !Pathname.new(opts[:output_folder]).absolute? and
+        opts[:output_folder] = File.join(@dirname, opts[:output_folder])
       ::Metanorma::Collection::Renderer.render self, opts
       clean_exit
     end
@@ -216,7 +217,6 @@ module Metanorma
       def resolve_fileref(ref_folder, fileref)
         warn ref_folder
         warn fileref
-        #require "debug"; binding.b
         unless @fileref_resolver
           (Pathname.new fileref).absolute? or
             fileref = File.join(ref_folder, fileref)
