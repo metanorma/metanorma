@@ -2,7 +2,7 @@
 directives:
   - documents-external 
   - presentation-xml
-output_folder: ../ouput
+output_folder: ../output
 bibdata:
   title:
     type: title-main

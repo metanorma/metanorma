@@ -105,6 +105,7 @@ module Metanorma
       opts[:output_folder] ||= config.output_folder
       opts[:output_folder] && !Pathname.new(opts[:output_folder]).absolute? and
         opts[:output_folder] = File.join(@dirname, opts[:output_folder])
+      warn opts[:output_folder]
     end
 
     # @return [String, nil]
