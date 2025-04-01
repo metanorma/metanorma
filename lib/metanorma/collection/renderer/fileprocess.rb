@@ -173,8 +173,9 @@ module Metanorma
         r = xml.root["document_suffix"]
         xml.xpath("//*[@id]").each_with_object({}) do |i, x|
           /^semantic_/.match?(i.name) and next
-          x[i["id"]] = i
-          r and x[i["id"].sub(/_#{r}$/, "")] = i
+          i_dup = i.dup
+          x[i["id"]] = i_dup
+          r and x[i["id"].sub(/_#{r}$/, "")] = i_dup
         end
       end
 
