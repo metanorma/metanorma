@@ -162,23 +162,22 @@ module Metanorma
       end
 
       def indirect_ref_key(schema, id, doc_suffix, add_suffix)
-        /^#{schema}_/.match?(id) and return id
+        return id if id[schema.length] == "_" and id.start_with?(schema)
         #key = "#{schema}_#{id}"
-        x = @indirect_keys.dig(schema, id) and return x
-        @indirect_keys[schema] ||= {}
+        x = @indirect_keys[schema][id] and return x
         @indirect_keys[schema][id] = if add_suffix
-                                  "#{schema}_#{id}_#{doc_suffix}"
+                                  schema + "_" + id + "_" + doc_suffix
                                 else
-                                   "#{schema}_#{id}"
+                                   schema + "_" + id
                                 end
       end
 
       # KILL
       def indirect_ref_keyx(schema, id, doc_suffix, doc_type)
-        /^#{schema}_/.match?(id) and return id
-        ret = "#{schema}_#{id}"
+        return id if id[schema.length] == "_" and id.start_with?(schema)
+        ret = schema + "_" + id
         doc_suffix && doc_type && doc_type != schema and
-          ret = "#{ret}_#{doc_suffix}"
+          ret = ret + "_" + doc_suffix
         ret
       end
 
@@ -193,16 +192,16 @@ module Metanorma
 
       def update_indirect_refs_to_docs_anchor(eref, file, url, parentid)
         a = eref.at(".//#{ANCHOR_XPATH}") or return
-        parentid and file = "#{parentid}_#{file}"
         existing = a.text
         anchor = if url then existing
-                   else 
-                     #suffix_anchor_indirect(existing, suffix)
-                     #k = "#{existing}_#{file}"
-        #@ncnames[k] ||= Metanorma::Utils::to_ncname(k)
-        @indirect_keys[existing] ||= {}
-        @indirect_keys[existing][file] ||= Metanorma::Utils::to_ncname("#{existing}_#{file}")
-                   end
+                 else
+                   #suffix_anchor_indirect(existing, suffix)
+                   #k = "#{existing}_#{file}"
+                   #@ncnames[k] ||= Metanorma::Utils::to_ncname(k)
+                   parentid and file = parentid + "_" + file
+                   @indirect_keys[existing] ||= {}
+                   @indirect_keys[existing][file] ||= Metanorma::Utils::to_ncname("#{existing}_#{file}")
+                 end
         @updated_anchors[existing] or a.children = anchor
         @updated_anchors[anchor] = true
       end

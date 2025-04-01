@@ -44,6 +44,10 @@ module Metanorma
     # @param filename [String] path to the input file
     # @param options [Hash] compilation options
     def compile(filename, options = {})
+      extname = File.extname(filename)
+      # Read XML once and use further
+      @temp_xml = Nokogiri::XML(File.read(filename), &:huge) if extname == ".xml"
+
       process_options!(filename, options)
       @processor = @registry.find_processor(options[:type].to_sym)
 
@@ -54,7 +58,11 @@ module Metanorma
       source_file, semantic_xml = semantic_result
 
       # Step 2: Prepare output paths
-      xml = Nokogiri::XML(semantic_xml, &:huge)
+      if @temp_xml
+        xml = @temp_xml
+      else
+        xml = Nokogiri::XML(semantic_xml, &:huge)
+      end
       bibdata = extract_relaton_metadata(xml)
       output_paths = prepare_output_paths(filename, bibdata, options)
 
@@ -80,7 +88,7 @@ module Metanorma
 
     def process_options!(filename, options)
       require_libraries(options)
-      options = extract_options(filename, options)
+      options = extract_options(filename, options, @temp_xml)
       validate_options!(options)
       @log.save_to(filename, options[:output_dir])
       options[:log] = @log

@@ -132,9 +132,10 @@ module Metanorma
         end
 
         def eref_to_internal_eref_prep(section, xml, presxml)
-          bibitems = ::Metanorma::Collection::Util::gather_bibitems(xml)
+          all_bibiitems = ::Metanorma::Collection::Util::gather_bibitems(xml)
+          bibitems = all_bibiitems.dup
             .delete_if { |_, v| internal_bib?(v) }
-          indirect = ::Metanorma::Collection::Util::gather_bibitems(xml)
+          indirect = all_bibiitems
             .select { |_, v| indirect_bib?(v) }
           bibitemids = ::Metanorma::Collection::Util::gather_bibitemids(section, presxml)
           lang = xml.at(ns("//bibdata/language"))&.text || "en"

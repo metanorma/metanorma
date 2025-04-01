@@ -1,5 +1,4 @@
 require "isodoc"
-require "htmlentities"
 require "metanorma-utils"
 require_relative "filelookup_sectionsplit"
 
@@ -13,7 +12,7 @@ module Metanorma
       # and bibdata entry for that file
       # @param path [String] path to collection
       def initialize(path, parent)
-        @c = HTMLEntities.new
+        @c = Metanorma::Utils.html_entities
         @files = {}
         @parent = parent
         @xml = parent.xml
@@ -237,8 +236,10 @@ module Metanorma
       end
 
       def key(ident)
-        @c.decode(ident).gsub(/(\p{Zs})+/, " ")
-          .sub(/^metanorma-collection /, "")
+        @@key_cache ||= {}
+        return @@key_cache[ident] if @@key_cache.key?(ident)
+        @@key_cache[ident] = @c.decode(ident).gsub(/(\p{Zs})+/, " ")
+          .delete_prefix("metanorma-collection ")
       end
 
       def keys
