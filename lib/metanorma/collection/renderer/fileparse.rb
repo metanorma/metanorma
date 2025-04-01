@@ -164,6 +164,7 @@ module Metanorma
       def indirect_ref_key(schema, id, doc_suffix, add_suffix)
         return id if id[schema.length] == "_" and id.start_with?(schema)
         #key = "#{schema}_#{id}"
+        @indirect_keys[schema] ||= {}
         x = @indirect_keys[schema][id] and return x
         @indirect_keys[schema][id] = if add_suffix
                                   schema + "_" + id + "_" + doc_suffix
