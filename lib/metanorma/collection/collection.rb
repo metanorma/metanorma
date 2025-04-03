@@ -36,8 +36,9 @@ module Metanorma
     end
 
     def initialize_docs
-      @documents.merge! @manifest.documents
-      @bibdatas.merge! @manifest.documents
+      documents = @manifest.documents
+      @documents.merge! documents
+      @bibdatas.merge! documents
       @documents.transform_keys { |k| Util::key(k) }
       @bibdatas.transform_keys { |k| Util::key(k) }
     end

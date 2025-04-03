@@ -144,7 +144,7 @@ module Metanorma
 
       def update_indirect_refs_prep(docxml, presxml)
         @updated_anchors = {}
-        @indirect_keys = {}
+        @indirect_keys = Hash.new { |h, k| h[k] = {} }
         [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml, presxml),
          docxml.root["document_suffix"], docxml.root["type"], {}]
       end
@@ -164,7 +164,6 @@ module Metanorma
       def indirect_ref_key(schema, id, doc_suffix, add_suffix)
         return id if id[schema.length] == "_" and id.start_with?(schema)
         #key = "#{schema}_#{id}"
-        @indirect_keys[schema] ||= {}
         x = @indirect_keys[schema][id] and return x
         @indirect_keys[schema][id] = if add_suffix
                                   schema + "_" + id + "_" + doc_suffix

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "objspace"
 require "isodoc"
 require "metanorma-utils"
 require_relative "fileparse"
@@ -78,14 +79,18 @@ module Metanorma
       def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         warn "\n\n\n\n\nRender Files: #{DateTime.now.strftime('%H:%M:%S')}"
         internal_refs = locate_internal_refs
-        @files.keys.each_with_index do |ident, i|
+        before = Time.now
+        cnt = 0
+        ret = @files.keys.each_with_index do |ident, i|
           i.positive? && @directives.detect do |d|
             d.key == "bare-after-first"
           end and
             @compile_options.merge!(bare: true)
           if @files.get(ident, :attachment) then copy_file_to_dest(ident)
           else
+            cnt += 1
             file, fname = @files.targetfile_id(ident, read: true)
+            before1 = Time.now
             warn "\n\n\n\n\nProcess #{fname}: #{DateTime.now.strftime('%H:%M:%S')}"
             collection_xml = update_xrefs(file, ident, internal_refs)
             collection_filename = File.basename(fname, File.extname(fname))
@@ -94,8 +99,14 @@ module Metanorma
             File.write collection_xml_path, collection_xml, encoding: "UTF-8"
             file_compile(collection_xml_path, fname, ident)
             FileUtils.rm(collection_xml_path)
+            objs = ObjectSpace.count_objects
+            obj_cnt = objs[:TOTAL] - objs[:FREE]
+            mem_size = ObjectSpace.memsize_of_all / 1024 / 1024
+            puts "Processed #{fname}, sz=#{collection_xml.length/1024}kb in #{Time.now - before1}. Memory used: #{mem_size}, obj count: #{obj_cnt}"
           end
         end
+        puts "Processed #{cnt} Files in #{Time.now - before} seconds"
+        ret
       end
 
       # gather internal bibitem references
@@ -145,6 +156,7 @@ module Metanorma
 
       # resolve file location for the target of each internal reference
       def locate_internal_refs
+        before = Time.now
         warn "\n\n\n\n\nInternal Refs: #{DateTime.now.strftime('%H:%M:%S')}"
         refs = populate_internal_refs(gather_internal_refs)
         refs.each do |schema, ids|
@@ -154,6 +166,7 @@ module Metanorma
             @log&.add("Cross-References", nil, refs[schema][id])
           end
         end
+        puts "Internal Refs in #{Time.now - before}"
         refs
       end
 

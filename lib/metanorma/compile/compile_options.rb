@@ -18,10 +18,11 @@ module Metanorma
       end
 
       def extract_options(filename, options, xml = nil)
-        content = read_file(filename)
-        # Assume file is XML
-        xml = Nokogiri::XML(content, &:huge) unless xml
-        o = nil
+        unless xml
+          content = read_file(filename)
+          # Assume file is XML
+          xml = Nokogiri::XML(content, &:huge)
+        end
         if xml.root
           o = extract_xml_options(content, xml)
         else

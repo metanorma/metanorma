@@ -5,6 +5,8 @@ require_relative "filelookup_sectionsplit"
 module Metanorma
   class Collection
     class FileLookup
+      @@key_cache = {}
+
       attr_accessor :files_to_delete, :parent
 
       # hash for each document in collection of document identifier to:
@@ -220,8 +222,9 @@ module Metanorma
                   UUIDTools::UUID.random_create.to_s
                 else val[:label].gsub(%r{<[^>]+>}, "")
                 end
-        ret[val[:type]][index] = key
-        v = val[:value] and ret[val[:type]][v.gsub(%r{<[^>]+>}, "")] = key
+        key_dup = key.dup
+        ret[val[:type]][index] = key_dup
+        v = val[:value] and ret[val[:type]][v.gsub(%r{<[^>]+>}, "")] = key_dup
       end
 
       # Also parse all ids in doc (including ones which won't be xref targets)
@@ -236,8 +239,7 @@ module Metanorma
       end
 
       def key(ident)
-        @@key_cache ||= {}
-        return @@key_cache[ident] if @@key_cache.key?(ident)
+        v = @@key_cache[ident] and return v
         @@key_cache[ident] = @c.decode(ident).gsub(/(\p{Zs})+/, " ")
           .delete_prefix("metanorma-collection ")
       end
