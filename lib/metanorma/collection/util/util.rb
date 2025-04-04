@@ -1,6 +1,16 @@
 module Metanorma
   class Collection
     module Util
+
+      class BibItemAndDocId
+        attr_accessor :bib_item, :doc_id
+
+        def initialize(bib_item, doc_id)
+          @bib_item = bib_item
+          @doc_id = doc_id
+        end
+      end
+
       class << self
         def gather_bibitems(xml)
           xml.xpath("//xmlns:bibitem[@id]").each_with_object({}) do |b, m|
@@ -20,6 +30,18 @@ module Metanorma
             presxml && %w(xref eref link).include?(e.name) and next
             m[e["bibitemid"]] ||= []
             m[e["bibitemid"]] << e
+          end
+        end
+
+        def gather_bibitems_with_doc_ids(xml, doc_id_xpath)
+          xml.xpath("//xmlns:bibitem[@id]").each_with_object({}) do |b, m|
+            if m[b["id"]]
+              b.remove
+              next
+              # we can't update duplicate bibitem, processing updates wrong one
+            else
+              m[b["id"]] = BibItemAndDocId.new(b, b.at(doc_id_xpath))
+            end
           end
         end
 

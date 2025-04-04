@@ -129,13 +129,28 @@ module Metanorma
       # Resolve erefs to a container of ids in another doc,
       # to an anchor eref (direct link)
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs, presxml)
+        @@cnt ||= 0
+        @@cnt_oo ||= 0
+        @@cnt_oo += 1
+        @@cnt_o ||= 0
+        @@cnt_i ||= 0
         bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml, presxml)
+        add_suffix_outer = doc_suffix && doc_type
         internal_refs.each do |schema, ids|
-          add_suffix = doc_suffix && doc_type && doc_type != schema
+          # HOT: 50M+ invocations on some collections, so every minor (de)optimization matters
+          @@cnt_o += 1
+          add_suffix = add_suffix_outer && doc_type != schema
           ids.each do |id, file|
-            f[file] ||= { url: @files.url?(file),
-                          parentid: @files.get(file) && @files.get(file,
-                                                                   :parentid) }
+            @@cnt += 1
+            if @@cnt % 100_000 == 0
+              puts "@@cnt = #{@@cnt}, @@cnt_o = #{@@cnt_o}, @@cnt_i = #{@@cnt_i} ids = #{ids.length} @files=#{@files.size}, erefs=#{erefs.length} @@cntoo = #{@@cnt_oo}"
+            end
+            f_file = f[file]
+            if not f_file
+              @@cnt_i += 1
+              f_file = f[file] = { url: @files.url?(file),
+                                   parentid: @files.get(file) && @files.get(file, :parentid) }
+            end
             k = indirect_ref_key(schema, id, doc_suffix, add_suffix)
             update_indirect_refs_to_docs1(f[file], k, file, bib, erefs)
           end
@@ -145,7 +160,7 @@ module Metanorma
       def update_indirect_refs_prep(docxml, presxml)
         @updated_anchors = {}
         @indirect_keys = Hash.new { |h, k| h[k] = {} }
-        [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml, presxml),
+        [Util::gather_bibitems_with_doc_ids(docxml, ns("./docidentifier[@type = 'repository']")), Util::gather_bibitemids(docxml, presxml),
          docxml.root["document_suffix"], docxml.root["type"], {}]
       end
 
@@ -191,6 +206,11 @@ module Metanorma
       end
 
       def update_indirect_refs_to_docs_anchor(eref, file, url, parentid)
+        @@uuu ||= 0
+        @@uuu += 1
+        if @@uuu % 1_000 == 0
+          puts "@@uuu = #{@@uuu}"
+        end
         a = eref.at(".//#{ANCHOR_XPATH}") or return
         existing = a.text
         anchor = if url then existing
@@ -207,7 +227,12 @@ module Metanorma
       end
 
       def update_indirect_refs_to_docs_docid(bib, file)
-        docid = bib&.at(ns("./docidentifier[@type = 'repository']")) or return
+        @@bib ||= 0
+        @@bib += 1
+        if @@bib % 1_000_000 == 0
+          puts "@@@@bib = #{@@bib}"
+        end
+        docid = bib&.doc_id or return
         docid.children = "current-metanorma-collection/#{file}"
         docid.previous =
           "<docidentifier type='metanorma-collection'>#{file}</docidentifier>"

@@ -74,6 +74,10 @@ module Metanorma
         create_non_existing_directory(@outdir)
       end
 
+      def size
+        @files.size
+      end
+
       def flush_files
         warn "\n\n\n\n\nDone: #{DateTime.now.strftime('%H:%M:%S')}"
         warn "\nFiles to delete:\n"

@@ -29,6 +29,10 @@ module Metanorma
         #warn pp @files
       end
 
+      def size
+        @files.size
+      end
+
       def read_files(entries, parent)
         Array(entries).each do |e|
           derive_format(e, parent)
