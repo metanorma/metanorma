@@ -11,6 +11,15 @@ module Metanorma
         end
       end
 
+      class ErefAndAnchor
+        attr_accessor :eref, :anchor
+
+        def initialize(eref, anchor)
+          @eref = eref
+          @anchor = anchor
+        end
+      end
+
       class << self
         def gather_bibitems(xml)
           xml.xpath("//xmlns:bibitem[@id]").each_with_object({}) do |b, m|
@@ -30,6 +39,15 @@ module Metanorma
             presxml && %w(xref eref link).include?(e.name) and next
             m[e["bibitemid"]] ||= []
             m[e["bibitemid"]] << e
+          end
+        end
+
+        def gather_bibitemids_with_anchors(xml, presxml, anchor_xpath)
+          xml.xpath("//*[@bibitemid]").each_with_object({}) do |e, m|
+            #/^semantic__/.match?(e.name) and next
+            presxml && %w(xref eref link).include?(e.name) and next
+            m[e["bibitemid"]] ||= []
+            m[e["bibitemid"]] << ErefAndAnchor.new(e, e.at(anchor_xpath))
           end
         end
 
