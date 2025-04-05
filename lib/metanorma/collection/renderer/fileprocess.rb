@@ -99,10 +99,10 @@ module Metanorma
             File.write collection_xml_path, collection_xml, encoding: "UTF-8"
             file_compile(collection_xml_path, fname, ident)
             FileUtils.rm(collection_xml_path)
-            objs = ObjectSpace.count_objects
-            obj_cnt = objs[:TOTAL] - objs[:FREE]
-            mem_size = ObjectSpace.memsize_of_all / 1024 / 1024
-            puts "Processed #{fname}, sz=#{collection_xml.length/1024}kb in #{Time.now - before1}. Memory used: #{mem_size}, obj count: #{obj_cnt}"
+            #objs = ObjectSpace.count_objects
+            #obj_cnt = objs[:TOTAL] - objs[:FREE]
+            # mem_size = ObjectSpace.memsize_of_all / 1024 / 1024
+            puts "Processed #{fname}, sz=#{collection_xml.length/1024}kb in #{Time.now - before1}"
           end
         end
         puts "Processed #{cnt} Files in #{Time.now - before} seconds"

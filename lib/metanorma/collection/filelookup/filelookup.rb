@@ -168,6 +168,17 @@ module Metanorma
         data[:url]
       end
 
+      def url_parent_id(ident)
+        k = key(ident)
+        file = @files[k]
+        url = false
+        url = file[:url] if file
+        {
+          url: url,
+          parentid: file && @files[k][:parentid]
+        }
+      end
+
       # return file contents + output filename for each file in the collection,
       # given a docref entry
       # @param data [Hash] docref entry

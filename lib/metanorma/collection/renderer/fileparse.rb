@@ -137,8 +137,7 @@ module Metanorma
             # HOT: 50M+ invocations on some collections, so every minor (de)optimization matters
             f_file = f[file]
             if not f_file
-              f_file = f[file] = { url: @files.url?(file),
-                                   parentid: @files.get(file) && @files.get(file, :parentid) }
+              f_file = f[file] = @files.url_parent_id(file)
             end
             k = indirect_ref_key(schema, id, doc_suffix, add_suffix)
             update_indirect_refs_to_docs1(f_file, k, file, bib, erefs)
