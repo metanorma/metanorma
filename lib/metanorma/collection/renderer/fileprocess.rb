@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "objspace"
 require "isodoc"
 require "metanorma-utils"
 require_relative "fileparse"
@@ -99,13 +98,17 @@ module Metanorma
             File.write collection_xml_path, collection_xml, encoding: "UTF-8"
             file_compile(collection_xml_path, fname, ident)
             FileUtils.rm(collection_xml_path)
-            #objs = ObjectSpace.count_objects
-            #obj_cnt = objs[:TOTAL] - objs[:FREE]
-            # mem_size = ObjectSpace.memsize_of_all / 1024 / 1024
+
             puts "Processed #{fname}, sz=#{collection_xml.length/1024}kb in #{Time.now - before1}"
+
+            #Metanorma::Utils::Debug.count_objects
           end
         end
-        puts "Processed #{cnt} Files in #{Time.now - before} seconds"
+
+        time = Time.now - before
+        puts "Processed #{cnt} Files in #{time} seconds."
+        puts Metanorma::Utils::Debug.dump_memory_usage
+
         ret
       end
 
