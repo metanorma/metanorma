@@ -7,8 +7,14 @@ module Metanorma
       def add_section_split
         ret = @files.keys.each_with_object({}) do |k, m|
           if @files[k][:sectionsplit] && !@files[k][:attachment]
+            before = Time.now
+            puts "Start process_section_split_instance"
             process_section_split_instance(k, m)
-            cleanup_section_split_instance(k, m)
+            puts "End process_section_split_instance #{@files[k][:ref]} in #{Time.now - before}"
+            before = Time.now
+            r = cleanup_section_split_instance(k, m)
+            puts "cleanup_section_split_instance #{@files[k][:ref]} in #{Time.now - before}"
+            r
           end
           m[k] = @files[k]
         end

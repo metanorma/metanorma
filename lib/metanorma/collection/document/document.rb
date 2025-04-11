@@ -66,9 +66,13 @@ module Metanorma
         # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
         # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
         def from_xml(xml)
-          b = xml.at("//xmlns:bibitem|//xmlns:bibdata")
           r = mn2relaton_parser(xml.root.name)
-          r.from_xml(b.to_xml)
+          if r.respond_to?(:from_xml_doc1)
+            r.from_xml_doc(xml)
+          else
+            b = xml.at("//xmlns:bibitem|//xmlns:bibdata")
+            r.from_xml(b.to_xml)
+          end
         end
 
         # @param file [String]

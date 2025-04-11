@@ -79,12 +79,17 @@ module Metanorma
       def section_split_cover(col, ident, one_doc_coll)
         dir = File.dirname(col.file)
         collection_setup(nil, dir)
+        before = Time.now
         r = ::Metanorma::Collection::Renderer
           .new(col, dir, output_folder: "#{ident}_collection",
                          format: %i(html),
                          coverpage: File.join(dir, "cover.html"))
+        puts "section_split_cover in #{Time.now - before}"
         r.coverpage
-        section_split_cover1(ident, r, dir, one_doc_coll)
+        before = Time.now
+        c = section_split_cover1(ident, r, dir, one_doc_coll)
+        puts "section_split_cover1 in #{Time.now - before}"
+        c
       end
 
       def section_split_cover1(ident, renderer, dir, _one_doc_coll)

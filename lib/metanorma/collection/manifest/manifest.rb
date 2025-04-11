@@ -137,13 +137,18 @@ module Metanorma
       end
 
       def manifest_compile_adoc(config)
+        before = Time.now
+        log = !!config.file
+        puts "Start manifest_compile_adoc #{config.file}" if log
         if /\.adoc$/.match?(config.file)
           file = @collection.class.resolve_fileref(@dir, config.file)
           config.file = compile_adoc(file, config.file)
         end
-        Array(config.entry).each do |f|
+        ret = Array(config.entry).each do |f|
           manifest_compile_adoc(f)
         end
+        puts "End manifest_compile_adoc #{config.file} in #{Time.now - before}s" if log
+        ret
       end
 
       def compile_adoc(resolved_filename, rel_filename)

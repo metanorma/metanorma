@@ -87,6 +87,7 @@ module Metanorma
       def update_direct_refs_to_docs(docxml, identifier, presxml)
         erefs, erefs_no_anchor, anchors, erefs1 =
           update_direct_refs_to_docs_prep(docxml, presxml)
+        # Merge
         docxml.xpath(ns("//bibitem")).each do |b|
           docid = b.at(ns("./docidentifier[@type = 'repository']")) or next
           strip_unresolved_repo_erefs(identifier, docid, erefs1, b) or next
@@ -129,6 +130,8 @@ module Metanorma
       # Resolve erefs to a container of ids in another doc,
       # to an anchor eref (direct link)
       def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs, presxml)
+        @@in_update ||= 0
+        before = Time.now
         bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml, presxml)
         add_suffix_outer = doc_suffix && doc_type
         internal_refs.each do |schema, ids|
@@ -136,13 +139,13 @@ module Metanorma
           ids.each do |id, file|
             # HOT: 50M+ invocations on some collections, so every minor (de)optimization matters
             f_file = f[file]
-            if not f_file
-              f_file = f[file] = @files.url_parent_id(file)
-            end
+            f_file ||= f[file] = @files.url_parent_id(file)
             k = indirect_ref_key(schema, id, doc_suffix, add_suffix)
             update_indirect_refs_to_docs1(f_file, k, file, bib, erefs)
           end
         end
+        @@in_update += Time.now - before
+        puts "@@in_update = #{@@in_update} total, #{Time.now - before} now"
       end
 
       def update_indirect_refs_prep(docxml, presxml)

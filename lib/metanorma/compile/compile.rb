@@ -44,6 +44,7 @@ module Metanorma
     # @param filename [String] path to the input file
     # @param options [Hash] compilation options
     def compile(filename, options = {})
+      puts "Compiling #{filename}"
       extname = File.extname(filename)
       # Read XML once and use further
       @temp_xml = Nokogiri::XML(File.read(filename), &:huge) if extname == ".xml"
@@ -222,6 +223,8 @@ module Metanorma
     end
 
     def process_input_adoc(filename, options)
+      puts "Processing AsciiDoc input #{filename}"
+      before = Time.now
       Util.log("[metanorma] Processing: AsciiDoc input.", :info)
       file = read_file(filename)
       options[:asciimath] and
@@ -230,7 +233,11 @@ module Metanorma
       dir != "." and
         file = file.gsub(/^include::/, "include::#{dir}/")
           .gsub(/^embed::/, "embed::#{dir}/")
-      [file, @processor.input_to_isodoc(file, filename, options)]
+      r = [file, @processor.input_to_isodoc(file, filename, options)]
+      @@in_asciidoc ||= 0
+      @@in_asciidoc += Time.now - before
+      puts "Processed: AsciiDoc input #{filename} in #{Time.now - before}, total = #{@@in_asciidoc}"
+      r
     end
 
     def process_input_xml(filename, _options)

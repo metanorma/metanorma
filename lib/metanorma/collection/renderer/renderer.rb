@@ -186,9 +186,11 @@ module Metanorma
       def coverpage
         @coverpage or return
         warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
+        before = Time.now
         File.open(File.join(@outdir, "index.html"), "w:UTF-8") do |f|
           f.write @isodoc.populate_template(File.read(@coverpage))
         end
+        puts "Coverpage #{@coverpage} in #{Time.now - before}"
       end
     end
   end
