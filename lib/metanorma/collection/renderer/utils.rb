@@ -12,12 +12,16 @@ module Metanorma
       end
 
       def dup_bibitem(docid, bib)
-        newbib = @files.get(docid, :bibdata).unlink
+        newbib = deep_detached_clone(@files.get(docid, :bibdata))
         newbib.name = "bibitem"
         newbib["hidden"] = "true"
         newbib&.at("./*[local-name() = 'ext']")&.remove
         newbib["id"] = bib["id"]
         newbib
+      end
+
+      def deep_detached_clone(node)
+        Nokogiri::XML(node.to_xml).root
       end
 
       def get_bibitem_docid(bib, identifier)
