@@ -12,7 +12,7 @@ module Metanorma
       end
 
       def dup_bibitem(docid, bib)
-        newbib = @files.get(docid, :bibdata).dup
+        newbib = @files.get(docid, :bibdata).unlink
         newbib.name = "bibitem"
         newbib["hidden"] = "true"
         newbib&.at("./*[local-name() = 'ext']")&.remove
