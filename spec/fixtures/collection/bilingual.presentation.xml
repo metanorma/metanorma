@@ -1,4 +1,4 @@
-       <doc-container id="doc000000000">
+<doc-container id="doc000000000">
    <iso-standard xmlns="https://www.metanorma.org/ns/bipm" cross-align="true" first="" type="presentation" version="2.4.10" document_suffix="ISO_JCGM_100_2008_EN_">
       <bibdata type="standard">
          <title language="en" format="text/plain" type="title-main">Evaluation of measurement data</title>
@@ -200,21 +200,36 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
             <p id="">The purpose of such guidance is</p>
             <ul id="_5839636c-4405-8b42-e26e-64cffdfa33f7_ISO_JCGM_100_2008_EN_">
                <li>
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="">to promote full information on how uncertainty statements are arrived at;</p>
                </li>
                <li>
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="">to provide a basis for the international comparison of measurement results.</p>
                </li>
             </ul>
             <p id="">This corrected version of JCGM 100:2008 incorporates the following corrections:</p>
             <ul id="_7637fdb5-1a4a-ae55-db5f-fd1f23d0f984_ISO_JCGM_100_2008_EN_">
                <li>
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="">on page v, Footnote ** has been corrected;</p>
                </li>
                <li>
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="">in 4.1.1, the note has been indented;</p>
                </li>
                <li>
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="">
                      in the first line of the example in 5.1.5,
                      <stem type="MathML" block="false" id="_">
@@ -282,12 +297,21 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </p>
                </li>
                <li>
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="">in the first lines of B.2 and C.2, Clause 0 has been corrected to Clause 2;</p>
                </li>
                <li>
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="">in G.3.2, (G,1c) has been changed to (G.1c);</p>
                </li>
                <li>
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="">in H.1.3.4, the formatting of the first equation has been improved.</p>
                </li>
             </ul>
@@ -386,6 +410,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                </p>
                <ul id="_8a3f1356-6b33-7592-d8bd-0e89aa6e90cf_ISO_JCGM_100_2008_EN_">
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <p id="">
                         <em>universal</em>
                         : the method should be applicable to all kinds of measurements and to all types of input dataused in measurements.
@@ -395,12 +422,18 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                <p id="">The actual quantity used to express uncertainty should be:</p>
                <ul id="_b1a6d83b-aaf4-0764-c91d-caabd09c1ac0_ISO_JCGM_100_2008_EN_">
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <p id="">
                         <em>internally consistent</em>
                         : it should be directly derivable from the components that contribute to it, as well asindependent of how these components are grouped and of the decomposition of the components into subcomponents;
                      </p>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <p id="">
                         <em>transferable</em>
                         : it should be possible to use directly the uncertainty evaluated for one result as a componentin evaluating the uncertainty of another measurement in which the first result is used.
@@ -621,20 +654,36 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   Expression of experimental uncertainties
                </p>
                <ol id="_a91967fa-7aba-eb75-4538-69e81e201392_ISO_JCGM_100_2008_EN_" type="arabic">
-                  <li id="_" label="1">
+                  <li id="_">
+                     <fmt-name>
+                        <semx element="autonum" source="_">1</semx>
+                        <span class="fmt-label-delim">)</span>
+                     </fmt-name>
                      <p id="">The uncertainty in the result of a measurement generally consists of several components which may be grouped into two categories according to the way in which their numerical value is estimated:</p>
                      <ol id="_d0cead6f-3aa4-6172-dc2e-c0282de8e128_ISO_JCGM_100_2008_EN_" type="alphabet">
-                        <li id="_" label="a">
+                        <li id="_">
+                           <fmt-name>
+                              <semx element="autonum" source="_">a</semx>
+                              <span class="fmt-label-delim">)</span>
+                           </fmt-name>
                            <p id="">those which are evaluated by statistical methods,</p>
                         </li>
-                        <li id="_" label="b">
+                        <li id="_">
+                           <fmt-name>
+                              <semx element="autonum" source="_">b</semx>
+                              <span class="fmt-label-delim">)</span>
+                           </fmt-name>
                            <p id="">those which are evaluated by other means.</p>
                         </li>
                      </ol>
                      <p id="">There is not always a simple correspondence between the classification into categories A or B and the previously used classification into “random” and “systematic” uncertainties. The term “systematic uncertainty” can be misleading and should be avoided.</p>
                      <p id="">Any detailed report of the uncertainty should consist of a complete list of the components, specifying for each the method used to obtain its numerical value.</p>
                   </li>
-                  <li id="_" label="2">
+                  <li id="_">
+                     <fmt-name>
+                        <semx element="autonum" source="_">2</semx>
+                        <span class="fmt-label-delim">)</span>
+                     </fmt-name>
                      <p id="">
                         The components in category A are characterized by the estimated variances
                         <stem type="MathML" block="false" id="_">
@@ -720,7 +769,11 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         . Where appropriate, the covariances should be given.
                      </p>
                   </li>
-                  <li id="_" label="3">
+                  <li id="_">
+                     <fmt-name>
+                        <semx element="autonum" source="_">3</semx>
+                        <span class="fmt-label-delim">)</span>
+                     </fmt-name>
                      <p id="">
                         The components in category B should be characterized by quantities
                         <stem type="MathML" block="false" id="_">
@@ -804,10 +857,18 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         like standard deviations. Where appropriate, the covariances should be treated in a similar way.
                      </p>
                   </li>
-                  <li id="_" label="4">
+                  <li id="_">
+                     <fmt-name>
+                        <semx element="autonum" source="_">4</semx>
+                        <span class="fmt-label-delim">)</span>
+                     </fmt-name>
                      <p id="">The combined uncertainty should be characterized by the numerical value obtained by applying the usual method for the combination of variances. The combined uncertainty and its components should be expressed in the form of “standard deviations”.</p>
                   </li>
-                  <li id="_" label="5">
+                  <li id="_">
+                     <fmt-name>
+                        <semx element="autonum" source="_">5</semx>
+                        <span class="fmt-label-delim">)</span>
+                     </fmt-name>
                      <p id="">If, for particular applications, it is necessary to multiply the combined uncertainty by a factor to obtain an overall uncertainty, the multiplying factor used must always be stated.</p>
                   </li>
                </ol>
@@ -1004,15 +1065,27 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </p>
                   <ul id="_0cfe9f82-cc2d-d9a6-5e0a-0e2da9dbd012_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="sections_clause1_clause1_ul1_"/>
                   <li element-number="sections_clause1_clause1_ul1_li1_">
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <p id="" cross-align="true" element-number="sections_clause1_clause1_ul1_li1_p1_">maintaining quality control and quality assurance in production; complying with and enforcing laws and regulations;</p>
                   </li>
                   <li element-number="sections_clause1_clause1_ul1_li2_">
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <p id="" cross-align="true" element-number="sections_clause1_clause1_ul1_li2_p1_">conducting basic research, and applied research and development, in science and engineering;</p>
                   </li>
                   <li element-number="sections_clause1_clause1_ul1_li3_">
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <p id="" cross-align="true" element-number="sections_clause1_clause1_ul1_li3_p1_">calibrating standards and instruments and performing tests throughout a national measurement system in order to achieve traceability to national standards;</p>
                   </li>
                   <li element-number="sections_clause1_clause1_ul1_li4_">
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <p id="" cross-align="true" element-number="sections_clause1_clause1_ul1_li4_p1_">developing, maintaining, and comparing international and national physical reference standards, including reference materials.</p>
                   </li>
                   <clause id="scls_1-2_ISO_JCGM_100_2008_EN_" obligation="normative" inline-header="true" element-number="sections_clause1_clause2_"/>
@@ -1959,9 +2032,15 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                </p>
                <ul id="_ecfc9908-a704-e60c-2f51-5d10700aa0e9_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="sections_clause2_clause2_clause4_ul1_"/>
                <li element-number="sections_clause2_clause2_clause4_ul1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause2_clause2_clause4_ul1_li1_p1_">a measure of the possible error in the estimated value of the measurand as provided by the result of a measurement;</p>
                </li>
                <li element-number="sections_clause2_clause2_clause4_ul1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause2_clause2_clause4_ul1_li2_p1_">
                      an estimate characterizing the range of values within which the true value
                      <bookmark id="_"/>
@@ -1991,6 +2070,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                </p>
                <ul id="_7916be53-a5d4-f6f6-d58f-e6335dfa0940_ISO_JCGM_100_2008_FR_" keep-with-next="always" element-number="sections_clause2_clause2_clause4_ul1_"/>
                <li element-number="sections_clause2_clause2_clause4_ul1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause2_clause2_clause4_ul1_li1_p1_">
                      mesure de l’erreur
                      <bookmark id="_"/>
@@ -1998,6 +2080,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </p>
                </li>
                <li element-number="sections_clause2_clause2_clause4_ul1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause2_clause2_clause4_ul1_li2_p1_">
                      estimation caractérisant l’étendue des valeurs dans laquelle se situe la valeur vraie d’une grandeur mesurée (VIM
                      <bookmark id="_"/>
@@ -4960,34 +5045,74 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   <bookmark id="_"/>
                </p>
                <ol id="_7c6ab3ea-f218-34f6-e728-e2edc92643df_ISO_JCGM_100_2008_EN_" type="arabic" keep-with-next="always" element-number="sections_clause3_clause3_clause2_ol1_"/>
-               <li id="item_3-3-2a_ISO_JCGM_100_2008_EN_" label="1" element-number="sections_clause3_clause3_clause2_ol1_li1_">
+               <li id="item_3-3-2a_ISO_JCGM_100_2008_EN_" element-number="sections_clause3_clause3_clause2_ol1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="item_3-3-2a_ISO_JCGM_100_2008_EN_">1</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li1_p1_">incomplete definition of the measurand;</p>
                </li>
-               <li id="_" label="2" element-number="sections_clause3_clause3_clause2_ol1_li2_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">2</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li2_p1_">imperfect reaIization of the definition of the measurand;</p>
                </li>
-               <li id="_" label="3" element-number="sections_clause3_clause3_clause2_ol1_li3_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li3_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">3</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li3_p1_">nonrepresentative sampling — the sample measured may not represent the defined measurand;</p>
                </li>
-               <li id="_" label="4" element-number="sections_clause3_clause3_clause2_ol1_li4_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li4_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">4</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li4_p1_">inadequate knowledge of the effects of environmental conditions on the measurement or imperfect measurement of environmental conditions;</p>
                </li>
-               <li id="_" label="5" element-number="sections_clause3_clause3_clause2_ol1_li5_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li5_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">5</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li5_p1_">personal bias in reading analogue instruments;</p>
                </li>
-               <li id="_" label="6" element-number="sections_clause3_clause3_clause2_ol1_li6_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li6_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">6</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li6_p1_">finite instrument resolution or discrimination threshold;</p>
                </li>
-               <li id="_" label="7" element-number="sections_clause3_clause3_clause2_ol1_li7_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li7_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">7</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li7_p1_">inexact values of measurement standards and reference materials;</p>
                </li>
-               <li id="_" label="8" element-number="sections_clause3_clause3_clause2_ol1_li8_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li8_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">8</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li8_p1_">inexact values of constants and other parameters obtained from external sources and used in the data-reduction algorithm;</p>
                </li>
-               <li id="item_3-3-2i_ISO_JCGM_100_2008_EN_" label="9" element-number="sections_clause3_clause3_clause2_ol1_li9_">
+               <li id="item_3-3-2i_ISO_JCGM_100_2008_EN_" element-number="sections_clause3_clause3_clause2_ol1_li9_">
+                  <fmt-name>
+                     <semx element="autonum" source="item_3-3-2i_ISO_JCGM_100_2008_EN_">9</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li9_p1_">approximations and assumptions incorporated in the measurement method and procedure;</p>
                </li>
-               <li id="item_3-3-2j_ISO_JCGM_100_2008_EN_" label="10" element-number="sections_clause3_clause3_clause2_ol1_li10_">
+               <li id="item_3-3-2j_ISO_JCGM_100_2008_EN_" element-number="sections_clause3_clause3_clause2_ol1_li10_">
+                  <fmt-name>
+                     <semx element="autonum" source="item_3-3-2j_ISO_JCGM_100_2008_EN_">10</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li10_p1_">variations in repeated observations of the measurand under apparently identical conditions.</p>
                </li>
             </align-cell>
@@ -4999,34 +5124,74 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   dans un mesurage, comprenant:
                </p>
                <ol id="_f0fbc1b6-8b32-4199-4ec6-c3be09ff3b3b_ISO_JCGM_100_2008_FR_" type="arabic" keep-with-next="always" element-number="sections_clause3_clause3_clause2_ol1_"/>
-               <li id="item_3-3-2a_ISO_JCGM_100_2008_FR_" label="1" element-number="sections_clause3_clause3_clause2_ol1_li1_">
+               <li id="item_3-3-2a_ISO_JCGM_100_2008_FR_" element-number="sections_clause3_clause3_clause2_ol1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="item_3-3-2a_ISO_JCGM_100_2008_FR_">1</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li1_p1_">définition incomplète du mesurande;</p>
                </li>
-               <li id="_" label="2" element-number="sections_clause3_clause3_clause2_ol1_li2_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">2</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li2_p1_">réalisation imparfaite de la définition du mesurande;</p>
                </li>
-               <li id="_" label="3" element-number="sections_clause3_clause3_clause2_ol1_li3_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li3_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">3</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li3_p1_">échantillonnage non représentatif — l’échantillon mesuré peut ne pas représenter le mesurande défini;</p>
                </li>
-               <li id="_" label="4" element-number="sections_clause3_clause3_clause2_ol1_li4_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li4_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">4</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li4_p1_">connaissance insuffisante des effets des conditions d’environnement sur le mesurage ou mesurage imparfait des conditions d’environnement;</p>
                </li>
-               <li id="_" label="5" element-number="sections_clause3_clause3_clause2_ol1_li5_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li5_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">5</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li5_p1_">biais dû à l’observateur pour la lecture des instruments analogiques;</p>
                </li>
-               <li id="_" label="6" element-number="sections_clause3_clause3_clause2_ol1_li6_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li6_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">6</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li6_p1_">résolution finie de l’instrument ou seuil de mobilité;</p>
                </li>
-               <li id="_" label="7" element-number="sections_clause3_clause3_clause2_ol1_li7_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li7_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">7</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li7_p1_">valeurs inexactes des étalons et matériaux de référence;</p>
                </li>
-               <li id="_" label="8" element-number="sections_clause3_clause3_clause2_ol1_li8_">
+               <li id="_" element-number="sections_clause3_clause3_clause2_ol1_li8_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">8</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li8_p1_">valeurs inexactes des constantes et autres paramètres obtenus de sources extérieures et utilisés dans l’algorithme de traitement des données;</p>
                </li>
-               <li id="item_3-3-2i_ISO_JCGM_100_2008_FR_" label="9" element-number="sections_clause3_clause3_clause2_ol1_li9_">
+               <li id="item_3-3-2i_ISO_JCGM_100_2008_FR_" element-number="sections_clause3_clause3_clause2_ol1_li9_">
+                  <fmt-name>
+                     <semx element="autonum" source="item_3-3-2i_ISO_JCGM_100_2008_FR_">9</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li9_p1_">approximations et hypothèses introduites dans la méthode et dans la procédure de mesure;</p>
                </li>
-               <li id="item_3-3-2j_ISO_JCGM_100_2008_FR_" label="10" element-number="sections_clause3_clause3_clause2_ol1_li10_">
+               <li id="item_3-3-2j_ISO_JCGM_100_2008_FR_" element-number="sections_clause3_clause3_clause2_ol1_li10_">
+                  <fmt-name>
+                     <semx element="autonum" source="item_3-3-2j_ISO_JCGM_100_2008_FR_">10</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause3_clause3_clause2_ol1_li10_p1_">
                      variations entre les observations répétées
                      <bookmark id="_"/>
@@ -10798,6 +10963,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                </p>
                <ul id="_0e5f3604-dc28-afc8-2eb7-8b325905a6eb_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="sections_clause4_clause1_clause3_ul1_"/>
                <li element-number="sections_clause4_clause1_clause3_ul1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause1_clause3_ul1_li1_p1_">
                      quantities whose values
                      <em>and uncertainties</em>
@@ -10805,6 +10973,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </p>
                </li>
                <li element-number="sections_clause4_clause1_clause3_ul1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause1_clause3_ul1_li2_p1_">
                      quantities whose values
                      <em>and uncertainties</em>
@@ -10897,6 +11068,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                </p>
                <ul id="_28e24031-5e54-fd8f-94a7-3d5a947cc5f3_ISO_JCGM_100_2008_FR_" keep-with-next="always" element-number="sections_clause4_clause1_clause3_ul1_"/>
                <li element-number="sections_clause4_clause1_clause3_ul1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause1_clause3_ul1_li1_p1_">
                      les grandeurs dont les valeurs
                      <em>et les incertitudes</em>
@@ -10906,6 +11080,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </p>
                </li>
                <li element-number="sections_clause4_clause1_clause3_ul1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause1_clause3_ul1_li2_p1_">
                      les grandeurs dont les valeurs
                      <em>et les incertitudes</em>
@@ -20328,15 +20505,27 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                </p>
                <ul id="_ce390c1f-aa3d-bd6a-7188-37b4c6a4db2f_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="sections_clause4_clause3_clause1_ul1_"/>
                <li element-number="sections_clause4_clause3_clause1_ul1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li1_p1_">previous measurement data;</p>
                </li>
                <li element-number="sections_clause4_clause3_clause1_ul1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li2_p1_">experience with or general knowledge of the behaviour and properties of relevant materials and instruments; manufacturer’s specifications;</p>
                </li>
                <li element-number="sections_clause4_clause3_clause1_ul1_li3_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li3_p1_">data provided in calibration and other certificates;</p>
                </li>
                <li element-number="sections_clause4_clause3_clause1_ul1_li4_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li4_p1_">uncertainties assigned to reference data taken from handbooks.</p>
                </li>
             </align-cell>
@@ -20509,18 +20698,33 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                </p>
                <ul id="_f56d5a15-7319-5fcf-1fbe-61222a27f6e9_ISO_JCGM_100_2008_FR_" keep-with-next="always" element-number="sections_clause4_clause3_clause1_ul1_"/>
                <li element-number="sections_clause4_clause3_clause1_ul1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li1_p1_">des résultats de mesures antérieures;</p>
                </li>
                <li element-number="sections_clause4_clause3_clause1_ul1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li2_p1_">l’expérience ou la connaissance générale du comportement et des propriétés des matériaux et instruments utilisés;</p>
                </li>
                <li element-number="sections_clause4_clause3_clause1_ul1_li3_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li3_p1_">les spécifications du fabricant;</p>
                </li>
                <li element-number="sections_clause4_clause3_clause1_ul1_li4_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li4_p1_">les données fournies par des certificats d’étalonnage ou autres certificats;</p>
                </li>
                <li element-number="sections_clause4_clause3_clause1_ul1_li5_">
+                  <fmt-name>
+                     <semx element="autonum" source="">—</semx>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="sections_clause4_clause3_clause1_ul1_li5_p1_">l’incertitude assignée à des valeurs de référence provenant d’ouvrages et manuels.</p>
                </li>
             </align-cell>
@@ -47383,19 +47587,35 @@ measurement result, it is prudent to obtain additional data for its further eval
                <strong>Recommandation INC-1 (1980)</strong>
             </p>
             <ol id="_bb09c220-a10b-9b25-7717-741b303e571d_ISO_JCGM_100_2008_EN_" type="arabic" keep-with-next="always" element-number="annex1_clause1_ol1_"/>
-            <li id="_" label="1" element-number="annex1_clause1_ol1_li1_">
+            <li id="_" element-number="annex1_clause1_ol1_li1_">
+               <fmt-name>
+                  <semx element="autonum" source="_">1</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_p1_">L’incertitude d’un résultat de mesure comprend généralement plusieurs composantes qui peuvent être groupées en deux catégories d’après la méthode utilisée pour estimer leur valeur numérique:</p>
                <ol id="_568dffb5-2049-dfc4-85ec-1e57733d909b_ISO_JCGM_100_2008_EN_" type="alphabet" keep-with-next="always" element-number="annex1_clause1_ol1_li1_ol1_"/>
-               <li id="_" label="a" element-number="annex1_clause1_ol1_li1_ol1_li1_">
+               <li id="_" element-number="annex1_clause1_ol1_li1_ol1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">a</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_ol1_li1_p1_">celles qui sont évaluées à l’aide de méthodes statistiques,</p>
                </li>
-               <li id="_" label="b" element-number="annex1_clause1_ol1_li1_ol1_li2_">
+               <li id="_" element-number="annex1_clause1_ol1_li1_ol1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">b</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_ol1_li2_p1_">celles qui sont évaluées par d’autres moyens.</p>
                </li>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_p2_">Il n’y a pas toujours une correspondance simple entre le classement dans les catégories A ou B et le caractère «aléatoire» ou «systématique» utilisé antérieurement pour classer les incertitudes. L’expression «incertitude systématique» est susceptible de conduire à des erreurs d’interprétation; elle doit être évitée.</p>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_p3_">Toute description détaillée de l’incertitude devrait comprendre une liste complète de ses composantes et indiquer pour chacune la méthode utilisée pour lui attribuer une valeur numérique.</p>
             </li>
-            <li id="_" label="2" element-number="annex1_clause1_ol1_li2_">
+            <li id="_" element-number="annex1_clause1_ol1_li2_">
+               <fmt-name>
+                  <semx element="autonum" source="_">2</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li2_p1_">
                   Les composantes de la catégorie A sont caractérisées par les variances estimées
                   <stem type="MathML" block="false" id="_">
@@ -47477,7 +47697,11 @@ measurement result, it is prudent to obtain additional data for its further eval
                   de degrés de liberté. Le cas échéant, les covariances estimées doivent être données.
                </p>
             </li>
-            <li id="_" label="3" element-number="annex1_clause1_ol1_li3_">
+            <li id="_" element-number="annex1_clause1_ol1_li3_">
+               <fmt-name>
+                  <semx element="autonum" source="_">3</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li3_p1_">
                   Les composantes de la catégorie B devraient être caractérisées par des termes
                   <stem type="MathML" block="false" id="_">
@@ -47561,10 +47785,18 @@ measurement result, it is prudent to obtain additional data for its further eval
                   comme des écarts-types. Le cas échéant, les covariances doivent être traitées de façon analogue.
                </p>
             </li>
-            <li id="_" label="4" element-number="annex1_clause1_ol1_li4_">
+            <li id="_" element-number="annex1_clause1_ol1_li4_">
+               <fmt-name>
+                  <semx element="autonum" source="_">4</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li4_p1_">L’incertitude composée devrait être caractérisée par la valeur obtenue en appliquant la méthode usuelle de combinaison des variances. L’incertitude composée ainsi que ses composantes devraient être exprimées sous la forme d’«écart-types».</p>
             </li>
-            <li id="_" label="5" element-number="annex1_clause1_ol1_li5_">
+            <li id="_" element-number="annex1_clause1_ol1_li5_">
+               <fmt-name>
+                  <semx element="autonum" source="_">5</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li5_p1_">Si pour des utilisations particulières on est amené à multiplier par un facteur l’incertitude composée afin d’obtenir une incertitude globale, la valeur numérique de ce facteur doit toujours être donnée.</p>
             </li>
             <clause id="scls_A-2_ISO_JCGM_100_2008_EN_" obligation="normative" element-number="annex1_clause2_"/>
@@ -47595,13 +47827,25 @@ measurement result, it is prudent to obtain additional data for its further eval
                <strong>Recommandation INC-1 (1980)</strong>
             </p>
             <ol id="_5662dd77-b589-2560-b4bc-292d327a655a_ISO_JCGM_100_2008_FR_" type="arabic" keep-with-next="always" element-number="annex1_clause1_ol1_"/>
-            <li id="_" label="1" element-number="annex1_clause1_ol1_li1_">
+            <li id="_" element-number="annex1_clause1_ol1_li1_">
+               <fmt-name>
+                  <semx element="autonum" source="_">1</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_p1_">L’incertitude d’un résultat de mesure comprend généralement plusieurs composantes qui peuvent être groupées en deux catégories d’après la méthode utilisée pour estimer leur valeur numérique:</p>
                <ol id="_568dffb5-2049-dfc4-85ec-1e57733d909b_ISO_JCGM_100_2008_FR_" type="alphabet" keep-with-next="always" element-number="annex1_clause1_ol1_li1_ol1_"/>
-               <li id="_" label="a" element-number="annex1_clause1_ol1_li1_ol1_li1_">
+               <li id="_" element-number="annex1_clause1_ol1_li1_ol1_li1_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">a</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_ol1_li1_p1_">celles qui sont évaluées à l’aide de méthodes statistiques,</p>
                </li>
-               <li id="_" label="b" element-number="annex1_clause1_ol1_li1_ol1_li2_">
+               <li id="_" element-number="annex1_clause1_ol1_li1_ol1_li2_">
+                  <fmt-name>
+                     <semx element="autonum" source="_">b</semx>
+                     <span class="fmt-label-delim">)</span>
+                  </fmt-name>
                   <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_ol1_li2_p1_">celles qui sont évaluées par d’autres moyens.</p>
                </li>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_p2_">
@@ -47611,7 +47855,11 @@ measurement result, it is prudent to obtain additional data for its further eval
                </p>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li1_p3_">Toute description détaillée de l’incertitude devrait comprendre une liste complète de ses composantes et indiquer pour chacune la méthode utilisée pour lui attribuer une valeur numérique.</p>
             </li>
-            <li id="_" label="2" element-number="annex1_clause1_ol1_li2_">
+            <li id="_" element-number="annex1_clause1_ol1_li2_">
+               <fmt-name>
+                  <semx element="autonum" source="_">2</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li2_p1_">
                   Les composantes de la catégorie A sont caractérisées par les variances estimées
                   <stem type="MathML" block="false" id="_">
@@ -47697,7 +47945,11 @@ measurement result, it is prudent to obtain additional data for its further eval
                   de degrés de liberté. Le cas échéant, les covariances estimées doivent être données.
                </p>
             </li>
-            <li id="_" label="3" element-number="annex1_clause1_ol1_li3_">
+            <li id="_" element-number="annex1_clause1_ol1_li3_">
+               <fmt-name>
+                  <semx element="autonum" source="_">3</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li3_p1_">
                   Les composantes de la catégorie B devraient être caractérisées par des termes
                   <stem type="MathML" block="false" id="_">
@@ -47781,10 +48033,18 @@ measurement result, it is prudent to obtain additional data for its further eval
                   comme des écarts-types. Le cas échéant, les covariances doivent être traitées de façon analogue.
                </p>
             </li>
-            <li id="_" label="4" element-number="annex1_clause1_ol1_li4_">
+            <li id="_" element-number="annex1_clause1_ol1_li4_">
+               <fmt-name>
+                  <semx element="autonum" source="_">4</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li4_p1_">L’incertitude composée devrait être caractérisée par la valeur obtenue en appliquant la méthode usuelle de combinaison des variances. L’incertitude composée ainsi que ses composantes devraient être exprimées sous la forme d’«écart-types».</p>
             </li>
-            <li id="_" label="5" element-number="annex1_clause1_ol1_li5_">
+            <li id="_" element-number="annex1_clause1_ol1_li5_">
+               <fmt-name>
+                  <semx element="autonum" source="_">5</semx>
+                  <span class="fmt-label-delim">)</span>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause1_ol1_li5_p1_">
                   Si pour des utilisations particulières on est amené à multiplier par un facteur l’incertitude composée afin d’obtenir une incertitude globale, la valeur numérique de ce facteur doit toujours être donnée.
                   <bookmark id="inc1_ISO_JCGM_100_2008_FR_"/>
@@ -47877,12 +48137,21 @@ measurement result, it is prudent to obtain additional data for its further eval
             </p>
             <ul id="_330ed716-64da-f212-7d1f-140e32b5e135_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="annex1_clause2_ul1_"/>
             <li element-number="annex1_clause2_ul1_li1_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul1_li1_p1_">the need to find an agreed way of expressing measurement uncertainty in metrology,</p>
             </li>
             <li element-number="annex1_clause2_ul1_li2_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul1_li2_p1_">the effort that has been devoted to this by many organizations over many years,</p>
             </li>
             <li element-number="annex1_clause2_ul1_li3_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul1_li3_p1_">
                   the encouraging progress made in finding an acceptable solution, which has resulted from the discussions of the Working Group on the Expression of Uncertainties which met at BIPM
                   <bookmark id="_"/>
@@ -47896,12 +48165,21 @@ measurement result, it is prudent to obtain additional data for its further eval
             </p>
             <ul id="_544e6f46-82bc-0dd5-9e9f-40a7e0df0fdd_ISO_JCGM_100_2008_FR_" keep-with-next="always" element-number="annex1_clause2_ul1_"/>
             <li element-number="annex1_clause2_ul1_li1_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul1_li1_p1_">la nécessité de convenir de modalités uniformes pour exprimer l’incertitude en métrologie,</p>
             </li>
             <li element-number="annex1_clause2_ul1_li2_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul1_li2_p1_">les efforts déployés dans ce but par divers organismes depuis de nombreuses années,</p>
             </li>
             <li element-number="annex1_clause2_ul1_li3_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul1_li3_p1_">
                   les progrès encourageants vers une solution acceptable qui ont résulté des discussions du Groupe de travail sur l’expression des incertitudes réuni au BIPM
                   <bookmark id="_"/>
@@ -47917,6 +48195,9 @@ measurement result, it is prudent to obtain additional data for its further eval
             </p>
             <ul id="_3bd50429-397e-5ad7-f6c2-2f8911c1e3bb_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="annex1_clause2_ul2_"/>
             <li element-number="annex1_clause2_ul2_li1_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul2_li1_p1_">that the proposals of the Working Group might form the basis of an eventual agreement on the expression of uncertainties,</p>
             </li>
          </align-cell>
@@ -47926,6 +48207,9 @@ measurement result, it is prudent to obtain additional data for its further eval
             </p>
             <ul id="_7309f39b-54df-d404-cd87-bc9f34a2fe03_ISO_JCGM_100_2008_FR_" keep-with-next="always" element-number="annex1_clause2_ul2_"/>
             <li element-number="annex1_clause2_ul2_li1_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul2_li1_p1_">que les propositions du Groupe de travail pourraient constituer la base d’un accord éventuel pour l’expression des incertitudes,</p>
             </li>
          </align-cell>
@@ -47937,9 +48221,15 @@ measurement result, it is prudent to obtain additional data for its further eval
             </p>
             <ul id="_12ed51be-bb60-c8cd-9a37-1e26e41e670c_ISO_JCGM_100_2008_EN_" keep-with-next="always" element-number="annex1_clause2_ul3_"/>
             <li element-number="annex1_clause2_ul3_li1_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul3_li1_p1_">that the proposals of the Working Group be diffused widely;</p>
             </li>
             <li element-number="annex1_clause2_ul3_li2_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul3_li2_p1_">
                   that BIPM
                   <bookmark id="_"/>
@@ -47947,9 +48237,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                </p>
             </li>
             <li element-number="annex1_clause2_ul3_li3_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul3_li3_p1_">that other interested organizations be encouraged to examine and test these proposals and let their comments be known to BIPM;</p>
             </li>
             <li element-number="annex1_clause2_ul3_li4_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul3_li4_p1_">that after two or three years BIPM report back on the application of these proposals.</p>
             </li>
             <clause id="scls_A-3_ISO_JCGM_100_2008_EN_" obligation="normative" element-number="annex1_clause3_"/>
@@ -47981,9 +48277,15 @@ measurement result, it is prudent to obtain additional data for its further eval
             </p>
             <ul id="_e82d15bb-0e8a-b799-4bcc-fa2f8293d8db_ISO_JCGM_100_2008_FR_" keep-with-next="always" element-number="annex1_clause2_ul3_"/>
             <li element-number="annex1_clause2_ul3_li1_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul3_li1_p1_">que les propositions de ce Groupe de travail soient largement portées à la connaissance des intéressés;</p>
             </li>
             <li element-number="annex1_clause2_ul3_li2_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul3_li2_p1_">
                   que le BIPM
                   <bookmark id="_"/>
@@ -47991,6 +48293,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </p>
             </li>
             <li element-number="annex1_clause2_ul3_li3_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul3_li3_p1_">
                   que les autres organismes intéressés étudient et mettent à l’essai ces propositions et fassent connaître au BIPM
                   <bookmark id="_"/>
@@ -47998,6 +48303,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </p>
             </li>
             <li element-number="annex1_clause2_ul3_li4_">
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <p id="" cross-align="true" element-number="annex1_clause2_ul3_li4_p1_">
                   que dans un délai de deux ou trois ans le BIPM
                   <bookmark id="_"/>
@@ -48552,7 +48860,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <span class="stddocTitle">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</span>
                      </em>
                   </formattedref>
-                  <fetched>2025-03-20</fetched>
+                  <fetched>2025-04-14</fetched>
                   <title type="title-intro" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai</title>
                   <title type="title-main" format="text/plain" language="fr" script="Latn">Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
                   <title type="main" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
@@ -49654,6 +49962,9 @@ measurement result, it is prudent to obtain additional data for its further eval
 </p>
          <ul>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                <stem type="MathML" block="false" id="_">
                   <math xmlns="http://www.w3.org/1998/Math/MathML">
                      <mstyle displaystyle="false">
@@ -49690,6 +50001,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                accuracy of measurement,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -49713,8 +50027,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>analysis of variance, see ANOVA</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               analysis of variance, see ANOVA
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                ANOVA,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -49728,6 +50050,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                arithmetic mean,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -49755,8 +50080,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>average, see arithmetic mean</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               average, see arithmetic mean
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                bias,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -49774,6 +50107,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                BIPM,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -49841,6 +50177,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                blunders,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -49854,6 +50193,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                bounds on an input quantity,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -49926,8 +50268,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>Bureau International des Poids et Mesures, see BIPM</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               Bureau International des Poids et Mesures, see BIPM
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                calibration chain,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -49945,6 +50295,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                CIPM,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50000,6 +50353,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                combined standard uncertainty,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50024,6 +50380,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                combined standard uncertainty and Comités Consultatifs,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50036,6 +50395,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                combined standard uncertainty and international comparisons,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50047,8 +50409,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>Comité International des Poids et Mesures, see CIPM</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               Comité International des Poids et Mesures, see CIPM
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                confidence interval,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50066,8 +50436,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>convolution, see probability distributions, convolving</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               convolution, see probability distributions, convolving
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                correction,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50106,6 +50484,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      ignoring a,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -50123,10 +50504,18 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>uncertainty of a, see uncertainty of a correction</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty of a, see uncertainty of a correction
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                correction factor,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50139,8 +50528,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>correlated input estimates or quantities, see correlation</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               correlated input estimates or quantities, see correlation
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                correlated output estimates or quantities,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50154,6 +50551,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                correlated random variations,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50167,6 +50567,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                covariance,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50180,6 +50583,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                covariance matrix,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50192,8 +50598,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>covariance of related measurands, see correlated output estimates or quantities</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               covariance of related measurands, see correlated output estimates or quantities
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                coverage factor,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50233,6 +50647,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                coverage probability,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50271,12 +50688,23 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                curve
                <ul>
-                  <li>calibration, see calibration curve</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     calibration, see calibration curve
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                degree of belief,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50290,6 +50718,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                degrees of freedom,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50303,9 +50734,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                distribution
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <em>a priori</em>
                      ,
                      <xref name="_" pagenumber="true" id="_"/>
@@ -50346,6 +50783,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <stem type="MathML" block="false" id="_">
                         <math xmlns="http://www.w3.org/1998/Math/MathML">
                            <mstyle displaystyle="false">
@@ -50388,6 +50828,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      -distribution
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      <stem type="MathML" block="false" id="_">
                         <math xmlns="http://www.w3.org/1998/Math/MathML">
                            <mstyle displaystyle="false">
@@ -50438,6 +50881,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      -distribution
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      asymmetric,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -50455,11 +50901,34 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>frequency, see frequency distribution</li>
-                  <li>Laplace-Gauss, see Laplace-Gauss distribution</li>
-                  <li>normal, see normal distribution</li>
-                  <li>probability, see probability distribution</li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     frequency, see frequency distribution
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     Laplace-Gauss, see Laplace-Gauss distribution
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     normal, see normal distribution
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     probability, see probability distribution
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      rectangular,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -50499,8 +50968,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>Student’s, see Student’s distribution</li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     Student’s, see Student’s distribution
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      trapezoidal,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -50514,6 +50991,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      triangular,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -50540,22 +51020,49 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                distributions
                <ul>
-                  <li>convolving probability, see probability distributions, convolving</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     convolving probability, see probability distributions, convolving
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                effect
                <ul>
-                  <li>random, see random effect</li>
-                  <li>systematic, see systematic effect</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     random, see random effect
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     systematic, see systematic effect
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                error
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      determining,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -50568,12 +51075,30 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>random, see random error</li>
-                  <li>relative, see relative error</li>
-                  <li>systematic, see systematic error</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     random, see random error
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     relative, see relative error
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     systematic, see systematic error
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                error analysis,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50585,9 +51110,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                error and uncertainty
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      confusion between,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -50623,6 +51154,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                error of measurement,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50726,6 +51260,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                estimate,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50738,11 +51275,24 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
                <ul>
-                  <li>input, see input estimate</li>
-                  <li>output, see output estimate</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     input, see input estimate
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     output, see output estimate
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                estimator,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50756,6 +51306,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                expanded uncertainty,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50780,6 +51333,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                expectation (or expected value),
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50864,12 +51420,23 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                experimental standard deviation
                <ul>
-                  <li>standard deviation, see experimental</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     standard deviation, see experimental
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                frequency distribution,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50894,6 +51461,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                functional relationship,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50918,6 +51488,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      nonlinear,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -50937,6 +51510,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                histogram,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50950,6 +51526,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                IEC,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -50981,6 +51560,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                IFCC,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51002,6 +51584,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                influence quantity,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51048,12 +51633,21 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                information
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      pool of
                      <ul>
                         <li>
+                           <fmt-name>
+                              <semx element="autonum" source="">—</semx>
+                           </fmt-name>
                            for a Type B evaluation,
                            <xref name="_" pagenumber="true" id="_"/>
                            <semx element="xref" source="_">
@@ -51097,6 +51691,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                input estimate,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51132,15 +51729,29 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                input estimates or quantities
                <ul>
-                  <li>correlated, see correlation</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     correlated, see correlation
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                input quantities
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      categorization of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -51156,6 +51767,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                input quantity,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51168,20 +51782,56 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
                <ul>
-                  <li>bounds on an, see bounds on an input quantity</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     bounds on an, see bounds on an input quantity
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                input value or quantity
                <ul>
-                  <li>imported, see imported input value or quantity</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     imported, see imported input value or quantity
+                  </li>
                </ul>
             </li>
-            <li>International Electrotechnical Commission, see IEC</li>
-            <li>International Federation of Clinical Chemistry, see IFCC</li>
-            <li>International Organization for Standardization, see ISO</li>
-            <li>International Organization of Legal Metrology, see OIML</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               International Electrotechnical Commission, see IEC
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               International Federation of Clinical Chemistry, see IFCC
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               International Organization for Standardization, see ISO
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               International Organization of Legal Metrology, see OIML
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                International System of Units (SI,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51203,10 +51853,28 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>International Union of Pure and Applied Chemistry, see IUPAC</li>
-            <li>International Union of Pure and Applied Physics, see IUPAP</li>
-            <li>International vocabulary of basic and general terms in metrology, see VIM</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               International Union of Pure and Applied Chemistry, see IUPAC
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               International Union of Pure and Applied Physics, see IUPAP
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               International vocabulary of basic and general terms in metrology, see VIM
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                ISO,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51238,6 +51906,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                ISO 3534-1,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51249,6 +51920,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                ISO Technical Advisory Group on Metrology (ISO/TAG 4),
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51258,6 +51932,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                ISO/TAG 4,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51267,6 +51944,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                ISO/TAG 4/WG 3,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51276,6 +51956,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      terms of reference of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -51287,6 +51970,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                IUPAC,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51308,6 +51994,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                IUPAP,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51329,9 +52018,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                laboratories
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      national metrology or standards,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -51343,9 +52038,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                least squares
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      method of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -51361,6 +52062,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                level of confidence,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51458,27 +52162,57 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                limit
                <ul>
-                  <li>safety, see safety limit</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     safety, see safety limit
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                limits
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      upper and lower
                      <ul>
-                        <li>on an input quantity, see bounds on an input quantity</li>
+                        <li>
+                           <fmt-name>
+                              <semx element="autonum" source="">—</semx>
+                           </fmt-name>
+                           on an input quantity, see bounds on an input quantity
+                        </li>
                      </ul>
                   </li>
                </ul>
             </li>
-            <li>maximum bounds, see bounds on an input quantity</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               maximum bounds, see bounds on an input quantity
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                maximum entropy
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      principle of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -51499,12 +52233,23 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                mean
                <ul>
-                  <li>arithmetic, see arithmetic mean</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     arithmetic, see arithmetic mean
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                measurand,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51537,9 +52282,22 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
                <ul>
-                  <li>definition or specification of the, see measurand</li>
-                  <li>uncertainty due to incomplete definition of the, see uncertainty due to incomplete definition of the measurand</li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     definition or specification of the, see measurand
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty due to incomplete definition of the, see uncertainty due to incomplete definition of the measurand
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      value of the,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -51581,12 +52339,23 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                measurands
                <ul>
-                  <li>covariance of related, see correlated output estimates or quantities</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     covariance of related, see correlated output estimates or quantities
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                measurement,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51608,8 +52377,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
                <ul>
-                  <li>accuracy of, see accuracy of measurement</li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     accuracy of, see accuracy of measurement
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      mathematical model of the,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -51680,12 +52457,30 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>method of, see method of measurement</li>
-                  <li>principle of, see principle of measurement</li>
-                  <li>result of a, see result of a measurement</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     method of, see method of measurement
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     principle of, see principle of measurement
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     result of a, see result of a measurement
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                measurement procedure,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51699,12 +52494,21 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                measurements
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      spectrum of
                      <ul>
                         <li>
+                           <fmt-name>
+                              <semx element="autonum" source="">—</semx>
+                           </fmt-name>
                            to which the principles of the
                            <em>Guide</em>
                            apply,
@@ -51722,6 +52526,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                method of measurement,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51734,39 +52541,82 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
                <ul>
-                  <li>uncertainty of the, see uncertainty of the method of measurement</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty of the, see uncertainty of the method of measurement
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                metrology
                <ul>
-                  <li>legal, see legal metrology</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     legal, see legal metrology
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                minimum uncertainty
                <ul>
-                  <li>uncertainty, see minimum</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty, see minimum
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                model
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      mathematical
                      <ul>
-                        <li>of the measurement, see measurement, mathematical model of the</li>
+                        <li>
+                           <fmt-name>
+                              <semx element="autonum" source="">—</semx>
+                           </fmt-name>
+                           of the measurement, see measurement, mathematical model of the
+                        </li>
                      </ul>
                   </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                nonlinear functional relationship
                <ul>
-                  <li>functional relationship, see nonlinear</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     functional relationship, see nonlinear
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                normal distribution,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -51867,9 +52717,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                observations
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      repeated,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -51984,6 +52840,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                OIML,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52015,6 +52874,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                output estimate,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52039,12 +52901,23 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                output estimates or quantities
                <ul>
-                  <li>correlated, see correlated output estimates or quantities</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     correlated, see correlated output estimates or quantities
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                output quantity,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52058,12 +52931,23 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                overall uncertainty
                <ul>
-                  <li>uncertainty, see overall</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty, see overall
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                particular quantity,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52076,8 +52960,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
             </li>
-            <li>pooled estimate of variance, see variance, pooled estimate of</li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
+               pooled estimate of variance, see variance, pooled estimate of
+            </li>
+            <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                probability,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52123,8 +53015,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
                <ul>
-                  <li>coverage, see coverage probability</li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     coverage, see coverage probability
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      subjective,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -52140,6 +53040,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                probability density function,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52202,6 +53105,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                probability distribution,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52291,6 +53197,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                probability distributions, convolving,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52309,39 +53218,97 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                propagation
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      general law of error
                      <ul>
-                        <li>error propagation, see general law of</li>
+                        <li>
+                           <fmt-name>
+                              <semx element="autonum" source="">—</semx>
+                           </fmt-name>
+                           error propagation, see general law of
+                        </li>
                      </ul>
                   </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                propagation of uncertainty
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      law of
                      <ul>
-                        <li>uncertainty, see law of propagation of</li>
+                        <li>
+                           <fmt-name>
+                              <semx element="autonum" source="">—</semx>
+                           </fmt-name>
+                           uncertainty, see law of propagation of
+                        </li>
                      </ul>
                   </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                quantity
                <ul>
-                  <li>influence, see influence quantity</li>
-                  <li>input, see input quantity</li>
-                  <li>measurable, see measurable quantity</li>
-                  <li>output, see output quantity</li>
-                  <li>particular, see particular quantity</li>
-                  <li>value of a, see value of a quantity</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     influence, see influence quantity
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     input, see input quantity
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     measurable, see measurable quantity
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     output, see output quantity
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     particular, see particular quantity
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     value of a, see value of a quantity
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                random,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52355,6 +53322,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                random effect,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52401,6 +53371,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                random error,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52436,6 +53409,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                random variable,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52481,12 +53457,23 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                random variations
                <ul>
-                  <li>correlated, see correlated random variations</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     correlated, see correlated random variations
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Recommendation 1 (CI-1981), CIPM,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52525,6 +53512,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Recommendation 1 (CI-1986), CIPM,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52546,6 +53536,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Recommendation INC-1 (1980,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52600,6 +53593,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                repeatability conditions,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52613,25 +53609,57 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                repeated observations
                <ul>
-                  <li>observations, see repeated</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     observations, see repeated
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                repetitions
                <ul>
-                  <li>independent, see independent repetitions</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     independent, see independent repetitions
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                result
                <ul>
-                  <li>corrected, see corrected result</li>
-                  <li>uncorrected, see uncorrected result</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     corrected, see corrected result
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncorrected, see uncorrected result
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                result of a measurement,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52654,18 +53682,37 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                sample
                <ul>
-                  <li>uncertainty of the, see uncertainty of the sample</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty of the, see uncertainty of the sample
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                sampling
                <ul>
-                  <li>uncertainty due to limited, see uncertainty due to limited sampling</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty due to limited, see uncertainty due to limited sampling
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                standard deviation,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52679,6 +53726,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      experimental,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -52691,13 +53741,24 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>pooled experimental, see variance, pooled estimate of</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     pooled experimental, see variance, pooled estimate of
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                standard deviation of the mean
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      experimental,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -52710,16 +53771,32 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>uncertainty of the experimental, see uncertainty of the experimental standard deviation of the mean</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty of the experimental, see uncertainty of the experimental standard deviation of the mean
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                standard deviations as measures of uncertainty
                <ul>
-                  <li>uncertainty, see standard deviations as measures of</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     uncertainty, see standard deviations as measures of
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                standard uncertainty,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52799,6 +53876,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      graphical illustration of evaluating,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -52809,11 +53889,24 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>Type A evaluation of, see Type A evaluation of uncertainty</li>
-                  <li>Type B evaluation of, see Type B evaluation of uncertainty</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     Type A evaluation of, see Type A evaluation of uncertainty
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     Type B evaluation of, see Type B evaluation of uncertainty
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                statistic,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52827,6 +53920,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                statistical control,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52851,6 +53947,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                systematic,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52864,6 +53963,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                systematic effect,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52921,6 +54023,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                systematic error,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52945,6 +54050,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                true value of a quantity,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -52972,10 +54080,18 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref>
                </semx>
                <ul>
-                  <li>conventional, see conventional true value of a quantity</li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     conventional, see conventional true value of a quantity
+                  </li>
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Type A evaluation of uncertainty,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53174,6 +54290,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Type A standard uncertainty,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53198,6 +54317,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Type A variance,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53211,6 +54333,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Type B evaluation of uncertainty,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53431,6 +54556,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Type B standard uncertainty,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53455,6 +54583,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Type B variance,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53468,9 +54599,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                uncertainty
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      categorizing or classifying components of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53494,8 +54631,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>definition of the term, see uncertainty of measurement</li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     definition of the term, see uncertainty of measurement
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      double-counting components of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53509,6 +54654,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      grouping components of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53537,6 +54685,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      ideal method for evaluating and expressing,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53548,6 +54699,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      internally consistent quantity for expressing,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53559,6 +54713,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      law of propagation of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53583,6 +54740,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      overall,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53601,6 +54761,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      quality and utility of the quoted,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53614,6 +54777,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      sources of,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53627,9 +54793,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      statistical evaluation of
                      <ul>
                         <li>
+                           <fmt-name>
+                              <semx element="autonum" source="">—</semx>
+                           </fmt-name>
                            by varying input quantities,
                            <xref name="_" pagenumber="true" id="_"/>
                            <semx element="xref" source="_">
@@ -53667,6 +54839,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </ul>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      transferable quantity for expressing,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53678,6 +54853,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      universal method for evaluating and expressing,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53691,6 +54869,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                uncertainty due to incomplete definition of the measurand,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53708,6 +54889,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                uncertainty due to limited sampling,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53725,6 +54909,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                uncertainty ignoring a component of,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53738,6 +54925,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                uncertainty of a correction,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53777,6 +54967,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                uncertainty of measurement,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53901,6 +55094,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                uncertainty of the experimental standard deviation of the mean,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53918,6 +55114,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                uncertainty when a correction is not applied,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53931,9 +55130,15 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                unit
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      use of an adopted value of a measurement standard as a,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -53964,6 +55169,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                value of a quantity,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -53981,6 +55189,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                variance,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -54027,6 +55238,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      Allan,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -54043,8 +55257,16 @@ measurement result, it is prudent to obtain additional data for its further eval
                         </fmt-xref>
                      </semx>
                   </li>
-                  <li>analysis of, see ANOVA</li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
+                     analysis of, see ANOVA
+                  </li>
+                  <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      combined,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -54058,6 +55280,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      experimental (or estimate of),
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -54071,6 +55296,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                      </semx>
                   </li>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      pooled estimate of (or pooled experimental standard deviation),
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -54101,6 +55329,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                variance of the mean,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -54114,6 +55345,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
                <ul>
                   <li>
+                     <fmt-name>
+                        <semx element="autonum" source="">—</semx>
+                     </fmt-name>
                      experimental,
                      <xref name="_" pagenumber="true" id="_"/>
                      <semx element="xref" source="_">
@@ -54129,6 +55363,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </ul>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                VIM,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -54162,6 +55399,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Working Group 3 (ISO/TAG 4/WG 3,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
@@ -54171,6 +55411,9 @@ measurement result, it is prudent to obtain additional data for its further eval
                </semx>
             </li>
             <li>
+               <fmt-name>
+                  <semx element="autonum" source="">—</semx>
+               </fmt-name>
                Working Group on the Statement of Uncertainties,
                <xref name="_" pagenumber="true" id="_"/>
                <semx element="xref" source="_">
