@@ -187,9 +187,9 @@ module Metanorma
       case options[:supplied_type]
       when :icc
         f = File.join(File.dirname(__FILE__), "assets", "icc-boilerplate.adoc")
-        attrs += [":boilerplate-authority: #{f}",
-                  ":publisher: International Color Consortium",
-                  ":publisher_abbr: ICC"]
+        [":boilerplate-authority: #{f}",
+         ":publisher: International Color Consortium",
+         ":publisher_abbr: ICC"].each { |a| attrs << a }
         options[":boilerplate-authority:"] = f
       end
       attrs
