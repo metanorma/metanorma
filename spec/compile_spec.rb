@@ -79,6 +79,17 @@ RSpec.describe Metanorma::Compile do
     )
   end
 
+  it "overrides asciidoc options in icc" do
+    expect do
+      Metanorma::Compile.new.compile("spec/assets/test.adoc",
+                                     type: :icc,
+                                     extension_keys: %i[xml presentation],
+                                     agree_to_terms: true)
+    end.not_to raise_error
+    xml = File.read("spec/assets/test.xml", encoding: "utf-8")
+    expect(xml).to include "International Color Consortium"
+  end
+
   it "fontist_install called" do
     mock_pdf
     mock_sts
@@ -687,13 +698,18 @@ RSpec.describe Metanorma::Compile do
     let(:relaton_drop) { instance_double(Metanorma::Compile::RelatonDrop) }
 
     before(:each) do
-      allow(Metanorma::Registry.instance).to receive(:find_processor).and_return(processor)
+      allow(Metanorma::Registry.instance).to receive(:find_processor)
+        .and_return(processor)
       FileUtils.mkdir_p(output_dir)
       File.write(source_file, "= Test Document\n\nContent")
-      allow_any_instance_of(Metanorma::Compile).to receive(:validate_options!).and_return(true)
-      allow_any_instance_of(Metanorma::Compile).to receive(:require_libraries).and_return(true)
-      allow_any_instance_of(Metanorma::Compile).to receive(:extract_relaton_metadata).and_return(bibdata)
-      allow(Metanorma::Compile::RelatonDrop).to receive(:new).with(bibdata).and_return(relaton_drop)
+      allow_any_instance_of(Metanorma::Compile)
+        .to receive(:validate_options!).and_return(true)
+      allow_any_instance_of(Metanorma::Compile)
+        .to receive(:require_libraries).and_return(true)
+      allow_any_instance_of(Metanorma::Compile)
+        .to receive(:extract_relaton_metadata).and_return(bibdata)
+      allow(Metanorma::Compile::RelatonDrop)
+        .to receive(:new).with(bibdata).and_return(relaton_drop)
       allow(relaton_drop).to receive(:to_liquid).and_return(
         {
           "docidentifier" => "ISO/IEC FDIS 10118-3",
@@ -742,7 +758,8 @@ RSpec.describe Metanorma::Compile do
         action.call
 
         expect(File.exist?("output/iso-iec-fdis-10118-3_en_2.xml")).to be true
-        expect(File.exist?("output/iso-iec-fdis-10118-3_en_2.presentation.xml")).to be true
+        expect(File.exist?("output/iso-iec-fdis-10118-3_en_2.presentation.xml"))
+          .to be true
       end
 
       it "does not generate files that are not specified in the output_formats" do

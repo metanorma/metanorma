@@ -178,7 +178,19 @@ module Metanorma
       hdr, rest = Metanorma::Input::Asciidoc.new.header(file)
       attrs = hdr.split("\n")
       options[:asciimath] and attrs << ":mn-keep-asciimath:"
+      process_input_adoc_overrides(attrs, options)
       "#{attrs.join("\n")}\n\n#{rest}"
+    end
+
+    # TODO: to config
+    def process_input_adoc_overrides(attrs, options)
+      case options[:supplied_type]
+      when :icc
+        f = File.join(File.dirname(__FILE__), "assets", "icc-boilerplate.adoc")
+        attrs << ":boilerplate-authority: #{f}"
+        options[":boilerplate-authority:"] = f
+      end
+      attrs
     end
 
     def process_input_adoc_includes(file, filename)
