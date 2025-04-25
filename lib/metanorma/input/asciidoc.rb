@@ -13,8 +13,15 @@ module Metanorma
         ::Asciidoctor.convert(file, out_opts)
       end
 
+      def header(file)
+        ret = file.split("\n\n", 2) or return [nil, nil]
+        ret[0] and ret[0] += "\n"
+       [ret[0], ret[1]]
+     end
+
       def extract_metanorma_options(file)
-        hdr = file.sub(/\n\n.*$/m, "\n")
+        #hdr = file.sub(/\n\n.*$/m, "\n")
+        hdr, = header(file)
         /\n:(?:mn-)?(?:document-class|flavor):\s+(?<type>\S[^\n]*)\n/ =~ hdr
         /\n:(?:mn-)?output-extensions:\s+(?<extensions>\S[^\n]*)\n/ =~ hdr
         /\n:(?:mn-)?relaton-output-file:\s+(?<relaton>\S[^\n]*)\n/ =~ hdr
@@ -68,7 +75,8 @@ module Metanorma
       end
 
       def extract_options(file)
-        header = file.sub(/\n\n.*$/m, "\n")
+        #header = file.sub(/\n\n.*$/m, "\n")
+        header, = header(file)
         ret = ADOC_OPTIONS.each_with_object({}) do |w, acc|
           m = /\n:#{w}:\s+([^\n]+)\n/.match(header) or next
           acc[attr_name_normalise(w)] = m[1]&.strip

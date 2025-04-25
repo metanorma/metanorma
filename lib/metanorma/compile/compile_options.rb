@@ -70,7 +70,7 @@ module Metanorma
 
       def unsupported_format_error(ext)
         message = "[metanorma] Error: #{ext} format is not supported " \
-                  "for this standard."
+          "for this standard."
         @errors << message
         Util.log(message, :error)
       end
@@ -92,7 +92,7 @@ module Metanorma
         ret[:datauriimage] = true if options[:datauriimage]
         ret[:sourcefilename] = options[:filename]
         %i(bare sectionsplit install_fonts baseassetpath aligncrosselements
-           tocfigures toctables tocrecommendations strict)
+        tocfigures toctables tocrecommendations strict)
           .each { |x| ret[x] ||= options[x] }
       end
 
