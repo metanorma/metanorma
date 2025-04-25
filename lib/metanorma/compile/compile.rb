@@ -115,20 +115,18 @@ module Metanorma
     # @param options [Hash] compilation options
     # @return [Hash] paths for different output formats
     def prepare_output_paths(filename, bibdata, options)
-      basename = if !options[:filename_template].nil?
+      basename = if options[:filename_template].nil?
+                   filename.sub(/\.[^.]+$/, "")
+                 else
                    drop = RelatonDrop.new(bibdata)
                    config = OutputFilenameConfig.new(options[:filename_template])
                    config.generate_filename(drop)
-                 else
-                   filename.sub(/\.[^.]+$/, "")
                  end
-
       @output_filename = OutputFilename.new(
         basename,
         options[:output_dir],
         @processor,
       )
-
       {
         xml: @output_filename.semantic_xml,
         orig_filename: filename,
@@ -176,15 +174,21 @@ module Metanorma
       end
     end
 
+    def process_input_adoc_hdr(file, options)
+      hdr, rest = Metanorma::Input::Asciidoc.new.header(file)
+      attrs = hdr.split("\n")
+      options[:asciimath] and attrs << ":mn-keep-asciimath:"
+      "#{attrs.join("\n")}\n\n#{rest}"
+    end
+
     def process_input_adoc(filename, options)
       Util.log("[metanorma] Processing: AsciiDoc input.", :info)
       file = read_file(filename)
-      options[:asciimath] and
-        file.sub!(/^(=[^\n]+\n)/, "\\1:mn-keep-asciimath:\n")
+      file = process_input_adoc_hdr(file, options)
       dir = File.dirname(filename)
       dir != "." and
         file = file.gsub(/^include::/, "include::#{dir}/")
-        .gsub(/^embed::/, "embed::#{dir}/")
+          .gsub(/^embed::/, "embed::#{dir}/")
       [file, @processor.input_to_isodoc(file, filename, options)]
     end
 

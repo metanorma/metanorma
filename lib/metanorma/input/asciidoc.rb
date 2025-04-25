@@ -16,11 +16,10 @@ module Metanorma
       def header(file)
         ret = file.split("\n\n", 2) or return [nil, nil]
         ret[0] and ret[0] += "\n"
-       [ret[0], ret[1]]
-     end
+        [ret[0], ret[1]]
+      end
 
       def extract_metanorma_options(file)
-        #hdr = file.sub(/\n\n.*$/m, "\n")
         hdr, = header(file)
         /\n:(?:mn-)?(?:document-class|flavor):\s+(?<type>\S[^\n]*)\n/ =~ hdr
         /\n:(?:mn-)?output-extensions:\s+(?<extensions>\S[^\n]*)\n/ =~ hdr
@@ -29,7 +28,7 @@ module Metanorma
         /\n(?<novalid>:novalid:[^\n]*)\n/ =~ hdr
         if defined?(asciimath)
           asciimath =
-            !asciimath.nil? && !/keep-asciimath: false/.match?(asciimath)
+            !asciimath.nil? && !/keep-asciimath:\s*false/.match?(asciimath)
         end
         asciimath = nil if asciimath == false
         {
@@ -75,18 +74,17 @@ module Metanorma
       end
 
       def extract_options(file)
-        #header = file.sub(/\n\n.*$/m, "\n")
-        header, = header(file)
+        hdr, = header(file)
         ret = ADOC_OPTIONS.each_with_object({}) do |w, acc|
-          m = /\n:#{w}:\s+([^\n]+)\n/.match(header) or next
+          m = /\n:#{w}:\s+([^\n]+)\n/.match(hdr) or next
           acc[attr_name_normalise(w)] = m[1]&.strip
         end
         ret2 = EMPTY_ADOC_OPTIONS_DEFAULT_TRUE.each_with_object({}) do |w, acc|
-          m = /\n:#{w}:([^\n]*)\n/.match(header) || [nil, "true"]
+          m = /\n:#{w}:([^\n]*)\n/.match(hdr) || [nil, "true"]
           acc[attr_name_normalise(w)] = (m[1].strip != "false")
         end
         ret3 = EMPTY_ADOC_OPTIONS_DEFAULT_FALSE.each_with_object({}) do |w, acc|
-          m = /\n:#{w}:([^\n]*)\n/.match(header) || [nil, "false"]
+          m = /\n:#{w}:([^\n]*)\n/.match(hdr) || [nil, "false"]
           acc[attr_name_normalise(w)] = !["false"].include?(m[1].strip)
         end
         ret.merge(ret2).merge(ret3).compact
