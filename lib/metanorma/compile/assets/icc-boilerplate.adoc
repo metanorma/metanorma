@@ -1,4 +1,4 @@
-== copyrigt-statment
+== copyright-statment
 === Copyright notice
 
 Copyright © 1994-{{docyear}} International Color Consortium®
