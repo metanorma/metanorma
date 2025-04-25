@@ -181,14 +181,19 @@ module Metanorma
       "#{attrs.join("\n")}\n\n#{rest}"
     end
 
-    def process_input_adoc(filename, options)
-      Util.log("[metanorma] Processing: AsciiDoc input.", :info)
-      file = read_file(filename)
-      file = process_input_adoc_hdr(file, options)
+    def process_input_adoc_includes(file, filename)
       dir = File.dirname(filename)
       dir != "." and
         file = file.gsub(/^include::/, "include::#{dir}/")
           .gsub(/^embed::/, "embed::#{dir}/")
+      file
+    end
+
+    def process_input_adoc(filename, options)
+      Util.log("[metanorma] Processing: AsciiDoc input.", :info)
+      file = read_file(filename)
+      file = process_input_adoc_hdr(file, options)
+      file = process_input_adoc_includes(file, filename)
       [file, @processor.input_to_isodoc(file, filename, options)]
     end
 
