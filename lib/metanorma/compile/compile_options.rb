@@ -18,17 +18,9 @@ module Metanorma
       end
 
       def extract_options(filename, options)
-        content = read_file(filename)
-        o = Metanorma::Input::Asciidoc.new.extract_metanorma_options(content)
-          .merge(extract_xml_options(content))
-        options[:type] ||= o[:type]&.to_sym
-        t = @registry.alias(options[:type]) and options[:type] = t
-        dir = filename.sub(%r(/[^/]+$), "/")
-        options[:relaton] ||= File.join(dir, o[:relaton]) if o[:relaton]
-        if o[:sourcecode]
-          options[:sourcecode] ||= File.join(dir,
-                                             o[:sourcecode])
-        end
+        o = options_in_file(filename)
+        extract_flavor_options(options, o)
+        extract_dir_options(options, o, filename)
         options[:extension_keys] ||= o[:extensions]&.split(/, */)&.map(&:to_sym)
         options[:extension_keys] = nil if options[:extension_keys] == [:all]
         options[:format] ||= :asciidoc
@@ -36,6 +28,29 @@ module Metanorma
         options[:fontlicenseagreement] ||= "no-install-fonts"
         options[:novalid] = o[:novalid] if o[:novalid]
         options
+      end
+
+      def options_in_file(filename)
+        content = read_file(filename)
+        Metanorma::Input::Asciidoc.new.extract_metanorma_options(content)
+          .merge(extract_xml_options(content))
+      end
+
+      def extract_flavor_options(options, options_in_file)
+        options[:type] ||= options_in_file[:type]
+        options[:type] = options[:type]&.to_sym
+        options[:supplied_type] = options[:type]
+        t = @registry.alias(options[:type]) and options[:type] = t
+      end
+
+      def extract_dir_options(options, options_in_file, filename)
+        dir = filename.sub(%r(/[^/]+$), "/")
+        options_in_file[:relaton] and
+          options[:relaton] ||= File.join(dir,
+                                          options_in_file[:relaton])
+        options_in_file[:sourcecode] and
+          options[:sourcecode] ||= File.join(dir,
+                                             options_in_file[:sourcecode])
       end
 
       def get_extensions(options)
@@ -92,7 +107,7 @@ module Metanorma
         ret[:datauriimage] = true if options[:datauriimage]
         ret[:sourcefilename] = options[:filename]
         %i(bare sectionsplit install_fonts baseassetpath aligncrosselements
-        tocfigures toctables tocrecommendations strict)
+           tocfigures toctables tocrecommendations strict)
           .each { |x| ret[x] ||= options[x] }
       end
 

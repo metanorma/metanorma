@@ -623,6 +623,20 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?(error_log_file)).to be true
   end
 
+  it "allow mapping of virtual flavors to implemented flavors" do
+    registry_instance = Metanorma::Registry.instance
+    allow(registry_instance).to receive(:alias)
+      .with(:"missing-flavor").and_return(:iso)
+    expect do
+      Metanorma::Compile.new.compile("spec/assets/test.adoc",
+                                     type: "missing-flavor",
+                                     extension_keys: %i[xml presentation],
+                                     agree_to_terms: true)
+    end.not_to raise_error
+    xml = File.read("spec/assets/test.xml", encoding: "utf-8")
+    expect(xml).to include ' flavor="iso"'
+  end
+
   describe "Output filename templating" do
     let(:processor) do
       double("processor").tap do |p|

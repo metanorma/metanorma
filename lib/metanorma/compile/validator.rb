@@ -9,19 +9,17 @@ module Metanorma
       end
 
       def validate_type!(options)
-        unless options[:type]
+        options[:type] or
           Util.log("[metanorma] Error: Please specify a standard type: "\
                    "#{@registry.supported_backends}.", :fatal)
-        end
         stdtype = options[:type].to_sym
         load_flavor(stdtype)
       end
 
       def validate_format!(options)
-        unless options[:format] == :asciidoc
+        options[:format] == :asciidoc or
           Util.log("[metanorma] Error: Only source file format currently "\
                    "supported is 'asciidoc'.", :fatal)
-        end
       end
     end
   end

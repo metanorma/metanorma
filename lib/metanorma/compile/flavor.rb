@@ -8,7 +8,7 @@ module Metanorma
       # @return [void]
       def load_flavor(stdtype)
         stdtype = stdtype.to_sym
-        flavor = stdtype2flavor(stdtype)
+        flavor = stdtype2flavor_gem(stdtype)
         @registry.supported_backends.include? stdtype or
           Util.log("[metanorma] Info: Loading `#{flavor}` gem "\
                    "for standard type `#{stdtype}`.", :info)
@@ -21,14 +21,11 @@ module Metanorma
       # Convert the standard type to the flavor gem name
       # @param stdtype [Symbol] the standard type
       # @return [String] the flavor gem name
-      def stdtype2flavor(stdtype)
-        flavor = STDTYPE2FLAVOR[stdtype] || stdtype
-        "metanorma-#{flavor}"
+      def stdtype2flavor_gem(stdtype)
+        "metanorma-#{stdtype}"
       end
 
       private
-
-      STDTYPE2FLAVOR = {}.freeze
 
       def require_flavor(flavor)
         require flavor
