@@ -1,0 +1,41 @@
+== copyright-statement
+=== Copyright notice
+
+Copyright © 1994-{{docyear}} International Color Consortium®
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+the Specification and associated documentation files (the “Specification”) to
+deal in the Specification without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, and/or sublicense
+copies of the Specification, and to permit persons to whom the Specification is
+furnished to do so, subject to the following conditions.
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Specification.
+
+The Specification is provided "as is", without warranty of any kind, express,
+implied, or otherwise, including but not limited to the warranties of
+merchantability, fitness for a particular purpose and noninfringement. In no
+event shall the International Color Consortium be liable for any claim, damages
+or other liability, whether in an action of contract, tort or otherwise, arising
+from, out of, or in connection with the Specification or the use or other
+dealings in the Specification.
+
+Except as contained in this notice, the name of the International Color
+Consortium shall not be used in advertising or otherwise to promote the use or
+other dealings in this Specification without prior written authorization from
+the International Color Consortium.
+
+== license-statement
+=== Licenses and trademarks
+
+International Color Consortium and the ICC logo are registered trademarks of the
+International Color Consortium. Rather than put a trademark symbol in every
+occurrence of other trademarked names, we state that we are using the names only
+in an editorial fashion, and to the benefit of the trademark owner, with no
+intention of infringement of the trademark.
+
+== feedback-statement
+=== For additional information on the ICC
+
+Visit the ICC Web site: http://www.color.org

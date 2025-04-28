@@ -11,9 +11,11 @@ module Metanorma
 
     attr_reader :processors
 
+    # TODO: make aliases configurable
     def initialize
       @processors = {}
-      @aliases = { csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa }
+      @aliases = { csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa,
+                   icc: :iso }
     end
 
     def alias(flavour)
@@ -21,18 +23,14 @@ module Metanorma
     end
 
     def register(processor)
-      raise Error unless processor < ::Metanorma::Processor
-
+      processor < ::Metanorma::Processor or raise Error
       p = processor.new
       # p.short[-1] is the canonical name
       short = Array(p.short)
       @processors[short[-1]] = p
-      short.each do |s|
-        @aliases[s] = short[-1]
-      end
+      short.each { |s| @aliases[s] = short[-1] }
       Array(p.short)
-      Util.log("[metanorma] processor \"#{Array(p.short)[0]}\" registered",
-               :info)
+      Util.log("[metanorma] processor \"#{Array(p.short)[0]}\" registered", :info)
     end
 
     def find_processor(short)

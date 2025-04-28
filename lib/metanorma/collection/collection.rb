@@ -172,7 +172,7 @@ module Metanorma
     def fetch_flavor
       docid = @bibdata.docidentifier.first or return
       f = docid.type.downcase || docid.id.sub(/\s.*$/, "").downcase or return
-      require ::Metanorma::Compile.new.stdtype2flavor(f)
+      require ::Metanorma::Compile.new.stdtype2flavor_gem(f)
       f
     rescue LoadError
       nil
