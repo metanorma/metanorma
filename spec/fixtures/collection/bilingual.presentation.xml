@@ -3300,7 +3300,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>25.00</mn>
+                                 <mn>25,00</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -22404,7 +22404,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>1 000.000 325</mn>
+                                 <mn>1 000,000 325</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -22697,7 +22697,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                     <mn>2</mn>
                                  </msup>
                                  <mo>=</mo>
-                                 <mn>6.4</mn>
+                                 <mn>6,4</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -23417,7 +23417,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </stem>
                   <fmt-stem type="MathML">
                      <semx element="stem" source="_">
-                        1.64
+                        1,64
                         <asciimath>1.64</asciimath>
                      </semx>
                   </fmt-stem>
@@ -23432,7 +23432,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </stem>
                   <fmt-stem type="MathML">
                      <semx element="stem" source="_">
-                        1.96
+                        1,96
                         <asciimath>1.96</asciimath>
                      </semx>
                   </fmt-stem>
@@ -23447,7 +23447,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </stem>
                   <fmt-stem type="MathML">
                      <semx element="stem" source="_">
-                        2.58
+                        2,58
                         <asciimath>2.58</asciimath>
                      </semx>
                   </fmt-stem>
@@ -23577,7 +23577,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>10.000 742</mn>
+                                 <mn>10,000 742</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -23728,7 +23728,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                     <mo>)</mo>
                                  </mrow>
                                  <mo>/</mo>
-                                 <mn>2.58</mn>
+                                 <mn>2,58</mn>
                                  <mo>=</mo>
                                  <mn>50</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
@@ -23816,7 +23816,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>5.0</mn>
+                                 <mn>5,0</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -23925,7 +23925,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                     <mn>2</mn>
                                  </msup>
                                  <mo>=</mo>
-                                 <mn>2.5</mn>
+                                 <mn>2,5</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -24695,7 +24695,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </stem>
                   <fmt-stem type="MathML">
                      <semx element="stem" source="_">
-                        0.5
+                        0,5
                         <asciimath>0.5</asciimath>
                      </semx>
                   </fmt-stem>
@@ -24867,7 +24867,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                  <mo>)</mo>
                               </mrow>
                               <mo>=</mo>
-                              <mn>1.48</mn>
+                              <mn>1,48</mn>
                               <mi>a</mi>
                            </mstyle>
                         </math>
@@ -24951,7 +24951,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                  <mi>σ</mi>
                               </mstyle>
                               <mo>/</mo>
-                              <mn>1.48</mn>
+                              <mn>1,48</mn>
                            </mstyle>
                         </math>
                         <asciimath>ii(mu) pm ii(sigma)//1.48</asciimath>
@@ -24992,7 +24992,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      </stem>
                      <fmt-stem type="MathML">
                         <semx element="stem" source="_">
-                           0.5
+                           0,5
                            <asciimath>0.5</asciimath>
                         </semx>
                      </fmt-stem>
@@ -25015,7 +25015,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>10.07</mn>
+                                 <mn>10,07</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -25046,7 +25046,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>10.15</mn>
+                                 <mn>10,15</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -25089,9 +25089,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                  <mo>=</mo>
                                  <mrow>
                                     <mo>(</mo>
-                                    <mn>10.11</mn>
+                                    <mn>10,11</mn>
                                     <mo>±</mo>
-                                    <mn>0.04</mn>
+                                    <mn>0,04</mn>
                                     <mo>)</mo>
                                  </mrow>
                                  <mo rspace="thickmathspace">⁢</mo>
@@ -25126,7 +25126,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
                                  <mo>±</mo>
-                                 <mn>0.04</mn>
+                                 <mn>0,04</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -25161,7 +25161,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                               <mstyle displaystyle="false">
                                  <mi>a</mi>
                                  <mo>=</mo>
-                                 <mn>0.04</mn>
+                                 <mn>0,04</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -25235,9 +25235,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                     <mo>)</mo>
                                  </mrow>
                                  <mo>=</mo>
-                                 <mn>1.48</mn>
+                                 <mn>1,48</mn>
                                  <mo>×</mo>
-                                 <mn>0.04</mn>
+                                 <mn>0,04</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -25246,7 +25246,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                  </mrow>
                                  <mi>≈</mi>
                                  <mo rspace="thickmathspace">⁢</mo>
-                                 <mn>0.06</mn>
+                                 <mn>0,06</mn>
                                  <mrow>
                                     <mstyle mathvariant="normal">
                                        <mi>mm</mi>
@@ -25327,9 +25327,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                  <msup>
                                     <mrow>
                                        <mo>(</mo>
-                                       <mn>1.48</mn>
+                                       <mn>1,48</mn>
                                        <mo>×</mo>
-                                       <mn>0.04</mn>
+                                       <mn>0,04</mn>
                                        <mo rspace="thickmathspace">⁢</mo>
                                        <mrow>
                                           <mstyle mathvariant="normal">
@@ -25341,7 +25341,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                     <mn>2</mn>
                                  </msup>
                                  <mo>=</mo>
-                                 <mn>3.5</mn>
+                                 <mn>3,5</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -26437,7 +26437,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </stem>
                   <fmt-stem type="MathML">
                      <semx element="stem" source="_">
-                        68.3
+                        68,3
                         <asciimath>68.3</asciimath>
                      </semx>
                   </fmt-stem>
@@ -26513,7 +26513,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         </stem>
                         <fmt-stem type="MathML">
                            <semx element="stem" source="_">
-                              0.967 42
+                              0,967 42
                               <asciimath>0.96742</asciimath>
                            </semx>
                         </fmt-stem>
@@ -26584,9 +26584,9 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                                     <mo>=</mo>
                                     <mi>a</mi>
                                     <mo>/</mo>
-                                    <mn>0.967 42</mn>
+                                    <mn>0,967 42</mn>
                                     <mo>=</mo>
-                                    <mn>1.033</mn>
+                                    <mn>1,033</mn>
                                     <mi>a</mi>
                                  </mstyle>
                               </math>
@@ -28207,7 +28207,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>16.52</mn>
+                                 <mn>16,52</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -28266,7 +28266,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>0.40</mn>
+                                 <mn>0,40</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -28364,7 +28364,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>16.12</mn>
+                                 <mn>16,12</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -28423,7 +28423,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>16.92</mn>
+                                 <mn>16,92</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -28566,7 +28566,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                               <mstyle displaystyle="false">
                                  <mi>a</mi>
                                  <mo>=</mo>
-                                 <mn>0.40</mn>
+                                 <mn>0,40</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -28707,7 +28707,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <msup>
                                     <mrow>
                                        <mo>(</mo>
-                                       <mn>0.40</mn>
+                                       <mn>0,40</mn>
                                        <mo>×</mo>
                                        <msup>
                                           <mn>10</mn>
@@ -28735,7 +28735,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mo>/</mo>
                                  <mn>3</mn>
                                  <mo>=</mo>
-                                 <mn>53.3</mn>
+                                 <mn>53,3</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -28850,7 +28850,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mo>=</mo>
                                  <mrow>
                                     <mo>(</mo>
-                                    <mn>0.40</mn>
+                                    <mn>0,40</mn>
                                     <mo>×</mo>
                                     <msup>
                                        <mn>10</mn>
@@ -28878,7 +28878,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                     <mn>3</mn>
                                  </msqrt>
                                  <mo>=</mo>
-                                 <mn>0.23</mn>
+                                 <mn>0,23</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -29142,7 +29142,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                     <mo>¯</mo>
                                  </mover>
                                  <mo>=</mo>
-                                 <mn>0.928 571</mn>
+                                 <mn>0,928 571</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -29410,7 +29410,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mo>×</mo>
                                  <mrow>
                                     <mo>(</mo>
-                                    <mn>0.928 571</mn>
+                                    <mn>0,928 571</mn>
                                     <mo rspace="thickmathspace">⁢</mo>
                                     <mrow>
                                        <mstyle mathvariant="normal">
@@ -29590,7 +29590,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                     <mo>)</mo>
                                  </mrow>
                                  <mo>=</mo>
-                                 <mn>8.7</mn>
+                                 <mn>8,7</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -29705,7 +29705,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                     <mo>¯</mo>
                                  </mover>
                                  <mo>=</mo>
-                                 <mn>0.928 571</mn>
+                                 <mn>0,928 571</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -29796,7 +29796,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>8.7</mn>
+                                 <mn>8,7</mn>
                                  <mo rspace="thickmathspace">⁢</mo>
                                  <mrow>
                                     <mstyle mathvariant="normal">
@@ -32978,7 +32978,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                     <mo>)</mo>
                                  </mrow>
                                  <mo>=</mo>
-                                 <mn>16.52</mn>
+                                 <mn>16,52</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -33037,7 +33037,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <semx element="stem" source="_">
                            <math xmlns="http://www.w3.org/1998/Math/MathML">
                               <mstyle displaystyle="false">
-                                 <mn>16.40</mn>
+                                 <mn>16,40</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -33106,7 +33106,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                     <mtext>−</mtext>
                                  </msub>
                                  <mo>=</mo>
-                                 <mn>0.12</mn>
+                                 <mn>0,12</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -33175,7 +33175,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                     <mo>+</mo>
                                  </msub>
                                  <mo>=</mo>
-                                 <mn>0.40</mn>
+                                 <mn>0,40</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -33276,7 +33276,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                     <mo>)</mo>
                                  </mrow>
                                  <mo>=</mo>
-                                 <mn>0.15</mn>
+                                 <mn>0,15</mn>
                                  <mo>×</mo>
                                  <msup>
                                     <mn>10</mn>
@@ -39390,7 +39390,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mi>σ</mi>
                               </mstyle>
                               <mo>=</mo>
-                              <mn>1.5</mn>
+                              <mn>1,5</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -40456,7 +40456,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 94.5
+                                 94,5
                                  <asciimath>94.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40472,7 +40472,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 95.5
+                                 95,5
                                  <asciimath>95.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40491,7 +40491,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 95.5
+                                 95,5
                                  <asciimath>95.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40507,7 +40507,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 96.5
+                                 96,5
                                  <asciimath>96.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40526,7 +40526,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 96.5
+                                 96,5
                                  <asciimath>96.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40542,7 +40542,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 97.5
+                                 97,5
                                  <asciimath>97.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40558,7 +40558,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 96.90
+                                 96,90
                                  <asciimath>96.90</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40576,7 +40576,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 97.5
+                                 97,5
                                  <asciimath>97.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40592,7 +40592,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 98.5
+                                 98,5
                                  <asciimath>98.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40608,7 +40608,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 98.18
+                                 98,18
                                  <asciimath>98.18</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40623,7 +40623,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 98.25
+                                 98,25
                                  <asciimath>98.25</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40641,7 +40641,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 98.5
+                                 98,5
                                  <asciimath>98.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40657,7 +40657,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 99.5
+                                 99,5
                                  <asciimath>99.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40673,7 +40673,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 98.61
+                                 98,61
                                  <asciimath>98.61</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40688,7 +40688,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 99.03
+                                 99,03
                                  <asciimath>99.03</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40703,7 +40703,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 99.49
+                                 99,49
                                  <asciimath>99.49</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40721,7 +40721,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 99.5
+                                 99,5
                                  <asciimath>99.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40737,7 +40737,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 100.5
+                                 100,5
                                  <asciimath>100.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40753,7 +40753,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 99.56
+                                 99,56
                                  <asciimath>99.56</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40768,7 +40768,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 99.74
+                                 99,74
                                  <asciimath>99.74</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40783,7 +40783,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 99.89
+                                 99,89
                                  <asciimath>99.89</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40798,7 +40798,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 100.07
+                                 100,07
                                  <asciimath>100.07</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40813,7 +40813,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 100.33
+                                 100,33
                                  <asciimath>100.33</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40828,7 +40828,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 100.42
+                                 100,42
                                  <asciimath>100.42</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40846,7 +40846,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 100.5
+                                 100,5
                                  <asciimath>100.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40862,7 +40862,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 101.5
+                                 101,5
                                  <asciimath>101.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40878,7 +40878,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 100.68
+                                 100,68
                                  <asciimath>100.68</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40893,7 +40893,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 100.95
+                                 100,95
                                  <asciimath>100.95</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40908,7 +40908,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 101.11
+                                 101,11
                                  <asciimath>101.11</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40923,7 +40923,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 101.20
+                                 101,20
                                  <asciimath>101.20</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40941,7 +40941,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 101.5
+                                 101,5
                                  <asciimath>101.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40957,7 +40957,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 102.5
+                                 102,5
                                  <asciimath>102.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40973,7 +40973,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 101.57
+                                 101,57
                                  <asciimath>101.57</asciimath>
                               </semx>
                            </fmt-stem>
@@ -40988,7 +40988,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 101.84
+                                 101,84
                                  <asciimath>101.84</asciimath>
                               </semx>
                            </fmt-stem>
@@ -41003,7 +41003,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 102.36
+                                 102,36
                                  <asciimath>102.36</asciimath>
                               </semx>
                            </fmt-stem>
@@ -41021,7 +41021,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 102.5
+                                 102,5
                                  <asciimath>102.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -41037,7 +41037,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 103.5
+                                 103,5
                                  <asciimath>103.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -41053,7 +41053,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 102.72
+                                 102,72
                                  <asciimath>102.72</asciimath>
                               </semx>
                            </fmt-stem>
@@ -41071,7 +41071,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 103.5
+                                 103,5
                                  <asciimath>103.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -41087,7 +41087,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 104.5
+                                 104,5
                                  <asciimath>104.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -41106,7 +41106,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 104.5
+                                 104,5
                                  <asciimath>104.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -41122,7 +41122,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                            </stem>
                            <fmt-stem type="MathML">
                               <semx element="stem" source="_">
-                                 105.5
+                                 105,5
                                  <asciimath>105.5</asciimath>
                               </semx>
                            </fmt-stem>
@@ -42345,7 +42345,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mo>¯</mo>
                               </mover>
                               <mo>=</mo>
-                              <mn>100.145</mn>
+                              <mn>100,145</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -42354,7 +42354,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                               </mrow>
                               <mi>≈</mi>
                               <mo rspace="thickmathspace">⁢</mo>
-                              <mn>100.14</mn>
+                              <mn>100,14</mn>
                               <mrow>
                                  <mstyle mathvariant="normal">
                                     <mi>°C</mi>
@@ -42513,7 +42513,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mo>)</mo>
                               </mrow>
                               <mo>=</mo>
-                              <mn>1.489</mn>
+                              <mn>1,489</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -42522,7 +42522,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                               </mrow>
                               <mi>≈</mi>
                               <mo rspace="thickmathspace">⁢</mo>
-                              <mn>1.49</mn>
+                              <mn>1,49</mn>
                               <mrow>
                                  <mstyle mathvariant="normal">
                                     <mi>°C</mi>
@@ -42741,7 +42741,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mn>20</mn>
                               </msqrt>
                               <mo>=</mo>
-                              <mn>0.333</mn>
+                              <mn>0,333</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -42750,7 +42750,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                               </mrow>
                               <mi>≈</mi>
                               <mo rspace="thickmathspace">⁢</mo>
-                              <mn>0.33</mn>
+                              <mn>0,33</mn>
                               <mrow>
                                  <mstyle mathvariant="normal">
                                     <mi>°C</mi>
@@ -44767,7 +44767,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mn>3</mn>
                               </msqrt>
                               <mi>≈</mi>
-                              <mn>2.3</mn>
+                              <mn>2,3</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -46410,7 +46410,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mn>6</mn>
                               </msqrt>
                               <mi>≈</mi>
-                              <mn>1.6</mn>
+                              <mn>1,6</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -46706,7 +46706,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mo>)</mo>
                               </mrow>
                               <mo>=</mo>
-                              <mn>1.6</mn>
+                              <mn>1,6</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -46761,7 +46761,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mo>)</mo>
                               </mrow>
                               <mo>=</mo>
-                              <mn>2.3</mn>
+                              <mn>2,3</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -46844,7 +46844,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mi>σ</mi>
                               </mstyle>
                               <mo>=</mo>
-                              <mn>1.5</mn>
+                              <mn>1,5</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -46888,7 +46888,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <math xmlns="http://www.w3.org/1998/Math/MathML">
                            <mstyle displaystyle="false">
                               <mo>−</mo>
-                              <mn>2.58</mn>
+                              <mn>2,58</mn>
                               <mstyle mathvariant="italic">
                                  <mi>σ</mi>
                               </mstyle>
@@ -46915,7 +46915,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <math xmlns="http://www.w3.org/1998/Math/MathML">
                            <mstyle displaystyle="false">
                               <mo>+</mo>
-                              <mn>2.58</mn>
+                              <mn>2,58</mn>
                               <mstyle mathvariant="italic">
                                  <mi>σ</mi>
                               </mstyle>
@@ -46994,7 +46994,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                                  <mo>)</mo>
                               </mrow>
                               <mo>=</mo>
-                              <mn>0.33</mn>
+                              <mn>0,33</mn>
                               <mo rspace="thickmathspace">⁢</mo>
                               <mrow>
                                  <mstyle mathvariant="normal">
@@ -48860,7 +48860,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <span class="stddocTitle">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</span>
                      </em>
                   </formattedref>
-                  <fetched>2025-04-14</fetched>
+                  <fetched>2025-04-29</fetched>
                   <title type="title-intro" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai</title>
                   <title type="title-main" format="text/plain" language="fr" script="Latn">Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
                   <title type="main" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
