@@ -230,7 +230,6 @@ module Metanorma
         ret = {}
         xml.traverse do |x|
           x.text? and next
-          /^semantic__/.match?(x.name) and next
           x["id"] and ret[x["id"]] = true
         end
         ret
