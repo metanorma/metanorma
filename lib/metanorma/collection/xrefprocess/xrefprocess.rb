@@ -10,8 +10,7 @@ module Metanorma
           @isodoc = isodoc
           key = (0...8).map { rand(65..90).chr }.join # random string
           xml.root["type"] = key
-          Metanorma::Utils::anchor_attributes
-            .each do |(tag_name, attr_name)|
+          Util::anchor_id_attributes.each do |(tag_name, attr_name)|
               #tag_name == "xref" and tag_name = "fmt-xref"
             ::Metanorma::Collection::Util::add_suffix_to_attrs(
               xml, xml.root["document_suffix"], tag_name, attr_name, isodoc

@@ -2,6 +2,10 @@ module Metanorma
   class Collection
     module Util
       class << self
+        def anchor_id_attributes
+          Metanorma::Utils::anchor_attributes + [%w(* id), %w(link bibitemid)]
+        end
+
         def gather_bibitems(xml)
           xml.xpath("//xmlns:bibitem[@id]").each_with_object({}) do |b, m|
             if m[b["id"]]
@@ -65,20 +69,20 @@ module Metanorma
         def load_isodoc(flavor, presxml: false)
           x = Asciidoctor.load nil, backend: flavor.to_sym
           if presxml
-          x.converter.presentation_xml_converter(Dummy.new)
+            x.converter.presentation_xml_converter(Dummy.new)
           else
-          x.converter.html_converter(Dummy.new) # to obtain Isodoc class
+            x.converter.html_converter(Dummy.new) # to obtain Isodoc class
           end
         end
 
         def isodoc_create(flavor, lang, script, xml, presxml: false)
-        isodoc = Util::load_isodoc(flavor, presxml: presxml)
-        isodoc.i18n_init(lang, script, nil) # read in internationalisation
-        # TODO locale?
-        isodoc.metadata_init(lang, script, nil, isodoc.i18n)
-        isodoc.info(xml, nil)
-        isodoc
-      end
+          isodoc = Util::load_isodoc(flavor, presxml: presxml)
+          isodoc.i18n_init(lang, script, nil) # read in internationalisation
+          # TODO locale?
+          isodoc.metadata_init(lang, script, nil, isodoc.i18n)
+          isodoc.info(xml, nil)
+          isodoc
+        end
       end
     end
   end
