@@ -27,6 +27,7 @@ module Metanorma
           @isodoc ||= isodoc
           svg_preprocess(section, Metanorma::Utils::to_ncname(ident), presxml)
           refs = eref_to_internal_eref(section, xml, key, presxml)
+          require "debug"; binding.b
           refs += xref_to_internal_eref(section, xml, key, presxml)
           ins = new_hidden_ref(section)
           copied_refs = copy_repo_items_biblio(ins, section, xml)
@@ -224,7 +225,7 @@ module Metanorma
 
         def new_indirect_bibitem(ident, prefix)
           <<~BIBENTRY
-            <bibitem id="#{ident}" type="internal">
+            <bibitem id="#{ident}" anchor="#{ident}" type="internal">
             <docidentifier type="repository">#{ident.sub(/^#{prefix}_/, "#{prefix}/")}</docidentifier>
             </bibitem>
           BIBENTRY

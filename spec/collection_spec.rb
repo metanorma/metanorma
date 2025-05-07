@@ -567,6 +567,7 @@ RSpec.describe Metanorma::Collection do
   def cleanup_guid(content)
     content
       .gsub(%r{cid:#{GUID}}o, "cid:_")
+      .gsub(%r{ semx-id="[^"]*"}o, '')
       .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
       .gsub(%r{ source="_#{GUID}"}o, ' source="_"')
       .gsub(%r{ name="_#{GUID}"}o, ' name="_"')

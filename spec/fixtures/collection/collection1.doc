@@ -50,7 +50,7 @@
          </div>
      
      
-       </div><p class="MsoNormal"><br clear="all" style="mso-special-character:line-break;page-break-before:always"/></p><div class="Section3"><a name="_" id="_"></a><p class="IntroTitle">Clause</p><p class="MsoNormal"><a name="_" id="_"></a>Welcome to our collection</p></div><p class="MsoNormal">&#xA0;</p></div>
+       </div><p class="MsoNormal"><br clear="all" style="mso-special-character:line-break;page-break-before:always"/></p><div class="Section3"><a name="_clause" id="_clause"></a><p class="IntroTitle">Clause</p><p class="MsoNormal"><a name="_" id="_"></a>Welcome to our collection</p></div><p class="MsoNormal">&#xA0;</p></div>
            <p class="MsoNormal">
              <br clear="all" class="section"/>
            </p>
@@ -504,7 +504,7 @@
                <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
              </p>
              <div class="Section3"><a name="_" id="_"/>
-               <div><a name="_" id="_"></a><h1>Exordium</h1>
+               <div><a name="_exordium" id="_exordium"></a><h1>Exordium</h1>
      
        <p class="MsoNormal"><a name="_" id="_"></a>Hic explicit</p>
        </div>

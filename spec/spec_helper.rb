@@ -116,6 +116,7 @@ HDR
 
 def strip_guid(xml)
   xml.gsub(%r{ id="_[^"]+"}, ' id="_"')
+    .gsub(%r{ semx-id="[^"]*"}, '')
     .gsub(%r{ target="_[^"]+"}, ' target="_"')
 end
 

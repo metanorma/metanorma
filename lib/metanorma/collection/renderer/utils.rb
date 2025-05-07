@@ -37,17 +37,10 @@ module Metanorma
         end
       end
 
-      def hide_refs(docxml)
-        docxml.xpath(ns("//references[bibitem][not(./bibitem[not(@hidden) or " \
-                        "@hidden = 'false'])]")).each do |f|
-          f["hidden"] = "true"
-        end
-      end
-
       def new_hidden_ref(xmldoc)
         ins = xmldoc.at(ns("bibliography")) or
           xmldoc.root << "<bibliography/>" and ins = xmldoc.at(ns("bibliography"))
-        ins.at(ns("./referenced[@hidden = 'true']")) or
+        ins.at(ns("./references[@hidden = 'true']")) or
           ins.add_child("<references hidden='true' normative='false'/>").first
       end
 

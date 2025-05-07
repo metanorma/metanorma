@@ -39,7 +39,7 @@ module Metanorma
         empty = empty_doc(xml)
         empty1 = empty_attachments(empty)
         @mutex = Mutex.new
-        #@pool = Concurrent::FixedThreadPool.new(4)
+        # @pool = Concurrent::FixedThreadPool.new(4)
         @pool = Concurrent::FixedThreadPool.new(1)
         sectionsplit1(xml, empty, empty1, 0)
       end
@@ -123,7 +123,8 @@ module Metanorma
         outname
       end
 
-      def emptydoc(xml, ordinal)
+      # KILL
+      def emptydocx(xml, _ordinal)
         out = xml.dup
         out.xpath(
           ns("//preface | //sections | //annex | //bibliography/clause | " \
@@ -135,17 +136,30 @@ module Metanorma
 
       def empty_doc(xml)
         out = xml.dup
+        require  "debug"; binding.b
         out.xpath(
-          ns("//preface | //sections | //annex | //bibliography/clause | " \
-             "//bibliography/references[not(@hidden = 'true')] | " \
-             "//indexsect | //colophon"),
+          ns("//preface | //sections | //annex | " \
+          "//bibliography/clause[not(.//references[@hidden = 'true'])] | " \
+          "//bibliography//references[not(@hidden = 'true')] | " \
+          "//indexsect | //colophon"),
         ).each(&:remove)
         out
       end
 
-      def empty_attachments(xml)
+      def empty_doc(xml)
         out = xml.dup
+        require  "debug"; binding.b
+        out.xpath(
+          ns("//preface | //sections | //annex | " \
+          "//bibitem[not(@hidden = 'true')] | " \
+          "//indexsect | //colophon"),
+        ).each(&:remove)
+        ::Metanorma::Collection::Util::hide_refs(out)
         out
+      end
+
+      def empty_attachments(xml)
+        xml.dup
       end
 
       def sectionfile(fulldoc, xml, file, chunks, parentnode)
@@ -157,6 +171,7 @@ module Metanorma
       def create_sectionfile(xml, out, file, chunks, parentnode)
         ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
         sectionfile_insert(ins, chunks, parentnode)
+        require "debug"; binding.b
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc, true)
         outname = "#{file}.xml"
@@ -179,7 +194,7 @@ module Metanorma
         t = title.dup
         t.xpath(ns(".//tab | .//br")).each { |x| x.replace(" ") }
         t.xpath(ns(".//bookmark")).each(&:remove)
-        t.xpath('.//text()').map(&:text).join
+        t.xpath(".//text()").map(&:text).join
       end
     end
   end

@@ -57,6 +57,14 @@ module Metanorma
           p.absolute? ? path : File.join(dir, path)
         end
 
+        def hide_refs(docxml)
+          p = "//xmlns:references[xmlns:bibitem]"\
+            "[not(./xmlns:bibitem[not(@hidden) or @hidden = 'false'])]"
+          docxml.xpath(p).each do |f|
+            f["hidden"] = "true"
+          end
+        end
+
         def key(ident)
           @c ||= HTMLEntities.new
           @c.decode(ident).gsub(/(\p{Zs})+/, " ")
