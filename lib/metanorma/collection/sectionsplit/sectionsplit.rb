@@ -149,7 +149,7 @@ module Metanorma
         out = xml.dup
         out.xpath(
           ns("//preface | //sections | //annex | " \
-          "//bibitem[not(@hidden = 'true')] | " \
+          "//references/bibitem[not(@hidden = 'true')] | " \
           "//indexsect | //colophon"),
         ).each(&:remove)
         ::Metanorma::Collection::Util::hide_refs(out)
