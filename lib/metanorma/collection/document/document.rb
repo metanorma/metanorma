@@ -68,6 +68,8 @@ module Metanorma
         def from_xml(xml)
           b = xml.at("//xmlns:bibitem|//xmlns:bibdata")
           r = mn2relaton_parser(xml.root.name)
+          # Relaton doesn't understand Pres XML tags
+          b.xpath("//xmlns:fmt-identifier").each(&:remove)
           r.from_xml(b.to_xml)
         end
 
