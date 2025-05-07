@@ -136,7 +136,6 @@ module Metanorma
 
       def empty_doc(xml)
         out = xml.dup
-        require  "debug"; binding.b
         out.xpath(
           ns("//preface | //sections | //annex | " \
           "//bibliography/clause[not(.//references[@hidden = 'true'])] | " \
@@ -148,7 +147,6 @@ module Metanorma
 
       def empty_doc(xml)
         out = xml.dup
-        require  "debug"; binding.b
         out.xpath(
           ns("//preface | //sections | //annex | " \
           "//bibitem[not(@hidden = 'true')] | " \
@@ -171,7 +169,6 @@ module Metanorma
       def create_sectionfile(xml, out, file, chunks, parentnode)
         ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
         sectionfile_insert(ins, chunks, parentnode)
-        require "debug"; binding.b
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc, true)
         outname = "#{file}.xml"

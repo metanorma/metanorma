@@ -18,7 +18,6 @@ GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 # rubocop:disable Layout/LineLength
 RSpec.describe Metanorma::Collection do
   context "render html & build doc, pdf, xml files from" do
-=begin
     it "YAML collection" do
       mock_pdf
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
@@ -480,7 +479,7 @@ RSpec.describe Metanorma::Collection do
         OUTPUT
       FileUtils.rm_f "tmp_test_sectionsplit.presentation.xml"
     end
-=end
+
     it "YAML collection with multiple documents sectionsplit (source document for links)" do
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                    "action_schemaexpg1.svg"
@@ -540,7 +539,7 @@ RSpec.describe Metanorma::Collection do
       xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
       p = xml.xpath("//xmlns:sections//xmlns:p")[4]
       p.delete("id")
-      expect(p.to_xml.gsub(/ (source|id)="[^"]+"/, "")).to be_equivalent_to <<~OUTPUT
+      expect(p.to_xml.gsub(/ (source|id|semx-id)="[^"]+"/, "")).to be_equivalent_to <<~OUTPUT
         <p>This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope" citeas="ISO 17301-1:2016/Amd.1:2017"/><semx element="eref"><fmt-link target="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</fmt-link></semx>.</p>
       OUTPUT
       FileUtils.rm_rf of

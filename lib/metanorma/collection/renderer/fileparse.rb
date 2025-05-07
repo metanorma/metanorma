@@ -39,7 +39,6 @@ module Metanorma
       end
 
       def update_sectionsplit_refs_to_docs(docxml, internal_refs, presxml)
-        require "debug"; binding.b
         Util::gather_citeases(docxml, presxml).each do |k, v|
           (@files.get(k) && @files.get(k, :sectionsplit)) or next
           opts = { key: @files.get(k, :indirect_key),

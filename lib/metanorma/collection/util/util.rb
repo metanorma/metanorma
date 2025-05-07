@@ -3,7 +3,8 @@ module Metanorma
     module Util
       class << self
         def anchor_id_attributes
-          Metanorma::Utils::anchor_attributes + [%w(* id), %w(link bibitemid)]
+          Metanorma::Utils::anchor_attributes(presxml: true) +
+            [%w(* id), %w(link bibitemid), %w(fmt-link bibitemid)]
         end
 
         def gather_bibitems(xml)
@@ -38,6 +39,8 @@ module Metanorma
         def add_suffix_to_attrs(doc, suffix, tag_name, attr_name, isodoc)
           (suffix.nil? || suffix.empty?) and return
           doc.xpath(isodoc.ns("//#{tag_name}[@#{attr_name}]")).each do |elem|
+            #warn "#{tag_name} : #{elem.name}" if attr_name == "bibitemid"
+            #require 'debug'; binding.b if attr_name == "bibitemid" && #!%w(eref fmt-eref link fmt-link).include?(elem.name)
             a = elem.attributes[attr_name].value
             /_#{suffix}$/.match?(a) or
               elem.attributes[attr_name].value = "#{a}_#{suffix}"
