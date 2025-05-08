@@ -3,3 +3,4 @@ gem "relaton-iev", git: "https://github.com/relaton/relaton-iev", branch: "featu
 gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "features/anchor"
 gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "features/anchor"
 gem "metanorma-utils", git: "https://github.com/metanorma/metanorma-utils", branch: "main"
+gem "metanorma-cli"

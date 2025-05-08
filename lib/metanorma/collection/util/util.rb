@@ -4,7 +4,7 @@ module Metanorma
       class << self
         def anchor_id_attributes
           Metanorma::Utils::anchor_attributes(presxml: true) +
-            [%w(* id), %w(link bibitemid), %w(fmt-link bibitemid)]
+            [%w(* id), %w(* anchor), %w(link bibitemid), %w(fmt-link bibitemid)]
         end
 
         def gather_bibitems(xml)

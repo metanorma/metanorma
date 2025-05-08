@@ -528,6 +528,7 @@ RSpec.describe Metanorma::Collection do
       rice = File.read("#{OUTPATH}/rice-en.final.xml.1.html")
       expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
       expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="rice-en.final.xml.2.html#anotherclause_ISO_17301-1_2016_ISO_17301-1_2016_2_This_is_another_clause"><span class="citesec">Clause 2</span></a> or <a href="rice-en.final.xml.3.html#thirdclause_ISO_17301-1_2016_ISO_17301-1_2016_3_This_is_another_clause"><span class="citesec">Clause 3</span></a>.</p>)
+      expect(rice).to include %(<div id=\"_scope_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope\">)
       # resolves SVG references to Express
       expect(rice).to match %r{<a xlink:href="dummy.html#express-schema_E1_ISO_17302">\s+<rect x="324\.69" y="450\.52"}m
       expect(rice).to match %r{<a xlink:href="dummy.html#express-schema_E2_ISO_17302">\s+<rect x="324\.69" y="528\.36"}m
