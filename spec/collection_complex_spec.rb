@@ -374,14 +374,14 @@ RSpec.describe Metanorma::Collection do
       expect(Xml::C14n.format(file2
        .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
-          <bibitem id="#{m[1]}_A" type="internal">
+          <bibitem id="#{m[1]}_A" anchor="#{m[1]}_A" type="internal">
           <docidentifier type="repository">#{m[1]}/A</docidentifier>
           </bibitem>
         OUTPUT
       expect(Xml::C14n.format(file2
        .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
-          <bibitem id="#{m[1]}_R1" type="internal">
+          <bibitem id="#{m[1]}_R1" anchor="#{m[1]}_R1" type="internal">
           <docidentifier type="repository">#{m[1]}/R1</docidentifier>
           </bibitem>
         OUTPUT
@@ -390,7 +390,7 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
           <svgmap><figure>
           <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" original-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" original-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
                  <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
               <a href="A">A</a>
               <a href="B">B</a>
@@ -413,7 +413,7 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
                <svgmap><figure>
            <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" preserveaspectratio="xMidYMin slice">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
                  <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
              <a href="P">P</a>
            </svg></img>
@@ -528,6 +528,7 @@ RSpec.describe Metanorma::Collection do
       rice = File.read("#{OUTPATH}/rice-en.final.xml.1.html")
       expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
       expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="rice-en.final.xml.2.html#anotherclause_ISO_17301-1_2016_ISO_17301-1_2016_2_This_is_another_clause"><span class="citesec">Clause 2</span></a> or <a href="rice-en.final.xml.3.html#thirdclause_ISO_17301-1_2016_ISO_17301-1_2016_3_This_is_another_clause"><span class="citesec">Clause 3</span></a>.</p>)
+      expect(rice).to include %(<div id=\"_scope_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope\">)
       # resolves SVG references to Express
       expect(rice).to match %r{<a xlink:href="dummy.html#express-schema_E1_ISO_17302">\s+<rect x="324\.69" y="450\.52"}m
       expect(rice).to match %r{<a xlink:href="dummy.html#express-schema_E2_ISO_17302">\s+<rect x="324\.69" y="528\.36"}m
@@ -539,7 +540,7 @@ RSpec.describe Metanorma::Collection do
       xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
       p = xml.xpath("//xmlns:sections//xmlns:p")[4]
       p.delete("id")
-      expect(p.to_xml.gsub(/ (source|id)="[^"]+"/, "")).to be_equivalent_to <<~OUTPUT
+      expect(p.to_xml.gsub(/ (source|id|semx-id)="[^"]+"/, "")).to be_equivalent_to <<~OUTPUT
         <p>This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope" citeas="ISO 17301-1:2016/Amd.1:2017"/><semx element="eref"><fmt-link target="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</fmt-link></semx>.</p>
       OUTPUT
       FileUtils.rm_rf of
@@ -823,6 +824,7 @@ RSpec.describe Metanorma::Collection do
   def cleanup_guid(content)
     content
       .gsub(%r{cid:#{GUID}}o, "cid:_")
+      .gsub(%r{ semx-id="[^"]*"}o, '')
       .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
       .gsub(%r{ target="_#{GUID}"}o, ' name="_"')
       .gsub(%r{ source="_#{GUID}"}o, ' source="_"')

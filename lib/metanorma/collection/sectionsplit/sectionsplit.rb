@@ -39,7 +39,7 @@ module Metanorma
         empty = empty_doc(xml)
         empty1 = empty_attachments(empty)
         @mutex = Mutex.new
-        #@pool = Concurrent::FixedThreadPool.new(4)
+        # @pool = Concurrent::FixedThreadPool.new(4)
         @pool = Concurrent::FixedThreadPool.new(1)
         sectionsplit1(xml, empty, empty1, 0)
       end
@@ -86,7 +86,6 @@ module Metanorma
         xml, type = sectionsplit_preprocess_semxml(file, filename)
         flags = { format: :asciidoc, extension_keys: [:presentation],
                   type: type }.merge(@compile_opts)
-        #require "debug"; binding.b
         Compile.new.compile(xml, flags)
         f = File.open(xml.sub(/\.xml$/, ".presentation.xml"), encoding: "utf-8")
         r = Nokogiri::XML(f, &:huge)
@@ -109,7 +108,6 @@ module Metanorma
         if c = @fileslookup&.parent
           n = c.nested
           c.nested = true # so unresolved erefs are not deleted
-        #require "debug"; binding.b
           c.update_xrefs(xml, @ident, {})
           c.nested = n
           xml.xpath("//xmlns:svgmap").each { |x| x.name = "svgmap1" }
@@ -125,35 +123,41 @@ module Metanorma
         outname
       end
 
-      def emptydoc(xml, ordinal)
+      # KILL
+      def emptydocx(xml, _ordinal)
         out = xml.dup
         out.xpath(
           ns("//preface | //sections | //annex | //bibliography/clause | " \
              "//bibliography/references[not(@hidden = 'true')] | " \
              "//indexsect | //colophon"),
         ).each(&:remove)
-        ordinal.zero? or out.xpath(ns("//metanorma-ext//attachment | " \
-                                      "//semantic__metanorma-ext//semantic__attachment"))
-          .each(&:remove) # keep only one copy of attachments
         out
       end
 
       def empty_doc(xml)
         out = xml.dup
         out.xpath(
-          ns("//preface | //sections | //annex | //bibliography/clause | " \
-             "//bibliography/references[not(@hidden = 'true')] | " \
-             "//indexsect | //colophon"),
+          ns("//preface | //sections | //annex | " \
+          "//bibliography/clause[not(.//references[@hidden = 'true'])] | " \
+          "//bibliography//references[not(@hidden = 'true')] | " \
+          "//indexsect | //colophon"),
         ).each(&:remove)
         out
       end
 
-      def empty_attachments(xml)
+      def empty_doc(xml)
         out = xml.dup
-        out.xpath(ns("//metanorma-ext//attachment | " \
-                     "//semantic__metanorma-ext//semantic__attachment"))
-          .each(&:remove) # keep only one copy of attachments
+        out.xpath(
+          ns("//preface | //sections | //annex | " \
+          "//references/bibitem[not(@hidden = 'true')] | " \
+          "//indexsect | //colophon"),
+        ).each(&:remove)
+        ::Metanorma::Collection::Util::hide_refs(out)
         out
+      end
+
+      def empty_attachments(xml)
+        xml.dup
       end
 
       def sectionfile(fulldoc, xml, file, chunks, parentnode)
@@ -164,41 +168,14 @@ module Metanorma
 
       def create_sectionfile(xml, out, file, chunks, parentnode)
         ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
-        #require "debug"; binding.b
         sectionfile_insert(ins, chunks, parentnode)
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc, true)
-        #truncate_semxml(out, chunks)
         outname = "#{file}.xml"
         File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
           f.write(out)
         end
         outname
-      end
-
-      # KILL
-      def semantic_xml_ids_gather(out)
-        out.at(ns("//semantic__bibdata")) or return
-        SPLITSECTIONS.each_with_object({}) do |s, m|
-          out.xpath(ns(s[0].sub("//", "//semantic__"))).each do |x|
-            x["id"] or next
-            m[x["id"].sub(/^semantic__/, "")] = x
-          end
-        end
-      end
-
-      # KILL
-      def semxml_presxml_nodes_match(nodes, chunks)
-        chunks.each do |x|
-          nodes[x["id"]] and nodes.delete(x["id"])
-        end
-      end
-
-      # KILL
-      def truncate_semxml(out, chunks)
-        nodes = semantic_xml_ids_gather(out) or return
-        semxml_presxml_nodes_match(nodes, chunks)
-        nodes.each_value(&:remove)
       end
 
       def sectionfile_insert(ins, chunks, parentnode)
@@ -214,7 +191,7 @@ module Metanorma
         t = title.dup
         t.xpath(ns(".//tab | .//br")).each { |x| x.replace(" ") }
         t.xpath(ns(".//bookmark")).each(&:remove)
-        t.xpath('.//text()').map(&:text).join
+        t.xpath(".//text()").map(&:text).join
       end
     end
   end

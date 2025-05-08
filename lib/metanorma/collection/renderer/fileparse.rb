@@ -16,8 +16,6 @@ module Metanorma
       # @return [String] XML content
       def update_xrefs(file, docid, internal_refs)
         xml, sso = update_xrefs_prep(file, docid)
-        #require "debug"; binding.b if /This document is also unrelated/.match?(xml.to_xml)
-        #warn (/fmt-title/.match?(xml.to_xml) ? "*** PRESENTATION" : "*** SEMANTIC")
         @nested || sso or
           Metanorma::Collection::XrefProcess::xref_process(xml, xml, nil, docid,
                                                            @isodoc, sso)
@@ -26,7 +24,7 @@ module Metanorma
         @files.add_document_suffix(docid, xml)
         @nested or update_sectionsplit_refs_to_docs(xml, internal_refs, sso)
         update_direct_refs_to_docs(xml, docid, sso)
-        hide_refs(xml)
+        ::Metanorma::Collection::Util::hide_refs(xml)
         sso and eref2link(xml, sso)
         @nested or svgmap_resolve(xml, docid, sso)
         xml.to_xml
@@ -109,7 +107,6 @@ module Metanorma
             else no_anchor[k] << e end
           end
         end
-        #require "debug"; binding.b
         [erefs, no_anchor, anchors, Util::gather_bibitemids(docxml, presxml)]
       end
 
@@ -128,8 +125,9 @@ module Metanorma
 
       # Resolve erefs to a container of ids in another doc,
       # to an anchor eref (direct link)
-      def update_indirect_refs_to_docs(docxml, _docidentifier, internal_refs, presxml)
-        bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml, presxml)
+      def update_indirect_refs_to_docs(docxml, _docid, internal_refs, presxml)
+        bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml,
+                                                                        presxml)
         internal_refs.each do |schema, ids|
           add_suffix = doc_suffix && doc_type && doc_type != schema
           ids.each do |id, file|
@@ -149,37 +147,15 @@ module Metanorma
          docxml.root["document_suffix"], docxml.root["type"], {}]
       end
 
-      # KILL
-      def indirect_ref_key(schema, id, doc_suffix, doc_type)
-        /^#{schema}_/.match?(id) and return id
-        key = [schema, id, doc_suffix, doc_type].join("::")
-        x = @indirect_keys[key] and return x
-        ret = "#{schema}_#{id}"
-        doc_suffix && doc_type && doc_type != schema and
-          ret = "#{ret}_#{doc_suffix}"
-        @indirect_keys[key] = ret
-        ret
-      end
-
       def indirect_ref_key(schema, id, doc_suffix, add_suffix)
         /^#{schema}_/.match?(id) and return id
-        #key = "#{schema}_#{id}"
         x = @indirect_keys.dig(schema, id) and return x
         @indirect_keys[schema] ||= {}
         @indirect_keys[schema][id] = if add_suffix
-                                  "#{schema}_#{id}_#{doc_suffix}"
-                                else
-                                   "#{schema}_#{id}"
-                                end
-      end
-
-      # KILL
-      def indirect_ref_keyx(schema, id, doc_suffix, doc_type)
-        /^#{schema}_/.match?(id) and return id
-        ret = "#{schema}_#{id}"
-        doc_suffix && doc_type && doc_type != schema and
-          ret = "#{ret}_#{doc_suffix}"
-        ret
+                                       "#{schema}_#{id}_#{doc_suffix}"
+                                     else
+                                       "#{schema}_#{id}"
+                                     end
       end
 
       def update_indirect_refs_to_docs1(filec, key, file, bibitems, erefs)
@@ -196,13 +172,10 @@ module Metanorma
         parentid and file = "#{parentid}_#{file}"
         existing = a.text
         anchor = if url then existing
-                   else 
-                     #suffix_anchor_indirect(existing, suffix)
-                     #k = "#{existing}_#{file}"
-        #@ncnames[k] ||= Metanorma::Utils::to_ncname(k)
-        @indirect_keys[existing] ||= {}
-        @indirect_keys[existing][file] ||= Metanorma::Utils::to_ncname("#{existing}_#{file}")
-                   end
+                 else
+                   @indirect_keys[existing] ||= {}
+                   @indirect_keys[existing][file] ||= Metanorma::Utils::to_ncname("#{existing}_#{file}")
+                 end
         @updated_anchors[existing] or a.children = anchor
         @updated_anchors[anchor] = true
       end

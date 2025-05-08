@@ -131,7 +131,7 @@ module Metanorma
 
       def add_document_suffix(identifier, doc)
         document_suffix = Metanorma::Utils::to_ncname(identifier)
-        Metanorma::Utils::anchor_attributes.each do |(tag_name, attr_name)|
+        Util::anchor_id_attributes.each do |(tag_name, attr_name)|
           Util::add_suffix_to_attrs(doc, document_suffix, tag_name, attr_name,
                                     @isodoc)
         end
@@ -230,7 +230,6 @@ module Metanorma
         ret = {}
         xml.traverse do |x|
           x.text? and next
-          /^semantic__/.match?(x.name) and next
           x["id"] and ret[x["id"]] = true
         end
         ret

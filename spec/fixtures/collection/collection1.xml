@@ -311,7 +311,7 @@
   <format>html</format>
   <coverpage>cover.html</coverpage>
           <prefatory-content>
-             <clause id="_clause" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
+             <clause id="_clause" anchor="_clause" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
                 <title id="_">Clause</title>
                 <fmt-title depth="1">
                    <semx element="title" source="_">Clause</semx>
@@ -320,7 +320,7 @@
              </clause>
           </prefatory-content>
           <final-content>
-             <clause id="_exordium" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
+             <clause id="_exordium" anchor="_exordium" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
                 <title id="_">Exordium</title>
                 <fmt-title depth="1">
                    <semx element="title" source="_">Exordium</semx>

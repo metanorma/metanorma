@@ -17,6 +17,7 @@ module Metanorma
         newbib["hidden"] = "true"
         newbib&.at("./*[local-name() = 'ext']")&.remove
         newbib["id"] = bib["id"]
+        bib["anchor"] and newbib["anchor"] = bib["anchor"]
         newbib
       end
 
@@ -37,17 +38,10 @@ module Metanorma
         end
       end
 
-      def hide_refs(docxml)
-        docxml.xpath(ns("//references[bibitem][not(./bibitem[not(@hidden) or " \
-                        "@hidden = 'false'])]")).each do |f|
-          f["hidden"] = "true"
-        end
-      end
-
       def new_hidden_ref(xmldoc)
         ins = xmldoc.at(ns("bibliography")) or
           xmldoc.root << "<bibliography/>" and ins = xmldoc.at(ns("bibliography"))
-        ins.at(ns("./referenced[@hidden = 'true']")) or
+        ins.at(ns("./references[@hidden = 'true']")) or
           ins.add_child("<references hidden='true' normative='false'/>").first
       end
 
@@ -81,7 +75,7 @@ module Metanorma
         refs.each do |k, v|
           url = @files.url(v, {})
           ins << <<~XML
-            <bibitem id="#{k}">#{docid_xml(v)}<uri type='citation'>#{url}</uri></bibitem>
+            <bibitem id="#{k}" anchor="#{k}">#{docid_xml(v)}<uri type='citation'>#{url}</uri></bibitem>
           XML
         end
       end

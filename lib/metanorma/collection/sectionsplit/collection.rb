@@ -39,6 +39,7 @@ module Metanorma
       end
 
       def collectionyaml(files, xml)
+        #warn xml.to_xml
         ret = {
           directives: ["presentation-xml", "bare-after-first"],
           bibdata: {
