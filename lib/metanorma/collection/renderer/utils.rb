@@ -17,6 +17,7 @@ module Metanorma
         newbib["hidden"] = "true"
         newbib&.at("./*[local-name() = 'ext']")&.remove
         newbib["id"] = bib["id"]
+        bib["anchor"] and newbib["anchor"] = bib["anchor"]
         newbib
       end
 
@@ -74,7 +75,7 @@ module Metanorma
         refs.each do |k, v|
           url = @files.url(v, {})
           ins << <<~XML
-            <bibitem id="#{k}">#{docid_xml(v)}<uri type='citation'>#{url}</uri></bibitem>
+            <bibitem id="#{k}" anchor="#{k}">#{docid_xml(v)}<uri type='citation'>#{url}</uri></bibitem>
           XML
         end
       end
