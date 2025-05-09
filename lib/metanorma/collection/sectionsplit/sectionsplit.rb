@@ -32,7 +32,7 @@ module Metanorma
          ["//bibliography/*[not(@hidden = 'true')]", "bibliography"],
          ["//indexsect", nil], ["//colophon", nil]].freeze
 
-      # Input XML is Semantic
+      # Input XML is Semantic XML
       def sectionsplit
         xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
@@ -44,6 +44,7 @@ module Metanorma
         sectionsplit1(xml, empty, empty1, 0)
       end
 
+      # xml is Presentation XML
       def sectionsplit1(xml, empty, empty1, idx)
         ret = SPLITSECTIONS.each_with_object([]) do |n, m|
           conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
@@ -65,6 +66,7 @@ module Metanorma
         end
       end
 
+      # TODO move to metanorma-utils
       def block?(node)
         %w(p table formula admonition ol ul dl figure quote sourcecode example
            pre note pagebreak hr bookmark requirement recommendation permission
@@ -123,28 +125,6 @@ module Metanorma
         outname
       end
 
-      # KILL
-      def emptydocx(xml, _ordinal)
-        out = xml.dup
-        out.xpath(
-          ns("//preface | //sections | //annex | //bibliography/clause | " \
-             "//bibliography/references[not(@hidden = 'true')] | " \
-             "//indexsect | //colophon"),
-        ).each(&:remove)
-        out
-      end
-
-      def empty_doc(xml)
-        out = xml.dup
-        out.xpath(
-          ns("//preface | //sections | //annex | " \
-          "//bibliography/clause[not(.//references[@hidden = 'true'])] | " \
-          "//bibliography//references[not(@hidden = 'true')] | " \
-          "//indexsect | //colophon"),
-        ).each(&:remove)
-        out
-      end
-
       def empty_doc(xml)
         out = xml.dup
         out.xpath(
@@ -169,6 +149,7 @@ module Metanorma
       def create_sectionfile(xml, out, file, chunks, parentnode)
         ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
         sectionfile_insert(ins, chunks, parentnode)
+        sectionfile_fn_filter(sectionfile_review_filter(out))
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc, true)
         outname = "#{file}.xml"
@@ -183,6 +164,81 @@ module Metanorma
           ins.next = "<#{parentnode}/>"
           chunks.each { |c| ins.next.add_child(c.dup) }
         else chunks.each { |c| ins.next = c.dup }
+        end
+      end
+
+      def sectionfile_fn_filter(xml)
+        ids = sectionfile_fn_filter_prep(xml)
+        xml.xpath(ns("/fmt-footnote-container/fmt-fn-body")).each do |f|
+          ids.has_key?(f["id"]) or f.remove
+        end
+        seen = {}
+        xml.xpath(ns("/fmt-footnote-container/fmt-fn-body"))
+          .each_with_index do |fnbody, i|
+            sectionfile_fn_filter_renumber(fnbody, i, ids, seen)
+          end
+        xml
+      end
+
+      # map fmt-fn-body/@id = fn/@target to fn
+      def sectionfile_fn_filter_prep(xml)
+        xml.xpath(ns("//fn")).each_with_object({}) do |f, m|
+          m[f["target"]] ||= []
+          m[f["target"]] << f
+        end
+      end
+
+      FN_CAPTIONS = ".//fmt-fn-label/span[@class = 'fmt-caption-label']".freeze
+
+      def sectionfile_fn_filter_renumber(fnbody, idx, ids, seen)
+        sectionfile_fn_filter_fn_renumber(fnbody, idx, ids, seen)
+        sectionfile_fn_filter_fnbody_renumber(fnbody, idx, ids)
+      end
+
+      def sectionfile_fn_filter_fn_renumber(fnbody, idx, ids, seen)
+        ids[fnbody["id"]].each do |f|
+          @isodoc.renumber_document_footnote(f, idx, seen)
+          fnlabel = f.at(ns(FN_CAPTIONS)) and
+            fnlabel.children = @isodoc.fn_ref_label(f)
+        end
+      end
+
+      def sectionfile_fn_filter_fnbody_renumber(fnbody, _idx, ids)
+        fnlabel = fnbody.at(ns(FN_CAPTIONS)) or return
+        fnbody["reference"] = ids[fnbody["id"]].first["reference"]
+        fnlabel.children = @isodoc.fn_body_label(fnbody)
+      end
+
+      # map fmt-review-body/@id = fmt-review-{start/end}/@target
+      # to fmt-review-{stary/end}
+      def sectionfile_review_filter_prep(xml)
+        xml.xpath(ns("//fmt-review-start | //fmt-review-end"))
+          .each_with_object({}) do |f, m|
+            m[f["target"]] ||= []
+            m[f["target"]] << f
+          end
+      end
+
+      def sectionfile_review_filter(xml)
+        ids = sectionfile_review_filter_prep(xml)
+        xml.xpath(ns("/review-container/fmt-review-body")).each do |f|
+          ids.has_key?(f["id"]) or f.remove
+        end
+        xml.xpath(ns("/review-container/fmt-review-body"))
+          .each_with_index do |fnbody, i|
+            sectionfile_review_filter_renumber(fnbody, i, ids)
+          end
+        xml
+      end
+
+      def sectionfile_review_filter_renumber(fnbody, _idx, ids)
+        ids[fnbody["id"]].each do |f|
+          case f.name
+          when "fmt-review-start"
+            f.children = @isodoc.comment_bookmark_start_label(f)
+          when "fmt-review-end"
+            f.children = @isodoc.comment_bookmark_end_label(f)
+          end
         end
       end
 
