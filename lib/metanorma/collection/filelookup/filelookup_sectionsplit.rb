@@ -110,8 +110,9 @@ module Metanorma
         @sectionsplit = ::Metanorma::Collection::Sectionsplit
           .new(input: file, base: @files[ident][:out_path],
                dir: File.dirname(file), output: @files[ident][:out_path],
-               compile_opts: @parent.compile_options,
-               fileslookup: self, ident: ident, isodoc: @isodoc,
+               compile_opts: @parent.compile_options, ident: ident,
+               fileslookup: self, isodoc: @isodoc,
+               isodoc_presxml: @isodoc_presxml,
                document_suffix: @files[ident][:document_suffix])
         coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
         xml = Nokogiri::XML(File.read(file, encoding: "UTF-8"), &:huge)

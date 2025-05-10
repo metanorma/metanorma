@@ -125,7 +125,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                <semx element="eref" source="_">
                   <fmt-xref type="inline" target="CIPM1980_ISO_JCGM_100_2008_EN_">[1]</fmt-xref>
                </semx>
-               <fn reference="1" original-reference="1" id="_" name="_">
+               <fn reference="1" id="_" original-reference="1" name="_">
                   <p original-id="_1ff1281d-ffd3-2650-d46e-6f83b0e939aa_ISO_JCGM_100_2008_EN_">
                      See the
                      <xref target="bibliography_ISO_JCGM_100_2008_EN_" id="_"/>
@@ -142,10 +142,12 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   </p>
                   <p original-id="_bc972109-5117-8f5c-c260-0d7389f93aef_ISO_JCGM_100_2008_EN_">In producing this 2008 version of the GUM, necessary corrections only to the printed 1995 version have been introduced by JCGM/WG 1. These corrections occur in subclauses 4.2.2, 4.2.4, 5.1.2, B.2.17, C.3.2, C.3.4, E.4.3, H.4.3, H.5.2.5 and H.6.2.</p>
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">1</semx>
-                        <span class="fmt-label-delim">)</span>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">1</semx>
+                           <span class="fmt-label-delim">)</span>
+                        </sup>
+                     </span>
                   </fmt-fn-label>
                </fn>
                .
@@ -903,16 +905,18 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
             </p>
             <p id="">
                The following seven organizations
-               <fn reference="2" original-reference="2" id="_" name="_">
+               <fn reference="2" id="_" original-reference="2" name="_">
                   <p original-id="_2e8af0a9-0a8c-75ee-c2de-8485b49fc9fa_ISO_JCGM_100_2008_EN_">
                      <strong>Footnote to the 2008 version:</strong>
                   </p>
                   <p original-id="_95848dac-90c2-a3a4-1bc1-fe2c8bf9521c_ISO_JCGM_100_2008_EN_">In 2005, the International Laboratory Accreditation Cooperation (ILAC) officially joined the seven founding international organizations.</p>
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">2</semx>
-                        <span class="fmt-label-delim">)</span>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">2</semx>
+                           <span class="fmt-label-delim">)</span>
+                        </sup>
+                     </span>
                   </fmt-fn-label>
                </fn>
                supported the development of this
@@ -941,7 +945,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                <dd>
                   <p id="">
                      International Federation of Clinical Chemistry
-                     <fn reference="3" original-reference="3" id="_" name="_">
+                     <fn reference="3" id="_" original-reference="3" name="_">
                         <p original-id="_3583229c-db0e-4303-e311-2d2c51344f50_ISO_JCGM_100_2008_EN_">
                            <strong>Footnote to the 2008 version:</strong>
                         </p>
@@ -951,10 +955,12 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                            IFCC: International Federation of Clinical Chemistry and Laboratory Medicine
                         </p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">3</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">3</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                   </p>
@@ -994,7 +1000,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                Users of this
                <em>Guide</em>
                are invited to send their comments and requests for clarification to any of the seven supporting organizations, the mailing addresses of which are given on the inside front cover
-               <fn reference="4" original-reference="4" id="_" name="_">
+               <fn reference="4" id="_" original-reference="4" name="_">
                   <p original-id="_84d8b725-6055-510c-fa28-38965139b4cf_ISO_JCGM_100_2008_EN_">
                      <strong>Footnote to the 2008 version:</strong>
                   </p>
@@ -1007,10 +1013,12 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      .
                   </p>
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">4</semx>
-                        <span class="fmt-label-delim">)</span>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">4</semx>
+                           <span class="fmt-label-delim">)</span>
+                        </sup>
+                     </span>
                   </fmt-fn-label>
                </fn>
                .
@@ -1149,7 +1157,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                      provides general rules for evaluating and expressing uncertainty in measurement rather than detailed, technology-specific instructions. Further, it does not discuss how the uncertainty of a particular measurement result, once evaluated, may be used for different purposes, for example, to draw conclusions about the compatibility of that result with other similar results, to establish tolerance limits in a manufacturing process, or to decide if a certain course of action may be safely undertaken. It may therefore be necessary to develop particular standards based on this
                      <em>Guide</em>
                      that deal with the problems peculiar to specific fields of measurement or with the various uses of quantitative expressions of uncertainty.
-                     <fn reference="5" original-reference="5" id="_" name="_">
+                     <fn reference="5" id="_" original-reference="5" name="_">
                         <p original-id="_bbdf3455-f959-a5b1-c771-6c9f96b9bac5_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause1_clause4_p1_fn1_p1_">
                            <strong>Footnote to the 2008 version:</strong>
                         </p>
@@ -1164,10 +1172,12 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                            .
                         </p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">5</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">5</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      . These standards may be simplified versions of this
@@ -1288,7 +1298,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   . These definitions are taken from the
                   <em>International vocabulary of basic and general terms in metrology</em>
                   (abbreviated VIM)
-                  <fn reference="6" original-reference="6" id="_" name="_">
+                  <fn reference="6" id="_" original-reference="6" name="_">
                      <p original-id="_a7149ae2-17f0-33c7-f8df-b2785933d774_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause2_clause1_p1_fn1_p1_">
                         <strong>Footnote to the 2008 version:</strong>
                      </p>
@@ -1298,10 +1308,12 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         .
                      </p>
                      <fmt-fn-label>
-                        <sup>
-                           <semx element="autonum" source="_">6</semx>
-                           <span class="fmt-label-delim">)</span>
-                        </sup>
+                        <span class="fmt-caption-label">
+                           <sup>
+                              <semx element="autonum" source="_">6</semx>
+                              <span class="fmt-label-delim">)</span>
+                           </sup>
+                        </span>
                      </fmt-fn-label>
                   </fn>
                   <eref type="inline" bibitemid="International1993_ISO_JCGM_100_2008_EN_" citeas="[6]" id="_"/>
@@ -1346,7 +1358,7 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                   (VIM
                   <bookmark id="_"/>
                   )
-                  <fn reference="6" original-reference="6" id="_" name="_">
+                  <fn reference="6" id="_" original-reference="6" name="_">
                      <p original-id="_0e11ebd8-8b7e-8950-62e6-4a45b1cb3d57_ISO_JCGM_100_2008_FR_" cross-align="true" element-number="sections_clause2_clause1_p1_fn1_p1_">
                         <strong>Note de bas de page à la version 2008:</strong>
                      </p>
@@ -1359,10 +1371,12 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                         </em>
                      </p>
                      <fmt-fn-label>
-                        <sup>
-                           <semx element="autonum" source="_">6</semx>
-                           <span class="fmt-label-delim">)</span>
-                        </sup>
+                        <span class="fmt-caption-label">
+                           <sup>
+                              <semx element="autonum" source="_">6</semx>
+                              <span class="fmt-label-delim">)</span>
+                           </sup>
+                        </span>
                      </fmt-fn-label>
                   </fn>
                   <eref type="inline" bibitemid="International1993_ISO_JCGM_100_2008_FR_" citeas="[6]" id="_"/>
@@ -3312,16 +3326,18 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                            <asciimath>25.00 "unitsml(degC)"</asciimath>
                         </semx>
                      </fmt-stem>
-                     <fn reference="7" original-reference="7" id="_" name="_">
+                     <fn reference="7" id="_" original-reference="7" name="_">
                         <p original-id="_a70b9f5c-a17e-f418-355f-502f78ff7c7e_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause3_clause1_clause3_example1_p1_fn1_p1_">
                            <strong>Footnote to the 2008 version:</strong>
                         </p>
                         <p original-id="_f6ab5f9f-7ee6-afc1-623c-a2065aab88cd_ISO_JCGM_100_2008_EN_" cross-align="true" element-number="sections_clause3_clause1_clause3_example1_p1_fn1_p2_">According to Resolution 10 of the 22nd CGPM (2003) “…​ the symbol for the decimal marker shall be either the point on the line or the comma on the line…​”. The JCGM has decided to adopt, in its documents in English, the point on the line. However, in this document, the decimal comma has been retained for consistency with the 1995 printed version.</p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">7</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">7</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      and
@@ -3434,16 +3450,18 @@ IFCC, ILAC, ISO, IUPAC, IUPAP and OIML).</p>
                            <asciimath>25,00 "unitsml(degC)"</asciimath>
                         </semx>
                      </fmt-stem>
-                     <fn reference="7" original-reference="7" id="_" name="_">
+                     <fn reference="7" id="_" original-reference="7" name="_">
                         <p original-id="_0f79d36a-35b0-9eea-fa4f-95633a5c68fe_ISO_JCGM_100_2008_FR_" cross-align="true" element-number="sections_clause3_clause1_clause3_example1_p1_fn1_p1_">
                            <strong>Note de bas de page à la version 2008:</strong>
                         </p>
                         <p original-id="_c686bd90-c5f8-21c5-dc98-e54da787c92a_ISO_JCGM_100_2008_FR_" cross-align="true" element-number="sections_clause3_clause1_clause3_example1_p1_fn1_p2_">Conformément à la Résolution 10 de la 22e CGPM (2003), «…​ le symbole du séparateur décimal pourra être le point sur la ligne ou la virgule sur la ligne…​». Le JCGM a décidé d’adopter, dans ses documents en anglais, le point sur la ligne. Cependant, dans le présent document, la virgule sur la ligne a été retenue par souci de cohérence avec la version imprimée.</p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">7</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">7</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      et
@@ -48860,7 +48878,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                         <span class="stddocTitle">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</span>
                      </em>
                   </formattedref>
-                  <fetched>2025-04-29</fetched>
+                  <fetched>2025-05-10</fetched>
                   <title type="title-intro" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai</title>
                   <title type="title-main" format="text/plain" language="fr" script="Latn">Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
                   <title type="main" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
@@ -48998,7 +49016,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref-label>
                   <p id="">
                      This standard is currently
-                     <fn reference="8" original-reference="12" id="_" name="_">
+                     <fn reference="8" id="_" original-reference="12" name="_">
                         <p original-id="_4ab47b60-e29d-bbb0-21b6-55c48bc0de01_ISO_JCGM_100_2008_EN_">
                            <strong>Footnote to the 2008 version:</strong>
                         </p>
@@ -49020,10 +49038,12 @@ measurement result, it is prudent to obtain additional data for its further eval
                            <em>Part 6: Use in practice of accuracy values</em>
                         </p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">8</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">8</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      being revised. The revision has a new title, “Accuracy (trueness and precision) of measurement methods and results”, and it is composed of six parts.
@@ -49055,7 +49075,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                   </fmt-xref-label>
                   <p id="">
                      Cette norme est actuellement en révision
-                     <fn reference="8" original-reference="13" id="_" name="_">
+                     <fn reference="8" id="_" original-reference="13" name="_">
                         <p original-id="_b89c59ff-9ce5-8e6e-b459-e0335b04acab_ISO_JCGM_100_2008_FR_">
                            <strong>Note de bas de page à la version 2008:</strong>
                         </p>
@@ -49077,10 +49097,12 @@ measurement result, it is prudent to obtain additional data for its further eval
                            <em>Partie 6: Utilisation dans la pratique des valeurs d’exactitude].</em>
                         </p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">8</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">8</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      . Le projet révisé a un nouveau titre, «Exactitude (justesse et fidélité) de méthodes de mesure et de résultats» et il comporte six parties.
@@ -49094,7 +49116,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                   <formattedref format="application/x-isodoc+xml">
                      <em>International vocabulary of basic and general terms in metrology</em>
                      , second edition, 1993,
-                     <fn reference="9" original-reference="13" id="_" name="_">
+                     <fn reference="9" id="_" original-reference="13" name="_">
                         <p original-id="_101f4a75-1aa6-cff3-03aa-666b843930c3_ISO_JCGM_100_2008_EN_">Footnote to the 2008 version:*</p>
                         <p original-id="_f3b6cc2e-902c-d806-c676-423280bb2cce_ISO_JCGM_100_2008_EN_">
                            The third edition of the vocabulary was published in 2008, under the title JCGM 200:2008,
@@ -49102,10 +49124,12 @@ measurement result, it is prudent to obtain additional data for its further eval
                            .
                         </p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">9</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">9</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      * International Organization for Standardization (Geneva, Switzerland)
@@ -49122,7 +49146,7 @@ measurement result, it is prudent to obtain additional data for its further eval
                   <formattedref format="application/x-isodoc+xml">
                      <em>Vocabulaire international des termes fondamentaux et généraux de métrologie</em>
                      , deuxième édition, 1993
-                     <fn reference="9" original-reference="14" id="_" name="_">
+                     <fn reference="9" id="_" original-reference="14" name="_">
                         <p original-id="_0caec2d3-00e8-b663-d66c-1409ece3a90b_ISO_JCGM_100_2008_FR_">
                            <strong>Note de bas de page à la version 2008:</strong>
                         </p>
@@ -49132,10 +49156,12 @@ measurement result, it is prudent to obtain additional data for its further eval
                            .
                         </p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">9</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">9</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      , Organisation internationale de normalisation (Genève, Suisse)
@@ -49384,16 +49410,18 @@ measurement result, it is prudent to obtain additional data for its further eval
                <bibitem id="ISO_3534-1_ISO_JCGM_100_2008_EN_">
                   <formattedref format="application/x-isodoc+xml">
                      ISO 3534-1:1993,
-                     <fn reference="10" original-reference="14" id="_" name="_">
+                     <fn reference="10" id="_" original-reference="14" name="_">
                         <p original-id="_af845e5a-8e04-37be-3bc7-439a7ec721b9_ISO_JCGM_100_2008_EN_">
                            <strong>Footnote to the 2008 version:</strong>
                            + ISO 3534-1:2006 cancels and replaces ISO 3534-1:1993. Note that some of the terms and definitions have been revised. + For further information, see the latest edition.
                         </p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">10</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">10</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      <em>Statistics — Vocabulary and symbols — Part 1: Probability and general statistical terms</em>
@@ -49410,16 +49438,18 @@ measurement result, it is prudent to obtain additional data for its further eval
                <bibitem id="ISO_3534-1_ISO_JCGM_100_2008_FR_">
                   <formattedref format="application/x-isodoc+xml">
                      ISO 3534-1:1993,
-                     <fn reference="10" original-reference="15" id="_" name="_">
+                     <fn reference="10" id="_" original-reference="15" name="_">
                         <p original-id="_5c7083c8-6e3f-442f-9652-ebb3511ac28e_ISO_JCGM_100_2008_FR_">
                            <strong>Note de bas de page à la version 2008:</strong>
                         </p>
                         <p original-id="_b84bcff2-58ad-dea9-a8ff-dff47a7954b7_ISO_JCGM_100_2008_FR_">L’ISO 3534-1:2006 annule et remplace l’ISO 3534-1:1993. Il est à noter que certains termes et définitions ont été révisés. Pour plus d’informations, voir la dernière édition.</p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">10</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">10</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      <em>Statistiques — Vocabulaire et symboles — Partie 1: Probabilité et termes statistiques généraux</em>
@@ -49796,16 +49826,18 @@ measurement result, it is prudent to obtain additional data for its further eval
                <bibitem id="ISO1989_ISO_JCGM_100_2008_EN_">
                   <formattedref format="application/x-isodoc+xml">
                      ISO Guide 35:1989,
-                     <fn reference="11" original-reference="15" id="_" name="_">
+                     <fn reference="11" id="_" original-reference="15" name="_">
                         <p original-id="_c09372d3-50a3-abdf-07e0-8b040e4a85e0_ISO_JCGM_100_2008_EN_">
                            <strong>Footnote to the 2008 version:</strong>
                            + ISO Guide 35:2006 cancels and replaces ISO Guide 35:1989. For further information, see the latest edition.
                         </p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">11</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">11</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      <em>Certification of reference materials — General and statistical principles</em>
@@ -49822,16 +49854,18 @@ measurement result, it is prudent to obtain additional data for its further eval
                <bibitem id="ISO1989_ISO_JCGM_100_2008_FR_">
                   <formattedref format="application/x-isodoc+xml">
                      ISO Guide 35:1989,
-                     <fn reference="11" original-reference="16" id="_" name="_">
+                     <fn reference="11" id="_" original-reference="16" name="_">
                         <p original-id="_384c648b-420e-389a-cfcf-1fd8cfd340a9_ISO_JCGM_100_2008_FR_">
                            <strong>Note de bas de page à la version 2008:</strong>
                         </p>
                         <p original-id="_6190033e-fa2f-ebcd-edf3-940e715a77c9_ISO_JCGM_100_2008_FR_">Le Guide ISO 35:2006 annule et remplace le Guide ISO 35:1989. Pour plus d’informations, voir la dernière édition.</p>
                         <fmt-fn-label>
-                           <sup>
-                              <semx element="autonum" source="_">11</semx>
-                              <span class="fmt-label-delim">)</span>
-                           </sup>
+                           <span class="fmt-caption-label">
+                              <sup>
+                                 <semx element="autonum" source="_">11</semx>
+                                 <span class="fmt-label-delim">)</span>
+                              </sup>
+                           </span>
                         </fmt-fn-label>
                      </fn>
                      <em>Certification des matériaux de référence — Principes généraux et statistiques</em>
@@ -55486,9 +55520,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">1</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">1</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55513,9 +55549,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">2</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">2</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55529,9 +55567,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">3</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">3</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55549,9 +55589,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">4</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">4</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55572,9 +55614,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">5</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">5</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55597,9 +55641,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">6</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">6</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55617,9 +55663,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">7</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">7</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55633,9 +55681,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">8</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">8</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55665,9 +55715,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">9</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">9</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55685,9 +55737,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">10</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">10</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>
@@ -55701,9 +55755,11 @@ measurement result, it is prudent to obtain additional data for its further eval
             <semx element="fn" source="_">
                <p id="">
                   <fmt-fn-label>
-                     <sup>
-                        <semx element="autonum" source="_">11</semx>
-                     </sup>
+                     <span class="fmt-caption-label">
+                        <sup>
+                           <semx element="autonum" source="_">11</semx>
+                        </sup>
+                     </span>
                      <span class="fmt-caption-delim">
                         <tab/>
                      </span>

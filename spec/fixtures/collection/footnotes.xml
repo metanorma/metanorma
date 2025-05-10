@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metanorma xmlns="https://www.metanorma.org/ns/standoc" type="semantic" version="3.0.6" schema-version="v2.0.5" flavor="iso">
+<bibdata type="standard">
+  <title>Title</title>
+
+
+
+
+<docidentifier type="ISO" primary="true">ISO 10303:2025</docidentifier><docidentifier type="iso-reference">ISO 10303:2025(E)</docidentifier><docidentifier type="URN">urn:iso:std:iso:10303:stage-60.60:en</docidentifier><docidentifier type="iso-undated">ISO 10303</docidentifier><docidentifier type="iso-with-lang">ISO 10303:2025(en)</docidentifier><docnumber>10303</docnumber><contributor><role type="author"/><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="authorizer"><description>Agency</description></role><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="publisher"/><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></contributor><version/><language>en</language><script>Latn</script><status><stage>60</stage><substage>60</substage></status><copyright><from>2025</from><owner><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></owner></copyright><ext><doctype>standard</doctype><flavor>iso</flavor><editorialgroup><agency>ISO</agency></editorialgroup><approvalgroup><agency>ISO</agency></approvalgroup><structuredidentifier><project-number>ISO 10303</project-number></structuredidentifier><stagename>International Standard</stagename></ext></bibdata><metanorma-extension><presentation-metadata><name>document-scheme</name><value>2024</value></presentation-metadata><presentation-metadata><name>TOC Heading Levels</name><value>2</value></presentation-metadata><presentation-metadata><name>HTML TOC Heading Levels</name><value>2</value></presentation-metadata><presentation-metadata><name>DOC TOC Heading Levels</name><value>3</value></presentation-metadata><presentation-metadata><name>PDF TOC Heading Levels</name><value>3</value></presentation-metadata></metanorma-extension>
+<boilerplate><copyright-statement>
+
+<clause id="_ef76dbf8-5ad8-bf03-75a1-9742ca31ddd3" anchor="boilerplate-copyright-default" inline-header="false" obligation="normative">
+<title>COPYRIGHT PROTECTED DOCUMENT</title>
+<p id="_1b6a4b51-3a27-853c-45b7-9826738c22e4" anchor="boilerplate-year">© <span class="std_publisher">ISO </span><span class="date">2025</span></p>
+
+<p id="_dcd0efd0-9c2b-bcfd-6dcd-ce36b8143916" anchor="boilerplate-message">All rights reserved. Unless otherwise specified, or required in the context of its implementation, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</p>
+
+<p id="_2febe1c3-bc26-5d85-688e-933874267a56" anchor="boilerplate-address" align="left">ISO copyright office<br/> CP 401 • Ch. de Blandonnet 8<br/> CH-1214 Vernier, Geneva<br/> Phone: +41 22 749 01 11<br/> Email: <link target="mailto:copyright@iso.org"/><br/> Website: <link target="https://www.iso.org/">www.iso.org</link></p>
+
+<p id="_93a0bcfe-1edb-b952-e8f5-db8ed91f8e23" anchor="boilerplate-place">Published in Switzerland</p>
+</clause>
+</copyright-statement>
+</boilerplate><sections><clause id="_3e82f1b5-5ad6-4856-80d0-77a9b9d5a874" anchor="_clause_1" inline-header="false" obligation="normative">
+<title>Clause 1</title>
+<p id="_a2488a04-edf5-6899-5c99-4b23e30f41b2"><bookmark id="_51ab1801-94c1-c498-e5ca-f209dcf7d03f" anchor="_4e005795-47e8-4ffa-a973-2235f02e757f"/><bookmark id="_b11b4d11-54f4-716d-327f-f31020cb3fdd" anchor="_70ed056c-144d-4fde-ba37-ff4df1ab34ef"/>Paragraph.<fn reference="1"><p id="_ec7f35af-0c74-9413-1d98-50a6f0c72382">First footnote</p>
+</fn></p>
+
+
+
+<p id="_2bcb4caf-58af-9cd6-173d-18963dee1dd6">Paragraph.<fn reference="2"><p id="_913ac335-0b6b-6444-c993-8f334f8433a3">Second footnote</p>
+</fn></p>
+</clause>
+
+<clause id="_f6d0703c-702c-7b8a-7aab-21497a44e247" anchor="_clause_2" inline-header="false" obligation="normative">
+<title>Clause 2</title>
+<p id="_2cbc3750-3834-2aac-3638-eede249d039e"><bookmark id="_f5dd4012-0e20-cb73-62f0-dae8fd20a984" anchor="_713f5a1a-c835-4ee8-994e-96831a50e516"/><bookmark id="_b1dc82ed-fd5b-f458-6584-4af210ee7f02" anchor="_5f6dd928-5dea-4bd1-a11b-0db7d48ee168"/>Paragraph.<fn reference="3"><p id="_ed8bb973-c53f-a4d9-6302-bf387f04fe33">Third footnote</p>
+</fn></p>
+
+
+
+<p id="_1c0aca98-fab5-ea62-54f1-5082f122e374">Paragraph.<fn reference="4"><p id="_021e16b6-c714-be65-4d0e-83000fa6f28d">Fourth footnote</p>
+</fn></p>
+</clause>
+
+<clause id="_020c57eb-bbd9-49e4-3f00-b287a7c79dc1" anchor="_clause_3" inline-header="false" obligation="normative">
+<title>Clause 3</title>
+<p id="_33caceae-e83a-b31f-268e-cfd9e3ebedf8"><bookmark id="_d0b33409-65fe-9d52-8d09-2dbe47676e73" anchor="_d4cc2291-de5b-47ed-a76f-09d1b63e21a6"/><bookmark id="_1d46d7e6-f314-5531-e4ab-f15ed0bd9a52" anchor="_e8510ee5-6595-4f79-9682-bad2909b4f5f"/>Paragraph.<fn reference="5"><p id="_bfdc2b50-ae8c-7b76-129b-44f2fd0b7e4c">Fifth footnote</p>
+</fn></p>
+
+
+
+<p id="_295796c1-4b4d-8bbd-764c-bd24edb94868">Paragraph.<fn reference="6"><p id="_59222951-b349-1209-944f-9d5a4e76344d">Sixth footnote</p>
+</fn></p>
+</clause>
+</sections>
+<review-container><review id="_e14bb605-8e44-94ce-417e-0c0340cbc9a1" reviewer="(Unknown)" date="2025-05-10T00:00:00Z" type="todo" from="_4e005795-47e8-4ffa-a973-2235f02e757f" to="_4e005795-47e8-4ffa-a973-2235f02e757f"><p id="_ae166295-1aa2-06fc-66e3-904b6709facf">First review</p>
+</review><review id="_41835e01-e067-3ac6-621d-d41348785da7" reviewer="(Unknown)" date="2025-05-10T00:00:00Z" type="todo" from="_70ed056c-144d-4fde-ba37-ff4df1ab34ef" to="_70ed056c-144d-4fde-ba37-ff4df1ab34ef"><p id="_a0fd38e1-a045-9e37-66c5-44bb0e311dcd">Second review</p>
+</review><review id="_a6b4e235-f821-5eab-1288-882b3337e76a" reviewer="(Unknown)" date="2025-05-10T00:00:00Z" type="todo" from="_713f5a1a-c835-4ee8-994e-96831a50e516" to="_713f5a1a-c835-4ee8-994e-96831a50e516"><p id="_0b8b58ed-9c3d-b67b-c13d-956d57324454">Third review</p>
+</review><review id="_333e12c4-cac9-f170-1f76-410ec579a88a" reviewer="(Unknown)" date="2025-05-10T00:00:00Z" type="todo" from="_5f6dd928-5dea-4bd1-a11b-0db7d48ee168" to="_5f6dd928-5dea-4bd1-a11b-0db7d48ee168"><p id="_ea928a88-935d-854f-4880-5b900b09564b">Fourth review</p>
+</review><review id="_e3bab3f0-5109-0750-6ea8-de2405bdce40" reviewer="(Unknown)" date="2025-05-10T00:00:00Z" type="todo" from="_d4cc2291-de5b-47ed-a76f-09d1b63e21a6" to="_d4cc2291-de5b-47ed-a76f-09d1b63e21a6"><p id="_de2e95e2-fc58-66e0-e530-ab0ccdcae427">Fifth review</p>
+</review><review id="_8a2744f3-05ba-8cda-c874-5dacb203da9c" reviewer="(Unknown)" date="2025-05-10T00:00:00Z" type="todo" from="_e8510ee5-6595-4f79-9682-bad2909b4f5f" to="_e8510ee5-6595-4f79-9682-bad2909b4f5f"><p id="_84c90640-d5bc-5a06-4f0b-5a6425ca070f">Sixth review</p>
+</review></review-container></metanorma>

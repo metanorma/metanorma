@@ -15,7 +15,7 @@ module Metanorma
     class Renderer
       FORMATS = %i[html xml doc pdf].freeze
 
-      attr_accessor :isodoc, :nested
+      attr_accessor :isodoc, :isodoc_presxml, :nested
       attr_reader :xml, :compile, :compile_options, :documents, :outdir,
                   :manifest
 
@@ -45,6 +45,8 @@ module Metanorma
 
         # output processor for flavour
         @isodoc = Util::isodoc_create(@flavor, @lang, @script, @xml)
+        @isodoc_presxml = Util::isodoc_create(@flavor, @lang, @script, @xml,
+                                              presxml: true)
         @outdir = dir_name_cleanse(options[:output_folder])
         @coverpage = options[:coverpage] || collection.coverpage
         @format = ::Metanorma::Util.sort_extensions_execution(options[:format])
