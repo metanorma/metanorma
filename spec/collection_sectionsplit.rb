@@ -390,7 +390,7 @@ RSpec.describe Metanorma::Collection do
          <a class="FootnoteRef" href="#fn:_82_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
             <sup>2</sup>
          </a>
-         <aside id="_" class="footnote">
+         <aside id="fn:_81_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
             <p id="__ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                <a class="FootnoteRef" href="#fn:_81_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                   <sup>1</sup>
@@ -402,7 +402,7 @@ RSpec.describe Metanorma::Collection do
          <a class="FootnoteRef" href="#fn:_81_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
             <sup>1</sup>
          </a>
-         <aside id="_" class="footnote">
+         <aside id="fn:_82_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
             <p id="__ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                <a class="FootnoteRef" href="#fn:_82_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                   <sup>2</sup>
