@@ -434,7 +434,7 @@ RSpec.describe Metanorma::Collection do
          <a class="FootnoteRef" href="#fn:_84_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
             <sup>2</sup>
          </a>
-         <aside id="_" class="footnote">
+         <aside id="fn:_83_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
             <p id="__ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                <a class="FootnoteRef" href="#fn:_83_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                   <sup>1</sup>
@@ -446,7 +446,7 @@ RSpec.describe Metanorma::Collection do
          <a class="FootnoteRef" href="#fn:_83_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
             <sup>1</sup>
          </a>
-         <aside id="_" class="footnote">
+         <aside id="fn:_84_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
             <p id="__ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                <a class="FootnoteRef" href="#fn:_84_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                   <sup>2</sup>
@@ -478,7 +478,7 @@ RSpec.describe Metanorma::Collection do
          <a class="FootnoteRef" href="#fn:_86_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
             <sup>2</sup>
          </a>
-         <aside id="_" class="footnote">
+         <aside id="fn:_85_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
             <p id="__ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                <a class="FootnoteRef" href="#fn:_85_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                   <sup>1</sup>
@@ -490,7 +490,7 @@ RSpec.describe Metanorma::Collection do
          <a class="FootnoteRef" href="#fn:_85_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
             <sup>1</sup>
          </a>
-         <aside id="_" class="footnote">
+         <aside id="fn:_86_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
             <p id="__ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                <a class="FootnoteRef" href="#fn:_86_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                   <sup>2</sup>
