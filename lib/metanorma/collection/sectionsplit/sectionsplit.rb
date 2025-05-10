@@ -19,6 +19,7 @@ module Metanorma
         @fileslookup = opts[:fileslookup]
         @ident = opts[:ident]
         @isodoc = opts[:isodoc]
+        @isodoc_presxml = opts[:isodoc_presxml]
         @document_suffix = opts[:document_suffix]
       end
 
@@ -60,6 +61,7 @@ module Metanorma
 
       def sectionsplit2(xml, empty, chunks, parentnode, opt)
         @pool.post do
+          warn "#{@base}.#{opt[:idx]}"
           a = sectionfile(xml, empty, "#{@base}.#{opt[:idx]}", chunks,
                           parentnode)
           @mutex.synchronize { opt[:acc] << a }
@@ -169,11 +171,11 @@ module Metanorma
 
       def sectionfile_fn_filter(xml)
         ids = sectionfile_fn_filter_prep(xml)
-        xml.xpath(ns("/fmt-footnote-container/fmt-fn-body")).each do |f|
+        xml.root.xpath(ns("./fmt-footnote-container/fmt-fn-body")).each do |f|
           ids.has_key?(f["id"]) or f.remove
         end
         seen = {}
-        xml.xpath(ns("/fmt-footnote-container/fmt-fn-body"))
+        xml.root.xpath(ns("/fmt-footnote-container/fmt-fn-body"))
           .each_with_index do |fnbody, i|
             sectionfile_fn_filter_renumber(fnbody, i, ids, seen)
           end
@@ -197,16 +199,16 @@ module Metanorma
 
       def sectionfile_fn_filter_fn_renumber(fnbody, idx, ids, seen)
         ids[fnbody["id"]].each do |f|
-          @isodoc.renumber_document_footnote(f, idx, seen)
+          @isodoc_presxml.renumber_document_footnote(f, idx, seen)
           fnlabel = f.at(ns(FN_CAPTIONS)) and
-            fnlabel.children = @isodoc.fn_ref_label(f)
+            fnlabel.children = @isodoc_presxml.fn_ref_label(f)
         end
       end
 
       def sectionfile_fn_filter_fnbody_renumber(fnbody, _idx, ids)
         fnlabel = fnbody.at(ns(FN_CAPTIONS)) or return
         fnbody["reference"] = ids[fnbody["id"]].first["reference"]
-        fnlabel.children = @isodoc.fn_body_label(fnbody)
+        fnlabel.children = @isodoc_presxml.fn_body_label(fnbody)
       end
 
       # map fmt-review-body/@id = fmt-review-{start/end}/@target
@@ -221,10 +223,10 @@ module Metanorma
 
       def sectionfile_review_filter(xml)
         ids = sectionfile_review_filter_prep(xml)
-        xml.xpath(ns("/review-container/fmt-review-body")).each do |f|
+        xml.root.xpath(ns("./review-container/fmt-review-body")).each do |f|
           ids.has_key?(f["id"]) or f.remove
         end
-        xml.xpath(ns("/review-container/fmt-review-body"))
+        xml.root.xpath(ns("./review-container/fmt-review-body"))
           .each_with_index do |fnbody, i|
             sectionfile_review_filter_renumber(fnbody, i, ids)
           end
@@ -235,9 +237,9 @@ module Metanorma
         ids[fnbody["id"]].each do |f|
           case f.name
           when "fmt-review-start"
-            f.children = @isodoc.comment_bookmark_start_label(f)
+            f.children = @isodoc_presxml.comment_bookmark_start_label(f)
           when "fmt-review-end"
-            f.children = @isodoc.comment_bookmark_end_label(f)
+            f.children = @isodoc_presxml.comment_bookmark_end_label(f)
           end
         end
       end
