@@ -18,6 +18,7 @@ module Metanorma
         @parent = parent
         @xml = parent.xml
         @isodoc = parent.isodoc
+        @isodoc_presxml = parent.isodoc_presxml
         @path = path
         @compile = parent.compile
         @documents = parent.documents
