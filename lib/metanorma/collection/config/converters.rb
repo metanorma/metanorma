@@ -4,7 +4,7 @@ module Relaton
   module Cli
     class YAMLConvertor
       # TODO move to relaton-cli
-      def convert_single_file(content)
+      def self.convert_single_file(content)
         flavor = content.dig("ext", "flavor") || doctype(content["docid"])
         if (processor = Registry.instance.by_type(flavor))
           processor.hash_to_bib content

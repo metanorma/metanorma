@@ -246,7 +246,7 @@ module Metanorma
       def preprocess_yaml(yaml)
         yaml["bibdata"] && @flavor or return
         yaml["bibdata"]["ext"] ||= {}
-        yaml["bibdata"]["ext"]["flavor"] ||= @flavor
+        yaml["bibdata"]["ext"]["flavor"] ||= @flavor.upcase
       end
 
       def parse(file)
