@@ -244,6 +244,10 @@ module Metanorma
 
       # inject flavor to bibdata if absent
       def preprocess_yaml(yaml)
+        d = yaml["directives"]&.each_with_object({}) do |x, m|
+          m[x.key] = x.value
+        end
+        d and @flavor ||= d["flavor"]
         yaml["bibdata"] && @flavor or return
         yaml["bibdata"]["ext"] ||= {}
         yaml["bibdata"]["ext"]["flavor"] ||= @flavor.upcase
