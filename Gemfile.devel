@@ -1,0 +1,1 @@
+gem "relaton-cli", git: "https://github.com/relaton/relaton-cli", branch: "fix/yaml-flavor"
