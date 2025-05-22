@@ -375,12 +375,22 @@ RSpec.describe Metanorma::Collection do
     it "recompiles XML" do
       FileUtils.rm_f "#{INPATH}/document-1/document-1.xml"
       file = "#{INPATH}/document-1/collection.yml"
+      a = File.read(file).sub(/- documents-inline/, "- recompile-xml: false\n- documents-inline")
+      File.open(file, "w") { |x| x.write(a) }
       Metanorma::Collection.parse file
       expect(File.exist?("#{INPATH}/document-1/document-1.xml")).to be true
       time = File.mtime("#{INPATH}/document-1/document-1.xml")
       Metanorma::Collection.parse file
       expect(File.mtime("#{INPATH}/document-1/document-1.xml")).to be_within(0.1).of time
-      a = File.read(file).sub(/- documents-inline/, "- recompile-xml\n- documents-inline")
+      a = File.read(file).sub(/- recompile-xml: false/, "- recompile-xml: true")
+      File.open(file, "w") { |x| x.write(a) }
+      Metanorma::Collection.parse file
+      expect(File.mtime("#{INPATH}/document-1/document-1.xml")).not_to be_within(0.1).of time
+      a = File.read(file).sub(/- recompile-xml: true/, "- recompile-xml")
+      File.open(file, "w") { |x| x.write(a) }
+      Metanorma::Collection.parse file
+      expect(File.mtime("#{INPATH}/document-1/document-1.xml")).not_to be_within(0.1).of time
+      a = File.read(file).sub(/- recompile-xml: true\n/, "\n")
       File.open(file, "w") { |x| x.write(a) }
       Metanorma::Collection.parse file
       expect(File.mtime("#{INPATH}/document-1/document-1.xml")).not_to be_within(0.1).of time

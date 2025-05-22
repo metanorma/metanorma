@@ -164,6 +164,7 @@ module Metanorma
       def compile_adoc_file(file)
         f = (Pathname.new file).absolute? ? file : File.join(@dir, file)
         File.exist?(f) or raise AdocFileNotFoundException.new "#{f} not found!"
+        warn "RECOMPILE? #{compile_adoc_file?(file)}"
         compile_adoc_file?(file) or return
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...", :info)
         ::Metanorma::Compile.new
@@ -173,10 +174,11 @@ module Metanorma
       end
 
       def compile_adoc_file?(file)
+        !File.exist?(file.sub(/\.adoc$/, ".xml")) and return true
         @collection.directives.detect do |d|
-          d.key == "recompile-xml"
-        end and return true
-        !File.exist?(file.sub(/\.adoc$/, ".xml"))
+          d.key == "recompile-xml" && d.value == "false"
+        end and return false
+        true
       end
 
       def documents(mnf = @config)
