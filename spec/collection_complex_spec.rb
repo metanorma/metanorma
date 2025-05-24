@@ -49,23 +49,24 @@ RSpec.describe Metanorma::Collection do
       end
 
       %w[
-        Dummy_ISO_17301-1_2016
-        StarTrek_ISO_17301-1_2016
-        RiceAmd_ISO_17301-1_2016
-        _scope_ISO_1701_1974
-        _introduction_ISO_17301-1_2016_Amd.1_2017
+        Dummy_ISO_17301-1:2016
+        StarTrek_ISO_17301-1:2016
+        RiceAmd_ISO_17301-1:2016
+        _scope_ISO_1701:1974
+        _introduction_ISO_17301-1:2016_Amd.1:2017
       ].each do |id|
+        warn id
         expect(conact_file_doc_xml.xpath(IsoDoc::Convert.new({})
           .ns("//*[@id='#{id}']")).length).to_not be_zero
       end
       expect(concat_text_doc_xml.xpath("//xmlns:xref/@target")[-1].text)
         .to be_equivalent_to "_scope"
       expect(conact_file_doc_xml.xpath("//i:xref/@target", "i" => "https://www.metanorma.org/ns/iso")[-1].text)
-        .to be_equivalent_to "_scope_ISO_17301-1_2016"
+        .to be_equivalent_to "_scope_ISO_17301-1:2016"
       expect(concat_text_doc_xml.at("//xmlns:strong/@style").text)
         .to be_equivalent_to "background: url(#svg1); foreground: url(_001); middleground: url(#fig1);"
       expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/iso").text)
-        .to be_equivalent_to "background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);"
+        .to be_equivalent_to "background: url(#svg1_ISO_17301-1:2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1:2016);"
 
       expect(File.exist?("#{INPATH}/collection1.err.html")).to be true
       expect(File.read("#{INPATH}/collection1.err.html", encoding: "utf-8"))
@@ -109,7 +110,7 @@ RSpec.describe Metanorma::Collection do
         .to be true
       rice = File.read("#{OUTPATH}/rice-en.final.html")
       expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
-      expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
+      expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1:2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1:2016"><span class="citesec">Clause 3</span></a>.</p>)
       # demonstrate that erefs are removed if they point to another document in the repository,
       # but that document is not supplied
       expect(rice).to include %{This document uses schemas E0/A0, <a href="example/url.html#A1">E1/A1</a> and <a href="example/url.html#E2">E2</a>.}
