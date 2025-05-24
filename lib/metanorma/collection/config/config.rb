@@ -130,14 +130,18 @@ module Metanorma
           end&.dig("flavor")&.upcase
         end
 
-        def self.from_yaml(file)
+        def self.flavor_to_bibdata(file)
           # propagate flavor from directives to bibdata
           yaml = YAML.safe_load(file)
           flavor = flavor_from_yaml(yaml) or return file
           yaml["bibdata"] or return file
           yaml["bibdata"]["ext"] ||= {}
           yaml["bibdata"]["ext"]["flavor"] ||= flavor
-          file = yaml.to_yaml
+          yaml.to_yaml
+        end
+
+        def self.from_yaml(file)
+          file = flavor_to_bibdata(file)
           super
         end
 
