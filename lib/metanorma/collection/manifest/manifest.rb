@@ -164,13 +164,12 @@ module Metanorma
       def compile_adoc_file(file)
         f = (Pathname.new file).absolute? ? file : File.join(@dir, file)
         File.exist?(f) or raise AdocFileNotFoundException.new "#{f} not found!"
-        warn "RECOMPILE? #{compile_adoc_file?(file)}"
         compile_adoc_file?(file) or return
-        ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...", :info)
+        ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...", :warning)
         ::Metanorma::Compile.new
           .compile(f, agree_to_terms: true, install_fonts: false,
                       extension_keys: [:xml])
-        ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...done!", :info)
+        ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...done!", :warning)
       end
 
       def compile_adoc_file?(file)
