@@ -242,35 +242,15 @@ module Metanorma
         end
       end
 
-      # KILL
-      def flavor_from_yamlx(yaml)
-        d = yaml["directives"]&.each_with_object({}) do |x, m|
-          x.is_a?(Hash) or next 
-          x.each { |k, v| m[k] = v }
-        end
-        d and @flavor ||= d["flavor"]
-      end
-
-      # KILL
-      # inject flavor to bibdata if absent
-      def preprocess_yamlx(yaml)
-        flavor_from_yaml(yaml)
-        yaml["bibdata"] && @flavor or return
-        yaml["bibdata"]["ext"] ||= {}
-        yaml["bibdata"]["ext"]["flavor"] ||= @flavor.upcase
-      end
-
       def parse(file)
         # need @dirname initialised before collection object initialisation
         @dirname = File.expand_path(File.dirname(file))
         config = case file
                  when /\.xml$/
-                   # TODO: inject flavor to bibdata if absent
                    ::Metanorma::Collection::Config::Config.from_xml(File.read(file))
                  when /.ya?ml$/
                    y = YAML.safe_load(File.read(file))
                    pre_parse_model(y)
-                   #preprocess_yaml(y)
                    ::Metanorma::Collection::Config::Config.from_yaml(y.to_yaml)
                  end
         new(file: file, config: config)
