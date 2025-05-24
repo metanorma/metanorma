@@ -124,7 +124,7 @@ module Metanorma
           end
         end
 
-        def flavor_from_yaml(yaml)
+        def self.flavor_from_yaml(yaml)
           yaml["directives"]&.detect do |x|
             x.is_a?(Hash) && x.has_key?("flavor")
           end&.dig("flavor")&.upcase
