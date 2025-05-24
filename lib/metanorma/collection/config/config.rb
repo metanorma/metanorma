@@ -124,6 +124,23 @@ module Metanorma
           end
         end
 
+        def flavor_from_yaml(yaml)
+          yaml["directives"]&.detect do |x|
+            x.is_a?(Hash) && x.has_key?("flavor")
+          end&.dig("flavor")&.upcase
+        end
+
+        def from_yaml(file)
+          # propagate flavor from directives to bibdata
+          yaml = YAML.safe_load(file)
+          flavor = flavor_from_yaml(yaml) or return file
+          yaml["bibdata"] or return file
+          yaml["bibdata"]["ext"] ||= {}
+          yaml["bibdata"]["ext"]["flavor"] ||= flavor
+          file = yaml.to_yaml
+          super
+        end
+
         include Converters
       end
     end

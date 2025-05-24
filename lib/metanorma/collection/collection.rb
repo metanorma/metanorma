@@ -242,7 +242,8 @@ module Metanorma
         end
       end
 
-      def flavor_from_yaml(yaml)
+      # KILL
+      def flavor_from_yamlx(yaml)
         d = yaml["directives"]&.each_with_object({}) do |x, m|
           x.is_a?(Hash) or next 
           x.each { |k, v| m[k] = v }
@@ -250,8 +251,9 @@ module Metanorma
         d and @flavor ||= d["flavor"]
       end
 
+      # KILL
       # inject flavor to bibdata if absent
-      def preprocess_yaml(yaml)
+      def preprocess_yamlx(yaml)
         flavor_from_yaml(yaml)
         yaml["bibdata"] && @flavor or return
         yaml["bibdata"]["ext"] ||= {}
@@ -268,7 +270,7 @@ module Metanorma
                  when /.ya?ml$/
                    y = YAML.safe_load(File.read(file))
                    pre_parse_model(y)
-                   preprocess_yaml(y)
+                   #preprocess_yaml(y)
                    ::Metanorma::Collection::Config::Config.from_yaml(y.to_yaml)
                  end
         new(file: file, config: config)
