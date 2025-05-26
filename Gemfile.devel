@@ -1,2 +1,0 @@
-gem "metanorma-utils", git: "https://github.com/metanorma/metanorma-utils", branch: "fix/to_ncname"
-gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/ignore_autoassign_section_id"
