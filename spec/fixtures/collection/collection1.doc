@@ -25,7 +25,7 @@
                 <p class="MsoNormal">Intro ISO Collection 1 </p>
                 <div class="authority">
                    <div class="boilerplate-copyright">
-                      <div>
+                      <div> <a name="_" id="_"/>
                          <p class="zzCopyright">
                             <a name="boilerplate-year_ISO_17301-1:2016_Amd.1:2017" id="boilerplate-year_ISO_17301-1:2016_Amd.1:2017"/>
                             © ISO 2017
@@ -84,8 +84,8 @@
                 <div class="WordSection2">
                    <p class="MsoNormal">Intro Document Specification and test methods — Part 1: Rice 17301</p>
                    <div class="authority">
-                      <div class="boilerplate-copyright">
-                         <div>
+                      <div class="boilerplate-copyright"> 
+                         <div> <a name="_" id="_"/>
                             <p class="zzCopyright">
                                <a name="boilerplate-year_ISO_17301-1:2016_Amd.1:2017" id="boilerplate-year_ISO_17301-1:2016_Amd.1:2017"/>
                                © ISO 2017
@@ -406,7 +406,7 @@
                    <p class="MsoNormal">Intro Document Dummy document 17302</p>
                    <div class="authority">
                       <div class="boilerplate-copyright">
-                         <div>
+                         <div> <a name="_" id="_"/>
                             <p class="zzCopyright">
                                <a name="boilerplate-year_ISO_17302" id="boilerplate-year_ISO_17302"/>
                                © ISO 2016
@@ -631,7 +631,6 @@
                    <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
                 </p>
                 <div class="Section3">
-                   <a name="_" id="_"/>
                    <div>
                       <a name="_" id="_"/>
                       <h1>Exordium</h1>

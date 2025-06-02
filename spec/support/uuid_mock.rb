@@ -41,6 +41,18 @@ module UuidMock
       warn ret
       ret
     end
+
+  # Mock content hashing, preserving these GUIDs instead
+    allow_any_instance_of(IsoDoc::PresentationXMLConvert)
+      .to receive(:add_new_contenthash_id) do |_instance, doc, *args|
+      ret = doc.xpath("//*[@id]").each_with_object({}) do |x, m|
+        # should always be true
+        m[x["id"]] = x["id"]
+        args[0][x["id"]] = x["id"]
+      end
+      warn ret
+      ret
+    end
   end
 end
 
