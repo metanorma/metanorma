@@ -306,7 +306,7 @@
           <prefatory-content>
              <clause id="_" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
                 <title id="_">Clause</title>
-                <fmt-title depth="1">
+                <fmt-title depth="1" id="_">
                    <semx element="title" source="_">Clause</semx>
                 </fmt-title>
                 <p id="">Welcome to our collection</p>
@@ -581,7 +581,7 @@
           <final-content>
              <clause id="_" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
                 <title id="_">Exordium</title>
-                <fmt-title depth="1">
+                <fmt-title depth="1" id="_">
                    <semx element="title" source="_">Exordium</semx>
                 </fmt-title>
                 <p id="">Hic explicit</p>
