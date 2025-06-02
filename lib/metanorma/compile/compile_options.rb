@@ -104,7 +104,7 @@ module Metanorma
 
       def get_isodoc_i18nyaml(options, ret)
         dir = File.dirname(options[:filename])
-        ret[:i18nyaml] or retun
+        ret[:i18nyaml] or return
         (Pathname.new ret[:i18nyaml]).absolute? or
           ret[:i18nyaml] = File.join(dir, ret[:i18nyaml])
       end
