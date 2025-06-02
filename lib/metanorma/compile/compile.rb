@@ -6,6 +6,7 @@ require "htmlentities"
 require "yaml"
 require "fontist"
 require "fontist/manifest/install"
+require "metanorma-custom-assets"
 require_relative "writeable"
 require_relative "validator"
 require_relative "compile_options"
@@ -182,17 +183,9 @@ module Metanorma
       "#{attrs.join("\n")}\n\n#{rest}"
     end
 
-    # TODO: to config
     def process_input_adoc_overrides(attrs, options)
-      case options[:supplied_type]
-      when :icc
-        f = File.join(File.dirname(__FILE__), "assets", "icc-boilerplate.adoc")
-        [":boilerplate-authority: #{f}",
-         ":publisher: International Color Consortium",
-         ":publisher_abbr: ICC"].each { |a| attrs << a }
-        options[":boilerplate-authority:"] = f
-      end
-      attrs
+      c = Metanorma::CustomAssets.new(options[:supplied_type])
+      c.process_input_adoc_overrides(attrs, options)
     end
 
     def process_input_adoc_includes(file, filename)

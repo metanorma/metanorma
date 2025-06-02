@@ -1,6 +1,7 @@
 # Registry of all Metanorma types and entry points
 
 require "singleton"
+require "metanorma-custom-assets"
 
 class Error < StandardError
 end
@@ -14,8 +15,8 @@ module Metanorma
     # TODO: make aliases configurable
     def initialize
       @processors = {}
-      @aliases = { csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa,
-                   icc: :iso }
+      @aliases = { csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa }
+        .merge Metanorma::CustomAssets.aliases
     end
 
     def alias(flavour)
