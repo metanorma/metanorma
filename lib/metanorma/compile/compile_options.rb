@@ -92,7 +92,7 @@ module Metanorma
 
       def get_isodoc_options(file, options, ext)
         ret = @processor.extract_options(file)
-        dir = options[:filename].sub(%r(/[^/]+$), "/")
+        dir = File.dirname(options[:filename])
         ret[:i18nyaml] &&= File.join(dir, ret[:i18nyaml])
         copy_isodoc_options_attrs(options, ret)
         font_manifest_mn2pdf(options, ret, ext)
