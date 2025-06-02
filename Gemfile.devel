@@ -1,0 +1,2 @@
+gem "metanorma-custom-assets", git: "https://github.com/metanorma/metanorma-custom-assets", branch: "main"
+
