@@ -6,7 +6,7 @@ require "htmlentities"
 require "yaml"
 require "fontist"
 require "fontist/manifest/install"
-require "metanorma-custom-assets"
+require "metanorma-taste"
 require_relative "writeable"
 require_relative "validator"
 require_relative "compile_options"
@@ -184,7 +184,9 @@ module Metanorma
     end
 
     def process_input_adoc_overrides(attrs, options)
-      c = Metanorma::CustomAssets.new(options[:supplied_type])
+      @registry.tastes.available_tastes.include?(options[:supplied_type]) or
+        return
+      c = Metanorma::TasteRegister.get(options[:supplied_type])
       c.process_input_adoc_overrides(attrs, options)
     end
 
