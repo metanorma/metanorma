@@ -1,7 +1,7 @@
 # Registry of all Metanorma types and entry points
 
 require "singleton"
-require "metanorma-custom-assets"
+require "metanorma-taste"
 
 class Error < StandardError
 end
@@ -10,13 +10,17 @@ module Metanorma
   class Registry
     include Singleton
 
-    attr_reader :processors
+    attr_reader :processors, :tastes
 
     # TODO: make aliases configurable
     def initialize
       @processors = {}
+      @tastes = Metanorma::TasteRegister.instance
+      tastealiases = @tastes.available_tastes.each_with_object({}) do |x, m|
+        m[x] = @tastes.taste_info(x)[:base_flavor]
+      end
       @aliases = { csd: :cc, m3d: :m3aawg, mpfd: :mpfa, csand: :csa }
-        .merge Metanorma::CustomAssets.aliases
+        .merge tastealiases
     end
 
     def alias(flavour)
