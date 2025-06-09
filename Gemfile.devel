@@ -1,5 +1,0 @@
-gem "metanorma-taste", git: "https://github.com/metanorma/metanorma-taste", branch: "rt-rename-to-taste"
-gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/pdf-stylesheet"
-gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "fix/pdf-stylesheet"
-gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "main"
-
