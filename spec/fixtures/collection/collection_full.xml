@@ -1,7 +1,7 @@
       <metanorma-collection>
           <bibdata type="collection">
              <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
-             <docidentifier type="iso">ISO 12345</docidentifier>
+             <docidentifier type="iso" primary="true">ISO 12345</docidentifier>
              <date type="created">
                 <on>2020-01-01</on>
              </date>

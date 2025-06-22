@@ -138,7 +138,7 @@ RSpec.describe Metanorma::Collection do
         .to eq(
           { "copyright" => [{ "from" => "2020", "owner" => [{ "abbreviation" => { "content" => "ISO" }, "name" => [{ "content" => "International Organization for Standardization" }] }] }],
             "date" => [{ "type" => "created", "value" => "2020" }, { "type" => "issued", "value" => "2020" }],
-            "docid" => [{ "id" => "ISO 12345", "type" => "iso" }],
+            "docid" => [{ "id" => "ISO 12345", "type" => "iso", "primary" => "true" }],
             "edition" => { "content" => "1" },
             "id" => "ISO12345",
             "schema-version" => "v1.2.9",

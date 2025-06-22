@@ -6,7 +6,21 @@ module Metanorma
       module Converters
         def bibdata_from_yaml(model, value)
           value and !value.empty? or return
+          force_primary_docidentifier_yaml(value)
           model.bibdata = Relaton::Cli::YAMLConvertor.convert_single_file(value)
+        end
+
+        def force_primary_docidentifier_yaml(value)
+          case value["docid"]
+          when Array
+            value["docid"].empty? ||
+              value["docid"].none? do |x|
+                x["primary"] == "true"
+              end or
+              value["docid"].first["primary"] = "true"
+          when Hash
+            value["docid"]["primary"] ||= "true"
+          end
         end
 
         def bibdata_to_yaml(model, doc)
@@ -14,8 +28,15 @@ module Metanorma
         end
 
         def bibdata_from_xml(model, node)
-          node and
-            model.bibdata = Relaton::Cli.parse_xml(node.adapter_node)
+          node or return
+          force_primary_docidentifier_xml(node.adapter_node)
+          model.bibdata = Relaton::Cli.parse_xml(node.adapter_node)
+        end
+
+        def force_primary_docidentifier_xml(node)
+          node.at("//docidentifier[@primary = 'true']") and return node
+          d = node.at("//docidentifier") or return node
+          d["primary"] = "true"
         end
 
         def bibdata_to_xml(model, parent, doc)
