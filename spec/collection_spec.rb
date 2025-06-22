@@ -40,7 +40,7 @@ RSpec.describe Metanorma::Collection do
          docid:
          - id: ISO 12345
            type: iso
-           primary: true
+           primary: 'true'
          date:
          - type: created
            value: '2020'

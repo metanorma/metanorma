@@ -73,7 +73,7 @@ RSpec.describe Metanorma::Collection do
         .to include "Missing:​express-schema:​E0"
       expect(File.exist?("#{OUTPATH}/collection.rxl")).to be true
       expect(File.read("#{OUTPATH}/collection.rxl", encoding: "utf-8"))
-        .to include '<docidentifier type="iso">ISO 12345</docidentifier>'
+        .to include '<docidentifier type="iso" primary="true">ISO 12345</docidentifier>'
       expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
       expect(File.exist?("#{OUTPATH}/collection.pdf")).to be true
       # expect(File.exist?("#{OUTPATH}/collection.doc")).to be true
