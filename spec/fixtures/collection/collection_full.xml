@@ -1,4 +1,4 @@
-      <metanorma-collection>
+       <metanorma-collection>
           <bibdata type="collection">
              <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
              <docidentifier type="iso" primary="true">ISO 12345</docidentifier>
@@ -344,7 +344,7 @@
              </clause>
           </prefatory-content>
           <doc-container id="doc000000000">
-             <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17301-1:2016">
+             <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17301-1_2016">
                 <bibdata type="standard">
                    <title language="en" format="text/plain" type="main">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
                    <title language="en" format="text/plain" type="title-intro">Cereals and pulses</title>
@@ -445,7 +445,7 @@
                    </copyright-statement>
                 </boilerplate>
                 <sections>
-                   <clause id="_scope_ISO_17301-1:2016" obligation="normative">
+                   <clause id="_scope_ISO_17301-1_2016" obligation="normative">
                       <title>Scope</title>
                       <p id="">
                          This document specifies minimum requirements and test methods for rice (
@@ -455,27 +455,27 @@
                       <p id="">It is applicable to husked rice, husked parboiled rice, milled rice and milled parboiled rice, suitable for human consumption, directly or after reconditioning.</p>
                       <p id="">
                          It is not applicable to cooked rice products, which are not discussed in
-                         <xref target="anotherclause_ISO_17301-1:2016"/>
+                         <xref target="anotherclause_ISO_17301-1_2016"/>
                          or
-                         <xref target="thirdclause_ISO_17301-1:2016"/>
+                         <xref target="thirdclause_ISO_17301-1_2016"/>
                          .
                       </p>
                       <p id="">
                          This document is updated in
-                         <eref type="inline" bibitemid="RiceAmd_ISO_17301-1:2016" citeas="ISO 17301-1:2016/Amd.1:2017"/>
+                         <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016" citeas="ISO 17301-1:2016/Amd.1:2017"/>
                          .
                       </p>
                       <p id="">
                          This document is unrelated
-                         <eref type="inline" bibitemid="StarTrek_ISO_17301-1:2016" citeas="ISO 1701:1974"/>
+                         <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974"/>
                          , see e.g.
-                         <eref type="inline" bibitemid="StarTrek_ISO_17301-1:2016" citeas="ISO 1701:1974">
+                         <eref type="inline" bibitemid="StarTrek_ISO_17301-1_2016" citeas="ISO 1701:1974">
                             <localityStack>
                                <locality type="clause">
                                   <referenceFrom>1</referenceFrom>
                                </locality>
                                <locality type="anchor">
-                                  <referenceFrom>scope_ISO_1701:1974</referenceFrom>
+                                  <referenceFrom>scope_ISO_1701_1974</referenceFrom>
                                </locality>
                             </localityStack>
                          </eref>
@@ -483,7 +483,7 @@
                       </p>
                       <p id="">
                          This document is also unrelated to
-                         <eref type="inline" bibitemid="Dummy_ISO_17301-1:2016" citeas="ISO 17302:2016">
+                         <eref type="inline" bibitemid="Dummy_ISO_17301-1_2016" citeas="ISO 17302:2016">
                             <localityStack>
                                <locality type="anchor">
                                   <referenceFrom>what</referenceFrom>
@@ -494,14 +494,14 @@
                       </p>
                       <p id="">
                          This document uses schemas E0/A0,
-                         <eref bibitemid="express-schema_E1_ISO_17301-1:2016" citeas="ISO 17302:2016">
+                         <eref bibitemid="express-schema_E1_ISO_17301-1_2016" citeas="ISO 17302:2016">
                             <locality type="anchor">
                                <referenceFrom>A1</referenceFrom>
                             </locality>
                             E1/A1
                          </eref>
                          and
-                         <eref bibitemid="express-schema_E2_ISO_17301-1:2016" citeas="ISO 17302:2016">
+                         <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302:2016">
                             E2
                             <localityStack>
                                <locality type="anchor">
@@ -511,7 +511,7 @@
                          </eref>
                          .
                       </p>
-                      <figure id="fig1_ISO_17301-1:2016">
+                      <figure id="fig1_ISO_17301-1_2016">
                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
                             <style type="text/css">
        	.st0{fill:none;stroke:#000000;stroke-miterlimit:10;}
@@ -531,21 +531,21 @@
                       </figure>
                       <p>
                          You can also download the svg image at:
-                         <eref type="inline" bibitemid="action_schemaexpg1.svg_ISO_17301-1:2016" citeas="action_schemaexpg1.svg"/>
+                         <eref type="inline" bibitemid="action_schemaexpg1.svg_ISO_17301-1_2016" citeas="action_schemaexpg1.svg"/>
                          . See
-                         <xref target="_scope_ISO_17301-1:2016"/>
+                         <xref target="_scope_ISO_17301-1_2016"/>
                          and
-                         <strong style="background: url(#svg1_ISO_17301-1:2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1:2016);">scope</strong>
+                         <strong style="background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);">scope</strong>
                       </p>
                    </clause>
-                   <clause id="anotherclause_ISO_17301-1:2016" type="express">
+                   <clause id="anotherclause_ISO_17301-1_2016" type="express">
                       <title>This is another clause</title>
                       <p>
-                         <eref bibitemid="Nowhere_ISO_17301-1:2016"/>
+                         <eref bibitemid="Nowhere_ISO_17301-1_2016"/>
                          Direct links nowhere
                       </p>
                       <p>
-                         <eref bibitemid="express-schema_E2_ISO_17301-1:2016" citeas="ISO 17302:2016">
+                         <eref bibitemid="express-schema_E2_ISO_17301-1_2016" citeas="ISO 17302:2016">
                             E2
                             <localityStack>
                                <locality type="anchor">
@@ -556,15 +556,15 @@
                          Indirect links nowhere
                       </p>
                    </clause>
-                   <clause id="thirdclause_ISO_17301-1:2016">
+                   <clause id="thirdclause_ISO_17301-1_2016">
                       <title>This is another clause</title>
                    </clause>
                 </sections>
                 <bibliography>
-                   <references id="_normative_references_ISO_17301-1:2016" normative="true" obligation="informative" hidden="true">
+                   <references id="_normative_references_ISO_17301-1_2016" normative="true" obligation="informative" hidden="true">
                       <title>Normative References</title>
                       <p id="">The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</p>
-                      <bibitem type="standard" hidden="true" id="RiceAmd_ISO_17301-1:2016">
+                      <bibitem type="standard" hidden="true" id="RiceAmd_ISO_17301-1_2016">
                          <title language="en" format="text/plain" type="main">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
                          <title language="en" format="text/plain" type="title-main">Specification and test methods</title>
                          <title language="en" format="text/plain" type="title-part">Rice</title>
@@ -618,7 +618,7 @@
                             </owner>
                          </copyright>
                       </bibitem>
-                      <bibitem type="standard" hidden="true" id="StarTrek_ISO_17301-1:2016">
+                      <bibitem type="standard" hidden="true" id="StarTrek_ISO_17301-1_2016">
                          <title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                          <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                          <title language="fr" format="text/plain" type="main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
@@ -663,9 +663,9 @@
                          </copyright>
                       </bibitem>
                    </references>
-                   <references id="_bibliography_ISO_17301-1:2016" normative="false" obligation="informative">
+                   <references id="_bibliography_ISO_17301-1_2016" normative="false" obligation="informative">
                       <title>Bibliography</title>
-                      <bibitem type="standard" hidden="true" id="Dummy_ISO_17301-1:2016">
+                      <bibitem type="standard" hidden="true" id="Dummy_ISO_17301-1_2016">
                          <title language="en" format="text/plain" type="main">Dummy document</title>
                          <title language="en" format="text/plain" type="title-main">Dummy document</title>
                          <title language="fr" format="text/plain" type="main">Dummy document</title>
@@ -705,8 +705,8 @@
                             </owner>
                          </copyright>
                       </bibitem>
-                      <bibitem id="ISO712_ISO_17301-1:2016" type="standard">
-                         <fetched>2025-05-24</fetched>
+                      <bibitem id="ISO712_ISO_17301-1_2016" type="standard">
+                         <fetched>2025-06-23</fetched>
                          <title type="title-intro" format="text/plain" language="en" script="Latn">Cereals and cereal products</title>
                          <title type="title-main" format="text/plain" language="en" script="Latn">Determination of moisture content</title>
                          <title type="main" format="text/plain" language="en" script="Latn">Cereals and cereal products – Determination of moisture content</title>
@@ -752,7 +752,7 @@
                          </relation>
                          <relation type="instance">
                             <bibitem type="standard">
-                               <fetched>2025-05-24</fetched>
+                               <fetched>2025-06-23</fetched>
                                <title type="title-intro" format="text/plain" language="en" script="Latn">Cereals and cereal products</title>
                                <title type="title-main" format="text/plain" language="en" script="Latn">Determination of moisture content</title>
                                <title type="title-part" format="text/plain" language="en" script="Latn">Reference method</title>
@@ -820,11 +820,11 @@
                          </relation>
                          <place>Geneva</place>
                       </bibitem>
-                      <bibitem id="express-schema_E0_ISO_17301-1:2016" type="internal">
+                      <bibitem id="express-schema_E0_ISO_17301-1_2016" type="internal">
                          <docidentifier type="metanorma-collection">Missing:express-schema:E0</docidentifier>
                          <docidentifier type="repository">current-metanorma-collection/Missing:express-schema:E0</docidentifier>
                       </bibitem>
-                      <bibitem type="standard" hidden="true" id="express-schema_E1_ISO_17301-1:2016">
+                      <bibitem type="standard" hidden="true" id="express-schema_E1_ISO_17301-1_2016">
                          <title language="en" format="text/plain" type="main">Dummy document</title>
                          <title language="en" format="text/plain" type="title-main">Dummy document</title>
                          <title language="fr" format="text/plain" type="main">Dummy document</title>
@@ -864,7 +864,7 @@
                             </owner>
                          </copyright>
                       </bibitem>
-                      <bibitem type="standard" hidden="true" id="express-schema_E2_ISO_17301-1:2016">
+                      <bibitem type="standard" hidden="true" id="express-schema_E2_ISO_17301-1_2016">
                          <title language="en" format="text/plain" type="main">Dummy document</title>
                          <title language="en" format="text/plain" type="title-main">Dummy document</title>
                          <title language="fr" format="text/plain" type="main">Dummy document</title>
@@ -904,7 +904,7 @@
                             </owner>
                          </copyright>
                       </bibitem>
-                      <bibitem hidden="true" id="action_schemaexpg1.svg_ISO_17301-1:2016">
+                      <bibitem hidden="true" id="action_schemaexpg1.svg_ISO_17301-1_2016">
                          <uri type="citation">pics/action_schemaexpg1.svg</uri>
                          <docidentifier>action_schemaexpg1.svg</docidentifier>
                       </bibitem>
@@ -914,7 +914,7 @@
              </iso-standard>
           </doc-container>
           <doc-container id="doc000000001">
-             <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17302:2016">
+             <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17302_2016">
                 <bibdata type="standard">
                    <title language="en" format="text/plain" type="main">Dummy document</title>
                    <title language="en" format="text/plain" type="title-main">Dummy document</title>
@@ -1039,13 +1039,13 @@
                    </copyright-statement>
                 </boilerplate>
                 <sections>
-                   <clause id="_scope_ISO_17302:2016" obligation="normative">
+                   <clause id="_scope_ISO_17302_2016" obligation="normative">
                       <title>Scope</title>
                       <p id="">This is a dummy document.</p>
                    </clause>
-                   <clause id="E1_ISO_17302:2016" type="express-schema">
-                      <figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1_ISO_17302:2016">
-                         <pre id="A1_ISO_17302:2016">
+                   <clause id="E1_ISO_17302_2016" type="express-schema">
+                      <figure id="_b4013f8f-ee40-4186-a5ed-3a5103f199e1_ISO_17302_2016">
+                         <pre id="A1_ISO_17302_2016">
        module Metanorma
          class Document
            # @return [Strin]
@@ -1131,22 +1131,22 @@
        </pre>
                       </figure>
                    </clause>
-                   <clause id="what_ISO_17302:2016" inline-header="false" obligation="normative">
+                   <clause id="what_ISO_17302_2016" inline-header="false" obligation="normative">
                       <title>What?</title>
-                      <ol id="_2a3efdd5-8e78-47d9-9721-38699221dd31_ISO_17302:2016" type="roman">
+                      <ol id="_2a3efdd5-8e78-47d9-9721-38699221dd31_ISO_17302_2016" type="roman">
                          <li>
                             <p id="">What?</p>
                          </li>
                       </ol>
-                      <note id="N3_ISO_17302:2016">
+                      <note id="N3_ISO_17302_2016">
                          <p id="">
-                            <link type="inline" bibitemid="License_A_ISO_17302:2016" citeas="[LICENSE.TXT]" target="_dummy_attachments/LICENSE1.TXT">License A</link>
+                            <link type="inline" bibitemid="License_A_ISO_17302_2016" citeas="[LICENSE.TXT]" target="_dummy_attachments/LICENSE1.TXT">License A</link>
                          </p>
                       </note>
                    </clause>
-                   <clause id="E2_ISO_17302:2016" type="express-schema">
-                      <figure id="A2_ISO_17302:2016">
-                         <pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438_ISO_17302:2016">
+                   <clause id="E2_ISO_17302_2016" type="express-schema">
+                      <figure id="A2_ISO_17302_2016">
+                         <pre id="_923365c0-4c6d-473e-bb0e-e2ee87dcc438_ISO_17302_2016">
        module Metanorma
          # Metanorma collection's manifest
          class CollectionManifest
@@ -1261,8 +1261,8 @@
                    </clause>
                 </sections>
                 <bibliography>
-                   <references id="T_ISO_17302:2016" obligation="informative" normative="false" hidden="true">
-                      <bibitem id="License_A_ISO_17302:2016" hidden="true">
+                   <references id="T_ISO_17302_2016" obligation="informative" normative="false" hidden="true">
+                      <bibitem id="License_A_ISO_17302_2016" hidden="true">
                          <formattedref format="application/x-isodoc+xml">attachment description</formattedref>
                          <uri type="attachment">_dummy_attachments/LICENSE1.TXT</uri>
                          <uri type="citation">_dummy_attachments/LICENSE1.TXT</uri>
@@ -1274,7 +1274,7 @@
              </iso-standard>
           </doc-container>
           <doc-container id="doc000000002">
-             <iso-standard xmlns="https://www.metanorma.org/ns/iso" type="semantic" version="1.6.0" document_suffix="ISO_1701:1974">
+             <iso-standard xmlns="https://www.metanorma.org/ns/iso" type="semantic" version="1.6.0" document_suffix="ISO_1701_1974">
                 <bibdata type="standard">
                    <title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                    <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
@@ -1371,7 +1371,7 @@
                    </copyright-statement>
                 </boilerplate>
                 <sections>
-                   <clause id="_scope_ISO_1701:1974" type="scope" inline-header="false" obligation="normative">
+                   <clause id="_scope_ISO_1701_1974" type="scope" inline-header="false" obligation="normative">
                       <title>Scope</title>
                       <p id="">
                          This document specifies minimum requirements and test methods for rice (
@@ -1382,17 +1382,17 @@
                       <p id="">It is not applicable to cooked rice products.</p>
                       <p id="">
                          This document is updated in
-                         <eref type="inline" bibitemid="RiceAmd_ISO_1701:1974" citeas="ISO 17301-1:2016/Amd.1:2017"/>
+                         <eref type="inline" bibitemid="RiceAmd_ISO_1701_1974" citeas="ISO 17301-1:2016/Amd.1:2017"/>
                          . It derives from
-                         <eref type="inline" bibitemid="StarTrek_ISO_1701:1974" citeas="ISO 1701:1974"/>
+                         <eref type="inline" bibitemid="StarTrek_ISO_1701_1974" citeas="ISO 1701:1974"/>
                          . See e.g.
-                         <eref type="inline" bibitemid="StarTrek_ISO_1701:1974" citeas="ISO 1701:1974">
+                         <eref type="inline" bibitemid="StarTrek_ISO_1701_1974" citeas="ISO 1701:1974">
                             <localityStack>
                                <locality type="clause">
                                   <referenceFrom>1</referenceFrom>
                                </locality>
                                <locality type="anchor">
-                                  <referenceFrom>scope_ISO_1701:1974</referenceFrom>
+                                  <referenceFrom>scope_ISO_1701_1974</referenceFrom>
                                </locality>
                             </localityStack>
                          </eref>
@@ -1400,7 +1400,7 @@
                       </p>
                       <p id="">
                          This document is unrelated to
-                         <eref type="inline" bibitemid="Dummy_ISO_1701:1974" citeas="ISO 17302:2016">
+                         <eref type="inline" bibitemid="Dummy_ISO_1701_1974" citeas="ISO 17302:2016">
                             <localityStack>
                                <locality type="anchor">
                                   <referenceFrom>what</referenceFrom>
@@ -1412,12 +1412,12 @@
                    </clause>
                 </sections>
                 <bibliography>
-                   <references id="_normref_ISO_1701:1974" normative="true" obligation="informative">
+                   <references id="_normref_ISO_1701_1974" normative="true" obligation="informative">
                       <title>Normative References</title>
                    </references>
-                   <references id="_bibliography_ISO_1701:1974" normative="false" obligation="informative" hidden="true">
+                   <references id="_bibliography_ISO_1701_1974" normative="false" obligation="informative" hidden="true">
                       <title>Bibliography</title>
-                      <bibitem type="standard" hidden="true" id="StarTrek_ISO_1701:1974">
+                      <bibitem type="standard" hidden="true" id="StarTrek_ISO_1701_1974">
                          <title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                          <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
                          <title language="fr" format="text/plain" type="main">Conditions d’essais des machines à fraiser à table de hauteur variable, à broche horizontale ou verticale</title>
@@ -1461,7 +1461,7 @@
                             </owner>
                          </copyright>
                       </bibitem>
-                      <bibitem type="standard" hidden="true" id="RiceAmd_ISO_1701:1974">
+                      <bibitem type="standard" hidden="true" id="RiceAmd_ISO_1701_1974">
                          <title language="en" format="text/plain" type="main">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
                          <title language="en" format="text/plain" type="title-main">Specification and test methods</title>
                          <title language="en" format="text/plain" type="title-part">Rice</title>
@@ -1515,7 +1515,7 @@
                             </owner>
                          </copyright>
                       </bibitem>
-                      <bibitem type="standard" hidden="true" id="Dummy_ISO_1701:1974">
+                      <bibitem type="standard" hidden="true" id="Dummy_ISO_1701_1974">
                          <title language="en" format="text/plain" type="main">Dummy document</title>
                          <title language="en" format="text/plain" type="title-main">Dummy document</title>
                          <title language="fr" format="text/plain" type="main">Dummy document</title>
@@ -1561,7 +1561,7 @@
              </iso-standard>
           </doc-container>
           <doc-container id="doc000000003">
-             <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17301-1:2016_Amd.1:2017">
+             <iso-standard xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17301-1_2016_Amd.1_2017">
                 <bibdata type="standard">
                    <title language="en" format="text/plain" type="main">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
                    <title language="en" format="text/plain" type="title-main">Specification and test methods</title>
@@ -1667,7 +1667,7 @@
                    </copyright-statement>
                 </boilerplate>
                 <preface>
-                   <foreword id="_00d33e8e-1b0d-42c0-9adc-f1a29a3523d5_ISO_17301-1:2016_Amd.1:2017" obligation="informative">
+                   <foreword id="_00d33e8e-1b0d-42c0-9adc-f1a29a3523d5_ISO_17301-1_2016_Amd.1_2017" obligation="informative">
                       <title>Foreword</title>
                       <p id="">ISO (the International Organization for Standardization) is a worldwide federation of national standards bodies (ISO member bodies). The work of preparing International Standards is normally carried out through ISO technical committees. Each member body interested in a subject for which a technical committee has been established has the right to be represented on that committee. International organizations, governmental and non-governmental, in liaison with ISO, also take part in the work. ISO collaborates closely with the International Electrotechnical Commission (IEC) on all matters of electrotechnical standardization.</p>
                       <p id="">The procedures used to develop this document and those intended for its further maintenance are described in the ISO/IEC Directives, Part 1. In particular the different approval criteria needed for the different types of ISO documents should be noted. This document was drafted in accordance with the editorial rules of the ISO/IEC Directives, Part 2 (see www.iso.org/directives).</p>
@@ -1685,14 +1685,14 @@
                    </foreword>
                 </preface>
                 <sections>
-                   <clause id="_introduction_ISO_17301-1:2016_Amd.1:2017" change="delete" locality="clause=introduction,paragraph=4-7" obligation="normative">
+                   <clause id="_introduction_ISO_17301-1_2016_Amd.1_2017" change="delete" locality="clause=introduction,paragraph=4-7" obligation="normative">
                       <title>Introduction</title>
                       <p id="">Delete the fourth to seventh paragraphs.</p>
                    </clause>
-                   <clause id="_normative_references_ISO_17301-1:2016_Amd.1:2017" change="modify" locality="clause=2" obligation="normative">
+                   <clause id="_normative_references_ISO_17301-1_2016_Amd.1_2017" change="modify" locality="clause=2" obligation="normative">
                       <title>Normative references</title>
                       <p id="">Replace the reference to ISO 16634:— (including the footnote) with the following:</p>
-                      <quote id="_7c8d502e-7904-4547-a32a-73bfb51df520_ISO_17301-1:2016_Amd.1:2017">
+                      <quote id="_7c8d502e-7904-4547-a32a-73bfb51df520_ISO_17301-1_2016_Amd.1_2017">
                          <p id="">
                             ISO 16634-2:2016,
                             <em>Food products — Determination of the total nitrogen content by combustion according to the Dumas principle and calculation of the crude protein content — Part 2: Cereals, pulses and milled cereal products</em>
@@ -1700,59 +1700,59 @@
                       </quote>
                       <p id="">Renumber subsequent footnotes.</p>
                    </clause>
-                   <clause id="_4_1_second_paragraph_ISO_17301-1:2016_Amd.1:2017" change="modify" locality="clause=4.1,paragraph=2" obligation="normative">
+                   <clause id="_4_1_second_paragraph_ISO_17301-1_2016_Amd.1_2017" change="modify" locality="clause=4.1,paragraph=2" obligation="normative">
                       <title>4.1, second paragraph</title>
                       <p id="">Replace the paragraph with the following:</p>
-                      <quote id="_f1f93eaf-8e6c-42da-b28b-4f45101008b8_ISO_17301-1:2016_Amd.1:2017">
+                      <quote id="_f1f93eaf-8e6c-42da-b28b-4f45101008b8_ISO_17301-1_2016_Amd.1_2017">
                          <p id="">There shall be a procedure to identify the maximum permissible levels for additives and pesticide residues and other contaminants in the country of destination.</p>
                       </quote>
                    </clause>
-                   <clause id="_4_2_1_ISO_17301-1:2016_Amd.1:2017" change="modify" locality="clause=4.2.1" obligation="normative">
+                   <clause id="_4_2_1_ISO_17301-1_2016_Amd.1_2017" change="modify" locality="clause=4.2.1" obligation="normative">
                       <title>4.2.1</title>
                       <p id="">Designate the existing NOTE as NOTE 1 and add the following new NOTE:</p>
-                      <quote id="_456b35f3-7901-4752-bbfd-a396836a0cdb_ISO_17301-1:2016_Amd.1:2017">
+                      <quote id="_456b35f3-7901-4752-bbfd-a396836a0cdb_ISO_17301-1_2016_Amd.1_2017">
                          <p id="">NOTE 2 For certain destinations, no differentiation is made between the organic and inorganic mass fractions of extraneous matter.</p>
                       </quote>
                    </clause>
-                   <clause id="_4_2_2_table_1_ISO_17301-1:2016_Amd.1:2017" change="modify" locality="clause=4.2.2,table=1" obligation="normative">
+                   <clause id="_4_2_2_table_1_ISO_17301-1_2016_Amd.1_2017" change="modify" locality="clause=4.2.2,table=1" obligation="normative">
                       <title>4.2.2, Table 1</title>
                       <p id="">In the column “in milled rice (non-glutinous)”, replace the value “0,3” for “Paddy” with the value “0,5”.</p>
                    </clause>
-                   <clause id="_6_3_first_paragraph_ISO_17301-1:2016_Amd.1:2017" change="modify" locality="clause=6.3,paragraph=1" obligation="normative">
+                   <clause id="_6_3_first_paragraph_ISO_17301-1_2016_Amd.1_2017" change="modify" locality="clause=6.3,paragraph=1" obligation="normative">
                       <title>6.3, first paragraph</title>
                       <p id="">Replace the reference “ISO 16634:—, Clause 9” with “ISO 16634-2:2016, Clause 9”.</p>
                    </clause>
-                   <clause id="_clause_8_ISO_17301-1:2016_Amd.1:2017" change="add" locality="clause=8" obligation="normative">
+                   <clause id="_clause_8_ISO_17301-1_2016_Amd.1_2017" change="add" locality="clause=8" obligation="normative">
                       <title>Clause 8</title>
                       <p id="">Add the following paragraph at the end of the clause:</p>
-                      <quote id="_9db0b1ff-8dbd-40f4-895b-7ebd978fa9d5_ISO_17301-1:2016_Amd.1:2017">
+                      <quote id="_9db0b1ff-8dbd-40f4-895b-7ebd978fa9d5_ISO_17301-1_2016_Amd.1_2017">
                          <p id="">Annex E gives recommendations relating to storage and transport conditions.</p>
                       </quote>
                    </clause>
-                   <clause id="_clause_9_ISO_17301-1:2016_Amd.1:2017" change="modify" locality="clause=9" obligation="normative">
+                   <clause id="_clause_9_ISO_17301-1_2016_Amd.1_2017" change="modify" locality="clause=9" obligation="normative">
                       <title>Clause 9</title>
                       <p id="">Replace the text with the following:</p>
-                      <quote id="_a19cace8-1d4f-4ff1-a356-5369da56a20c_ISO_17301-1:2016_Amd.1:2017">
+                      <quote id="_a19cace8-1d4f-4ff1-a356-5369da56a20c_ISO_17301-1_2016_Amd.1_2017">
                          <p id="">The marking on the packages shall clearly identify the type of rice.</p>
                       </quote>
                    </clause>
-                   <clause id="_a_2_1_ISO_17301-1:2016_Amd.1:2017" change="modify" locality="clause=A.2.1" obligation="normative">
+                   <clause id="_a_2_1_ISO_17301-1_2016_Amd.1_2017" change="modify" locality="clause=A.2.1" obligation="normative">
                       <title>A.2.1</title>
                       <p id="">Replace the text with the following:</p>
-                      <quote id="_8713d5c5-7dab-4cd4-ae97-8e6c5dad80fd_ISO_17301-1:2016_Amd.1:2017">
+                      <quote id="_8713d5c5-7dab-4cd4-ae97-8e6c5dad80fd_ISO_17301-1_2016_Amd.1_2017">
                          <p id="">
                             <strong>A.2.1 Sample divider</strong>
                             , consisting of a conical sample divider or multiple-slot sample divider with a distribution system, e.g. conical (Boerner-type) divider such as that shown in Figure A.1 or multiple-slot (riffle-type) divider such as that shown in Figure A.2.
                          </p>
                       </quote>
                    </clause>
-                   <clause id="_figure_a_1_ISO_17301-1:2016_Amd.1:2017" change="modify" locality="figure=A.1" obligation="normative">
+                   <clause id="_figure_a_1_ISO_17301-1_2016_Amd.1_2017" change="modify" locality="figure=A.1" obligation="normative">
                       <title>Figure A.1</title>
                       <p id="">Replace Figure A.1 with the following two figures:</p>
-                      <figure id="fig1_ISO_17301-1:2016_Amd.1:2017">
+                      <figure id="fig1_ISO_17301-1_2016_Amd.1_2017">
                          <name>Conical (Boerner-type) divider</name>
-                         <image src="data:image/png" id="_cc13fe0d-474c-4a93-9d21-e9f0de917732_ISO_17301-1:2016_Amd.1:2017" mimetype="image/png" height="auto" width="auto"/>
-                         <dl id="_1f52a7bf-1b9c-4de9-a1da-fbf7032c43e7_ISO_17301-1:2016_Amd.1:2017">
+                         <image src="data:image/png" id="_cc13fe0d-474c-4a93-9d21-e9f0de917732_ISO_17301-1_2016_Amd.1_2017" mimetype="image/png" height="auto" width="auto"/>
+                         <dl id="_1f52a7bf-1b9c-4de9-a1da-fbf7032c43e7_ISO_17301-1_2016_Amd.1_2017">
                             <dt>1</dt>
                             <dd>
                                <p id="">funnel</p>
@@ -1763,10 +1763,10 @@
                             </dd>
                          </dl>
                       </figure>
-                      <figure id="fig2_ISO_17301-1:2016_Amd.1:2017">
+                      <figure id="fig2_ISO_17301-1_2016_Amd.1_2017">
                          <name>Multiple-slot (riffle-type) divider with two collection boxes</name>
-                         <image src="data:image/png" id="_e1b5f220-4df4-4149-a57b-decbfe436743_ISO_17301-1:2016_Amd.1:2017" mimetype="image/png" height="auto" width="auto"/>
-                         <dl id="_55e02f5a-8731-4855-b10d-59a0d58b2d07_ISO_17301-1:2016_Amd.1:2017">
+                         <image src="data:image/png" id="_e1b5f220-4df4-4149-a57b-decbfe436743_ISO_17301-1_2016_Amd.1_2017" mimetype="image/png" height="auto" width="auto"/>
+                         <dl id="_55e02f5a-8731-4855-b10d-59a0d58b2d07_ISO_17301-1_2016_Amd.1_2017">
                             <dt>1</dt>
                             <dd>
                                <p id="">slots</p>
@@ -1778,10 +1778,10 @@
                          </dl>
                       </figure>
                    </clause>
-                   <clause id="_annex_e_ISO_17301-1:2016_Amd.1:2017" change="add" locality="clause=D" obligation="normative">
+                   <clause id="_annex_e_ISO_17301-1_2016_Amd.1_2017" change="add" locality="clause=D" obligation="normative">
                       <title>Annex E</title>
                       <p id="">Add the following annex after Annex D, before the Bibliography.</p>
-                      <quote id="_3517b986-7bd7-45f9-8452-86c3d8f4b92f_ISO_17301-1:2016_Amd.1:2017">
+                      <quote id="_3517b986-7bd7-45f9-8452-86c3d8f4b92f_ISO_17301-1_2016_Amd.1_2017">
                          <p id="">== Recommendations relating to storage and storage and transport conditions</p>
                          <p id="">Containers of rice should be stored in covered premises, well protected from the sun, rain and excessive heat.</p>
                          <p id="">The storeroom should be dry, free from unpleasant odours and protected against entry of insects and other vermin. Ventilation should be adjusted in such a way as to give good ventilation during dry weather and to be fully closed under damp conditions. Suitable provisions should be made for fumigation of storerooms.</p>
@@ -1816,4 +1816,3 @@
              </clause>
           </final-content>
        </metanorma-collection>
-
