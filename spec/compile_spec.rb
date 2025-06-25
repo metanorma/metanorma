@@ -471,7 +471,7 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("#{sourcecode}/a.html")).to be true
     expect(File.read("#{sourcecode}/sourcecode-0000.txt", encoding: "utf-8"))
       .to eq <<~OUTPUT.chomp
-        def ruby(x)
+        def ruby(x) 
           if x < 0 && x > 1
             return
           end

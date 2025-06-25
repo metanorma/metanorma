@@ -1,0 +1,2 @@
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/review-to-annotation"
+gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "fix/review-to-annotation"
