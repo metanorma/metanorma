@@ -36,8 +36,8 @@ module Metanorma
         # @param xml [Nokogiri::XML::Document] the XML document
         # @return [String] the cleaned sourcecode
         def clean_sourcecode(xml)
-          xml.xpath(".//callout | .//annotation | .//xmlns:callout | "\
-                    ".//xmlns:annotation").each(&:remove)
+          xml.xpath(".//callout | .//callout-annotation | .//xmlns:callout | "\
+                    ".//xmlns:callout-annotation").each(&:remove)
           xml.xpath(".//br | .//xmlns:br").each { |x| x.replace("\n") }
           a = xml.at("./body | ./xmlns:body") and xml = a
           HTMLEntities.new.decode(xml.children.to_xml)
