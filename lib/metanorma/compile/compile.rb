@@ -184,7 +184,7 @@ module Metanorma
     end
 
     def process_input_adoc_overrides(attrs, options)
-      @registry.tastes.available_tastes.include?(options[:supplied_type]) or
+      Metanorma::TasteRegister.instance.available_tastes.include?(options[:supplied_type]) or
         return
       c = Metanorma::TasteRegister.get(options[:supplied_type])
       c.process_input_adoc_overrides(attrs, options)
