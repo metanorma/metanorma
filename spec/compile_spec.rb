@@ -483,8 +483,7 @@ RSpec.describe Metanorma::Compile do
     #    <head>&</head>
     # </html>
     # OUTPUT
-    expect(File.exist?("spec/assets/extract/image/image-0000.png")).to be true
-    expect(File.exist?("spec/assets/extract/image/image-0001.png")).to be false
+    expect(File.exist?("spec/assets/extract/image/rice_image1.png")).to be true
     expect(File.exist?("spec/assets/extract/image/img1.png")).to be true
     expect(File.exist?("spec/assets/extract/requirement/requirement-0000.xml"))
       .to be true

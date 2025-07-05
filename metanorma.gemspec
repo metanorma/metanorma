@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "fontist", ">= 1.14.3"
   spec.add_runtime_dependency "htmlentities"
   spec.add_runtime_dependency "isodoc", ">= 3.0.0"
-  spec.add_runtime_dependency "metanorma-taste", "~> 0.0.5"
+  spec.add_runtime_dependency "metanorma-taste", "~> 0.1.0"
   spec.add_runtime_dependency "mn2pdf", "~> 2"
   spec.add_runtime_dependency "nokogiri"
 
