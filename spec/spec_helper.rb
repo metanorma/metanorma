@@ -67,7 +67,7 @@ ASCIIDOC_CONFIGURED_HDR = <<~HDR
 
 HDR
 
-ISOXML_BLANK_HDR = <<~"HDR"
+ISOXML_BLANK_HDR = <<~HDR
   <?xml version="1.0" encoding="UTF-8"?>
   <iso-standard xmlns="http://riboseinc.com/isoxml">
   <bibdata type="article">
@@ -120,6 +120,8 @@ def strip_guid(xml)
     .gsub(%r{ semx-id="[^"]*"}, "")
     .gsub(%r{ target="_[^"]+"}, ' target="_"')
 end
+
+GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(_[^'\" ]+)?"
 
 def cleanup_guid(content)
   content

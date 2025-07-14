@@ -11,7 +11,6 @@ module Metanorma
       # warn "metanorma compile -x html #{f.path}"
       def file_compile(file, filename, identifier)
         @files.get(identifier, :sectionsplit) and return
-        #require "debug"; binding.b
         opts = {
           format: :asciidoc,
           extension_keys: @files.get(identifier, :format),

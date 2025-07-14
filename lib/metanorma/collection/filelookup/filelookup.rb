@@ -26,7 +26,6 @@ module Metanorma
         @disambig = Util::DisambigFiles.new
         @manifest = parent.manifest
         read_files(@manifest.entry, parent.manifest)
-        #warn pp @files
       end
 
       def read_files(entries, parent)

@@ -11,7 +11,6 @@ end
 
 INPATH = "spec/fixtures/collection".freeze
 OUTPATH = "spec/fixtures/output".freeze
-GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}".freeze
 
 # rubocop:disable Layout/LineLength
 RSpec.describe Metanorma::Collection do
@@ -486,6 +485,4 @@ RSpec.describe Metanorma::Collection do
       expect(a).to be_equivalent_to b
     end
   end
-
-  private
 end
