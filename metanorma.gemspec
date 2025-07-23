@@ -38,7 +38,7 @@ Gem::Specification.new do |spec|
   # spec.add_dependency "metanorma-standoc"
 
   spec.add_development_dependency "debug"
-  spec.add_development_dependency "equivalent-xml", "~> 0.6"
+  spec.add_development_dependency "equivalent-xml"
   spec.add_development_dependency "metanorma-iso"
   spec.add_development_dependency "mnconvert"
   spec.add_development_dependency "pry"
