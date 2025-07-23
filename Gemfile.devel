@@ -1,0 +1,1 @@
+gem "metanorma-utils", git: "https://github.com/metanorma/metanorma-utils", branch: "main"

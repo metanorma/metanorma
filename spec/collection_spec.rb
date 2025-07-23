@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "spec_helper"
 require "stringio"
 
 def capture_stdout
@@ -107,14 +108,14 @@ RSpec.describe Metanorma::Collection do
        - html
        coverpage: cover.html
        prefatory-content: |2
-     
+
          == Clause
          Welcome to our collection
        final-content: |2
-     
+
          == Exordium
          Hic explicit
-     
+
 
       OUTPUT
     end
@@ -561,32 +562,4 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
-  private
-
-  GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-
-  def cleanup_guid(content)
-    content
-      .gsub(%r{cid:#{GUID}}o, "cid:_")
-      .gsub(%r{ semx-id="[^"]*"}o, '')
-      .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
-      .gsub(%r{ source="_#{GUID}"}o, ' source="_"')
-      .gsub(%r{ name="_#{GUID}"}o, ' name="_"')
-      .gsub(%r{_Toc[0-9]{9}}o, "_Toc")
-  end
-
-  def read_and_cleanup(file)
-    content = File.read(file, encoding: "UTF-8").gsub(
-      /(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s
-    )
-    cleanup_id content
-  end
-
-  def cleanup_id(content)
-    content.gsub(/(?<=<p id=")[^"]+/, "")
-      .gsub(%r{data:image/svg\+xml[^<"']+}, "data:image/svg+xml")
-      .gsub(%r{data:image/png[^<"']+}, "data:image/png")
-      .gsub(/ schema-version="[^"]+"/, "")
-      .gsub(%r{<identifier>#{GUID}</identifier>}o, "<identifier>_</identifier>")
-  end
 end
