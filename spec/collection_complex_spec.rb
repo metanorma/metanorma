@@ -483,9 +483,7 @@ RSpec.describe Metanorma::Collection do
       b = Xml::C14n.format(concat_text)
         .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'")
-      expect(a).to be_equivalent_to b
+      expect(a).to be_analogous_with b
     end
   end
-
-  private
 end
