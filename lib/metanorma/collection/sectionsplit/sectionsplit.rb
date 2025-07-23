@@ -72,7 +72,7 @@ module Metanorma
       def block?(node)
         %w(p table formula admonition ol ul dl figure quote sourcecode example
            pre note pagebreak hr bookmark requirement recommendation permission
-           svgmap inputform toc passthrough review imagemap).include?(node.name)
+           svgmap inputform toc passthrough annotation imagemap).include?(node.name)
       end
 
       def conflate_floatingtitles(nodes)
@@ -151,7 +151,7 @@ module Metanorma
       def create_sectionfile(xml, out, file, chunks, parentnode)
         ins = out.at(ns("//metanorma-extension")) || out.at(ns("//bibdata"))
         sectionfile_insert(ins, chunks, parentnode)
-        sectionfile_fn_filter(sectionfile_review_filter(out))
+        sectionfile_fn_filter(sectionfile_annotation_filter(out))
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc, true)
         outname = "#{file}.xml"
@@ -211,34 +211,35 @@ module Metanorma
         fnlabel.children = @isodoc_presxml.fn_body_label(fnbody)
       end
 
-      # map fmt-review-body/@id = fmt-review-{start/end}/@target
-      # to fmt-review-{stary/end}
-      def sectionfile_review_filter_prep(xml)
-        xml.xpath(ns("//fmt-review-start | //fmt-review-end"))
+      # map fmt-annotation-body/@id = fmt-annotation-{start/end}/@target
+      # to fmt-annotation-{start/end}
+      def sectionfile_annotation_filter_prep(xml)
+        xml.xpath(ns("//fmt-annotation-start | //fmt-annotation-end"))
           .each_with_object({}) do |f, m|
             m[f["target"]] ||= []
             m[f["target"]] << f
           end
       end
 
-      def sectionfile_review_filter(xml)
-        ids = sectionfile_review_filter_prep(xml)
-        xml.root.xpath(ns("./review-container/fmt-review-body")).each do |f|
+      def sectionfile_annotation_filter(xml)
+        ids = sectionfile_annotation_filter_prep(xml)
+        xml.root.xpath(ns("./annotation-container/fmt-annotation-body"))
+          .each do |f|
           ids.has_key?(f["id"]) or f.remove
         end
-        xml.root.xpath(ns("./review-container/fmt-review-body"))
+        xml.root.xpath(ns("./annotation-container/fmt-annotation-body"))
           .each_with_index do |fnbody, i|
-            sectionfile_review_filter_renumber(fnbody, i, ids)
+            sectionfile_annotation_filter_renumber(fnbody, i, ids)
           end
         xml
       end
 
-      def sectionfile_review_filter_renumber(fnbody, _idx, ids)
+      def sectionfile_annotation_filter_renumber(fnbody, _idx, ids)
         ids[fnbody["id"]].each do |f|
           case f.name
-          when "fmt-review-start"
+          when "fmt-annotation-start"
             f.children = @isodoc_presxml.comment_bookmark_start_label(f)
-          when "fmt-review-end"
+          when "fmt-annotation-end"
             f.children = @isodoc_presxml.comment_bookmark_end_label(f)
           end
         end
