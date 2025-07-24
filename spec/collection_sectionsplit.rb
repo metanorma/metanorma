@@ -204,7 +204,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation html xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -270,7 +270,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation html xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -327,7 +327,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation html xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -367,7 +367,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation html xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -427,38 +427,38 @@ RSpec.describe Metanorma::Collection do
       .to be_equivalent_to Xml::C14n.format(output)
     xml = "<xml>#{xml1.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
-       <xml>
-          <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
-             <sup>1</sup>
-          </a>
-          <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
-             <sup>2</sup>
-          </a>
-          <aside id="fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
-             <p id="_">
-                <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
-                   <sup>1</sup>
-                </a>
-                Third footnote
-             </p>
-             <a href="#fnref:1">↩</a>
-          </aside>
-          <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
-             <sup>1</sup>
-          </a>
-          <aside id="fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
-             <p id="_">
-                <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
-                   <sup>2</sup>
-                </a>
-                Fourth footnote
-             </p>
-             <a href="#fnref:2">↩</a>
-          </aside>
-          <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
-             <sup>2</sup>
-          </a>
-       </xml>
+      <xml>
+         <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
+            <sup>1</sup>
+         </a>
+         <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
+            <sup>2</sup>
+         </a>
+         <aside id="fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+                  <sup>1</sup>
+               </a>
+               Third footnote
+            </p>
+            <a href="#fnref:1">↩</a>
+         </aside>
+         <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+            <sup>1</sup>
+         </a>
+         <aside id="fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+                  <sup>2</sup>
+               </a>
+               Fourth footnote
+            </p>
+            <a href="#fnref:2">↩</a>
+         </aside>
+         <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+            <sup>2</sup>
+         </a>
+      </xml>
     OUTPUT
     expect(cleanup_guid(Xml::C14n.format(xml)).gsub(/#{GUID}/o, ""))
       .to be_equivalent_to Xml::C14n.format(output)
@@ -471,38 +471,38 @@ RSpec.describe Metanorma::Collection do
 
     xml = "<xml>#{xml2.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
-       <xml>
-          <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
-             <sup>1</sup>
-          </a>
-          <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
-             <sup>2</sup>
-          </a>
-          <aside id="fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
-             <p id="_">
-                <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
-                   <sup>1</sup>
-                </a>
-                Fifth footnote
-             </p>
-             <a href="#fnref:1">↩</a>
-          </aside>
-          <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
-             <sup>1</sup>
-          </a>
-          <aside id="fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
-             <p id="_">
-                <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
-                   <sup>2</sup>
-                </a>
-                Sixth footnote
-             </p>
-             <a href="#fnref:2">↩</a>
-          </aside>
-          <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
-             <sup>2</sup>
-          </a>
-       </xml>
+      <xml>
+         <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
+            <sup>1</sup>
+         </a>
+         <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
+            <sup>2</sup>
+         </a>
+         <aside id="fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+                  <sup>1</sup>
+               </a>
+               Fifth footnote
+            </p>
+            <a href="#fnref:1">↩</a>
+         </aside>
+         <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+            <sup>1</sup>
+         </a>
+         <aside id="fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+                  <sup>2</sup>
+               </a>
+               Sixth footnote
+            </p>
+            <a href="#fnref:2">↩</a>
+         </aside>
+         <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+            <sup>2</sup>
+         </a>
+      </xml>
     OUTPUT
     expect(cleanup_guid(Xml::C14n.format(xml)).gsub(/#{GUID}/o, ""))
       .to be_equivalent_to Xml::C14n.format(output)

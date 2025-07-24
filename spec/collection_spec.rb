@@ -25,96 +25,96 @@ RSpec.describe Metanorma::Collection do
         .gsub(/identifier: ['"]?#{GUID}['"]?[\n\r]+\s*/mo, "\\1")
         .gsub(/([\n\r]+\s+)schema-version: \S+[\n\r]+\s*/m, "\\1")
       expect(yaml_out).to be_equivalent_to <<~OUTPUT
-       ---
-       directives:
-       - documents-external:
-       - coverpage: spec/fixtures/collection/collection_cover.html
-       bibdata:
-         id: ISO12345
-         title:
-         - content: ISO Collection 1
-           language:
-           - en
-           format: text/plain
-           type: title-main
-         type: collection
-         docid:
-         - id: ISO 12345
-           type: iso
-           primary: 'true'
-         date:
-         - type: created
-           value: '2020'
-         - type: issued
-           value: '2020'
-         edition:
-           content: '1'
-         copyright:
-         - owner:
-           - name:
-             - content: International Organization for Standardization
-             abbreviation:
-               content: ISO
-           from: '2020'
-       manifest:
-         type: collection
-         title: ISO Collection
-         index: true
-         entry:
-         - type: subcollection
-           title: Standards
-           index: true
-           entry:
-           - identifier: ISO 17301-1:2016
-             index: true
-             file: rice-en.final.xml
-             bibdata:
-           - identifier: ISO 17302:2016
-             url: example/url
-             index: true
-             file: dummy.xml
-             bibdata:
-           - identifier: ISO 1701:1974
-             index: true
-             file: rice1-en.final.xml
-             bibdata:
-           bibdata:
-         - type: subcollection
-           title: Amendments
-           index: true
-           entry:
-             identifier: ISO 17301-1:2016/Amd.1:2017
-             index: true
-             file: rice-amd.final.xml
-             bibdata:
-           bibdata:
-         - type: attachments
-           title: Attachments
-           index: true
-           entry:
-           - identifier: action_schemaexpg1.svg
-             attachment: true
-             index: true
-             file: pics/action_schemaexpg1.svg
-             bibdata:
-           - identifier: rice_image1.png
-             attachment: true
-             index: true
-             file: "../../assets/rice_image1.png"
-             bibdata:
-           bibdata:
-         bibdata:
-       format:
-       - html
-       coverpage: cover.html
-       prefatory-content: |2
+        ---
+        directives:
+        - documents-external:
+        - coverpage: collection_cover.html
+        bibdata:
+          id: ISO12345
+          title:
+          - content: ISO Collection 1
+            language:
+            - en
+            format: text/plain
+            type: title-main
+          type: collection
+          docid:
+          - id: ISO 12345
+            type: iso
+            primary: 'true'
+          date:
+          - type: created
+            value: '2020'
+          - type: issued
+            value: '2020'
+          edition:
+            content: '1'
+          copyright:
+          - owner:
+            - name:
+              - content: International Organization for Standardization
+              abbreviation:
+                content: ISO
+            from: '2020'
+        manifest:
+          type: collection
+          title: ISO Collection
+          index: true
+          entry:
+          - type: subcollection
+            title: Standards
+            index: true
+            entry:
+            - identifier: ISO 17301-1:2016
+              index: true
+              file: rice-en.final.xml
+              bibdata:
+            - identifier: ISO 17302:2016
+              url: example/url
+              index: true
+              file: dummy.xml
+              bibdata:
+            - identifier: ISO 1701:1974
+              index: true
+              file: rice1-en.final.xml
+              bibdata:
+            bibdata:
+          - type: subcollection
+            title: Amendments
+            index: true
+            entry:
+              identifier: ISO 17301-1:2016/Amd.1:2017
+              index: true
+              file: rice-amd.final.xml
+              bibdata:
+            bibdata:
+          - type: attachments
+            title: Attachments
+            index: true
+            entry:
+            - identifier: action_schemaexpg1.svg
+              attachment: true
+              index: true
+              file: pics/action_schemaexpg1.svg
+              bibdata:
+            - identifier: rice_image1.png
+              attachment: true
+              index: true
+              file: "../../assets/rice_image1.png"
+              bibdata:
+            bibdata:
+          bibdata:
+        format:
+        - html
+        coverpage: cover.html
+        prefatory-content: |2
 
-         == Clause
-         Welcome to our collection
-       final-content: |2
+          == Clause
+          Welcome to our collection
+        final-content: |2
 
-         == Exordium
-         Hic explicit
+          == Exordium
+          Hic explicit
 
 
       OUTPUT
@@ -296,7 +296,7 @@ RSpec.describe Metanorma::Collection do
             compile: {
               install_fonts: false,
             },
-            coverpage: "#{INPATH}/cover1.html",
+            coverpage: "cover1.html",
           }
         end
 
@@ -434,7 +434,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -452,7 +452,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation xml html],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -472,7 +472,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation xml html],
       output_folder: of,
-      coverpage: "../#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -499,7 +499,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation xml],
       output_folder: of,
-      coverpage: "../#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: { install_fonts: false },
     )
     # manifest docid has docid type iso
@@ -514,7 +514,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation xml],
       output_folder: of,
-      coverpage: "../#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
@@ -530,7 +530,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation xml],
       output_folder: of,
-      coverpage: "../#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
@@ -542,7 +542,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation xml],
       output_folder: of,
-      coverpage: "../#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
@@ -561,5 +561,4 @@ RSpec.describe Metanorma::Collection do
 
     FileUtils.rm_rf of
   end
-
 end
