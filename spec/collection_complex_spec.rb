@@ -29,7 +29,6 @@ RSpec.describe Metanorma::Collection do
       col.render(
         format: %i[presentation html pdf xml rxl],
         output_folder: of,
-        # coverpage: "#{INPATH}/collection_cover.html",
         compile: {
           install_fonts: false,
         },
@@ -130,7 +129,7 @@ RSpec.describe Metanorma::Collection do
         .render(col,
                 format: %i[presentation html xml],
                 output_folder: of,
-                coverpage: "#{INPATH}/collection_cover.html",
+                coverpage: "collection_cover.html",
                 compile: {
                   install_fonts: false,
                 })
@@ -233,7 +232,7 @@ RSpec.describe Metanorma::Collection do
       col.render(
         format: %i[html presentation xml],
         # output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
+        coverpage: "collection_cover.html",
         compile: {
           install_fonts: false,
         },
@@ -258,7 +257,7 @@ RSpec.describe Metanorma::Collection do
       col.render(
         format: %i[presentation html pdf doc xml],
         output_folder: of,
-        coverpage: "#{INPATH}/collection_cover.html",
+        coverpage: "collection_cover.html",
         compile: {
           install_fonts: false,
         },
@@ -464,7 +463,6 @@ RSpec.describe Metanorma::Collection do
       col = Metanorma::Collection.parse file
       col.render(
         output_folder: of,
-        # coverpage: "#{INPATH}/collection_cover.html",
         compile: {
           install_fonts: false,
         },

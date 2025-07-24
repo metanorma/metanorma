@@ -24,7 +24,7 @@
           </directive>
           <directive>
              <key>coverpage</key>
-             <value>spec/fixtures/collection/collection_cover.html</value>
+             <value>collection_cover.html</value>
           </directive>
           <directive>
              <key>documents-inline</key>
