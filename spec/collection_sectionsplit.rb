@@ -1,3 +1,4 @@
+require "spec_helper"
 require "stringio"
 require "isodoc"
 
@@ -203,7 +204,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation html xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -269,7 +270,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation html xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -326,7 +327,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation html xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -356,9 +357,9 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
-  it "deals with footnotes and review in section split" do
+  it "deals with footnotes and annotations in section split" do
     mock_uuid_increment
-    mock_review_body
+    mock_annotation_body
     file = "#{INPATH}/footnotes.yml"
     of = File.join(FileUtils.pwd, OUTPATH)
     col = Metanorma::Collection.parse file
@@ -366,7 +367,7 @@ RSpec.describe Metanorma::Collection do
     col.render(
       format: %i[presentation html xml],
       output_folder: of,
-      coverpage: "#{INPATH}/collection_cover.html",
+      coverpage: "collection_cover.html",
       compile: {
         install_fonts: false,
       },
@@ -390,7 +391,7 @@ RSpec.describe Metanorma::Collection do
              <sup>2</sup>
           </a>
           <aside id="fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
-             <p id="__ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+             <p id="_">
                 <a class="FootnoteRef" href="#fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                    <sup>1</sup>
                 </a>
@@ -402,7 +403,7 @@ RSpec.describe Metanorma::Collection do
              <sup>1</sup>
           </a>
           <aside id="fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
-             <p id="__ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+             <p id="_">
                 <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                    <sup>2</sup>
                 </a>
@@ -415,102 +416,102 @@ RSpec.describe Metanorma::Collection do
           </a>
        </xml>
     OUTPUT
-    expect(file0).to include("First review")
-    expect(file0).to include("Second review")
-    expect(file0).not_to include("Third review")
-    expect(file0).not_to include("Fourth review")
-    expect(file0).not_to include("Fifth review")
-    expect(file0).not_to include("Sixth review")
+    expect(file0).to include("First annotation")
+    expect(file0).to include("Second annotation")
+    expect(file0).not_to include("Third annotation")
+    expect(file0).not_to include("Fourth annotation")
+    expect(file0).not_to include("Fifth annotation")
+    expect(file0).not_to include("Sixth annotation")
 
     expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
       .to be_equivalent_to Canon.format_xml(output)
     xml = "<xml>#{xml1.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
-          <xml>
-         <a class="FootnoteRef" href="#fn:_83_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
+      <xml>
+         <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
             <sup>1</sup>
          </a>
-         <a class="FootnoteRef" href="#fn:_84_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
+         <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
             <sup>2</sup>
          </a>
-         <aside id="fn:_83_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
-            <p id="__ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
-               <a class="FootnoteRef" href="#fn:_83_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+         <aside id="fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                   <sup>1</sup>
                </a>
                Third footnote
             </p>
             <a href="#fnref:1">↩</a>
          </aside>
-         <a class="FootnoteRef" href="#fn:_83_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+         <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
             <sup>1</sup>
          </a>
-         <aside id="fn:_84_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
-            <p id="__ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
-               <a class="FootnoteRef" href="#fn:_84_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+         <aside id="fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                   <sup>2</sup>
                </a>
                Fourth footnote
             </p>
             <a href="#fnref:2">↩</a>
          </aside>
-         <a class="FootnoteRef" href="#fn:_84_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+         <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
             <sup>2</sup>
          </a>
       </xml>
     OUTPUT
     expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
       .to be_equivalent_to Canon.format_xml(output)
-    expect(file1).not_to include("First review")
-    expect(file1).not_to include("Second review")
-    expect(file1).to include("Third review")
-    expect(file1).to include("Fourth review")
-    expect(file1).not_to include("Fifth review")
-    expect(file1).not_to include("Sixth review")
+    expect(file1).not_to include("First annotation")
+    expect(file1).not_to include("Second annotation")
+    expect(file1).to include("Third annotation")
+    expect(file1).to include("Fourth annotation")
+    expect(file1).not_to include("Fifth annotation")
+    expect(file1).not_to include("Sixth annotation")
 
     xml = "<xml>#{xml2.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
       <xml>
-         <a class="FootnoteRef" href="#fn:_85_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
+         <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
             <sup>1</sup>
          </a>
-         <a class="FootnoteRef" href="#fn:_86_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
+         <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
             <sup>2</sup>
          </a>
-         <aside id="fn:_85_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
-            <p id="__ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
-               <a class="FootnoteRef" href="#fn:_85_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+         <aside id="fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                   <sup>1</sup>
                </a>
                Fifth footnote
             </p>
             <a href="#fnref:1">↩</a>
          </aside>
-         <a class="FootnoteRef" href="#fn:_85_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+         <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
             <sup>1</sup>
          </a>
-         <aside id="fn:_86_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
-            <p id="__ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
-               <a class="FootnoteRef" href="#fn:_86_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+         <aside id="fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                   <sup>2</sup>
                </a>
                Sixth footnote
             </p>
             <a href="#fnref:2">↩</a>
          </aside>
-         <a class="FootnoteRef" href="#fn:_86_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+         <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
             <sup>2</sup>
          </a>
       </xml>
     OUTPUT
     expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
       .to be_equivalent_to Canon.format_xml(output)
-    expect(file2).not_to include("First review")
-    expect(file2).not_to include("Second review")
-    expect(file2).not_to include("Third review")
-    expect(file2).not_to include("Fourth review")
-    expect(file2).to include("Fifth review")
-    expect(file2).to include("Sixth review")
+    expect(file2).not_to include("First annotation")
+    expect(file2).not_to include("Second annotation")
+    expect(file2).not_to include("Third annotation")
+    expect(file2).not_to include("Fourth annotation")
+    expect(file2).to include("Fifth annotation")
+    expect(file2).to include("Sixth annotation")
   end
 
   private
@@ -523,10 +524,10 @@ RSpec.describe Metanorma::Collection do
     end
   end
 
-  def mock_review_body
+  def mock_annotation_body
     allow_any_instance_of(::IsoDoc::HtmlConvert)
       .to receive(:comments) do |_instance, docxml, out|
-        docxml.xpath("//xmlns:fmt-review-body").each do |c|
+        docxml.xpath("//xmlns:fmt-annotation-body").each do |c|
           c["xmlns"] = nil
           out.parent << c.to_xml
         end

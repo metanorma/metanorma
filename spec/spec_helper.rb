@@ -115,6 +115,8 @@ ISOXML_BLANK_HDR = <<~HDR
   </iso-standard>
 HDR
 
+GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(_[^'\" ]+)?"
+
 def strip_guid(xml)
   xml.gsub(%r{ id="_[^"]+"}, ' id="_"')
     .gsub(%r{ semx-id="[^"]*"}, "")
