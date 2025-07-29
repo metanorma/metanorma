@@ -49,5 +49,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop-performance"
   spec.add_development_dependency "sassc-embedded", "~> 1"
   spec.add_development_dependency "simplecov", "~> 0.15"
-  spec.add_development_dependency "xml-c14n"
+  spec.add_development_dependency "canon"
 end

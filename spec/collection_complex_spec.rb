@@ -36,10 +36,10 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
       concat_text = read_and_cleanup "#{INPATH}/collection_full.xml"
       concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
-      expect(Xml::C14n.format(cleanup_guid(concat_file.gsub("><", ">\n<")))
+      expect(Canon.format_xml(cleanup_guid(concat_file.gsub("><", ">\n<")))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'"))
-        .to be_equivalent_to Xml::C14n.format(cleanup_guid(concat_text.gsub("><", ">\n<")))
+        .to be_equivalent_to Canon.format_xml(cleanup_guid(concat_text.gsub("><", ">\n<")))
           .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
                "xlink:href='data:image/gif;base64,_'")
       conact_file_doc_xml = Nokogiri::XML(concat_file)
@@ -418,8 +418,8 @@ RSpec.describe Metanorma::Collection do
       expect(output).to include "Content-Type: image/png"
       output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
         .sub!(%r{<style>.+</style>}m, "<style/>")
-      expect(Xml::C14n.format(cleanup_guid(cleanup_id(output))))
-        .to be_equivalent_to Xml::C14n.format(cleanup_guid(expected))
+      expect(Canon.format_xml(cleanup_guid(cleanup_id(output))))
+        .to be_equivalent_to Canon.format_xml(cleanup_guid(expected))
       expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/dummy.doc")).to be false
@@ -442,8 +442,8 @@ RSpec.describe Metanorma::Collection do
       expected = File.read("#{INPATH}/collection1.doc")
       output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
         .sub!(%r{<style>.+</style>}m, "<style/>")
-      expect(Xml::C14n.format(cleanup_guid(cleanup_id(output))))
-        .to be_equivalent_to Xml::C14n.format(cleanup_guid(expected))
+      expect(Canon.format_xml(cleanup_guid(cleanup_id(output))))
+        .to be_equivalent_to Canon.format_xml(cleanup_guid(expected))
       expect(File.exist?("#{OUTPATH}/dummy.doc")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
@@ -475,11 +475,11 @@ RSpec.describe Metanorma::Collection do
       # remember to strip these from bilingual.presentation.xml when saving new version of file
       x.at(".//*[local-name() = 'metanorma-extension']")&.remove
       x.at(".//*[local-name() = 'localized-strings']")&.remove
-      a = Xml::C14n.format(cleanup_guid(x.to_xml))
+      a = Canon.format_xml(cleanup_guid(x.to_xml))
         .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'")
         .gsub(%r{<localized-strings>.*?</localized-strings>}m, "<localized-strings/>")
-      b = Xml::C14n.format(concat_text)
+      b = Canon.format_xml(concat_text)
         .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
              "xlink:href='data:image/gif;base64,_'")
       expect(a).to be_analogous_with b

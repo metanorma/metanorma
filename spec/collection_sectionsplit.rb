@@ -59,49 +59,49 @@ RSpec.describe Metanorma::Collection do
     file2.xpath("//xmlns:emf").each(&:remove)
     expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
     expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
-    expect(Xml::C14n.format(file2
+    expect(Canon.format_xml(file2
       .at("//xmlns:fmt-eref[@bibitemid = '#{m[1]}_A']").to_xml.sub(/ id="[^"]+"/, "")))
-      .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
         <fmt-eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
-    expect(Xml::C14n.format(file2
+    expect(Canon.format_xml(file2
      .at("//xmlns:note[@id = 'N1']//xmlns:fmt-eref[@bibitemid = '#{m[1]}_R1']")
       .to_xml.sub(/ id="[^"]+"/, "")))
-      .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
         <fmt-eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
-    expect(Xml::C14n.format(file2
+    expect(Canon.format_xml(file2
      .at("//xmlns:note[@id = 'N2']//xmlns:fmt-eref[@bibitemid = '#{m[1]}_R1']")
       .to_xml.sub(/ id="[^"]+"/, "")))
-      .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
         <fmt-eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
-    expect(Xml::C14n.format(file2
+    expect(Canon.format_xml(file2
      .at("//xmlns:note[@id = 'N3']//xmlns:fmt-link")
       .to_xml.sub(/ id="[^"]+"/, "").sub(/ id="[^"]+"/, "")))
-      .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
         <fmt-link attachment="true" target="_test_sectionsplit_attachments/LICENSE.TXT">License A</fmt-link>
       OUTPUT
     expect(file2
      .at("//xmlns:bibitem[@id = 'R1']"))
       .to be_nil
-    expect(Xml::C14n.format(file2
+    expect(Canon.format_xml(file2
      .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
-      .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
         <bibitem id="#{m[1]}_A" anchor="#{m[1]}_A" type="internal">
         <docidentifier type="repository">#{m[1]}/A</docidentifier>
         </bibitem>
       OUTPUT
-    expect(Xml::C14n.format(file2
+    expect(Canon.format_xml(file2
      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-      .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
         <bibitem id="#{m[1]}_R1" anchor="#{m[1]}_R1" type="internal">
         <docidentifier type="repository">#{m[1]}/R1</docidentifier>
         </bibitem>
       OUTPUT
-    expect(Xml::C14n.format(file2
+    expect(Canon.format_xml(file2
       .at("//xmlns:svgmap[1]").to_xml.gsub(/ (source|id)="[^"]+"/, "")))
-      .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
         <svgmap><figure>
         <image src="" mimetype="image/svg+xml" height="auto" width="auto">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" original-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
@@ -122,9 +122,9 @@ RSpec.describe Metanorma::Collection do
           <fmt-eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></fmt-eref>
         </target></svgmap>
       OUTPUT
-    expect(Xml::C14n.format(file2
+    expect(Canon.format_xml(file2
      .at("//xmlns:svgmap[2]").to_xml.gsub(/ (source|id)="[^"]+"/, "")))
-      .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
              <svgmap><figure>
          <image src="" mimetype="image/svg+xml" height="auto" width="auto">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
@@ -140,9 +140,9 @@ RSpec.describe Metanorma::Collection do
     expect(file2.at("//xmlns:annex")).to be_nil
     expect(file2.at("//xmlns:indexsect")).to be_nil
     #     file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
-    #     expect(Xml::C14n.format(file4
+    #     expect(Canon.format_xml(file4
     #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-    #       .to be_equivalent_to Xml::C14n.format(<<~OUTPUT)
+    #       .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
     # <bibitem id="#{m[1]}_R1">
     #   <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
     #   <docidentifier>R1</docidentifier>
@@ -422,8 +422,8 @@ RSpec.describe Metanorma::Collection do
     expect(file0).not_to include("Fifth review")
     expect(file0).not_to include("Sixth review")
 
-    expect(cleanup_guid(Xml::C14n.format(xml)).gsub(/#{GUID}/o, ""))
-      .to be_equivalent_to Xml::C14n.format(output)
+    expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
+      .to be_equivalent_to Canon.format_xml(output)
     xml = "<xml>#{xml1.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
           <xml>
@@ -459,8 +459,8 @@ RSpec.describe Metanorma::Collection do
          </a>
       </xml>
     OUTPUT
-    expect(cleanup_guid(Xml::C14n.format(xml)).gsub(/#{GUID}/o, ""))
-      .to be_equivalent_to Xml::C14n.format(output)
+    expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
+      .to be_equivalent_to Canon.format_xml(output)
     expect(file1).not_to include("First review")
     expect(file1).not_to include("Second review")
     expect(file1).to include("Third review")
@@ -503,8 +503,8 @@ RSpec.describe Metanorma::Collection do
          </a>
       </xml>
     OUTPUT
-    expect(cleanup_guid(Xml::C14n.format(xml)).gsub(/#{GUID}/o, ""))
-      .to be_equivalent_to Xml::C14n.format(output)
+    expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
+      .to be_equivalent_to Canon.format_xml(output)
     expect(file2).not_to include("First review")
     expect(file2).not_to include("Second review")
     expect(file2).not_to include("Third review")
