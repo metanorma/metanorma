@@ -4,7 +4,7 @@ module Metanorma
       # Resolves references to other files in the collection. Three routines:
       # 1. Eref to a document that has been split into multiple documents
       # (sectionsplit) are resolved to direct eref to the split document
-      # 2. Indirect erefs to a file anchor in an unknwon file in the collection
+      # 2. Indirect erefs to a file anchor in an unknown file in the collection
       # (bibitem[@type = 'internal'] ) are resolved to direct eref to the
       # containing document
       # 3. Direct erefs to other files in collection

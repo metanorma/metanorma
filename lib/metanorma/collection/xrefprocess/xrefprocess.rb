@@ -75,7 +75,7 @@ module Metanorma
             xref_prefix_key(x, key, indirect)
             x["bibitemid"] = x["target"]
             m[x["bibitemid"]] = true
-            xref_to_internal_eref_anchor(x, key, bibitems,
+            xref_to_internal_eref_anchor(x, bibitems,
                                          xml.root["document_suffix"], presxml)
           end.keys
         end
@@ -87,8 +87,9 @@ module Metanorma
           [bibitems, indirect_bibitems]
         end
 
-        def xref_to_internal_eref_anchor(xref, key, bibitems, document_suffix, presxml)
+        def xref_to_internal_eref_anchor(xref, bibitems, document_suffix, presxml)
           t = xref["target"]
+          key = xref["type"]
           if d = bibitems[t]&.at(ns("./docidentifier[@type = 'repository']"))
             m = %r{^([^/]+)}.match(d.text) and
               t.sub!(%r(#{m[0]}_), "")
