@@ -635,6 +635,7 @@ RSpec.describe Metanorma::Compile do
 
   it "allow mapping of virtual flavors to implemented flavors" do
     registry_instance = Metanorma::Registry.instance
+    allow(registry_instance).to receive(:alias).and_return(nil)
     allow(registry_instance).to receive(:alias)
       .with(:"missing-flavor").and_return(:iso)
     expect do

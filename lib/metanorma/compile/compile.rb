@@ -184,8 +184,8 @@ module Metanorma
     end
 
     def process_input_adoc_overrides(attrs, options)
-      Metanorma::TasteRegister.instance.available_tastes.include?(options[:supplied_type]) or
-        return
+      Metanorma::TasteRegister.instance.available_tastes
+        .include?(options[:supplied_type]) or return
       c = Metanorma::TasteRegister.get(options[:supplied_type])
       c.process_input_adoc_overrides(attrs, options)
     end
@@ -203,6 +203,9 @@ module Metanorma
       file = read_file(filename)
       file = process_input_adoc_hdr(file, options)
       file = process_input_adoc_includes(file, filename)
+      process_options!(filename, options)
+      # need to update options, for any content added;
+      # e.g. new attributes from Metanorma taste
       [file, @processor.input_to_isodoc(file, filename, options)]
     end
 
