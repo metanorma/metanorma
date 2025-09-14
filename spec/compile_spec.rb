@@ -79,6 +79,36 @@ RSpec.describe Metanorma::Compile do
     )
   end
 
+  it "processes sectionsplit attribute from asciidoc header" do
+    log = Metanorma::Utils::Log.new
+    
+    # Mock process_input_adoc_hdr to add :sectionsplit: true attribute
+    allow_any_instance_of(Metanorma::Compile).to receive(:process_input_adoc_hdr) do |instance, file, options|
+      # Simulate the original method behavior but add sectionsplit attribute
+      hdr, rest = Metanorma::Input::Asciidoc.new.header(file)
+      attrs = hdr.split("\n")
+      options[:asciimath] and attrs << ":mn-keep-asciimath:"
+      # Add the sectionsplit attribute
+      attrs << ":sectionsplit: true"
+      "#{attrs.join("\n")}\n\n#{rest}"
+    end
+    
+    # Mock the processor output to verify sectionsplit: "true" is passed
+    mock_iso_processor_output(
+      File.expand_path("spec/assets/test2.xml"),
+      File.expand_path("spec/assets/test2.presentation.xml"),
+      hash_including(sectionsplit: "true")
+    )
+
+    Metanorma::Compile.new.compile(
+      "spec/assets/test2.adoc",
+      type: "iso",
+      extension_keys: [:presentation],
+      agree_to_terms: true,
+      log: log
+    )
+  end
+
   it "overrides asciidoc options in icc" do
     expect do
       Metanorma::Compile.new.compile("spec/assets/test.adoc",
