@@ -203,10 +203,22 @@ module Metanorma
       file = read_file(filename)
       file = process_input_adoc_hdr(file, options)
       file = process_input_adoc_includes(file, filename)
-      process_options!(filename, options)
-      # need to update options, for any content added;
-      # e.g. new attributes from Metanorma taste
+      update_options_after_preprocessing(file, options)
       [file, @processor.input_to_isodoc(file, filename, options)]
+    end
+
+    # need to update options, for any content added;
+    # e.g. new attributes from Metanorma taste
+    def update_options_after_preprocessing(file, options)
+      new_options = {}
+      Tempfile.open(["tmp", ".adoc"], encoding: "UTF-8") do |f|
+        f.write(file)
+        f.close
+        new_options = extract_options(f, {})
+      end
+      new_options.compact!
+      new_options.delete(:filename)
+      options.merge!(new_options)
     end
 
     def process_input_xml(filename, _options)

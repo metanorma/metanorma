@@ -44,6 +44,7 @@ module Metanorma
       end
 
       def extract_dir_options(options, options_in_file, filename)
+        filename.is_a?(Tempfile) and return
         dir = filename.sub(%r(/[^/]+$), "/")
         options_in_file[:relaton] and
           options[:relaton] ||= File.join(dir,
