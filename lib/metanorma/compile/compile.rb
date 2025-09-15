@@ -62,6 +62,7 @@ module Metanorma
 
       # Step 3: Determine which output formats to generate
       extensions = get_extensions(options)
+      @extensions = extensions  # Capture extensions for later access
       return nil unless extensions
 
       # Step 4: Extract information from Semantic XML if requested
@@ -230,6 +231,24 @@ module Metanorma
 
     def read_file(filename)
       File.read(filename, encoding: "utf-8").gsub("\r\n", "\n")
+    end
+
+    # Returns a mapping of format types to file suffixes based on the
+    # extensions that were determined during compilation.
+    # This method is only available after compile() has been called and
+    # reached Step 3 where extensions are finalized.
+    #
+    # @return [Hash] mapping of format symbols to file extensions
+    #   e.g., { html: "html", doc: "doc", pdf: "pdf" }
+    # @return [Hash] empty hash if extensions haven't been captured yet
+    def output_format_mapping
+      return {} unless @extensions && @processor
+      
+      @extensions.each_with_object({}) do |ext, mapping|
+        if @processor.output_formats[ext]
+          mapping[ext] = @processor.output_formats[ext]
+        end
+      end
     end
   end
 end
