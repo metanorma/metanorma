@@ -1,0 +1,8 @@
+gem "metanorma-taste", git: "https://github.com/metanorma/metanorma-taste", branch: "fix/filename-attribute-refactor"
+gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "main"
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "main"
+gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "main"
+gem "relaton-render", git: "https://github.com/relaton/relaton-render", branch: "main"
+gem "isodoc-i18n", git: "https://github.com/metanorma/isodoc-i18n", branch: "main"
+gem "metanorma-utils", git: "https://github.com/metanorma/metanorma-utils", branch: "main"
+
