@@ -112,10 +112,12 @@ module Metanorma
       end
 
       def self.location_manifest(processor, source_attributes)
-        Fontist::Manifest.from_hash(
+        instance = Fontist::Manifest.from_hash(
           append_source_fonts(processor.fonts_manifest.dup, source_attributes),
           locations: true
-        ).to_hash
+        )
+
+        instance.to_hash unless instance.nil?
       end
 
       def self.append_source_fonts(manifest, source_attributes)
