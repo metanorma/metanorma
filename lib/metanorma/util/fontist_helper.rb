@@ -47,11 +47,11 @@ module Metanorma
             Fontist.log_level = :info
           end
 
-          Fontist::Manifest::Install.from_hash(
-            manifest,
+          instance = Fontist::Manifest.from_hash(manifest)
+          instance.install(
             confirmation: agree ? "yes" : "no",
             no_progress: no_progress,
-          )
+          ).to_hash
         end
 
         def license_error_log(continue)
@@ -112,9 +112,10 @@ module Metanorma
       end
 
       def self.location_manifest(processor, source_attributes)
-        Fontist::Manifest::Locations.from_hash(
+        Fontist::Manifest.from_hash(
           append_source_fonts(processor.fonts_manifest.dup, source_attributes),
-        )
+          locations: true
+        ).to_hash
       end
 
       def self.append_source_fonts(manifest, source_attributes)
