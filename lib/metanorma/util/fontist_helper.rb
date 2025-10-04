@@ -35,7 +35,7 @@ module Metanorma
           log_level = continue ? :warning : :fatal
           Util.log("[fontist] '#{e.font}' font is not supported. " \
                    "Please report this issue at " \
-                   "github.com/metanorma/metanorma/issues", log_level)
+                   "https://github.com/metanorma/metanorma/issues", log_level)
         rescue Fontist::Errors::FormulaIndexNotFoundError
           fontist_update_repo(manifest, agree, continue, no_progress)
         end
