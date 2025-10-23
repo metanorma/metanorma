@@ -50,9 +50,7 @@ module Metanorma
       @processor = @registry.find_processor(options[:type].to_sym)
 
       # Step 1: Generate Semantic XML
-      semantic_result = generate_semantic_xml(filename, options)
-      return nil unless semantic_result
-
+      semantic_result = generate_semantic_xml(filename, options) or return nil
       source_file, semantic_xml = semantic_result
 
       # Step 2: Prepare output paths
@@ -62,20 +60,16 @@ module Metanorma
 
       # Step 3: Determine which output formats to generate
       extensions = get_extensions(options)
-      @extensions = extensions  # Capture extensions for later access
-      return nil unless extensions
+      @extensions = extensions # Capture extensions for later access
+      extensions or return nil
 
       # Step 4: Extract information from Semantic XML if requested
       extract_information(semantic_xml, bibdata, options)
 
       # Step 5: Generate output formats from Semantic XML
       generate_outputs(
-        source_file,
-        semantic_xml,
-        bibdata,
-        extensions,
-        output_paths,
-        options,
+        source_file, semantic_xml, bibdata, extensions, output_paths,
+        options
       )
     ensure
       clean_exit(options)
@@ -125,9 +119,7 @@ module Metanorma
                    config.generate_filename(drop)
                  end
       @output_filename = OutputFilename.new(
-        basename,
-        options[:output_dir],
-        @processor,
+        basename, options[:output_dir], @processor
       )
       {
         xml: @output_filename.semantic_xml,
@@ -142,13 +134,10 @@ module Metanorma
     def extract_information(semantic_xml, bibdata, options)
       # Extract Relaton bibliographic data
       export_relaton_from_bibdata(bibdata, options) if options[:relaton]
-
       # Extract other components (sourcecode, images, requirements)
       if options[:extract]
         Extract.extract(
-          semantic_xml,
-          options[:extract],
-          options[:extract_type],
+          semantic_xml, options[:extract], options[:extract_type]
         )
       end
     end
@@ -242,13 +231,29 @@ module Metanorma
     #   e.g., { html: "html", doc: "doc", pdf: "pdf" }
     # @return [Hash] empty hash if extensions haven't been captured yet
     def output_format_mapping
-      return {} unless @extensions && @processor
-      
+      @extensions && @processor or return {}
       @extensions.each_with_object({}) do |ext, mapping|
         if @processor.output_formats[ext]
           mapping[ext] = @processor.output_formats[ext]
         end
       end
+    end
+
+    def process_compile_dummy(flavor)
+      file = Tempfile.new(%w(tmp .adoc))
+      file.write <<~OUTPUT
+        Document Title
+        :flavor: #{flavor}
+        :mn-output-extensions: xml, presentation
+
+      OUTPUT
+      file.close
+      compile(file.path, {})
+    end
+
+    def extract_log_messages(flavor)
+      process_compile_dummy(flavor)
+      @log.display_messages
     end
   end
 end

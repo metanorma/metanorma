@@ -34,16 +34,14 @@ module Metanorma
         ret
       end
 
-=begin        
-      def allowed_extension_keys
-        ret = @format.dup
-        @directives.detect { |d| d.key == "individual-pdf" } or
-          ret.delete(:pdf)
-        @directives.detect { |d| d.key == "individual-doc" } or
-          ret.delete(:doc)
-        ret
-      end
-=end        
+      #       def allowed_extension_keys
+      #         ret = @format.dup
+      #         @directives.detect { |d| d.key == "individual-pdf" } or
+      #           ret.delete(:pdf)
+      #         @directives.detect { |d| d.key == "individual-doc" } or
+      #           ret.delete(:doc)
+      #         ret
+      #       end
 
       def file_compile_formats(filename, identifier, opts)
         f = @files.get(identifier, :outputs)
@@ -150,7 +148,7 @@ module Metanorma
           ids.each do |id, key|
             key and next
             refs[schema][id] = "Missing:#{schema}:#{id}"
-            @log&.add("Cross-References", nil, refs[schema][id])
+            @log&.add("METANORMA_1", nil, params: [refs[schema][id]])
           end
         end
         refs
