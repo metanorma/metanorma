@@ -33,9 +33,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "mn2pdf", "~> 2"
   spec.add_runtime_dependency "nokogiri"
 
-  # get relaton-cli to avoid circular reference with metanorma-standoc
-  # spec.add_dependency "relaton-cli"
-  # spec.add_dependency "metanorma-standoc"
+  # relaton-cli is required by Metanorma::Collection
+  spec.add_dependency "relaton-cli"
 
   spec.add_development_dependency "debug"
   spec.add_development_dependency "equivalent-xml"
