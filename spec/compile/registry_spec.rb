@@ -1,4 +1,4 @@
-require_relative "spec_helper"
+require_relative "../spec_helper"
 
 RSpec.describe Metanorma::Registry do
   it "has a registry" do
@@ -16,7 +16,7 @@ RSpec.describe Metanorma::Registry do
     expect(registry.find_processor(:new)).to be_instance_of NewProcessor
     expect(registry.supported_backends).to include :new
     expect(registry.processors[:new]).to be_instance_of NewProcessor
-    expect(registry.output_formats[:new]).to eq({:xyz=>"xyz"})
+    expect(registry.output_formats[:new]).to eq({ xyz: "xyz" })
   end
 
   it "deals with multiple aliases" do
@@ -37,8 +37,8 @@ RSpec.describe Metanorma::Registry do
     expect(registry.supported_backends).to include :new2
     expect(registry.processors[:new]).to be_instance_of NewProcessor
     expect(registry.processors[:new2]).to be_instance_of NewProcessor
-    expect(registry.output_formats[:new]).to eq({:xyz=>"xyz"})
-    expect(registry.output_formats[:new2]).to eq({:xyz=>"xyz"})
+    expect(registry.output_formats[:new]).to eq({ xyz: "xyz" })
+    expect(registry.output_formats[:new2]).to eq({ xyz: "xyz" })
   end
 
   it "warns when registered class is not a Metanorma processor" do

@@ -1,4 +1,4 @@
-require_relative "spec_helper"
+require_relative "../spec_helper"
 require "fileutils"
 
 RSpec.describe Metanorma::Compile do
@@ -670,6 +670,13 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include ' flavor="iso"'
   end
 
+  it "shows log messages" do
+    output = Metanorma::Compile.new.extract_log_messages("iso")
+    expect(output).to include("STANDOC_")
+    expect(output).to include("ISODOC_")
+    expect(output).to include("ISO_")
+  end
+
   describe "Output filename templating" do
     let(:processor) do
       double("processor").tap do |p|
@@ -868,88 +875,89 @@ RSpec.describe Metanorma::Compile do
 
     it "returns format mapping after compilation with default extensions" do
       compile = Metanorma::Compile.new
-      
+
       # Mock processor to return specific output formats
       processor = double("processor")
       allow(processor).to receive(:output_formats).and_return({
-        xml: "xml",
-        html: "html", 
-        doc: "doc",
-        pdf: "pdf",
-        presentation: "presentation.xml"
-      })
+                                                                xml: "xml",
+                                                                html: "html",
+                                                                doc: "doc",
+                                                                pdf: "pdf",
+                                                                presentation: "presentation.xml",
+                                                              })
       allow(processor).to receive(:use_presentation_xml).and_return(true)
       allow(processor).to receive(:input_to_isodoc).and_return("<root><bibdata/></root>")
       allow(processor).to receive(:output)
       allow(processor).to receive(:extract_options).and_return({})
-      
+
       allow(Metanorma::Registry.instance).to receive(:find_processor).and_return(processor)
-      
+
       # Mock the XML parsing and bibdata extraction
       allow_any_instance_of(Metanorma::Compile).to receive(:extract_relaton_metadata) do
         Nokogiri::XML("<bibdata/>").root
       end
-      
+
       # Mock file operations
       allow(File).to receive(:read).and_return("= Test Document\n\nContent")
       allow_any_instance_of(Metanorma::Utils::Log).to receive(:save_to)
       allow_any_instance_of(Metanorma::Utils::Log).to receive(:write)
-      
-      compile.compile("test.adoc", type: "iso", agree_to_terms: true, novalid: true)
-      
+
+      compile.compile("test.adoc", type: "iso", agree_to_terms: true,
+                                   novalid: true)
+
       mapping = compile.output_format_mapping
       expect(mapping).to include(
         xml: "xml",
         html: "html",
-        doc: "doc", 
+        doc: "doc",
         pdf: "pdf",
-        presentation: "presentation.xml"
+        presentation: "presentation.xml",
       )
     end
 
     it "returns format mapping with mn-output-extensions override" do
       compile = Metanorma::Compile.new
-      
+
       # Mock processor to return specific output formats
       processor = double("processor")
       allow(processor).to receive(:output_formats).and_return({
-        xml: "xml",
-        html: "html",
-        doc: "doc", 
-        pdf: "pdf",
-        presentation: "presentation.xml"
-      })
+                                                                xml: "xml",
+                                                                html: "html",
+                                                                doc: "doc",
+                                                                pdf: "pdf",
+                                                                presentation: "presentation.xml",
+                                                              })
       allow(processor).to receive(:use_presentation_xml).and_return(true)
       allow(processor).to receive(:input_to_isodoc).and_return("<root><bibdata/></root>")
       allow(processor).to receive(:output)
       allow(processor).to receive(:extract_options).and_return({})
-      
+
       allow(Metanorma::Registry.instance).to receive(:find_processor).and_return(processor)
-      
+
       # Mock the XML parsing and bibdata extraction
       allow_any_instance_of(Metanorma::Compile).to receive(:extract_relaton_metadata) do
         Nokogiri::XML("<bibdata/>").root
       end
-      
+
       # Mock file operations
       allow(File).to receive(:read).and_return("= Test Document\n\nContent")
       allow_any_instance_of(Metanorma::Utils::Log).to receive(:save_to)
       allow_any_instance_of(Metanorma::Utils::Log).to receive(:write)
-      
+
       # Compile with specific extension override
-      compile.compile("test.adoc", 
-                     type: "iso", 
-                     extension_keys: [:xml, :html],
-                     agree_to_terms: true,
-                     novalid: true)
-      
+      compile.compile("test.adoc",
+                      type: "iso",
+                      extension_keys: %i[xml html],
+                      agree_to_terms: true,
+                      novalid: true)
+
       mapping = compile.output_format_mapping
       # Should only include the overridden extensions
       expect(mapping).to eq({
-        xml: "xml",
-        html: "html",
-        presentation: "presentation.xml"  # Added automatically for html
-      })
+                              xml: "xml",
+                              html: "html",
+                              presentation: "presentation.xml", # Added automatically for html
+                            })
       # Should not include doc or pdf
       expect(mapping).not_to have_key(:doc)
       expect(mapping).not_to have_key(:pdf)
@@ -957,60 +965,60 @@ RSpec.describe Metanorma::Compile do
 
     it "demonstrates dynamic extension processing with taste overrides" do
       compile = Metanorma::Compile.new
-      
+
       # Mock processor
       processor = double("processor")
       allow(processor).to receive(:output_formats).and_return({
-        xml: "xml",
-        html: "html",
-        doc: "doc",
-        custom: "custom.ext"
-      })
+                                                                xml: "xml",
+                                                                html: "html",
+                                                                doc: "doc",
+                                                                custom: "custom.ext",
+                                                              })
       allow(processor).to receive(:use_presentation_xml).and_return(false)
       allow(processor).to receive(:input_to_isodoc).and_return("<root><bibdata/></root>")
       allow(processor).to receive(:output)
       allow(processor).to receive(:extract_options).and_return({})
-      
+
       allow(Metanorma::Registry.instance).to receive(:find_processor).and_return(processor)
-      
+
       # Mock the XML parsing and bibdata extraction
       allow_any_instance_of(Metanorma::Compile).to receive(:extract_relaton_metadata) do
         Nokogiri::XML("<bibdata/>").root
       end
-      
+
       # Mock file operations
       allow(File).to receive(:read).and_return("= Test Document\n\nContent")
       allow_any_instance_of(Metanorma::Utils::Log).to receive(:save_to)
       allow_any_instance_of(Metanorma::Utils::Log).to receive(:write)
-      
+
       # Mock taste register to simulate dynamic extension modification
       taste_instance = double("taste_instance")
       allow(taste_instance).to receive(:process_input_adoc_overrides) do |attrs, options|
         # Simulate taste adding a custom extension dynamically
         attrs << ":mn-output-extensions: xml,custom"
-        options[:extension_keys] = [:xml, :custom]
+        options[:extension_keys] = %i[xml custom]
       end
-      
+
       taste_register = double("taste_register")
-      allow(taste_register).to receive(:available_tastes).and_return([:iso])  # Use existing flavor
+      allow(taste_register).to receive(:available_tastes).and_return([:iso]) # Use existing flavor
       allow(taste_register).to receive(:get).with(:iso).and_return(taste_instance)
       allow(Metanorma::TasteRegister).to receive(:instance).and_return(taste_register)
-      
+
       # Mock flavor loading to avoid the missing gem error
       allow_any_instance_of(Metanorma::Compile::Flavor).to receive(:require_flavor)
-      
-      compile.compile("test.adoc", 
-                     type: :iso,
-                     supplied_type: :iso,
-                     agree_to_terms: true,
-                     novalid: true)
-      
+
+      compile.compile("test.adoc",
+                      type: :iso,
+                      supplied_type: :iso,
+                      agree_to_terms: true,
+                      novalid: true)
+
       mapping = compile.output_format_mapping
       # Should include the dynamically added custom extension
       expect(mapping).to eq({
-        xml: "xml",
-        custom: "custom.ext"
-      })
+                              xml: "xml",
+                              custom: "custom.ext",
+                            })
       # Should not include html or doc since they were overridden
       expect(mapping).not_to have_key(:html)
       expect(mapping).not_to have_key(:doc)
@@ -1043,5 +1051,5 @@ RSpec.describe Metanorma::Compile do
       attrs << ":sectionsplit: true"
       "#{attrs.join("\n")}\n\n#{rest}"
     end
-end
+  end
 end

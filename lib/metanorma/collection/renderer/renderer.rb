@@ -9,6 +9,7 @@ require_relative "utils"
 require_relative "render_word"
 require_relative "navigation"
 require_relative "svg"
+require_relative "../log"
 
 module Metanorma
   class Collection
@@ -53,6 +54,7 @@ module Metanorma
         @compile_options = options[:compile] || {}
         @compile_options[:install_fonts] = true if options[:install_fonts]
         @log = options[:log]
+        @log&.add_msg(METANORMA_LOG_MESSAGES)
         @bibdata = collection.bibdata
         @documents = collection.documents
         @bibdatas = collection.documents

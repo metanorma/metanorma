@@ -1,0 +1,7 @@
+gem "html2doc", git: "https://github.com/metanorma/html2doc", branch: "main"
+gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "features/log-config"
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "features/log-config"
+gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "features/log-config"
+gem "metanorma-utils", git: "https://github.com/metanorma/metanorma-utils", branch: "features/log-config"
+
+
