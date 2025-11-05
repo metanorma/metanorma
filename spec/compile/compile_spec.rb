@@ -675,6 +675,7 @@ RSpec.describe Metanorma::Compile do
     expect(output).to include("STANDOC_")
     expect(output).to include("ISODOC_")
     expect(output).to include("ISO_")
+    expect(output).not_to include("NIST_")
   end
 
   describe "Output filename templating" do
