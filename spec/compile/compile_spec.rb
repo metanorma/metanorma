@@ -266,7 +266,7 @@ RSpec.describe Metanorma::Compile do
       raise Fontist::Errors::UnsupportedFontError.new("TestFnt") if @called == 2
     end
     allow(Fontist::Formula).to receive(:update_formulas_repo)
-    allow(Fontist::Manifest::Locations).to receive(:from_hash)
+    allow(Fontist::Manifest).to receive(:from_hash)
     expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).twice
 
     compile.compile("spec/assets/test.adoc", type: "iso",
@@ -278,7 +278,7 @@ RSpec.describe Metanorma::Compile do
     mock_sts
     compile = Metanorma::Compile.new
 
-    allow(Fontist::Manifest::Locations).to receive(:from_hash)
+    allow(Fontist::Manifest).to receive(:from_hash)
     expect(Metanorma::Util::FontistHelper).to receive(:fontist_install)
       .with(anything, false, true)
 
