@@ -63,8 +63,9 @@ module Metanorma
         doclist
       end
 
-      BIBITEM_NOT_REPO_XPATH = "//bibitem[not(ancestor::bibitem)]" \
-        "[not(./docidentifier[@type = 'repository'])]".freeze
+      BIBITEM_NOT_REPO_XPATH = <<~XPATH.strip
+        //bibitem[not(ancestor::bibitem)][not(ancestor::bibdata)][not(./docidentifier[@type = 'repository'])]
+        XPATH
 
       def supply_repo_ids(doc)
         doc.xpath(ns(BIBITEM_NOT_REPO_XPATH)).each do |b|
@@ -82,10 +83,11 @@ module Metanorma
       # Any erefs to that bibitem id are replaced with relative URL
       # Preferably with anchor, and is a job to realise dynamic lookup
       # of localities.
-      def update_direct_refs_to_docs(docxml, identifier, presxml)
+      def update_direct_refs_to_docs(xml, identifier, presxml)
         erefs, erefs_no_anchor, anchors, erefs1 =
-          update_direct_refs_to_docs_prep(docxml, presxml)
-        docxml.xpath(ns("//bibitem")).each do |b|
+          update_direct_refs_to_docs_prep(xml, presxml)
+        x = xml.xpath(ns("//bibitem")) - xml.xpath(ns("//bibdata//bibitem"))
+        x.each do |b|
           docid = b.at(ns("./docidentifier[@type = 'repository']")) or next
           strip_unresolved_repo_erefs(identifier, docid, erefs1, b) or next
           update_bibitem(b, identifier)
