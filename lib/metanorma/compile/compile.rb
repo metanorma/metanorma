@@ -248,7 +248,7 @@ module Metanorma
 
       OUTPUT
       file.close
-      compile(file.path, {})
+      compile(file.path, agree_to_terms: true)
     end
 
     def extract_log_messages(flavor)
