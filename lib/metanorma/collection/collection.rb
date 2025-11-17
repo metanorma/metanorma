@@ -44,6 +44,8 @@ module Metanorma
     def initialize_vars
       @compile = Metanorma::Compile.new # feeds @manifest
       @log = Metanorma::Utils::Log.new
+      @log.suppress_log = { severity: 4, category: [], error_ids: [],
+                            locations: [] }
       @disambig = Util::DisambigFiles.new
     end
 
