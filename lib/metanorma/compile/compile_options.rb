@@ -30,11 +30,12 @@ module Metanorma
       end
 
       def extract_extension_options(opt, doc_opt)
+        opt[:extension_keys] == [:all] and opt[:extension_keys] = []
         ext = opt[:extension_keys] || []
-        ext == [:all] and ext = []
         doc_opt[:extensions] == "all" and doc_opt[:extensions] = ""
         ext1 = (doc_opt[:extensions] || "").split(/, */).map(&:to_sym)
         !ext1.empty? && ext.empty? and opt[:extension_keys] = ext1
+        opt[:extension_keys]&.empty? and opt[:extension_keys] = nil
       end
 
       def options_in_file(filename)
