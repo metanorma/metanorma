@@ -21,13 +21,20 @@ module Metanorma
         o = options_in_file(filename)
         extract_flavor_options(options, o)
         extract_dir_options(options, o, filename)
-        options[:extension_keys] ||= o[:extensions]&.split(/, */)&.map(&:to_sym)
-        options[:extension_keys] = nil if options[:extension_keys] == [:all]
+        extract_extension_options(options, o)
         options[:format] ||= :asciidoc
         options[:filename] = filename
         options[:fontlicenseagreement] ||= "no-install-fonts"
         options[:novalid] = o[:novalid] if o[:novalid]
         options
+      end
+
+      def extract_extension_options(opt, doc_opt)
+        ext = opt[:extension_keys] || []
+        ext == [:all] and ext = []
+        doc_opt[:extensions] == "all" and doc_opt[:extensions] = ""
+        ext1 = (doc_opt[:extensions] || "").split(/, */).map(&:to_sym)
+        !ext1.empty? && ext.empty? and opt[:extension_keys] = ext1
       end
 
       def options_in_file(filename)

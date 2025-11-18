@@ -302,6 +302,11 @@ RSpec.describe Metanorma::Compile do
   end
 
   it "processes metanorma options inside Asciidoc" do
+    FileUtils.rm_rf "spec/assets/test1.xml"
+    FileUtils.rm_rf "spec/assets/test1.doc"
+    FileUtils.rm_rf "spec/assets/test1.html"
+    FileUtils.rm_rf "spec/assets/test1.alt.html"
+    FileUtils.rm_rf "spec/assets/test1.relaton.xml"
     Metanorma::Compile.new.compile("spec/assets/test1.adoc",
                                    agree_to_terms: true)
     expect(File.exist?("spec/assets/test1.xml")).to be true
@@ -309,6 +314,24 @@ RSpec.describe Metanorma::Compile do
     expect(File.exist?("spec/assets/test1.html")).to be true
     expect(File.exist?("spec/assets/test1.alt.html")).to be false
     expect(File.exist?("spec/assets/test1.relaton.xml")).to be true
+    xml = File.read("spec/assets/test1.xml", encoding: "utf-8")
+    expect(xml).to include ' flavor="iso"'
+  end
+
+  it "overrides metanorma extension options inside Asciidoc" do
+    FileUtils.rm_rf "spec/assets/test1.xml"
+    FileUtils.rm_rf "spec/assets/test1.doc"
+    FileUtils.rm_rf "spec/assets/test1.html"
+    FileUtils.rm_rf "spec/assets/test1.alt.html"
+    FileUtils.rm_rf "spec/assets/test1.relaton.xml"
+    Metanorma::Compile.new.compile("spec/assets/test1.adoc",
+                                   extension_keys: [:xml],
+                                   agree_to_terms: true)
+    expect(File.exist?("spec/assets/test1.xml")).to be true
+    expect(File.exist?("spec/assets/test1.doc")).to be false
+    expect(File.exist?("spec/assets/test1.html")).to be false
+    expect(File.exist?("spec/assets/test1.alt.html")).to be false
+    # expect(File.exist?("spec/assets/test1.relaton.xml")).to be false
     xml = File.read("spec/assets/test1.xml", encoding: "utf-8")
     expect(xml).to include ' flavor="iso"'
   end
