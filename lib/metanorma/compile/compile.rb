@@ -200,11 +200,11 @@ module Metanorma
     # need to update options, for any content added;
     # e.g. new attributes from Metanorma taste
     def update_options_after_preprocessing(file, options)
-      new_options = {}
+      new_options = { extension_keys: options[:extension_keys] }
       Tempfile.open(["tmp", ".adoc"], encoding: "UTF-8") do |f|
         f.write(file)
         f.close
-        new_options = extract_options(f, {})
+        new_options = extract_options(f, new_options)
       end
       new_options.compact!
       new_options.delete(:filename)
