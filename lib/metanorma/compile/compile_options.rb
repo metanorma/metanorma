@@ -101,7 +101,7 @@ module Metanorma
 
       def get_isodoc_options(file, options, ext)
         ret = @processor.extract_options(file)
-        get_isodoc_i18nyaml(options, ret)
+        get_isodoc_fileparams(options, ret)
         copy_isodoc_options_attrs(options, ret)
         font_manifest_mn2pdf(options, ret, ext)
         ret[:output_formats]&.select! do |k, _|
@@ -111,11 +111,13 @@ module Metanorma
         ret
       end
 
-      def get_isodoc_i18nyaml(options, ret)
-        dir = File.dirname(options[:filename])
-        ret[:i18nyaml] or return
-        (Pathname.new ret[:i18nyaml]).absolute? or
-          ret[:i18nyaml] = File.join(dir, ret[:i18nyaml])
+      def get_isodoc_fileparams(options, ret)
+        %i(i18nyaml relatonrenderconfig).each do |k|
+          dir = File.dirname(options[:filename])
+          ret[k] or next
+          (Pathname.new ret[k]).absolute? or
+            ret[k] = File.join(dir, ret[k])
+        end
       end
 
       def copy_isodoc_options_attrs(options, ret)
@@ -132,7 +134,8 @@ module Metanorma
 
         ext == :pdf && custom_fonts and
           ret[:mn2pdf] = {
-            font_manifest: Util::FontistHelper.location_manifest(@processor, ret),
+            font_manifest: Util::FontistHelper
+              .location_manifest(@processor, ret),
           }
       end
     end
