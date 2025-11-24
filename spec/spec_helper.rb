@@ -51,6 +51,7 @@ ASCIIDOC_BLANK_HDR = <<~HDR
 
 HDR
 
+=begin
 ASCIIDOC_CONFIGURED_HDR = <<~HDR
   = Document title
   Author
@@ -66,6 +67,7 @@ ASCIIDOC_CONFIGURED_HDR = <<~HDR
   :i18nyaml: i18n.yaml
 
 HDR
+=end
 
 ISOXML_BLANK_HDR = <<~HDR
   <?xml version="1.0" encoding="UTF-8"?>

@@ -42,6 +42,7 @@ RSpec.describe Metanorma::Compile do
         toctables: true,
         tocrecommendations: true,
         i18nyaml: "spec/assets/i.yaml",
+        relatonrenderconfig: "spec/assets/j.yaml",
         output_formats: {
           presentation: "presentation.xml",
         },
@@ -64,6 +65,7 @@ RSpec.describe Metanorma::Compile do
       tocrecommendations: true,
       agree_to_terms: true,
       i18nyaml: "spec/assets/i.yaml",
+      relatonrenderconfig: "spec/assets/j.yaml",
       log: log,
       output_formats: {
         doc: "doc",
