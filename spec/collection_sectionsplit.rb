@@ -383,35 +383,35 @@ RSpec.describe Metanorma::Collection do
     xml2 = Nokogiri::XML(file2)
     xml = "<xml>#{xml0.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
-      <xml>
-          <a class="FootnoteRef" href="#fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:1">
+       <xml>
+          <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:1">
              <sup>1)</sup>
           </a>
-          <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
+          <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
              <sup>2)</sup>
           </a>
-          <aside id="fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
+          <aside id="fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
              <p id="_">
-                <a class="FootnoteRef" href="#fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+                <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                    <sup>1)</sup>
                 </a>
                 First footnote
              </p>
              <a href="#fnref:1">↩</a>
           </aside>
-          <a class="FootnoteRef" href="#fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <sup>1)</sup>
           </a>
-          <aside id="fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
+          <aside id="fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
              <p id="_">
-                <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+                <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                    <sup>2)</sup>
                 </a>
                 Second footnote
              </p>
              <a href="#fnref:2">↩</a>
           </aside>
-          <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <sup>2)</sup>
           </a>
        </xml>

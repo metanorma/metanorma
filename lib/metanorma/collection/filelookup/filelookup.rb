@@ -2,6 +2,7 @@ require "isodoc"
 require "htmlentities"
 require "metanorma-utils"
 require_relative "filelookup_sectionsplit"
+require_relative "utils"
 
 module Metanorma
   class Collection
@@ -148,21 +149,6 @@ module Metanorma
         end
       end
 
-      # return citation url for file
-      # @param doc [Boolean] I am a Metanorma document,
-      # so my URL should end with html or pdf or whatever
-      def url(ident, options)
-        data = get(ident)
-        data[:url] || targetfile(data, options)[1]
-      end
-
-      # are references to the file to be linked to a file in the collection,
-      # or externally? Determines whether file suffix anchors are to be used
-      def url?(ident)
-        data = get(ident) or return false
-        data[:url]
-      end
-
       # return file contents + output filename for each file in the collection,
       # given a docref entry
       # @param data [Hash] docref entry
@@ -205,24 +191,43 @@ module Metanorma
       # locality. Notes, examples etc with containers are just plunked against
       # UUIDs, so that their IDs can at least be registered to be tracked
       # as existing.
+      # If we are processing Semantic XML, we have @anchor shadowing @id, with
+      # the former human-supplied and the latter a content GUID; they are merged
+      # into @id in Presentation XML. xrefs.parse is intended for Presentation
+      # XML, so we will copy across the extracted entries for @id to any
+      # @anchor they are colocated with in the node
       def read_anchors(xml)
+        xrefs, id2anc = read_anchors_init(xml)
+        xrefs.get.each_with_object({}) do |(k, v), ret|
+          read_anchors1(k, v, ret)
+          k1 = id2anc[k] and read_anchors1(k1, v, ret)
+        end
+      end
+
+      def read_anchors_init(xml)
         xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n,
                                   { locale: @locale })
         xrefs.parse xml
-        xrefs.get.each_with_object({}) do |(k, v), ret|
-          read_anchors1(k, v, ret)
+        id2anc = xml.xpath("//*[@id][@anchor]").each_with_object({}) do |n, m|
+          n["id"] == n["anchor"] and next
+          m[n["id"]] = n["anchor"]
         end
+        [xrefs, id2anc]
       end
 
       def read_anchors1(key, val, ret)
         val[:type] ||= "clause"
         ret[val[:type]] ||= {}
-        index = if val[:container] || val[:label].nil? || val[:label].empty?
-                  UUIDTools::UUID.random_create.to_s
-                else val[:label].gsub(%r{<[^>]+>}, "")
-                end
+        index = read_anchors1_index(val)
         ret[val[:type]][index] = key
         v = val[:value] and ret[val[:type]][v.gsub(%r{<[^>]+>}, "")] = key
+      end
+
+      def read_anchors1_index(val)
+        if val[:container] || val[:label].nil? || val[:label].empty?
+          UUIDTools::UUID.random_create.to_s
+        else val[:label].gsub(%r{<[^>]+>}, "")
+        end
       end
 
       # Also parse all ids in doc (including ones which won't be xref targets)
@@ -231,39 +236,9 @@ module Metanorma
         xml.traverse do |x|
           x.text? and next
           x["id"] and ret[x["id"]] = true
+          x["anchor"] and ret[x["anchor"]] = true
         end
         ret
-      end
-
-      def key(ident)
-        @c.decode(ident).gsub(/(\p{Zs})+/, " ")
-          .sub(/^metanorma-collection /, "")
-      end
-
-      def keys
-        @files.keys
-      end
-
-      def get(ident, attr = nil)
-        if attr then @files[key(ident)][attr]
-        else @files[key(ident)]
-        end
-      end
-
-      def set(ident, attr, value)
-        @files[key(ident)][attr] = value
-      end
-
-      def each
-        @files.each
-      end
-
-      def each_with_index
-        @files.each_with_index
-      end
-
-      def ns(xpath)
-        @isodoc.ns(xpath)
       end
     end
   end

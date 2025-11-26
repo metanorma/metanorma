@@ -203,7 +203,8 @@ module Metanorma
       end
 
       def update_anchors1(docid, ncn_docid, anchor)
-        @concat_anchors[anchor.text] ||= "#{ncn_docid}_#{anchor.text}"
+        #@concat_anchors[anchor.text] ||= "#{ncn_docid}_#{anchor.text}"
+        @concat_anchors[anchor.text] ||= "#{anchor.text}_#{ncn_docid}"
         if @files.get(docid).dig(:anchors_lookup, @concat_anchors[anchor.text])
           anchor.content = @concat_anchors[anchor.text]
         end
