@@ -41,14 +41,13 @@ module Metanorma
         end
 
         def fontist_install(manifest, agree, no_progress)
-          if agree
-            no_license_log
+          if agree then no_license_log
           else
-            Fontist.log_level = :info
+            # Fontist.log_level = :info
+            # Shutting up Fontist 2.0's verbose logging of installation locations
+            Fontist.log_level = :fatal
           end
-
-          instance = Fontist::Manifest.from_hash(manifest)
-          instance.install(
+          Fontist::Manifest.from_hash(manifest).install(
             confirmation: agree ? "yes" : "no",
             no_progress: no_progress,
           ).to_hash
