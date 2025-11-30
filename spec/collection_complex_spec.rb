@@ -60,11 +60,11 @@ RSpec.describe Metanorma::Collection do
       end
       expect(concat_text_doc_xml.xpath("//xmlns:xref/@target")[-1].text)
         .to be_equivalent_to "_scope"
-      expect(conact_file_doc_xml.xpath("//i:xref/@target", "i" => "https://www.metanorma.org/ns/iso")[-1].text)
+      expect(conact_file_doc_xml.xpath("//i:xref/@target", "i" => "https://www.metanorma.org/ns/standoc")[-1].text)
         .to be_equivalent_to "_scope_ISO_17301-1_2016"
       expect(concat_text_doc_xml.at("//xmlns:strong/@style").text)
         .to be_equivalent_to "background: url(#svg1); foreground: url(_001); middleground: url(#fig1);"
-      expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/iso").text)
+      expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/standoc").text)
         .to be_equivalent_to "background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);"
 
       expect(File.exist?("#{INPATH}/collection1.err.html")).to be true

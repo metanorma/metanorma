@@ -321,7 +321,7 @@
       </clause>
    </prefatory-content>
    <doc-container id="doc000000000">
-      <metanorma xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17301-1_2016" flavor="iso">
+      <metanorma xmlns="https://www.metanorma.org/ns/standoc" document_suffix="ISO_17301-1_2016" flavor="iso">
          <bibdata type="standard">
             <title language="en" format="text/plain" type="main">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
             <title language="en" format="text/plain" type="title-intro">Cereals and pulses</title>
@@ -885,7 +885,7 @@ at the address below or ISO’s member body in the country of the requester.
       </metanorma>
    </doc-container>
    <doc-container id="doc000000001">
-      <metanorma xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17302_2016" flavor="iso">
+      <metanorma xmlns="https://www.metanorma.org/ns/standoc" document_suffix="ISO_17302_2016" flavor="iso">
          <bibdata type="standard">
             <title language="en" format="text/plain" type="main">Dummy document</title>
             <title language="en" format="text/plain" type="title-main">Dummy document</title>
@@ -1239,7 +1239,7 @@ end
       </metanorma>
    </doc-container>
    <doc-container id="doc000000002">
-      <metanorma xmlns="https://www.metanorma.org/ns/iso" type="semantic" version="1.6.0" document_suffix="ISO_1701_1974" flavor="iso">
+      <metanorma xmlns="https://www.metanorma.org/ns/standoc" type="semantic" version="1.6.0" document_suffix="ISO_1701_1974" flavor="iso">
          <bibdata type="standard">
             <title language="en" format="text/plain" type="main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
             <title language="en" format="text/plain" type="title-main">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
@@ -1520,7 +1520,7 @@ at the address below or ISO’s member body in the country of the requester.
       </metanorma>
    </doc-container>
    <doc-container id="doc000000003">
-      <metanorma xmlns="https://www.metanorma.org/ns/iso" document_suffix="ISO_17301-1_2016_Amd.1_2017" flavor="iso">
+      <metanorma xmlns="https://www.metanorma.org/ns/standoc" document_suffix="ISO_17301-1_2016_Amd.1_2017" flavor="iso">
          <bibdata type="standard">
             <title language="en" format="text/plain" type="main">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
             <title language="en" format="text/plain" type="title-main">Specification and test methods</title>
