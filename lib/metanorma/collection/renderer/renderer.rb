@@ -149,6 +149,7 @@ module Metanorma
 
       def concatenate_outputs(options)
         pres = File.join(@outdir, "collection.presentation.xml")
+        require "debug"; binding.b
         options[:format].include?(:pdf) and pdfconv.convert(pres)
         options[:format].include?(:doc) and docconv_convert(pres)
         @directives.detect { |d| d.key == "bilingual" } &&

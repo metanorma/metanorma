@@ -290,7 +290,7 @@
              </clause>
           </prefatory-content>
   <doc-container id="doc000000000">
-    <metanorma>
+    <metanorma flavor="iso">
       <bibdata type="standard">
         <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
         <title type="title-intro" format="text/plain" language="en">Cereals and pulses</title>
@@ -352,7 +352,7 @@
     </metanorma>
   </doc-container>
   <doc-container id="doc000000001">
-    <metanorma>
+    <metanorma flavor="iso">
       <bibdata type="standard">
         <title type="main" format="text/plain" language="en">Dummy document</title>
         <title type="title-main" format="text/plain" language="en">Dummy document</title>
@@ -405,7 +405,7 @@
     </metanorma>
   </doc-container>
   <doc-container id="doc000000002">
-    <metanorma>
+    <metanorma flavor="iso">
       <bibdata type="standard">
         <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
         <title type="title-main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
@@ -462,7 +462,7 @@
     </metanorma>
   </doc-container>
   <doc-container id="doc000000003">
-    <metanorma>
+    <metanorma flavor="iso">
       <bibdata type="standard">
         <title type="main" format="text/plain" language="en">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
         <title type="title-main" format="text/plain" language="en">Specification and test methods</title>

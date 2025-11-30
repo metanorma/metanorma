@@ -49,7 +49,7 @@ module Metanorma
         private
 
         def mn2relaton_parser(tag)
-          case tag["flavor"]
+          case tag
           when "bipm" then ::RelatonBipm::XMLParser
           when "bsi" then ::RelatonBsi::XMLParser
           when "ietf" then ::RelatonIetf::XMLParser
@@ -67,7 +67,7 @@ module Metanorma
         # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
         def from_xml(xml)
           b = xml.at("//xmlns:bibitem|//xmlns:bibdata")
-          r = mn2relaton_parser(xml.root.name)
+          r = mn2relaton_parser(xml.root["flavor"])
           # Relaton doesn't understand Pres XML tags
           b.xpath("//xmlns:fmt-identifier").each(&:remove)
           r.from_xml(b.to_xml)

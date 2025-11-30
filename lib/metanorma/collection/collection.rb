@@ -160,6 +160,7 @@ module Metanorma
           b.attachment Vectory::Utils::datauri(doc.file)
         else
           doc.to_xml b
+          b.parent.children.first["flavor"] = flavor
         end
       end
     end
