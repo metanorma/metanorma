@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iso-standard xmlns="https://www.metanorma.org/ns/bipm" type="semantic" version="2.4.10" schema-version="v1.3.2">
+<metanorma xmlns="https://www.metanorma.org/ns/bipm" type="semantic" version="2.4.10" schema-version="v1.3.2" flavor="iso">
 <bibdata type="standard">
 <title language="en" format="text/plain" type="title-main">Evaluation of measurement data</title>
 
@@ -7517,4 +7517,4 @@ variable aléatoire<index><primary>variable aléatoire</primary></index> <stem t
 <index-xref also="false"><primary>variance</primary><secondary>analyse de</secondary><target>analyse de variance</target></index-xref>
 <index-xref also="false"><primary>Vocabulaire international des termes fondamentaux et généraux de métrologie</primary><target>VIM</target></index-xref></p>
 </indexsect>
-</iso-standard>
+</metanorma>

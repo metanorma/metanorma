@@ -51,27 +51,9 @@ ASCIIDOC_BLANK_HDR = <<~HDR
 
 HDR
 
-=begin
-ASCIIDOC_CONFIGURED_HDR = <<~HDR
-  = Document title
-  Author
-  :docfile: test.adoc
-  :nodoc:
-  :novalid:
-  :no-isobib:
-  :script: script.html
-  :body-font: body-font
-  :header-font: header-font
-  :monospace-font: monospace-font
-  :title-font: title-font
-  :i18nyaml: i18n.yaml
-
-HDR
-=end
-
 ISOXML_BLANK_HDR = <<~HDR
   <?xml version="1.0" encoding="UTF-8"?>
-  <iso-standard xmlns="http://riboseinc.com/isoxml">
+  <metanorma xmlns="http://riboseinc.com/isoxml">
   <bibdata type="article">
     <title>
     </title>
@@ -114,7 +96,7 @@ ISOXML_BLANK_HDR = <<~HDR
       <workgroup/>
     </editorialgroup>
   </bibdata>
-  </iso-standard>
+  </metanorma>
 HDR
 
 GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(_[^'\" ]+)?"

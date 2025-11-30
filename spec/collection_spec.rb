@@ -419,6 +419,7 @@ RSpec.describe Metanorma::Collection do
     it "XML collection with docs inline" do
       mock_pdf
       file = "#{INPATH}/collection_docinline.xml"
+      require "debug"; binding.b
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")

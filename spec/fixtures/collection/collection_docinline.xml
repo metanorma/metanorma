@@ -290,7 +290,7 @@
              </clause>
           </prefatory-content>
   <doc-container id="doc000000000">
-    <iso-standard>
+    <metanorma>
       <bibdata type="standard">
         <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
         <title type="title-intro" format="text/plain" language="en">Cereals and pulses</title>
@@ -349,10 +349,10 @@
           <stagename>International standard</stagename>
         </ext>
       </bibdata>
-    </iso-standard>
+    </metanorma>
   </doc-container>
   <doc-container id="doc000000001">
-    <iso-standard>
+    <metanorma>
       <bibdata type="standard">
         <title type="main" format="text/plain" language="en">Dummy document</title>
         <title type="title-main" format="text/plain" language="en">Dummy document</title>
@@ -402,10 +402,10 @@
           <stagename>International standard</stagename>
         </ext>
       </bibdata>
-    </iso-standard>
+    </metanorma>
   </doc-container>
   <doc-container id="doc000000002">
-    <iso-standard>
+    <metanorma>
       <bibdata type="standard">
         <title type="main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
         <title type="title-main" format="text/plain" language="en">Test conditions for milling machines with table of variable height, with horizontal or vertical spindle</title>
@@ -459,10 +459,10 @@
           <stagename>International standard</stagename>
         </ext>
       </bibdata>
-    </iso-standard>
+    </metanorma>
   </doc-container>
   <doc-container id="doc000000003">
-    <iso-standard>
+    <metanorma>
       <bibdata type="standard">
         <title type="main" format="text/plain" language="en">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
         <title type="title-main" format="text/plain" language="en">Specification and test methods</title>
@@ -524,7 +524,7 @@
           <stagename>International standard</stagename>
         </ext>
       </bibdata>
-    </iso-standard>
+    </metanorma>
   </doc-container>
   <doc-container id="doc000000004">
     <bibdata>

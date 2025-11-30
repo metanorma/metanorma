@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iso-standard xmlns="https://www.metanorma.org/ns/iso">
+<metanorma xmlns="https://www.metanorma.org/ns/iso" flavor="iso">
 <bibdata type="standard">
 <title language="en" format="text/plain" type="main">Dummy document</title>
 <title language="en" format="text/plain" type="title-main">Dummy document</title>
@@ -292,4 +292,4 @@ module Metanorma
 end
 </pre>
 </figure></clause></sections>
-</iso-standard>
+</metanorma>

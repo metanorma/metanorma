@@ -1,4 +1,4 @@
-     <iso-standard xmlns="http://riboseinc.com/isoxml">
+     <metanorma xmlns="http://riboseinc.com/isoxml">
       <bibdata>
       <title>ISO Title</title>
       <docidentifier type="ISO">ISO 1</docidentifier>
@@ -115,5 +115,5 @@ GIFRIRSBQT1NTSUJJTElUWSBPRiBTVUNIIERBTUFHRS4K
      </clause>
      </bibliography>
      <indexsect displayorder="10"><title>Index</title></indexsect>
-      </iso-standard>
+      </metanorma>
 

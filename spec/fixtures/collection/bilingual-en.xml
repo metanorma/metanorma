@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iso-standard xmlns="https://www.metanorma.org/ns/bipm" type="semantic" version="2.4.10" schema-version="v1.3.2">
+<metanorma xmlns="https://www.metanorma.org/ns/bipm" type="semantic" version="2.4.10" schema-version="v1.3.2" flavor="iso">
 <bibdata type="standard">
 <title language="en" format="text/plain" type="title-main">Evaluation of measurement data</title>
 
@@ -7679,4 +7679,4 @@ The standard uncertainty of this estimate is <stem type="MathML" block="false"><
 <index-xref also="false"><primary>uncertainty</primary><secondary>definition of the term</secondary><target>uncertainty of measurement</target></index-xref>
 <index-xref also="false"><primary>variance</primary><secondary>analysis of</secondary><target>ANOVA</target></index-xref></p>
 </indexsect>
-</iso-standard>
+</metanorma>

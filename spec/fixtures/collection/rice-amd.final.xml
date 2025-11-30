@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iso-standard xmlns="https://www.metanorma.org/ns/iso">
+<metanorma xmlns="https://www.metanorma.org/ns/iso" flavor="iso">
 <bibdata type="standard">
 <title language="en" format="text/plain" type="main">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
 <title language="en" format="text/plain" type="title-main">Specification and test methods</title>
@@ -177,4 +177,4 @@ at the address below or ISO’s member body in the country of the requester.
 <p id="_4bc3561e-99eb-4858-a9ce-61e97b349a82">Containers of rice should be stored in covered premises, well protected from the sun, rain and excessive heat.</p>
 <p id="_d550698f-d0d5-41cb-9209-9b6ecc51527b">The storeroom should be dry, free from unpleasant odours and protected against entry of insects and other vermin. Ventilation should be adjusted in such a way as to give good ventilation during dry weather and to be fully closed under damp conditions. Suitable provisions should be made for fumigation of storerooms.</p>
 <p id="_5a95484d-0e4c-4553-aeae-179b0e904b62">Containers should be handled and transported in such a way that they are protected from the rain, sun or other sources of excessive heat, unpleasant odours and any other contamination (especially in the holds of ships).</p></quote></clause></sections>
-</iso-standard>
+</metanorma>

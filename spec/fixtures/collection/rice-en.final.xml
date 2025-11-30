@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iso-standard xmlns="https://www.metanorma.org/ns/iso">
+<metanorma xmlns="https://www.metanorma.org/ns/iso" flavor="iso">
 <bibdata type="standard">
 <title language="en" format="text/plain" type="main">Cereals and pulses — Specifications and test methods — Rice (Final)</title>
 <title language="en" format="text/plain" type="title-intro">Cereals and pulses</title>
@@ -141,4 +141,4 @@ at the address below or ISO’s member body in the country of the requester.
 <bibitem id="express-schema_E2" type="internal"><docidentifier type='repository'>express-schema/E2</docidentifier></bibitem>
 <bibitem id="action_schemaexpg1.svg"><formattedref format="application/x-isodoc+xml"/><docidentifier>action_schemaexpg1.svg</docidentifier><docidentifier type="repository">current-metanorma-collection/action_schemaexpg1.svg</docidentifier><docnumber>action_schemaexpg1.svg</docnumber></bibitem>
 </references></bibliography>
-</iso-standard>
+</metanorma>

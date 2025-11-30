@@ -49,7 +49,7 @@ module Metanorma
         private
 
         def mn2relaton_parser(tag)
-          case tag.sub(/-standard/, "")
+          case tag["flavor"]
           when "bipm" then ::RelatonBipm::XMLParser
           when "bsi" then ::RelatonBsi::XMLParser
           when "ietf" then ::RelatonIetf::XMLParser
@@ -127,7 +127,7 @@ module Metanorma
         if @raw
           builder.parent.add_child(@bibitem.root)
         else
-          builder.send("#{type}-standard") do |b|
+          builder.send("metanorma") do |b|
             b << @bibitem.to_xml(bibdata: true)
           end
         end
