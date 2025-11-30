@@ -402,7 +402,6 @@ RSpec.describe Metanorma::Collection do
       file = "#{INPATH}/wordcollection.yml"
       of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
-      require "debug"; binding.b
       col.render(
         format: %i[presentation doc pdf],
         output_folder: of,
