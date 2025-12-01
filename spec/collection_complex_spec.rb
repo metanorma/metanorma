@@ -455,7 +455,7 @@ RSpec.describe Metanorma::Collection do
   end
 
   context "bilingual document" do
-    xit "YAML collection" do
+    it "YAML collection" do
       FileUtils.rm_f "#{OUTPATH}/collection.err.html"
       FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
       file = "#{INPATH}/bilingual.yml"
