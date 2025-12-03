@@ -112,36 +112,34 @@ module Metanorma
     # @return [String, nil]
     attr_reader :prefatory, :final
 
-    # @return [String]
-    def dummy_header
-      <<~DUMMY
-        = X
-        A
-
-      DUMMY
-    end
-
     # @param elm [String] 'prefatory' or 'final'
     # @param builder [Nokogiri::XML::Builder]
     def content_to_xml(elm, builder)
       (cnt = send(elm)) or return
       @compile.load_flavor(flavor)
-      out = sections(dummy_header + cnt.strip)
+      out = prefatory_parse(Util::asciidoc_dummy_header + cnt.strip)
       builder.send("#{elm}-content") { |b| b << out }
     end
 
     # @param cnt [String] prefatory/final content
     # @return [String] XML
-    def sections(cnt)
+    def prefatory_parse(cnt)
+      x = prefatory_parse_semantic(cnt)
+      file, filepath = Util::nokogiri_to_temp(x, "foo", ".presentation.xml")
+      c1 = Util::isodoc_create(@flavor, @manifest.lang, @manifest.script, x,
+                               presxml: true).convert(filepath, nil, true)
+      body = Nokogiri::XML(c1).at("//xmlns:sections")
+      body.at("//xmlns:p[@class = 'zzSTDTitle1']")&.remove
+      body.children.to_xml
+    end
+
+    def prefatory_parse_semantic(cnt)
       c = Asciidoctor.convert(cnt, backend: flavor.to_sym, header_footer: true)
       x = Nokogiri::XML(c)
       x.xpath("//xmlns:clause").each { |n| n["unnumbered"] = true }
-      file = Tempfile.new(%w(foo presentation.xml))
-      file.write(x.to_xml(indent: 0))
-      file.close
-      c1 = Util::isodoc_create(@flavor, @manifest.lang, @manifest.script, x, presxml: true)
-        .convert(file.path, nil, true)
-      Nokogiri::XML(c1).at("//xmlns:sections").children.to_xml
+      b = x.at("//xmlns:bibdata")
+      b.replace @bibdata.to_xml(bibdata: true)
+      x
     end
 
     # @param builder [Nokogiri::XML::Builder]
