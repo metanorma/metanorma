@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "debug"
   spec.add_development_dependency "equivalent-xml"
   spec.add_development_dependency "metanorma-iso", ">= 3.2.0"
+  spec.add_development_dependency "metanorma-iho"
   spec.add_development_dependency "mnconvert"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rake", "~> 13.0"

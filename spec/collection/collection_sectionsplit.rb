@@ -1,4 +1,4 @@
-require "spec_helper"
+require_relative "../spec_helper"
 require "stringio"
 require "isodoc"
 
@@ -20,14 +20,14 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf "test_collection"
     FileUtils.rm_rf "test_files"
     mock_render
-    Metanorma::Compile.new.compile("spec/fixtures/test_sectionsplit.xml",
+    Metanorma::Compile.new.compile("spec/fixtures/collection/test_sectionsplit.xml",
                                    type: "iso",
                                    extension_keys: %i[presentation html],
                                    bare: nil,
                                    sectionsplit: "true",
                                    datauriimage: true,
                                    agree_to_terms: true)
-    f = "spec/fixtures/test_sectionsplit.html_collection"
+    f = "spec/fixtures/collection/test_sectionsplit.html_collection"
     expect(File.exist?("#{f}/index.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be true
@@ -41,7 +41,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
     expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
-    f = Dir.glob("spec/fixtures/test_sectionsplit_*_files").first
+    f = Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files").first
     expect(File.exist?("#{f}/cover.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true
@@ -226,7 +226,6 @@ RSpec.describe Metanorma::Collection do
       .to be true
     expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
     expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
-    # require 'debug'; binding.b
     expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
       .to be false
     expect(File.exist?("#{OUTPATH}/rice-en.final.xml.0.html"))
