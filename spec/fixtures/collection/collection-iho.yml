@@ -1,0 +1,124 @@
+---
+directives:
+  - documents-inline
+  - coverpage: cover-iho.html
+
+output_folder: collection
+
+bibdata:
+  title:
+    type: title-main
+    language: en
+    content: IHO S-97 IHO Guidelines for Creating S-100 Product Specifications
+
+  type: collection
+
+  docid:
+    type: iho
+    id: IHO S-97 (all parts)
+
+  edition: "1.1.0"
+
+  date:
+    - type: created
+      value: "2020"
+
+  copyright:
+    owner:
+      name: International Hydrographic Organization
+      abbreviation: IHO
+    from: "2020"
+
+format:
+  - xml
+  - html
+  - presentation
+  - rxl
+
+manifest:
+  docref:
+    - file: iho.xml
+
+prefatory-content: |
+  [.preface]
+  == metanorma-extension
+
+  === document history
+
+  [.boilerplate]
+  --
+  Changes to this Specification are coordinated by the IHO S-100 Working Group. New
+  editions will be made available via the IHO website. Maintenance of the Specification
+  shall conform to IHO Resolution 2/2007 (as amended).
+  --
+
+  [source,yaml]
+  ----
+  - date:
+    - type: published
+      value: 2018-01-31
+    edition: "0.1"
+    contributor:
+    - person:
+        name:
+          completename: EM
+          abbreviation: EM
+    - person:
+        name:
+          completename: RM
+          abbreviation: RM
+    amend:
+      - description: First draft
+  - date:
+    - type: updated
+      value: 2018-08-31
+    edition: "0.2"
+    contributor:
+    - person:
+        name:
+          completename: EM
+          abbreviation: EM
+    - person:
+        name:
+          completename: RM
+          abbreviation: RM
+    amend:
+      - description: Comments from NIPWG and S-100WG; multiple updates to conform to S-100 Edition 4.0.0; miscellaneous editorial updates
+  - date:
+    - type: updated
+      value: 2019-03-11
+    edition: "1.0.0 RC1"
+    contributor:
+    - person:
+        name:
+          completename: RM
+          abbreviation: RM
+    - person:
+        name:
+          completename: JW
+          abbreviation: JW
+    amend:
+      - description: IHO Secretariat editorial changes and styling; S-100 WG4 decisions; references updated following publication of S-100 4.0.0, S-122, S-123.
+  - date:
+    - type: updated
+      value: 2019-05
+    edition: "1.0.0"
+    contributor:
+    - organization:
+        name: International Hydrographic Organization
+        subdivision: S-100 Working Group
+        abbreviation: S-100WG
+    amend:
+     - description: First Edition.
+  - date:
+    - type: updated
+      value: 2020-06
+    edition: "1.1.0"
+    contributor:
+    - organization:
+        name: International Hydrographic Organization
+        subdivision: S-100 Working Group
+        abbreviation: S-100WG
+    amend:
+     - description: Substantive editorial amendments for readability. First Edition published on IHO website.
+  ----

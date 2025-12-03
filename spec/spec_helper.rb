@@ -107,8 +107,6 @@ def strip_guid(xml)
     .gsub(%r{ target="_[^"]+"}, ' target="_"')
 end
 
-GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(_[^'\" ]+)?"
-
 def cleanup_guid(content)
   content
     .gsub(%r{cid:#{GUID}}o, "cid:_")

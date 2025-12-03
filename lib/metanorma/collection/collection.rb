@@ -4,6 +4,7 @@ require_relative "util/util"
 require_relative "util/disambig_files"
 require_relative "config/config"
 require_relative "config/manifest"
+require_relative "helpers"
 
 module Metanorma
   class FileNotFoundException < StandardError; end
@@ -12,7 +13,7 @@ module Metanorma
 
   # Metanorma collection of documents
   class Collection
-    attr_reader :file
+    attr_reader :file, :prefatory, :final
 
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
@@ -109,39 +110,53 @@ module Metanorma
       warn opts[:output_folder]
     end
 
-    # @return [String, nil]
-    attr_reader :prefatory, :final
-
-    # @return [String]
-    def dummy_header
-      <<~DUMMY
-        = X
-        A
-
-      DUMMY
-    end
-
     # @param elm [String] 'prefatory' or 'final'
     # @param builder [Nokogiri::XML::Builder]
     def content_to_xml(elm, builder)
       (cnt = send(elm)) or return
       @compile.load_flavor(flavor)
-      out = sections(dummy_header + cnt.strip)
+      out = prefatory_parse(Util::asciidoc_dummy_header + cnt.strip)
       builder.send("#{elm}-content") { |b| b << out }
     end
 
     # @param cnt [String] prefatory/final content
     # @return [String] XML
-    def sections(cnt)
+    def prefatory_parse(cnt)
+      x = prefatory_parse_semantic(cnt)
+      _, filepath = Util::nokogiri_to_temp(x, "foo", ".presentation.xml")
+      c1 = Util::isodoc_create(@flavor, @manifest.lang, @manifest.script, x,
+                               presxml: true).convert(filepath, nil, true)
+      presxml = Nokogiri::XML(c1)
+      prefatory_extract_xml(presxml)
+    end
+
+    def prefatory_extract_xml(presxml)
+      body = presxml.at("//xmlns:sections")
+      body.at("//xmlns:p[@class = 'zzSTDTitle1']")&.remove
+      body.text.to_s.strip.empty? and body = presxml.at("//xmlns:preface")
+      body.at("//xmlns:clause[@type = 'toc']")&.remove
+      body.children.to_xml
+    end
+
+    def prefatory_parse_semantic(cnt)
       c = Asciidoctor.convert(cnt, backend: flavor.to_sym, header_footer: true)
       x = Nokogiri::XML(c)
       x.xpath("//xmlns:clause").each { |n| n["unnumbered"] = true }
-      file = Tempfile.new(%w(foo presentation.xml))
-      file.write(x.to_xml(indent: 0))
-      file.close
-      c1 = Util::isodoc_create(@flavor, @manifest.lang, @manifest.script, x, presxml: true)
-        .convert(file.path, nil, true)
-      Nokogiri::XML(c1).at("//xmlns:sections").children.to_xml
+      b = x.at("//xmlns:bibdata")
+      prefatory_parse_fix_bibdata(b)
+      b.children = ::Metanorma::Standoc::Cleanup::MergeBibitems
+        .new(b.to_xml, @bibdata.to_xml(bibdata: true)).merge.to_noko.children
+      x
+    end
+
+    # Stop standoc ownerless copyright from breaking Relaton parse of bibdata
+    def prefatory_parse_fix_bibdata(bibdata)
+      if cop = bibdata.at("//xmlns:copyright")
+        cop.at("./xmlns:owner") or
+          cop.children.first.previous =
+            "<owner><organization><name>SDO</name></organization></owner>"
+      end
+      bibdata
     end
 
     # @param builder [Nokogiri::XML::Builder]
@@ -178,85 +193,6 @@ module Metanorma
       f
     rescue LoadError
       nil
-    end
-
-    class << self
-      # @param Block [Proc]
-      # @note allow user-specific function to run in pre-parse model stage
-      def set_pre_parse_model(&block)
-        @pre_parse_model_proc = block
-      end
-
-      # @param Block [Proc]
-      # @note allow user-specific function to resolve identifier
-      def set_identifier_resolver(&block)
-        @identifier_resolver = block
-      end
-
-      # @param Block [Proc]
-      # @note allow user-specific function to resolve fileref
-      # NOTE: MUST ALWAYS RETURN PATH relative to working directory
-      # (initial YAML file location). @fileref_resolver.call(ref_folder, fileref)
-      # fileref is not what is in the YAML, but the resolved path
-      # relative to the working directory
-      def set_fileref_resolver(&block)
-        @fileref_resolver = block
-      end
-
-      def unset_fileref_resolver
-        @fileref_resolver = nil
-      end
-
-      # @param collection_model [Hash{String=>String}]
-      def pre_parse_model(collection_model)
-        @pre_parse_model_proc or return
-        @pre_parse_model_proc.call(collection_model)
-      end
-
-      # @param identifier [String]
-      # @return [String]
-      def resolve_identifier(identifier)
-        @identifier_resolver or return identifier
-        @identifier_resolver.call(identifier)
-      end
-
-      # @param fileref [String]
-      # @return [String]
-      def resolve_fileref(ref_folder, fileref)
-        warn ref_folder
-        warn fileref
-        unless @fileref_resolver
-          (Pathname.new fileref).absolute? or
-            fileref = File.join(ref_folder, fileref)
-          return fileref
-        end
-
-        @fileref_resolver.call(ref_folder, fileref)
-      end
-
-      # @param filepath
-      # @raise [FileNotFoundException]
-      def check_file_existence(filepath)
-        unless File.exist?(filepath)
-          error_message = "#{filepath} not found!"
-          ::Metanorma::Util.log("[metanorma] Error: #{error_message}", :error)
-          raise FileNotFoundException.new error_message.to_s
-        end
-      end
-
-      def parse(file)
-        # need @dirname initialised before collection object initialisation
-        @dirname = File.expand_path(File.dirname(file))
-        config = case file
-                 when /\.xml$/
-                   ::Metanorma::Collection::Config::Config.from_xml(File.read(file))
-                 when /.ya?ml$/
-                   y = YAML.safe_load(File.read(file))
-                   pre_parse_model(y)
-                   ::Metanorma::Collection::Config::Config.from_yaml(y.to_yaml)
-                 end
-        new(file: file, config: config)
-      end
     end
   end
 end

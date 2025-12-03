@@ -94,6 +94,21 @@ module Metanorma
           isodoc.info(xml, nil)
           isodoc
         end
+
+        def asciidoc_dummy_header
+          <<~DUMMY
+            = X
+            A
+
+          DUMMY
+        end
+
+        def nokogiri_to_temp(xml, filename, suffix)
+          file = Tempfile.new([filename, suffix])
+          file.write(xml.to_xml(indent: 0))
+          file.close
+          [file, file.path]
+        end
       end
     end
   end

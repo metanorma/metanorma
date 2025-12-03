@@ -1,0 +1,2 @@
+gem "metanorma-iho", git: "https://github.com/metanorma/metanorma-iho", branch: "main"
+

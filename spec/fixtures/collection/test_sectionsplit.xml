@@ -1,4 +1,4 @@
-     <metanorma xmlns="http://riboseinc.com/isoxml">
+     <metanorma xmlns="http://riboseinc.com/isoxml" flavor="iso">
       <bibdata>
       <title>ISO Title</title>
       <docidentifier type="ISO">ISO 1</docidentifier>

@@ -312,7 +312,7 @@
    <format>html</format>
    <coverpage>cover.html</coverpage>
    <prefatory-content>
-      <clause id="_" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
+      <clause id="_" inline-header="false" obligation="normative" unnumbered="true" displayorder="3">
          <title id="_">Clause</title>
          <fmt-title depth="1" id="_">
             <semx element="title" source="_">Clause</semx>
@@ -1761,7 +1761,7 @@ at the address below or ISO’s member body in the country of the requester.
       <attachment>data:image/png</attachment>
    </doc-container>
    <final-content>
-      <clause id="_" inline-header="false" obligation="normative" unnumbered="true" displayorder="2">
+      <clause id="_" inline-header="false" obligation="normative" unnumbered="true" displayorder="3">
          <title id="_">Exordium</title>
          <fmt-title depth="1" id="_">
             <semx element="title" source="_">Exordium</semx>

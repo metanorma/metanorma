@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require_relative "../spec_helper"
 require "stringio"
 
 def capture_stdout
@@ -560,5 +560,24 @@ RSpec.describe Metanorma::Collection do
     end
 
     FileUtils.rm_rf of
+  end
+
+  it "uses local bibdata, preface in prefatory content if needed" do
+    of = File.join(FileUtils.pwd, OUTPATH)
+    col = Metanorma::Collection.parse "#{INPATH}/collection-iho.yml"
+    col.render(
+      format: %i[html presentation xml],
+      output_folder: of,
+      coverpage: "cover-iho.html",
+      compile: { install_fonts: false },
+    )
+    # manifest docid has docid type iso
+    index = File.read("#{of}/index.html")
+    expect(index)
+      .to include("Changes to this Specification are coordinated by the IHO S-100 Working Group")
+    expect(index)
+      .to include("IHO S-97 IHO Guidelines")
+    expect(index)
+      .to include("S-100WG")
   end
 end
