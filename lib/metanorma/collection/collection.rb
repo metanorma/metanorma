@@ -125,11 +125,14 @@ module Metanorma
     # @return [String] XML
     def prefatory_parse(cnt)
       x = prefatory_parse_semantic(cnt)
-      file, filepath = Util::nokogiri_to_temp(x, "foo", ".presentation.xml")
+      _, filepath = Util::nokogiri_to_temp(x, "foo", ".presentation.xml")
       c1 = Util::isodoc_create(@flavor, @manifest.lang, @manifest.script, x,
                                presxml: true).convert(filepath, nil, true)
-      body = Nokogiri::XML(c1).at("//xmlns:sections")
-      body.at("//xmlns:p[@class = 'zzSTDTitle1']")&.remove
+      presxml = Nokogiri::XML(c1)
+        body = presxml.at("//xmlns:sections")
+          body.at("//xmlns:p[@class = 'zzSTDTitle1']")&.remove
+          body.to_s.strip.empty? and body = presxml.at("//xmlns:preface")
+          body.at("//xmlns:clause[@type = 'toc']")&.remove
       body.children.to_xml
     end
 
@@ -138,7 +141,8 @@ module Metanorma
       x = Nokogiri::XML(c)
       x.xpath("//xmlns:clause").each { |n| n["unnumbered"] = true }
       b = x.at("//xmlns:bibdata")
-      b.replace @bibdata.to_xml(bibdata: true)
+      b.children = ::Metanorma::Standoc::Cleanup::MergeBibitems.new(b.to_xml, @bibdata.to_xml(bibdata: true)).merge.to_noko.children
+      #b.replace @bibdata.to_xml(bibdata: true)
       x
     end
 
