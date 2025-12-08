@@ -14,7 +14,7 @@ require_relative "../log"
 module Metanorma
   class Collection
     class Renderer
-      FORMATS = %i[html xml doc pdf].freeze
+      FORMATS = %i[html xml doc pdf pdf-portfolio].freeze
 
       attr_accessor :isodoc, :isodoc_presxml, :nested
       attr_reader :xml, :compile, :compile_options, :documents, :outdir,
@@ -149,8 +149,14 @@ module Metanorma
 
       def concatenate_outputs(options)
         pres = File.join(@outdir, "collection.presentation.xml")
-        options[:format].include?(:pdf) and pdfconv.convert(pres)
+        options[:format].include?(:pdf) and pdfconv({}).convert(pres)
+        options[:format].include?(:"pdf-portfolio") and
+          pdfconv({ "pdf-portfolio": "true" }).convert(pres)
         options[:format].include?(:doc) and docconv_convert(pres)
+        bilingual_output(options, pres)
+      end
+
+      def bilingual_output(options, pres)
         @directives.detect { |d| d.key == "bilingual" } &&
           options[:format].include?(:html) and
           Metanorma::Collection::Multilingual.new(
