@@ -25,10 +25,12 @@ module Metanorma
         attribute :index, :boolean, default: -> { true }
         attribute :entry, Manifest, collection: true
         attribute :file, :string
+        attribute :pdffile, :string
         attribute :format, :string, collection: true
 
         yaml do
           map "identifier", to: :identifier
+          map "pdf-file", to: :pdffile
           map "type", to: :type
           map "level", to: :level,
                        with: { from: :level_from_yaml, to: :nop_to_yaml }
@@ -57,6 +59,7 @@ module Metanorma
           map_attribute "sectionsplit", to: :sectionsplit
           map_attribute "index", to: :index
           map_attribute "url", to: :url
+          map_attribute "pdf-file", to: :pdffile
           map_attribute "fileref", to: :file
           map_element "identifier", to: :identifier, render_default: true
           map_element "type", to: :type

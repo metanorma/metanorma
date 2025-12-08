@@ -34,7 +34,7 @@
       <identifier>_</identifier>
       <type>subcollection</type>
       <title>Standards</title>
-      <entry index="true" fileref="rice-en.final.xml">
+      <entry index="true" fileref="rice-en.final.xml" pdf-file="rice17301.pdf">
         <identifier>ISO 17301-1:2016</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Cereals and pulses — Specifications and test methods — Rice (Final)</title>

@@ -66,6 +66,7 @@ RSpec.describe Metanorma::Collection do
             index: true
             entry:
             - identifier: ISO 17301-1:2016
+              pdf-file: rice17301.pdf
               index: true
               file: rice-en.final.xml
               bibdata:

@@ -40,7 +40,7 @@
          <format>xml</format>
          <format>presentation</format>
          <format>html</format>
-         <entry target="doc000000000" index="true" fileref="rice-en.final.xml">
+         <entry target="doc000000000" index="true" fileref="rice-en.final.xml" pdf-file="rice17301.pdf">
             <identifier>ISO 17301-1:2016</identifier>
             <format>xml</format>
             <format>presentation</format>
