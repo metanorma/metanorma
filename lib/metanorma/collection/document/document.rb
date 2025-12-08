@@ -51,31 +51,31 @@ module Metanorma
         def mn2relaton_parser(tag)
           case tag
           when "bipm"
-            require "relaton-bipm" unless defined?(::RelatonBipm::XMLParser)
+            require "relaton_bipm" unless defined?(::RelatonBipm::XMLParser)
             ::RelatonBipm::XMLParser
           when "bsi"
-            require "relaton-bsi" unless defined?(::RelatonBsi::XMLParser)
+            require "relaton_bsi" unless defined?(::RelatonBsi::XMLParser)
             ::RelatonBsi::XMLParser
           when "ietf"
-            require "relaton-ietf" unless defined?(::RelatonIetf::XMLParser)
+            require "relaton_ietf" unless defined?(::RelatonIetf::XMLParser)
             ::RelatonIetf::XMLParser
           when "iho"
-            require "relaton-iho" unless defined?(::RelatonIho::XMLParser)
+            require "relaton_iho" unless defined?(::RelatonIho::XMLParser)
             ::RelatonIho::XMLParser
           when "itu"
-            require "relaton-itu" unless defined?(::RelatonItu::XMLParser)
+            require "relaton_itu" unless defined?(::RelatonItu::XMLParser)
             ::RelatonItu::XMLParser
           when "iec"
-            require "relaton-iec" unless defined?(::RelatonIec::XMLParser)
+            require "relaton_iec" unless defined?(::RelatonIec::XMLParser)
             ::RelatonIec::XMLParser
           when "iso"
-            require "relaton-iso" unless defined?(::RelatonIsoBib::XMLParser)
+            require "relaton_iso" unless defined?(::RelatonIsoBib::XMLParser)
             ::RelatonIsoBib::XMLParser
           when "nist"
-            require "relaton-nist" unless defined?(::RelatonNist::XMLParser)
+            require "relaton_nist" unless defined?(::RelatonNist::XMLParser)
             ::RelatonNist::XMLParser
           when "ogc"
-            require "relaton-ogc" unless defined?(::RelatonOgc::XMLParser)
+            require "relaton_ogc" unless defined?(::RelatonOgc::XMLParser)
             ::RelatonOgc::XMLParser
           else
             ::RelatonBib::XMLParser
