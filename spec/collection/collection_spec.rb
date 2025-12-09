@@ -422,6 +422,7 @@ RSpec.describe Metanorma::Collection do
       file = "#{INPATH}/collection_docinline.xml"
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
+      require "debug"; binding.b
       xml = cleanup_id File.read(file, encoding: "UTF-8")
       expect(Canon.format_xml(cleanup_id(mc.to_xml)))
         .to be_equivalent_to Canon.format_xml(xml)
@@ -465,7 +466,7 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
-  it "inject repository identifiers" do
+  it "inject repository identifiers; leave SVG in logos alone" do
     Dir.chdir("spec")
     file = "../#{INPATH}/collection1.norepo.yml"
     of = File.join(FileUtils.pwd, "../#{OUTPATH}")
@@ -487,6 +488,7 @@ RSpec.describe Metanorma::Collection do
     # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
     # rice-en.final.norepo.xml to the file in the collection,
     # and imported its bibdata
+    expect(index).to include 'style="fill:#0f3c80;"' # from SVG logo
     FileUtils.rm_rf of
   end
 
