@@ -75,7 +75,8 @@ module Metanorma
     end
 
     def validate_flavor(flavor)
-      ::Metanorma::Compile.new.load_flavor(flavor)
+      tastes = Metanorma::TasteRegister.instance.aliases
+      ::Metanorma::Compile.new.load_flavor(tastes[flavor.to_sym] || flavor)
     end
 
     def clean_exit

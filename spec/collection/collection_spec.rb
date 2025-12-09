@@ -524,11 +524,27 @@ RSpec.describe Metanorma::Collection do
       .not_to include("ISO and IEC maintain terminology databases for use in standardization")
 
     File.open(newyaml, "w") do |x|
-      x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: iso").sub(
-                "type: iso", "type: fred"
-              ))
+      x.write(yaml.sub("  - documents-inline",
+                       "  - documents-inline\n  - flavor: iso")
+        .sub( "type: iso", "type: fred"))
     end
     # get flavor from directive not docid
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml"))
+      .to include("ISO and IEC maintain terminology databases for use in standardization")
+
+    File.open(newyaml, "w") do |x|
+      x.write(yaml.sub("  - documents-inline",
+                       "  - documents-inline\n  - flavor: oiml")
+        .sub( "type: iso", "type: fred"))
+    end
+    # derive flavor from taste
     col = Metanorma::Collection.parse newyaml
     col.render(
       format: %i[presentation xml],
