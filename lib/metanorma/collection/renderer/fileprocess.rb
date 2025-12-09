@@ -52,7 +52,7 @@ module Metanorma
       def file_compile_formats(filename, identifier, opts)
         f = @files.get(identifier, :outputs)
         format = opts[:extension_keys]
-        concatenate_presentation?({ format: format }) and format << :presentation
+        concatenate_presentation?({ format: }) and format << :presentation
         format.each do |e|
           e == :pdf and output_filename = opts[:pdffile]
           file_compile_format(filename, identifier, e, f, output_filename)
@@ -60,11 +60,18 @@ module Metanorma
         @files.set(identifier, :outputs, f)
       end
 
-      def file_compile_format(fname, ident, format, output_formats, output_fname)
+      # if new_output_fname is present, move generated file for format
+      # to the nominated new file name
+      def file_compile_format(fname, ident, format, outputs, new_output_fname)
         ext = @compile.processor.output_formats[format]
-        output_fname ||= File.basename(fname).sub(/(?<=\.)[^.]+$/, ext.to_s)
+        output_fname = File.basename(fname).sub(/(?<=\.)[^.]+$/, ext.to_s)
+        if new_output_fname
+          FileUtils.mv(File.join(@outdir, output_fname),
+                       File.join(@outdir, new_output_fname))
+          output_fname = new_output_fname
+        end
         (/html$/.match?(ext) && @files.get(ident, :sectionsplit)) or
-          output_formats[format] = File.join(@outdir, output_fname)
+          outputs[format] = File.join(@outdir, output_fname)
       end
 
       def copy_file_to_dest(identifier)

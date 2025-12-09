@@ -65,7 +65,7 @@ module Metanorma
 
       BIBITEM_NOT_REPO_XPATH = <<~XPATH.strip
         //bibitem[not(ancestor::bibitem)][not(ancestor::bibdata)][not(./docidentifier[@type = 'repository'])]
-        XPATH
+      XPATH
 
       def supply_repo_ids(doc)
         doc.xpath(ns(BIBITEM_NOT_REPO_XPATH)).each do |b|
@@ -106,7 +106,8 @@ module Metanorma
         erefs.each do |k, v|
           v.each do |e|
             if loc = e.at(".//#{ANCHOR_XPATH}") then anchors[k] << loc
-            else no_anchor[k] << e end
+            else no_anchor[k] << e
+            end
           end
         end
         [erefs, no_anchor, anchors, Util::gather_bibitemids(docxml, presxml)]
