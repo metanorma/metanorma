@@ -5,8 +5,7 @@ module Metanorma
         path = Pathname.new(name)
         clean_regex = /[<>:"|?*\p{Zs}]/
         fallback_sym = "_"
-        return name.gsub(clean_regex, fallback_sym) unless path.absolute?
-
+        path.absolute? or return name.gsub(clean_regex, fallback_sym)
         File.join(path.dirname,
                   path.basename.to_s.gsub(clean_regex, fallback_sym))
       end
@@ -38,9 +37,9 @@ module Metanorma
         end
       end
 
-      def new_hidden_ref(xmldoc)
-        ins = xmldoc.at(ns("bibliography")) or
-          xmldoc.root << "<bibliography/>" and ins = xmldoc.at(ns("bibliography"))
+      def new_hidden_ref(xml)
+        ins = xml.at(ns("bibliography")) or
+          xml.root << "<bibliography/>" and ins = xml.at(ns("bibliography"))
         ins.at(ns("./references[@hidden = 'true']")) or
           ins.add_child("<references hidden='true' normative='false'/>").first
       end
@@ -70,8 +69,8 @@ module Metanorma
           "#{val}</docidentifier>"
       end
 
-      def add_hidden_bibliography(xmldoc, refs)
-        ins = new_hidden_ref(xmldoc)
+      def add_hidden_bibliography(xml, refs)
+        ins = new_hidden_ref(xml)
         refs.each do |k, v|
           url = @files.url(v, {})
           ins << <<~XML
@@ -136,10 +135,13 @@ module Metanorma
       end
 
       def read_in_if_svg(img, localdir)
-        img["src"] or return false
-        img.elements.map(&:name).include?("svg") and return true
+        img["src"] or return
+        if img.elements.map(&:name).include?("svg")
+          img["src"] = nil
+          return
+        end
         path = Vectory::Utils.svgmap_rewrite0_path(img["src"], localdir)
-        svg = svg_in_path?(path) or return false
+        svg = svg_in_path?(path) or return
         img.children = (Nokogiri::XML(svg).root)
         img["src"] = nil
         true
