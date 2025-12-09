@@ -422,7 +422,6 @@ RSpec.describe Metanorma::Collection do
       file = "#{INPATH}/collection_docinline.xml"
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
-      require "debug"; binding.b
       xml = cleanup_id File.read(file, encoding: "UTF-8")
       expect(Canon.format_xml(cleanup_id(mc.to_xml)))
         .to be_equivalent_to Canon.format_xml(xml)
