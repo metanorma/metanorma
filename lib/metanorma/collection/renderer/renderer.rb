@@ -45,9 +45,10 @@ module Metanorma
         @compile.load_flavor(@flavor)
 
         # output processor for flavour
-        @isodoc = Util::isodoc_create(@flavor, @lang, @script, @xml)
-        @isodoc_presxml = Util::isodoc_create(@flavor, @lang, @script, @xml,
-                                              presxml: true)
+        @isodoc = Util::isodoc_create(Util::taste2flavor(@flavor), @lang,
+                                      @script, @xml)
+        @isodoc_presxml = Util::isodoc_create(Util::taste2flavor(@flavor),
+                                              @lang, @script, @xml, presxml: true)
         @outdir = dir_name_cleanse(options[:output_folder])
         @coverpage = options[:coverpage] || collection.coverpage
         @format = ::Metanorma::Util.sort_extensions_execution(options[:format])
@@ -162,8 +163,9 @@ module Metanorma
         @directives.detect { |d| d.key == "bilingual" } &&
           options[:format].include?(:html) and
           Metanorma::Collection::Multilingual.new(
-            { flavor: flavor.to_sym,
-              converter_options: PdfOptionsNode.new(flavor, @compile_options),
+            { flavor: Util::taste2flavor(flavor).to_sym,
+              converter_options: PdfOptionsNode.new(Util::taste2flavor(flavor),
+                                                    @compile_options),
               outdir: @outdir },
           ).to_html(pres)
       end

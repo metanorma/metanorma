@@ -24,7 +24,7 @@ module Metanorma
           extension_keys: @files.get(identifier, :format),
           output_dir: @outdir,
           pdffile: @files.get(identifier, :pdffile),
-          type: @flavor,
+          type: Util::taste2flavor(@flavor),
         }
       end
 

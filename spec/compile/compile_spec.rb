@@ -695,6 +695,17 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include ' flavor="iso"'
   end
 
+  it "allow mapping of tastes to implemented flavors" do
+    expect do
+      Metanorma::Compile.new.compile("spec/assets/test.adoc",
+                                     type: "oiml",
+                                     extension_keys: %i[xml presentation],
+                                     agree_to_terms: true)
+    end.not_to raise_error
+    xml = File.read("spec/assets/test.xml", encoding: "utf-8")
+    expect(xml).to include ' flavor="iso"'
+  end
+
   it "shows log messages" do
     output = Metanorma::Compile.new.extract_log_messages("iso")
     expect(output).to include("STANDOC_")

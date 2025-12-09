@@ -75,8 +75,7 @@ module Metanorma
     end
 
     def validate_flavor(flavor)
-      tastes = Metanorma::TasteRegister.instance.aliases
-      ::Metanorma::Compile.new.load_flavor(tastes[flavor.to_sym] || flavor)
+      ::Metanorma::Compile.new.load_flavor(flavor)
     end
 
     def clean_exit
@@ -115,7 +114,7 @@ module Metanorma
     # @param builder [Nokogiri::XML::Builder]
     def content_to_xml(elm, builder)
       (cnt = send(elm)) or return
-      @compile.load_flavor(flavor)
+      @compile.load_flavor(Util::taste2flavor(flavor))
       out = prefatory_parse(Util::asciidoc_dummy_header + cnt.strip)
       builder.send("#{elm}-content") { |b| b << out }
     end
@@ -125,7 +124,8 @@ module Metanorma
     def prefatory_parse(cnt)
       x = prefatory_parse_semantic(cnt)
       _, filepath = Util::nokogiri_to_temp(x, "foo", ".presentation.xml")
-      c1 = Util::isodoc_create(@flavor, @manifest.lang, @manifest.script, x,
+      c1 = Util::isodoc_create(Util::taste2flavor(@flavor), @manifest.lang,
+                               @manifest.script, x,
                                presxml: true).convert(filepath, nil, true)
       presxml = Nokogiri::XML(c1)
       prefatory_extract_xml(presxml)
@@ -140,7 +140,8 @@ module Metanorma
     end
 
     def prefatory_parse_semantic(cnt)
-      c = Asciidoctor.convert(cnt, backend: flavor.to_sym, header_footer: true)
+      c = Asciidoctor.convert(cnt, backend: Util::taste2flavor(flavor).to_sym,
+                              header_footer: true)
       x = Nokogiri::XML(c)
       x.xpath("//xmlns:clause").each { |n| n["unnumbered"] = true }
       b = x.at("//xmlns:bibdata")
@@ -176,7 +177,7 @@ module Metanorma
           b.attachment Vectory::Utils::datauri(doc.file)
         else
           doc.to_xml b
-          b.parent.children.first["flavor"] = flavor
+          b.parent.children.first["flavor"] = Util::taste2flavor(flavor)
         end
       end
     end
@@ -190,6 +191,7 @@ module Metanorma
     def fetch_flavor
       docid = @bibdata.docidentifier.first or return
       f = docid.type.downcase || docid.id.sub(/\s.*$/, "").downcase or return
+      f = Util::taste2flavor(f)
       require ::Metanorma::Compile.new.stdtype2flavor_gem(f)
       f
     rescue LoadError

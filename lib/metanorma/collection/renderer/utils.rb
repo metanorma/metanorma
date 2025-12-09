@@ -110,7 +110,7 @@ module Metanorma
       end
 
       def pdfconv(added_options)
-        flavor = @flavor.to_sym
+        flavor = Util::taste2flavor(@flavor).to_sym
         x = Asciidoctor.load nil, backend: flavor
         x.converter.pdf_converter(PdfOptionsNode
           .new(flavor, @compile_options.merge(added_options)))
@@ -157,7 +157,7 @@ module Metanorma
 
       class PdfOptionsNode
         def initialize(flavor, options)
-          p = Metanorma::Registry.instance.find_processor(flavor)
+          p = Metanorma::Registry.instance.find_processor(Util::taste2flavor(flavor))
           if ::Metanorma::Util::FontistHelper.has_custom_fonts?(p, options, {})
             @fonts_manifest =
               ::Metanorma::Util::FontistHelper.location_manifest(p, options)

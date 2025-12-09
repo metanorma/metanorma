@@ -3,7 +3,7 @@ module Metanorma
     class Renderer
       def docconv
         @tempfile_cache ||= []
-        flavor = @flavor.to_sym
+        flavor = Util::taste2flavor(@flavor).to_sym
         x = Asciidoctor.load nil, backend: flavor
         x.converter.doc_converter(DocOptionsNode.new(@directives, @dirname))
       end

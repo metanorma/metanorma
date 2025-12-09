@@ -617,7 +617,7 @@ module Metanorma
       end
 
       def htmlconv
-        x = Asciidoctor.load nil, backend: @flavor
+        x = Asciidoctor.load nil, backend: Util::taste2flavor(@flavor)
         x.converter.html_converter(@converter_opt)
       end
 
