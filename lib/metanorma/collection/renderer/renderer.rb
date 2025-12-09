@@ -151,7 +151,9 @@ module Metanorma
         pres = File.join(@outdir, "collection.presentation.xml")
         options[:format].include?(:pdf) and pdfconv({}).convert(pres)
         options[:format].include?(:"pdf-portfolio") and
-          pdfconv({ "pdf-portfolio": "true" }).convert(pres)
+          pdfconv({ "pdf-portfolio": "true" })
+            .convert(pres, nil, nil,
+                     File.join(@outdir, "collection.portfolio.pdf"))
         options[:format].include?(:doc) and docconv_convert(pres)
         bilingual_output(options, pres)
       end

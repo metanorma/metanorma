@@ -458,7 +458,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "builds Word collection, coverpage; format overrides in manifest" do
+    it "builds Word collection, coverpage; format overrides in manifest; pdf-file name override" do
       file = "#{INPATH}/wordcollection_cover.yml"
       of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
@@ -479,7 +479,8 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be false
+      expect(File.exist?("#{OUTPATH}/riceamd.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be false
       FileUtils.rm_rf of
     end

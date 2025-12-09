@@ -143,7 +143,11 @@ end
 
 def mock_pdf_portfolio
   @pdf_portfolio_option = nil
+  mock_pdf_portfolio_options_to_cmd
+  mock_pdf_portfolio_convert
+end
 
+def mock_pdf_portfolio_options_to_cmd
   # Intercept options_to_cmd to capture the options
   allow(Mn2pdf).to receive(:options_to_cmd) do |options|
     # Capture what options are passed
@@ -152,14 +156,19 @@ def mock_pdf_portfolio
       @pdf_portfolio_option = options.attr("pdf-portfolio")
     elsif options.is_a?(Hash)
       # If it's a Hash with "--pdf-portfolio" key
-      @pdf_portfolio_option = options["--pdf-portfolio"] || options[:"--pdf-portfolio"]
+      @pdf_portfolio_option = options["--pdf-portfolio"] ||
+        options[:"--pdf-portfolio"]
     end
     # Return empty string as options_to_cmd normally would
     ""
   end
+end
 
+def mock_pdf_portfolio_convert
   # Mock convert to call options_to_cmd then copy file (not run Java)
   allow(Mn2pdf).to receive(:convert) do |url, output, _c, options_node|
+    output.end_with?("collection.portfolio.pdf") or
+      @pdf_portfolio_option = nil
     # Call options_to_cmd like the real method would
     Mn2pdf.options_to_cmd(options_node) if options_node
     # Then just copy the file instead of running Java

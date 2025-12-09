@@ -11,15 +11,21 @@ module Metanorma
       # warn "metanorma compile -x html #{f.path}"
       def file_compile(file, filename, identifier)
         @files.get(identifier, :sectionsplit) and return
-        opts = {
-          format: :asciidoc,
-          extension_keys: @files.get(identifier, :format),
-          output_dir: @outdir,
-          type: @flavor,
-        }.merge(compile_options_update(identifier))
+        opts = compile_options_base(identifier)
+          .merge(compile_options_update(identifier))
         @compile.compile file, opts
         @files.set(identifier, :outputs, {})
         file_compile_formats(filename, identifier, opts)
+      end
+
+      def compile_options_base(identifier)
+        {
+          format: :asciidoc,
+          extension_keys: @files.get(identifier, :format),
+          output_dir: @outdir,
+          pdffile: @files.get(identifier, :pdffile),
+          type: @flavor,
+        }
       end
 
       def compile_options_update(identifier)
@@ -48,16 +54,17 @@ module Metanorma
         format = opts[:extension_keys]
         concatenate_presentation?({ format: format }) and format << :presentation
         format.each do |e|
-          file_compile_format(filename, identifier, e, f)
+          e == :pdf and output_filename = opts[:pdffile]
+          file_compile_format(filename, identifier, e, f, output_filename)
         end
         @files.set(identifier, :outputs, f)
       end
 
-      def file_compile_format(filename, identifier, format, output_formats)
+      def file_compile_format(fname, ident, format, output_formats, output_fname)
         ext = @compile.processor.output_formats[format]
-        fn = File.basename(filename).sub(/(?<=\.)[^.]+$/, ext.to_s)
-        (/html$/.match?(ext) && @files.get(identifier, :sectionsplit)) or
-          output_formats[format] = File.join(@outdir, fn)
+        output_fname ||= File.basename(fname).sub(/(?<=\.)[^.]+$/, ext.to_s)
+        (/html$/.match?(ext) && @files.get(ident, :sectionsplit)) or
+          output_formats[format] = File.join(@outdir, output_fname)
       end
 
       def copy_file_to_dest(identifier)

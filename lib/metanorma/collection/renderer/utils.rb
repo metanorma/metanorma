@@ -126,7 +126,7 @@ module Metanorma
 
       def datauri_encode(docxml, directory)
         docxml.xpath(ns("//image")).each do |i|
-          read_in_if_svg(i, directory.sub(%r{(?<!=/)$}, "/")) and i["src"] = nil
+          read_in_if_svg(i, directory.sub(%r{(?<!=/)$}, "/"))
         end
         docxml.xpath(ns("//image")).each do |i| # rubocop:disable Style/CombinableLoops
           i["src"] && !i["src"].empty? or next
@@ -141,6 +141,7 @@ module Metanorma
         path = Vectory::Utils.svgmap_rewrite0_path(img["src"], localdir)
         svg = svg_in_path?(path) or return false
         img.children = (Nokogiri::XML(svg).root)
+        img["src"] = nil
         true
       end
 
@@ -155,10 +156,10 @@ module Metanorma
       class PdfOptionsNode
         def initialize(flavor, options)
           p = Metanorma::Registry.instance.find_processor(flavor)
-          # if ::Metanorma::Util::FontistHelper.has_custom_fonts?(p, options, {})
-          # @fonts_manifest =
-          # ::Metanorma::Util::FontistHelper.location_manifest(p, options)
-          # end
+          if ::Metanorma::Util::FontistHelper.has_custom_fonts?(p, options, {})
+            @fonts_manifest =
+              ::Metanorma::Util::FontistHelper.location_manifest(p, options)
+          end
           @options = options
         end
 
@@ -197,7 +198,7 @@ module Metanorma
         end.doc.root.to_html
       end
 
-      def eref2link(docxml, presxml)
+      def eref2link(docxml, _presxml)
         isodoc = IsoDoc::PresentationXMLConvert.new({})
         isodoc.bibitem_lookup(docxml)
         isodoc.eref2link(docxml)

@@ -105,7 +105,7 @@ module Metanorma
         abs = @documents[Util::key identifier].file
         ret = if ref.file
                 { type: "fileref", ref: abs, rel_path: ref.file, url: ref.url,
-                  out_path: output_file_path(ref),
+                  out_path: output_file_path(ref), pdffile: ref.pdffile,
                   format: ref.format&.map(&:to_sym) }.compact
               else { type: "id", ref: ref.id }
               end
