@@ -36,7 +36,7 @@ module Metanorma
         def svg_preprocess(xml, doc_suffix, presxml)
           suffix = doc_suffix.nil? || doc_suffix.blank? ? "" : "_#{doc_suffix}"
           xml.xpath("//m:svg", "m" => "http://www.w3.org/2000/svg").each do |s|
-            m = svgmap_wrap(s)
+            m = svgmap_wrap(s) or next
             svg_xrefs(s, m, suffix, presxml)
           end
           xml
@@ -44,7 +44,7 @@ module Metanorma
 
         def svgmap_wrap(svg)
           ret = svg.at("./ancestor::xmlns:svgmap") and return ret
-          ret = svg.at("./ancestor::xmlns:figure")
+          ret = svg.at("./ancestor::xmlns:figure") or return
           ret.wrap("<svgmap/>")
           svg.at("./ancestor::xmlns:svgmap")
         end
