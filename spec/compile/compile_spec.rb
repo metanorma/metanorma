@@ -1038,6 +1038,7 @@ RSpec.describe Metanorma::Compile do
 
       taste_register = double("taste_register")
       allow(taste_register).to receive(:available_tastes).and_return([:iso]) # Use existing flavor
+      allow(taste_register).to receive(:aliases).and_return({})
       allow(taste_register).to receive(:get).with(:iso).and_return(taste_instance)
       allow(Metanorma::TasteRegister).to receive(:instance).and_return(taste_register)
 
