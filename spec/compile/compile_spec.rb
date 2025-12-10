@@ -1016,7 +1016,10 @@ RSpec.describe Metanorma::Compile do
       allow(processor).to receive(:output)
       allow(processor).to receive(:extract_options).and_return({})
 
-      allow(Metanorma::Registry.instance).to receive(:find_processor).and_return(processor)
+      # Mock the registry to include iso in supported backends
+      registry_instance = Metanorma::Registry.instance
+      allow(registry_instance).to receive(:find_processor).and_return(processor)
+      allow(registry_instance).to receive(:supported_backends).and_return([:iso])
 
       # Mock the XML parsing and bibdata extraction
       allow_any_instance_of(Metanorma::Compile).to receive(:extract_relaton_metadata) do
