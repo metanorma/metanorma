@@ -1,11 +1,13 @@
 module Metanorma
   class Collection
     class Renderer
-      def docconv
+      def docconv(added_options)
         @tempfile_cache ||= []
         flavor = Util::taste2flavor(@flavor).to_sym
+        opts = Util::taste2isodoc_attrs(@flavor, :doc)
         x = Asciidoctor.load nil, backend: flavor
-        x.converter.doc_converter(DocOptionsNode.new(@directives, @dirname))
+        x.converter.doc_converter(DocOptionsNode.new(@directives, @dirname,
+                                                     added_options.merge(opts)))
       end
 
       def concat_extract_files(filename)
@@ -112,7 +114,7 @@ module Metanorma
       end
 
       class DocOptionsNode
-        def initialize(directives, dir)
+        def initialize(directives, dir, options)
           @dir = dir
           @wordcoverpage =
             Util::hash_key_detect(directives, "document-word-coverpage",
@@ -120,12 +122,14 @@ module Metanorma
           @wordintropage =
             Util::hash_key_detect(directives, "document-word-intropage",
                                   @wordintropage)
+          @options = options
         end
 
         def attr(key)
           case key
           when "wordcoverpage" then Util::rel_path_resolve(@dir, @wordcoverpage)
           when "wordintropage" then Util::rel_path_resolve(@dir, @wordintropage)
+          else @options[key.to_sym]
           end
         end
       end

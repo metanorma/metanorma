@@ -1,5 +1,6 @@
 gem "metanorma-iho", git: "https://github.com/metanorma/metanorma-iho", branch: "main"
 gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "main"
 gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "main"
+gem "metanorma-taste", git: "https://github.com/metanorma/metanorma-taste", branch: "features/isodoc_attrs"
 gem "metanorma-cli"
 

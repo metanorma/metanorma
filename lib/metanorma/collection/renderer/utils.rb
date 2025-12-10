@@ -111,9 +111,10 @@ module Metanorma
 
       def pdfconv(added_options)
         flavor = Util::taste2flavor(@flavor).to_sym
+        opts = Util::taste2isodoc_attrs(@flavor, :pdf)
         x = Asciidoctor.load nil, backend: flavor
         x.converter.pdf_converter(PdfOptionsNode
-          .new(flavor, @compile_options.merge(added_options)))
+          .new(flavor, @compile_options.merge(added_options.merge(opts))))
       end
 
       def fail_update_bibitem(docid, identifier)

@@ -496,6 +496,7 @@ RSpec.describe Metanorma::Collection do
     yaml = File.read "../#{INPATH}/collection_solo.yml"
     of = File.join(FileUtils.pwd, "../#{OUTPATH}")
     newyaml = "../#{INPATH}/collection_new1.yml"
+    isostring = "ISO and IEC maintain terminology databases for use in standardization"
     File.open(newyaml, "w") { |x| x.write(yaml) }
     col = Metanorma::Collection.parse newyaml
     col.render(
@@ -506,7 +507,7 @@ RSpec.describe Metanorma::Collection do
     )
     # manifest docid has docid type iso
     expect(File.read("#{of}/collection.xml"))
-      .to include("ISO and IEC maintain terminology databases for use in standardization")
+      .to include(isostring)
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline",
@@ -520,12 +521,12 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
-      .not_to include("ISO and IEC maintain terminology databases for use in standardization")
+      .not_to include(isostring)
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline",
                        "  - documents-inline\n  - flavor: iso")
-        .sub( "type: iso", "type: fred"))
+        .sub("type: iso", "type: fred"))
     end
     # get flavor from directive not docid
     col = Metanorma::Collection.parse newyaml
@@ -536,12 +537,12 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
-      .to include("ISO and IEC maintain terminology databases for use in standardization")
+      .to include(isostring)
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline",
                        "  - documents-inline\n  - flavor: oiml")
-        .sub( "type: iso", "type: fred"))
+        .sub("type: iso", "type: fred"))
     end
     # derive flavor from taste
     col = Metanorma::Collection.parse newyaml
@@ -552,7 +553,7 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
-      .to include("ISO and IEC maintain terminology databases for use in standardization")
+      .to include(isostring)
 
     File.open(newyaml, "w") { |x| x.write(yaml.sub("type: iso", "type: fred")) }
     # ignorable flavor from docid
@@ -564,7 +565,7 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
-      .not_to include("ISO and IEC maintain terminology databases for use in standardization")
+      .not_to include(isostring)
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline",
