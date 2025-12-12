@@ -1,7 +1,7 @@
 module Metanorma
   class Collection
     class Renderer
-      def docconv(added_options)
+      def docconv(added_options = {})
         @tempfile_cache ||= []
         flavor = Util::taste2flavor(@flavor).to_sym
         opts = Util::taste2isodoc_attrs(@flavor, :doc)
