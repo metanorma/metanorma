@@ -71,6 +71,18 @@ module Metanorma
           @c.decode(ident).gsub(/(\p{Zs})+/, " ")
         end
 
+        def taste2flavor(taste)
+          tastes = Metanorma::TasteRegister.instance.aliases
+          tastes[taste.to_sym] and taste = tastes[taste.to_sym]
+          taste
+        end
+
+        def taste2isodoc_attrs(taste, format)
+          tastes = Metanorma::TasteRegister.instance.aliases
+          tastes[taste.to_sym] or return {}
+          Metanorma::TasteRegister.isodoc_attrs(taste.to_sym, format)
+        end
+
         class Dummy
           def attr(_key); end
         end

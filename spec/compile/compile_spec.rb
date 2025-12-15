@@ -695,6 +695,17 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include ' flavor="iso"'
   end
 
+  it "allow mapping of tastes to implemented flavors" do
+    expect do
+      Metanorma::Compile.new.compile("spec/assets/test.adoc",
+                                     type: "oiml",
+                                     extension_keys: %i[xml presentation],
+                                     agree_to_terms: true)
+    end.not_to raise_error
+    xml = File.read("spec/assets/test.xml", encoding: "utf-8")
+    expect(xml).to include ' flavor="iso"'
+  end
+
   it "shows log messages" do
     output = Metanorma::Compile.new.extract_log_messages("iso")
     expect(output).to include("STANDOC_")
@@ -1005,7 +1016,10 @@ RSpec.describe Metanorma::Compile do
       allow(processor).to receive(:output)
       allow(processor).to receive(:extract_options).and_return({})
 
-      allow(Metanorma::Registry.instance).to receive(:find_processor).and_return(processor)
+      # Mock the registry to include iso in supported backends
+      registry_instance = Metanorma::Registry.instance
+      allow(registry_instance).to receive(:find_processor).and_return(processor)
+      allow(registry_instance).to receive(:supported_backends).and_return([:iso])
 
       # Mock the XML parsing and bibdata extraction
       allow_any_instance_of(Metanorma::Compile).to receive(:extract_relaton_metadata) do
@@ -1027,6 +1041,7 @@ RSpec.describe Metanorma::Compile do
 
       taste_register = double("taste_register")
       allow(taste_register).to receive(:available_tastes).and_return([:iso]) # Use existing flavor
+      allow(taste_register).to receive(:aliases).and_return({})
       allow(taste_register).to receive(:get).with(:iso).and_return(taste_instance)
       allow(Metanorma::TasteRegister).to receive(:instance).and_return(taste_register)
 

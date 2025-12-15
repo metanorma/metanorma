@@ -34,6 +34,7 @@ manifest:
       title: Standards
       docref:
         - fileref: rice-en.final.xml
+          pdf-file: rice17301.pdf
         - fileref: dummy.xml
           url: example/url
         - fileref: rice1-en.final.xml

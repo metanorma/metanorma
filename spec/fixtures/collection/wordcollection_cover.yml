@@ -43,6 +43,7 @@ manifest:
       title: Standards
       docref:
         - fileref: rice-amd.final.xml
+          pdf-file: riceamd.pdf
           identifier: ISO 17301-1:2016/Amd.1:2017
           format:
             - presentation

@@ -50,17 +50,39 @@ module Metanorma
 
         def mn2relaton_parser(tag)
           case tag
-          when "bipm" then ::RelatonBipm::XMLParser
-          when "bsi" then ::RelatonBsi::XMLParser
-          when "ietf" then ::RelatonIetf::XMLParser
-          when "iho" then ::RelatonIho::XMLParser
-          when "itu" then ::RelatonItu::XMLParser
-          when "iec" then ::RelatonIec::XMLParser
-          when "iso" then ::RelatonIsoBib::XMLParser
-          when "nist" then ::RelatonNist::XMLParser
-          when "ogc" then ::RelatonOgc::XMLParser
-          else ::RelatonBib::XMLParser
+          when "bipm"
+            require "relaton_bipm" unless defined?(::RelatonBipm::XMLParser)
+            ::RelatonBipm::XMLParser
+          when "bsi"
+            require "relaton_bsi" unless defined?(::RelatonBsi::XMLParser)
+            ::RelatonBsi::XMLParser
+          when "ietf"
+            require "relaton_ietf" unless defined?(::RelatonIetf::XMLParser)
+            ::RelatonIetf::XMLParser
+          when "iho"
+            require "relaton_iho" unless defined?(::RelatonIho::XMLParser)
+            ::RelatonIho::XMLParser
+          when "itu"
+            require "relaton_itu" unless defined?(::RelatonItu::XMLParser)
+            ::RelatonItu::XMLParser
+          when "iec"
+            require "relaton_iec" unless defined?(::RelatonIec::XMLParser)
+            ::RelatonIec::XMLParser
+          when "iso"
+            require "relaton_iso" unless defined?(::RelatonIsoBib::XMLParser)
+            ::RelatonIsoBib::XMLParser
+          when "nist"
+            require "relaton_nist" unless defined?(::RelatonNist::XMLParser)
+            ::RelatonNist::XMLParser
+          when "ogc"
+            require "relaton_ogc" unless defined?(::RelatonOgc::XMLParser)
+            ::RelatonOgc::XMLParser
+          else
+            ::RelatonBib::XMLParser
           end
+        rescue LoadError => e
+          warn "Warning: Failed to load relaton gem for '#{tag}': #{e.message}. Falling back to RelatonBib::XMLParser"
+          ::RelatonBib::XMLParser
         end
 
         # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]

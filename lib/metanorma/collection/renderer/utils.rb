@@ -5,8 +5,7 @@ module Metanorma
         path = Pathname.new(name)
         clean_regex = /[<>:"|?*\p{Zs}]/
         fallback_sym = "_"
-        return name.gsub(clean_regex, fallback_sym) unless path.absolute?
-
+        path.absolute? or return name.gsub(clean_regex, fallback_sym)
         File.join(path.dirname,
                   path.basename.to_s.gsub(clean_regex, fallback_sym))
       end
@@ -38,9 +37,9 @@ module Metanorma
         end
       end
 
-      def new_hidden_ref(xmldoc)
-        ins = xmldoc.at(ns("bibliography")) or
-          xmldoc.root << "<bibliography/>" and ins = xmldoc.at(ns("bibliography"))
+      def new_hidden_ref(xml)
+        ins = xml.at(ns("bibliography")) or
+          xml.root << "<bibliography/>" and ins = xml.at(ns("bibliography"))
         ins.at(ns("./references[@hidden = 'true']")) or
           ins.add_child("<references hidden='true' normative='false'/>").first
       end
@@ -70,8 +69,8 @@ module Metanorma
           "#{val}</docidentifier>"
       end
 
-      def add_hidden_bibliography(xmldoc, refs)
-        ins = new_hidden_ref(xmldoc)
+      def add_hidden_bibliography(xml, refs)
+        ins = new_hidden_ref(xml)
         refs.each do |k, v|
           url = @files.url(v, {})
           ins << <<~XML
@@ -106,14 +105,16 @@ module Metanorma
       # @raise [ArgumentError]
       def check_options(options)
         (options[:format].is_a?(Array) && (FORMATS & options[:format]).any?) or
-          raise ArgumentError, "Need to specify formats (xml,html,pdf,doc)"
+          raise ArgumentError,
+                "Need to specify formats (xml,html,pdf,pdf-portfolio,doc)"
       end
 
-      def pdfconv
-        flavor = @flavor.to_sym
+      def pdfconv(added_options)
+        flavor = Util::taste2flavor(@flavor).to_sym
+        opts = Util::taste2isodoc_attrs(@flavor, :pdf)
         x = Asciidoctor.load nil, backend: flavor
-        x.converter.pdf_converter(PdfOptionsNode.new(flavor,
-                                                     @compile_options))
+        x.converter.pdf_converter(PdfOptionsNode
+          .new(flavor, @compile_options.merge(added_options.merge(opts))))
       end
 
       def fail_update_bibitem(docid, identifier)
@@ -125,7 +126,7 @@ module Metanorma
 
       def datauri_encode(docxml, directory)
         docxml.xpath(ns("//image")).each do |i|
-          read_in_if_svg(i, directory.sub(%r{(?<!=/)$}, "/")) and i["src"] = nil
+          read_in_if_svg(i, directory.sub(%r{(?<!=/)$}, "/"))
         end
         docxml.xpath(ns("//image")).each do |i| # rubocop:disable Style/CombinableLoops
           i["src"] && !i["src"].empty? or next
@@ -135,11 +136,15 @@ module Metanorma
       end
 
       def read_in_if_svg(img, localdir)
-        img["src"] or return false
-        img.elements.map(&:name).include?("svg") and return true
+        img["src"] or return
+        if img.elements.map(&:name).include?("svg")
+          img["src"] = nil
+          return
+        end
         path = Vectory::Utils.svgmap_rewrite0_path(img["src"], localdir)
-        svg = svg_in_path?(path) or return false
+        svg = svg_in_path?(path) or return
         img.children = (Nokogiri::XML(svg).root)
+        img["src"] = nil
         true
       end
 
@@ -153,16 +158,18 @@ module Metanorma
 
       class PdfOptionsNode
         def initialize(flavor, options)
-          p = Metanorma::Registry.instance.find_processor(flavor)
+          p = Metanorma::Registry.instance.find_processor(Util::taste2flavor(flavor))
           if ::Metanorma::Util::FontistHelper.has_custom_fonts?(p, options, {})
             @fonts_manifest =
               ::Metanorma::Util::FontistHelper.location_manifest(p, options)
           end
+          @options = options
         end
 
         def attr(key)
           if key == "fonts-manifest" && @fonts_manifest
             @fonts_manifest
+          else @options[key.to_sym]
           end
         end
       end
@@ -194,7 +201,7 @@ module Metanorma
         end.doc.root.to_html
       end
 
-      def eref2link(docxml, presxml)
+      def eref2link(docxml, _presxml)
         isodoc = IsoDoc::PresentationXMLConvert.new({})
         isodoc.bibitem_lookup(docxml)
         isodoc.eref2link(docxml)

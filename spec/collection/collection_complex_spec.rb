@@ -247,6 +247,37 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
+    it "invokes PDF portfolios" do
+      mock_pdf_portfolio
+      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
+      FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
+      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
+                   "action_schemaexpg1.svg"
+      file = "#{INPATH}/collection1.yml"
+      # xml = file.read file, encoding: "utf-8"
+      of = File.join(FileUtils.pwd, OUTPATH)
+      formats = %i[presentation pdf xml]
+      col = Metanorma::Collection.parse file
+      col.render(
+        format: formats,
+        output_folder: of,
+        compile: {
+          install_fonts: false,
+        },
+      )
+      expect(pdf_portfolio_used?).to be false
+      formats = %i[presentation pdf-portfolio xml]
+      col = Metanorma::Collection.parse file
+      col.render(
+        format: formats,
+        output_folder: of,
+        compile: {
+          install_fonts: false,
+        },
+      )
+      expect(pdf_portfolio_used?).to be true
+    end
+
     it "YAML collection with documents inline" do
       mock_pdf
       FileUtils.cp "#{INPATH}/action_schemaexpg1.svg", "action_schemaexpg1.svg"
@@ -427,7 +458,7 @@ RSpec.describe Metanorma::Collection do
       FileUtils.rm_rf of
     end
 
-    it "builds Word collection, coverpage; format overrides in manifest" do
+    it "builds Word collection, coverpage; format overrides in manifest; pdf-file name override" do
       file = "#{INPATH}/wordcollection_cover.yml"
       of = File.join(FileUtils.pwd, OUTPATH)
       col = Metanorma::Collection.parse file
@@ -448,7 +479,8 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.doc")).to be false
-      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.pdf")).to be false
+      expect(File.exist?("#{OUTPATH}/riceamd.pdf")).to be true
       expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be false
       FileUtils.rm_rf of
     end

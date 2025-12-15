@@ -66,6 +66,7 @@ RSpec.describe Metanorma::Collection do
             index: true
             entry:
             - identifier: ISO 17301-1:2016
+              pdf-file: rice17301.pdf
               index: true
               file: rice-en.final.xml
               bibdata:
@@ -464,7 +465,7 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
-  it "inject repository identifiers" do
+  it "inject repository identifiers; leave SVG in logos alone" do
     Dir.chdir("spec")
     file = "../#{INPATH}/collection1.norepo.yml"
     of = File.join(FileUtils.pwd, "../#{OUTPATH}")
@@ -486,6 +487,7 @@ RSpec.describe Metanorma::Collection do
     # has successfully mapped identifier of ISO 17301-1:2016/Amd.1:2017 in
     # rice-en.final.norepo.xml to the file in the collection,
     # and imported its bibdata
+    expect(index).to include 'style="fill:#0f3c80;"' # from SVG logo
     FileUtils.rm_rf of
   end
 
@@ -494,6 +496,7 @@ RSpec.describe Metanorma::Collection do
     yaml = File.read "../#{INPATH}/collection_solo.yml"
     of = File.join(FileUtils.pwd, "../#{OUTPATH}")
     newyaml = "../#{INPATH}/collection_new1.yml"
+    isostring = "ISO and IEC maintain terminology databases for use in standardization"
     File.open(newyaml, "w") { |x| x.write(yaml) }
     col = Metanorma::Collection.parse newyaml
     col.render(
@@ -504,7 +507,7 @@ RSpec.describe Metanorma::Collection do
     )
     # manifest docid has docid type iso
     expect(File.read("#{of}/collection.xml"))
-      .to include("ISO and IEC maintain terminology databases for use in standardization")
+      .to include(isostring)
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline",
@@ -518,12 +521,12 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
-      .not_to include("ISO and IEC maintain terminology databases for use in standardization")
+      .not_to include(isostring)
 
     File.open(newyaml, "w") do |x|
-      x.write(yaml.sub("  - documents-inline", "  - documents-inline\n  - flavor: iso").sub(
-                "type: iso", "type: fred"
-              ))
+      x.write(yaml.sub("  - documents-inline",
+                       "  - documents-inline\n  - flavor: iso")
+        .sub("type: iso", "type: fred"))
     end
     # get flavor from directive not docid
     col = Metanorma::Collection.parse newyaml
@@ -534,7 +537,23 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
-      .to include("ISO and IEC maintain terminology databases for use in standardization")
+      .to include(isostring)
+
+    File.open(newyaml, "w") do |x|
+      x.write(yaml.sub("  - documents-inline",
+                       "  - documents-inline\n  - flavor: oiml")
+        .sub("type: iso", "type: fred"))
+    end
+    # derive flavor from taste
+    col = Metanorma::Collection.parse newyaml
+    col.render(
+      format: %i[presentation xml],
+      output_folder: of,
+      coverpage: "collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    expect(File.read("#{of}/collection.xml"))
+      .to include(isostring)
 
     File.open(newyaml, "w") { |x| x.write(yaml.sub("type: iso", "type: fred")) }
     # ignorable flavor from docid
@@ -546,7 +565,7 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     expect(File.read("#{of}/collection.xml"))
-      .not_to include("ISO and IEC maintain terminology databases for use in standardization")
+      .not_to include(isostring)
 
     File.open(newyaml, "w") do |x|
       x.write(yaml.sub("  - documents-inline",
