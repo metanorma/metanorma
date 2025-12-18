@@ -53,7 +53,7 @@ module Metanorma
         @outdir = dir_name_cleanse(options[:output_folder])
         @coverpage = options[:coverpage] || collection.coverpage
         @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||
-          collection.coverpage_pdf_portfolio
+          collection.coverpage_pdf_portfolio || Util::taste2coverpage_pdf_portfolio(@flavor)
         @format = ::Metanorma::Util.sort_extensions_execution(options[:format])
         @compile_options = options[:compile] || {}
         @compile_options[:install_fonts] = true if options[:install_fonts]

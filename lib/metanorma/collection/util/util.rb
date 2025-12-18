@@ -83,6 +83,13 @@ module Metanorma
           Metanorma::TasteRegister.isodoc_attrs(taste.to_sym, format)
         end
 
+        def taste2coverpage_pdf_portfolio(taste)
+          tastes = Metanorma::TasteRegister.instance.aliases
+          tastes[taste.to_sym] or return nil
+          taste = Metanorma::TasteRegister.instance.get(taste.to_sym)
+          taste.config.base_override&.filename_attributes&.coverpage_pdf_portfolio
+        end
+
         class Dummy
           def attr(_key); end
         end
