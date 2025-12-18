@@ -48,9 +48,12 @@ module Metanorma
         @isodoc = Util::isodoc_create(Util::taste2flavor(@flavor), @lang,
                                       @script, @xml)
         @isodoc_presxml = Util::isodoc_create(Util::taste2flavor(@flavor),
-                                              @lang, @script, @xml, presxml: true)
+                                              @lang, @script, @xml,
+                                              presxml: true)
         @outdir = dir_name_cleanse(options[:output_folder])
         @coverpage = options[:coverpage] || collection.coverpage
+        @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||
+          collection.coverpage_pdf_portfolio
         @format = ::Metanorma::Util.sort_extensions_execution(options[:format])
         @compile_options = options[:compile] || {}
         @compile_options[:install_fonts] = true if options[:install_fonts]

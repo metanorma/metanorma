@@ -108,6 +108,7 @@ RSpec.describe Metanorma::Collection do
         format:
         - html
         coverpage: cover.html
+        coverpage-pdf-portfolio: cover.pdf
         prefatory-content: |2
 
           == Clause

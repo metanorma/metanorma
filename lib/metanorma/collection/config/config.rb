@@ -20,6 +20,7 @@ module Metanorma
         attribute :directive, Directive, collection: true
         attribute :manifest, Manifest
         attribute :coverpage, :string, default: -> { "cover.html" }
+        attribute :coverpage_pdf_portfolio, :string
         attribute :format, :string, collection: true, default: -> { [:html] }
         attribute :output_folder, :string
         attribute :compile, CompileOptions
@@ -37,6 +38,8 @@ module Metanorma
           map "format", to: :format, render_default: true
           map "output_folder", to: :output_folder
           map "coverpage", to: :coverpage, render_default: true
+          map "coverpage-pdf-portfolio", to: :coverpage_pdf_portfolio,
+                                         render_default: true
           map "compile", to: :compile, render_default: true
           map "prefatory-content", to: :prefatory_content
           map "final-content", to: :final_content
@@ -54,6 +57,8 @@ module Metanorma
           map_element "format", to: :format, render_default: true
           map_element "output_folder", to: :output_folder
           map_element "coverpage", to: :coverpage, render_default: true
+          map_element "coverpage-pdf-portfolio", to: :coverpage_pdf_portfolio,
+                                                 render_default: true
           map_element "compile", to: :compile, render_default: true
           map_element "prefatory-content",
                       to: :prefatory_content,

@@ -17,8 +17,9 @@ module Metanorma
 
     # @return [Array<String>] documents-inline to inject the XML into
     #   the collection manifest; documents-external to keeps them outside
-    attr_accessor :directives, :documents, :bibdatas, :coverpage, :dirname
-    attr_accessor :disambig, :manifest, :bibdata, :compile, :config
+    attr_accessor :directives, :documents, :bibdatas, :coverpage,
+                  :coverpage_pdf_portfolio, :dirname,
+                  :disambig, :manifest, :bibdata, :compile, :config
 
     # @param file [String] path to source file
     # @param config [Metanorma::Collection::Config]
@@ -65,6 +66,7 @@ module Metanorma
     def initialize_directives
       d = @directives.each_with_object({}) { |x, m| m[x.key] = x.value }
       @coverpage = d["coverpage"]
+      @coverpage_pdf_portfolio = d["coverpage-pdf-portfolio"]
       @coverpage_style = d["coverpage-style"]
       @flavor = d["flavor"]
       if (@documents.any? || @manifest) && !d.key?("documents-inline") &&
@@ -141,7 +143,7 @@ module Metanorma
 
     def prefatory_parse_semantic(cnt)
       c = Asciidoctor.convert(cnt, backend: Util::taste2flavor(flavor).to_sym,
-                              header_footer: true)
+                                   header_footer: true)
       x = Nokogiri::XML(c)
       x.xpath("//xmlns:clause").each { |n| n["unnumbered"] = true }
       b = x.at("//xmlns:bibdata")

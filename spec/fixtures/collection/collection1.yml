@@ -55,6 +55,7 @@ manifest:
         - fileref: ../../assets/rice_image1.png
           identifier: rice_image1.png
           attachment: true
+coverpage-pdf-portfolio: cover.pdf
 prefatory-content: 
 |
 
