@@ -26,6 +26,10 @@
     <key>coverpage</key>
     <value>collection_cover.html</value>
   </directive>
+  <directive>
+      <key>coverpage-pdf-portfolio</key>
+      <value>cover.pdf</value>
+  </directive>
   <entry index="true">
     <identifier>_</identifier>
     <type>collection</type>

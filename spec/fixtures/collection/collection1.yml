@@ -5,6 +5,7 @@ directives:
   - documents-external 
   # keeps them outside
   - coverpage: collection_cover.html
+  - coverpage-pdf-portfolio: cover.pdf
 bibdata:
   title:
     type: title-main
@@ -55,7 +56,6 @@ manifest:
         - fileref: ../../assets/rice_image1.png
           identifier: rice_image1.png
           attachment: true
-coverpage-pdf-portfolio: cover.pdf
 prefatory-content: 
 |
 

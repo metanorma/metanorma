@@ -5,6 +5,7 @@ directives:
   - documents-external 
   # keeps them outside
   - coverpage: collection_cover.html
+  - coverpage-pdf-portfolio: cover.pdf
 bibdata:
   title:
     type: title-main

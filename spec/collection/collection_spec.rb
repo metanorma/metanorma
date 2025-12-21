@@ -29,6 +29,7 @@ RSpec.describe Metanorma::Collection do
         directives:
         - documents-external:
         - coverpage: collection_cover.html
+        - coverpage-pdf-portfolio: cover.pdf
         bibdata:
           id: ISO12345
           title:

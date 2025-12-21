@@ -25,6 +25,10 @@
    <directive>
       <key>coverpage</key>
       <value>collection_cover.html</value>
+    </directive>
+   <directive>
+      <key>coverpage-pdf-portfolio</key>
+      <value>cover.pdf</value>
    </directive>
    <directive>
       <key>documents-inline</key>
