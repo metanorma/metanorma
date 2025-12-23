@@ -75,14 +75,25 @@ module Metanorma
         @coverpage = options[:coverpage] || collection.coverpage
         @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||
           collection.coverpage_pdf_portfolio || Util::taste2coverpage_pdf_portfolio(@flavor)
-        @coverpage_pdf_portflio &&=
-          Util::rel_path_resolve(@outdir, @coverpage_pdf_portflio)
+        directives_normalise(collection.directives)
+        @directives = collection.directives
 
         # list of files in the collection
         @files = Metanorma::Collection::FileLookup.new(folder, self)
         @files.add_section_split
         isodoc_populate
         create_non_existing_directory(@outdir)
+      end
+
+      def directives_normalise(directives)
+        @coverpage_pdf_portflio or return
+        directives.delete! { |d| d.key == "coverpage-pdf-portfolio" }
+        @coverpage_pdf_portflio =
+          Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
+        @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
+          .relative_path_from(Pathname.new(@outdir))
+        out.directives << ::Metanorma::Collection::Config::Directive
+          .new(key: "coverpage-pdf-portfolio", value: @coverpage_pdf_portflio)
       end
 
       def flush_files
