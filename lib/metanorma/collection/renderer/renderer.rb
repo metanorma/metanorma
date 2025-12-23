@@ -51,9 +51,6 @@ module Metanorma
                                               @lang, @script, @xml,
                                               presxml: true)
         @outdir = dir_name_cleanse(options[:output_folder])
-        @coverpage = options[:coverpage] || collection.coverpage
-        @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||
-          collection.coverpage_pdf_portfolio || Util::taste2coverpage_pdf_portfolio(@flavor)
         @format = ::Metanorma::Util.sort_extensions_execution(options[:format])
         @compile_options = options[:compile] || {}
         @compile_options[:install_fonts] = true if options[:install_fonts]
@@ -74,6 +71,12 @@ module Metanorma
         # if false, this is the root instance of Renderer
         # if true, then this is not the last time Renderer will be run
         # (e.g. this is sectionsplit)
+
+        @coverpage = options[:coverpage] || collection.coverpage
+        @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||
+          collection.coverpage_pdf_portfolio || Util::taste2coverpage_pdf_portfolio(@flavor)
+        @coverpage_pdf_portflio &&=
+          Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
 
         # list of files in the collection
         @files = Metanorma::Collection::FileLookup.new(folder, self)
