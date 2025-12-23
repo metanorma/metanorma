@@ -87,7 +87,7 @@ module Metanorma
 
       def directives_normalise(directives)
         @coverpage_pdf_portflio or return
-        directives.delete! { |d| d.key == "coverpage-pdf-portfolio" }
+        directives.reject! { |d| d.key == "coverpage-pdf-portfolio" }
         @coverpage_pdf_portflio =
           Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
         @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
