@@ -75,7 +75,7 @@ module Metanorma
         @coverpage = options[:coverpage] || collection.coverpage
         @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||
           collection.coverpage_pdf_portfolio || Util::taste2coverpage_pdf_portfolio(@flavor)
-        directives_normalise(collection.directives)
+        collection.directives = directives_normalise(collection.directives)
         @directives = collection.directives
 
         # list of files in the collection
@@ -92,8 +92,9 @@ module Metanorma
           Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
         @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
           .relative_path_from(Pathname.new(@outdir)).to_s
-        out.directives << ::Metanorma::Collection::Config::Directive
+        directives << ::Metanorma::Collection::Config::Directive
           .new(key: "coverpage-pdf-portfolio", value: @coverpage_pdf_portflio)
+        directives
       end
 
       def flush_files
