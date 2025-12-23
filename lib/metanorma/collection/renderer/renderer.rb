@@ -91,7 +91,7 @@ module Metanorma
         @coverpage_pdf_portflio =
           Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
         @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
-          .relative_path_from(Pathname.new(@outdir))
+          .relative_path_from(Pathname.new(@outdir)).to_s
         out.directives << ::Metanorma::Collection::Config::Directive
           .new(key: "coverpage-pdf-portfolio", value: @coverpage_pdf_portflio)
       end
