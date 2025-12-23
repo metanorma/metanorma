@@ -76,7 +76,7 @@ module Metanorma
         @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||
           collection.coverpage_pdf_portfolio || Util::taste2coverpage_pdf_portfolio(@flavor)
         @coverpage_pdf_portflio &&=
-          Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
+          Util::rel_path_resolve(@outdir, @coverpage_pdf_portflio)
 
         # list of files in the collection
         @files = Metanorma::Collection::FileLookup.new(folder, self)
