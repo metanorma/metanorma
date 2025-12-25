@@ -28,7 +28,7 @@
     </directive>
    <directive>
       <key>coverpage-pdf-portfolio</key>
-      <value>cover.pdf</value>
+      <value>../collection/cover.pdf</value>
    </directive>
    <directive>
       <key>documents-inline</key>
