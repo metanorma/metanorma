@@ -230,7 +230,7 @@ module Metanorma
         type = "clause" if type == "annex"
         ref = ins.at(ns("./locality/referenceFrom"))&.text
         a = @files.get(docid, :anchors).dig(type, ref) or return
-        ins << "<locality type='anchor'><referenceFrom>#{a.sub(/^_/, '')}" \
+        ins << "<locality type='anchor'><referenceFrom>#{a}" \
           "</referenceFrom></locality>"
       end
     end
