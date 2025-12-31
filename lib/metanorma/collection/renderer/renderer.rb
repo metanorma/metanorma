@@ -90,8 +90,9 @@ module Metanorma
         directives.reject! { |d| d.key == "coverpage-pdf-portfolio" }
         @coverpage_pdf_portflio =
           Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
-        @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
-          .relative_path_from(Pathname.new(@outdir)).to_s
+        p = Pathname.new(@coverpage_pdf_portflio)
+        p.absolute? or @coverpage_pdf_portflio =
+                         p.relative_path_from(Pathname.new(@outdir)).to_s
         directives << ::Metanorma::Collection::Config::Directive
           .new(key: "coverpage-pdf-portfolio", value: @coverpage_pdf_portflio)
         directives
