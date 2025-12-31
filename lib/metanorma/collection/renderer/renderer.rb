@@ -88,10 +88,13 @@ module Metanorma
       def directives_normalise(directives)
         @coverpage_pdf_portflio or return directives
         directives.reject! { |d| d.key == "coverpage-pdf-portfolio" }
+        absolute_coverpage_pdf_portflio = @coverpage_pdf_portflio &&
+          Pathname.new(@coverpage_pdf_portflio).absolute?
         @coverpage_pdf_portflio =
           Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
-        @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
-          .relative_path_from(Pathname.new(@outdir)).to_s
+        absolute_coverpage_pdf_portflio or
+          @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
+            .relative_path_from(Pathname.new(@outdir)).to_s
         directives << ::Metanorma::Collection::Config::Directive
           .new(key: "coverpage-pdf-portfolio", value: @coverpage_pdf_portflio)
         directives

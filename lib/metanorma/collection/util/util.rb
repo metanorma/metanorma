@@ -87,7 +87,9 @@ module Metanorma
           tastes = Metanorma::TasteRegister.instance.aliases
           tastes[taste.to_sym] or return nil
           taste = Metanorma::TasteRegister.instance.get(taste.to_sym)
-          taste.config.base_override&.filename_attributes&.coverpage_pdf_portfolio
+          ret = taste.config.base_override&.filename_attributes
+            &.coverpage_pdf_portfolio or return
+          File.join(taste.directory, ret)
         end
 
         class Dummy
