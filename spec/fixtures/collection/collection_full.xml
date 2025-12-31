@@ -450,7 +450,7 @@ at the address below or ISO’s member body in the country of the requester.
                            <referenceFrom>1</referenceFrom>
                         </locality>
                         <locality type="anchor">
-                           <referenceFrom>scope_ISO_1701_1974</referenceFrom>
+                           <referenceFrom>_scope_ISO_1701_1974</referenceFrom>
                         </locality>
                      </localityStack>
                   </eref>
@@ -1355,7 +1355,7 @@ at the address below or ISO’s member body in the country of the requester.
                            <referenceFrom>1</referenceFrom>
                         </locality>
                         <locality type="anchor">
-                           <referenceFrom>scope_ISO_1701_1974</referenceFrom>
+                           <referenceFrom>_scope_ISO_1701_1974</referenceFrom>
                         </locality>
                      </localityStack>
                   </eref>

@@ -115,7 +115,7 @@ RSpec.describe Metanorma::Collection do
       expect(rice).to include %{This document uses schemas E0/A0, <a href="example/url.html#A1">E1/A1</a> and <a href="example/url.html#E2">E2</a> as well as <a href="#express-schema_E0_ISO_17301-1_2016">metanorma-collection Missing:express-schema:E0 / current-metanorma-collection/Missing:express-schema:E0</a>.}
       expect(rice).to include %(This document is also unrelated to <a href="example/url.html#what">)
       # resolves erefs to clauses to anchors
-      expect(rice).to include %(This document is unrelated <a href="rice1-en.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">1701</span>:<span class="stdyear">1974</span></a>, see e.g. <a href="rice1-en.final.html#scope_ISO_1701_1974"><span class="stdpublisher">ISO </span><span class="stddocNumber">1701</span>:<span class="stdyear">1974</span>,  <span class="citesec">Clause 1</span></a>.)
+      expect(rice).to include %(This document is unrelated <a href="rice1-en.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">1701</span>:<span class="stdyear">1974</span></a>, see e.g. <a href="rice1-en.final.html#_scope_ISO_1701_1974"><span class="stdpublisher">ISO </span><span class="stddocNumber">1701</span>:<span class="stdyear">1974</span>,  <span class="citesec">Clause 1</span></a>.)
       FileUtils.rm_rf of
     end
 
