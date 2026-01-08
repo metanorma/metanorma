@@ -30,6 +30,8 @@ RSpec.describe Metanorma::Collection do
         - documents-external:
         - coverpage: collection_cover.html
         - coverpage-pdf-portfolio: cover.pdf
+        - keystore-pdf-portfolio: keystore.p12
+        - keystore-password-pdf-portfolio: '123456'
         bibdata:
           id: ISO12345
           title:

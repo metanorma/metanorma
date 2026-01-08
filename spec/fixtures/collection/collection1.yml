@@ -6,6 +6,8 @@ directives:
   # keeps them outside
   - coverpage: collection_cover.html
   - coverpage-pdf-portfolio: cover.pdf
+  - keystore-pdf-portfolio: keystore.p12
+  - keystore-password-pdf-portfolio: 123456
 bibdata:
   title:
     type: title-main

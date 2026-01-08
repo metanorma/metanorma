@@ -26,9 +26,17 @@
       <key>coverpage</key>
       <value>collection_cover.html</value>
     </directive>
+       <directive>
+      <key>keystore-password-pdf-portfolio</key>
+      <value>123456</value>
+   </directive>
    <directive>
       <key>coverpage-pdf-portfolio</key>
       <value>../collection/cover.pdf</value>
+    </directive>
+       <directive>
+      <key>keystore-pdf-portfolio</key>
+      <value>../collection/keystore.p12</value>
    </directive>
    <directive>
       <key>documents-inline</key>
