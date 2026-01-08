@@ -19,7 +19,7 @@ module Metanorma
       end
 
       def compile_options_base(identifier)
-        e = @files.get(identifier, :extract_options)
+        e = @files.get(identifier, :extract_opts)
         {
           format: :asciidoc,
           extension_keys: @files.get(identifier, :format),
