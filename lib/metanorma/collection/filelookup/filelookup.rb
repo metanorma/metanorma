@@ -95,22 +95,30 @@ module Metanorma
         entry[:bibitem].at("./*[local-name() = 'ext']")&.remove
       end
 
+      def file_entry(ref, identifier)
+        ref.file or return
+        abs = @documents[Util::key identifier].file
+        ret = if ref.file then file_entry_struct(ref, abs)
+              else { type: "id", ref: ref.id }
+              end
+        file_entry_copy(ref, ret)
+        ret.compact
+      end
+
       # ref is the absolute source file address
       # rel_path is the relative source file address, relative to the YAML location
       # out_path is the destination file address, with any references outside
       # the working directory (../../...) truncated, and based on relative path
       # identifier is the id with only spaces, no nbsp
-      def file_entry(ref, identifier)
-        ref.file or return
-        abs = @documents[Util::key identifier].file
-        ret = if ref.file
-                { type: "fileref", ref: abs, rel_path: ref.file, url: ref.url,
-                  out_path: output_file_path(ref), pdffile: ref.pdffile,
-                  format: ref.format&.map(&:to_sym) }.compact
-              else { type: "id", ref: ref.id }
-              end
-        file_entry_copy(ref, ret)
-        ret.compact
+      # extract_opts are the compilation options extracted as document attributes
+      def file_entry_struct(ref, abs)
+        adoc = abs.sub(/\.xml$/, ".adoc")
+        if File.exist?(adoc)
+          opts = Metanorma::Input::Asciidoc.new.extract_options(File.read(adoc))
+        end
+        { type: "fileref", ref: abs, rel_path: ref.file, url: ref.url,
+          out_path: output_file_path(ref), pdffile: ref.pdffile,
+          format: ref.format&.map(&:to_sym), extract_opts: opts }.compact
       end
 
       # TODO make the output file location reflect source location universally,

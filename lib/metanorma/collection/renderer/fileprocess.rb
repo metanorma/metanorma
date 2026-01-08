@@ -22,6 +22,7 @@ module Metanorma
         {
           format: :asciidoc,
           extension_keys: @files.get(identifier, :format),
+          fonts: @files.get(identifier, :fonts),
           output_dir: @outdir,
           pdffile: @files.get(identifier, :pdffile),
           type: Util::taste2flavor(@flavor),
