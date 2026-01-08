@@ -202,11 +202,18 @@ module Metanorma
         pres = File.join(@outdir, "collection.presentation.xml")
         options[:format].include?(:pdf) and pdfconv({}).convert(pres)
         options[:format].include?(:"pdf-portfolio") and
-          pdfconv({ "pdf-portfolio": "true" })
+          pdfconv(pdf_portfolio_mn2pdf_options)
             .convert(pres, nil, nil,
                      File.join(@outdir, "collection.portfolio.pdf"))
         options[:format].include?(:doc) and docconv_convert(pres)
         bilingual_output(options, pres)
+      end
+
+      def pdf_portfolio_mn2pdf_options
+        require 'debug'; binding.b
+        f1 = @directives.find { |d| d.key == "keystore-pdf-portfolio" }&.value
+        f2 = @directives.find { |d| d.key == "keystore-password-pdf-portfolio" }&.value
+        {  "pdf-portfolio": "true", pdfkeystore: f1, pdfkeystorepassword: f2 }.compact
       end
 
       def bilingual_output(options, pres)
