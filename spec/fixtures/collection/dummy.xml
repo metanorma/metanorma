@@ -327,7 +327,18 @@ module Metanorma
   end
 end
 </pre>
-</figure></clause></sections>
+</figure>
+
+               <figure id="fig1_ISO_17301-1_2016">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1_000000000" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve">
+                     <style type="text/css">
+                       .st0{fill:none;stroke:#000000;stroke-miterlimit:10;}
+                       .cls-6 { clip-path: url(#clippath_inject_2); }
+</style>       
+</svg></figure>
+</clause>
+
+</sections>
 <bibliography>
          <references id="T" obligation="informative" normative="false">
 

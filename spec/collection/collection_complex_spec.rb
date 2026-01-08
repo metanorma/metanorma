@@ -66,6 +66,8 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to "background: url(#svg1); foreground: url(_001); middleground: url(#fig1);"
       expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/standoc").text)
         .to be_equivalent_to "background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);"
+      #expect(conact_file_doc_xml.at("//i:svg//i:style", "i" => "http://www.w3.org/2000/svg").text)
+        #.to include "url(#clippath_inject_2)"
 
       expect(File.exist?("#{INPATH}/collection1.err.html")).to be true
       expect(File.read("#{INPATH}/collection1.err.html", encoding: "utf-8"))
