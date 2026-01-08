@@ -2,6 +2,7 @@ require "isodoc"
 require "htmlentities"
 require "metanorma-utils"
 require_relative "filelookup_sectionsplit"
+require_relative "base"
 
 module Metanorma
   class Collection
@@ -164,13 +165,6 @@ module Metanorma
         data[:url] || targetfile(data, options)[1]
       end
 
-      # are references to the file to be linked to a file in the collection,
-      # or externally? Determines whether file suffix anchors are to be used
-      def url?(ident)
-        data = get(ident) or return false
-        data[:url]
-      end
-
       # return file contents + output filename for each file in the collection,
       # given a docref entry
       # @param data [Hash] docref entry
@@ -241,37 +235,6 @@ module Metanorma
           x["id"] and ret[x["id"]] = true
         end
         ret
-      end
-
-      def key(ident)
-        @c.decode(ident).gsub(/(\p{Zs})+/, " ")
-          .sub(/^metanorma-collection /, "")
-      end
-
-      def keys
-        @files.keys
-      end
-
-      def get(ident, attr = nil)
-        if attr then @files[key(ident)][attr]
-        else @files[key(ident)]
-        end
-      end
-
-      def set(ident, attr, value)
-        @files[key(ident)][attr] = value
-      end
-
-      def each
-        @files.each
-      end
-
-      def each_with_index
-        @files.each_with_index
-      end
-
-      def ns(xpath)
-        @isodoc.ns(xpath)
       end
     end
   end

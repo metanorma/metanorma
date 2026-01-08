@@ -19,10 +19,11 @@ module Metanorma
       end
 
       def compile_options_base(identifier)
+        e = @files.get(identifier, extract_options)
         {
           format: :asciidoc,
           extension_keys: @files.get(identifier, :format),
-          fonts: @files.get(identifier, :fonts),
+          fonts: e&.dig(:fonts),
           output_dir: @outdir,
           pdffile: @files.get(identifier, :pdffile),
           type: Util::taste2flavor(@flavor),

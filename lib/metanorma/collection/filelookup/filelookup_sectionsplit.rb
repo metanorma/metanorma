@@ -1,5 +1,4 @@
 require_relative "../sectionsplit/sectionsplit"
-# require "concurrent-ruby"
 
 module Metanorma
   class Collection
