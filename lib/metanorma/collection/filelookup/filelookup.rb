@@ -114,7 +114,7 @@ module Metanorma
       # extract_opts are the compilation options extracted as document attributes
       def file_entry_struct(ref, abs)
         adoc = abs.sub(/\.xml$/, ".adoc")
-        if File.exist?(adoc)
+        if adoc.end_with?(".adoc") && File.exist?(adoc)
           opts = Metanorma::Input::Asciidoc.new.extract_options(File.read(adoc))
         end
         { type: "fileref", ref: abs, rel_path: ref.file, url: ref.url,
