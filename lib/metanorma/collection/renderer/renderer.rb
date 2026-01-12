@@ -210,7 +210,6 @@ module Metanorma
       end
 
       def pdf_portfolio_mn2pdf_options
-        require 'debug'; binding.b
         f1 = @directives.find { |d| d.key == "keystore-pdf-portfolio" }&.value
         f2 = @directives.find { |d| d.key == "keystore-password-pdf-portfolio" }&.value
         {  "pdf-portfolio": "true", pdfkeystore: f1, pdfkeystorepassword: f2 }.compact
