@@ -600,4 +600,28 @@ RSpec.describe Metanorma::Collection do
     expect(index)
       .to include("S-100WG")
   end
+
+  it "extract custom fonts from collection XML for PDF" do
+    mock_pdf
+    of = File.join(FileUtils.pwd, OUTPATH)
+    col = Metanorma::Collection.parse "#{INPATH}/collection-iho.yml"
+    renderer = nil
+    allow(Metanorma::Collection::Renderer)
+  .to receive(:new)
+  .and_wrap_original do |orig, *args|
+    renderer = orig.call(*args)
+    allow(renderer).to receive(:pdfconv).and_call_original
+    renderer
+  end
+
+    col.render(
+      format: %i[pdf presentation xml],
+      output_folder: of,
+      coverpage: "cover-iho.html",
+      compile: { install_fonts: false },
+    )
+    expect(renderer)
+  .to have_received(:pdfconv)
+  .with(hash_including(fonts: "font2;font1"))
+  end
 end

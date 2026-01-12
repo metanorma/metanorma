@@ -53,6 +53,13 @@
 <stagename>International standard</stagename>
 </ext>
 </bibdata>
+        <metanorma-extension>
+          <presentation-metadata>
+                <font-license-agreement>no-install-fonts</font-license-agreement>
+      <fonts>font2</fonts>
+      <fonts>font1</fonts>
+        </presentation-metadata>
+        </metanorma-extension>
 <boilerplate>
   <copyright-statement>
     <clause>

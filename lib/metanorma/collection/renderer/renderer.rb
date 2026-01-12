@@ -170,14 +170,29 @@ module Metanorma
       end
 
       def concatenate_outputs(options)
-        pres = File.join(@outdir, "collection.presentation.xml")
-        options[:format].include?(:pdf) and pdfconv({}).convert(pres)
+        pres, fonts = concatenate_outputs_prep(options)
+        options[:format].include?(:pdf) and pdfconv({ fonts: fonts }.compact)
+          .convert(pres)
         options[:format].include?(:"pdf-portfolio") and
-          pdfconv({ "pdf-portfolio": "true" })
+          pdfconv({ "pdf-portfolio": "true", fonts: fonts }.compact)
             .convert(pres, nil, nil,
                      File.join(@outdir, "collection.portfolio.pdf"))
         options[:format].include?(:doc) and docconv_convert(pres)
         bilingual_output(options, pres)
+      end
+
+      def concatenate_outputs_prep(_options)
+        pres = File.join(@outdir, "collection.presentation.xml")
+        fonts = extract_added_fonts(pres)
+        [pres, fonts]
+      end
+
+      def extract_added_fonts(pres)
+        xml = Nokogiri::XML(File.read(pres, encoding: "UTF-8"), &:huge)
+        x = xml.xpath("//*[local-name() = 'presentation-metadata']/" \
+          "*[local-name() = 'fonts']")
+        x.empty? and return nil
+        x.map(&:text).join(";")
       end
 
       def bilingual_output(options, pres)
@@ -214,7 +229,6 @@ module Metanorma
       # collection manifest
       def coverpage
         @coverpage or return
-
         @coverpage_path = Util::rel_path_resolve(@dirname, @coverpage)
         warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
 
