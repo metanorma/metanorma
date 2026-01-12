@@ -14,7 +14,6 @@ module Metanorma
       end
 
       def header(file)
-        require "debug"; binding.b
         ret = file.split("\n\n", 2) or return [nil, nil]
         ret[0] and ret[0] += "\n"
         [ret[0], ret[1]]
