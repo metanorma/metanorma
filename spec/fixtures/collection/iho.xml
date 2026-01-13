@@ -56,8 +56,8 @@
         <metanorma-extension>
           <presentation-metadata>
                 <font-license-agreement>no-install-fonts</font-license-agreement>
-      <fonts>font2</fonts>
-      <fonts>font1</fonts>
+      <fonts>Source Serif Pro</fonts>
+      <fonts>STKaiti</fonts>
         </presentation-metadata>
         </metanorma-extension>
 <boilerplate>

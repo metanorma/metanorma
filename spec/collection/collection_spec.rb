@@ -607,12 +607,12 @@ RSpec.describe Metanorma::Collection do
     col = Metanorma::Collection.parse "#{INPATH}/collection-iho.yml"
     renderer = nil
     allow(Metanorma::Collection::Renderer)
-  .to receive(:new)
-  .and_wrap_original do |orig, *args|
-    renderer = orig.call(*args)
-    allow(renderer).to receive(:pdfconv).and_call_original
-    renderer
-  end
+      .to receive(:new)
+      .and_wrap_original do |orig, *args|
+        renderer = orig.call(*args)
+        allow(renderer).to receive(:pdfconv).and_call_original
+        renderer
+    end
 
     col.render(
       format: %i[pdf presentation xml],
@@ -621,7 +621,11 @@ RSpec.describe Metanorma::Collection do
       compile: { install_fonts: false },
     )
     expect(renderer)
-  .to have_received(:pdfconv)
-  .with(hash_including(fonts: "font2;font1"))
+      .to have_received(:pdfconv)
+      .with(hash_including(fonts: "Source Serif Pro;STKaiti",
+                           mn2pdf: hash_including(
+                             "Source Serif Pro" => anything,
+                             "STKaiti" => anything,
+                           )))
   end
 end

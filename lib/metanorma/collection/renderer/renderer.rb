@@ -170,11 +170,11 @@ module Metanorma
       end
 
       def concatenate_outputs(options)
-        pres, fonts = concatenate_outputs_prep(options)
-        options[:format].include?(:pdf) and pdfconv({ fonts: fonts }.compact)
-          .convert(pres)
+        pres, compile_opts = concatenate_outputs_prep(options)
+        warn pp compile_opts
+        options[:format].include?(:pdf) and pdfconv(compile_opts).convert(pres)
         options[:format].include?(:"pdf-portfolio") and
-          pdfconv({ "pdf-portfolio": "true", fonts: fonts }.compact)
+          pdfconv(compile.opts.merge("pdf-portfolio": "true"))
             .convert(pres, nil, nil,
                      File.join(@outdir, "collection.portfolio.pdf"))
         options[:format].include?(:doc) and docconv_convert(pres)
@@ -184,7 +184,11 @@ module Metanorma
       def concatenate_outputs_prep(_options)
         pres = File.join(@outdir, "collection.presentation.xml")
         fonts = extract_added_fonts(pres)
-        [pres, fonts]
+        fonts and mn2pdf = {
+          font_manifest: ::Metanorma::Util::FontistHelper
+            .location_manifest(@compile.processor, { fonts: fonts }),
+        }
+        [pres, { fonts: fonts, mn2pdf: mn2pdf }.compact]
       end
 
       def extract_added_fonts(pres)
