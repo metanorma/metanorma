@@ -47,6 +47,7 @@ module Metanorma
             # Shutting up Fontist 2.0's verbose logging of installation locations
             Fontist.log_level = :fatal
           end
+          require "debug"; binding.b
           Fontist::Manifest.from_hash(manifest).install(
             confirmation: agree ? "yes" : "no",
             no_progress: no_progress,

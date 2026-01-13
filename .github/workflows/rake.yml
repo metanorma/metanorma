@@ -11,5 +11,7 @@ on:
 jobs:
   rake:
     uses: metanorma/ci/.github/workflows/inkscape-rake.yml@main
+    with:
+      private-fonts: true
     secrets:
       pat_token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
