@@ -623,9 +623,9 @@ RSpec.describe Metanorma::Collection do
     expect(renderer)
       .to have_received(:pdfconv)
       .with(hash_including(fonts: "Source Serif Pro;STKaiti",
-                           mn2pdf: hash_including(
+                           mn2pdf: { font_manifest: hash_including(
                              "Source Serif Pro" => anything,
                              "STKaiti" => anything,
-                           )))
+                           )}))
   end
 end
