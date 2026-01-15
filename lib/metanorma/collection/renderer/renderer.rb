@@ -174,7 +174,7 @@ module Metanorma
         warn pp compile_opts
         options[:format].include?(:pdf) and pdfconv(compile_opts).convert(pres)
         options[:format].include?(:"pdf-portfolio") and
-          pdfconv(compile.opts.merge("pdf-portfolio": "true"))
+          pdfconv(compile_opts.merge("pdf-portfolio": "true"))
             .convert(pres, nil, nil,
                      File.join(@outdir, "collection.portfolio.pdf"))
         options[:format].include?(:doc) and docconv_convert(pres)
