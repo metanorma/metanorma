@@ -111,7 +111,8 @@ module Metanorma
 
       def pdfconv(added_options)
         flavor, taste_opts, x = pdfconv_prep
-        fonts = [opts[:fonts], added_options[:fonts]].compact.flatten.join(";")
+        fonts = [taste_opts[:fonts], added_options[:fonts]].compact.flatten
+          .join(";")
         opts = @compile_options.merge(added_options.merge(taste_opts))
         opts[:fonts] = fonts
         x.converter.pdf_converter(PdfOptionsNode.new(flavor, opts))
