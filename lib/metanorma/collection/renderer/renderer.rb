@@ -192,10 +192,11 @@ module Metanorma
       end
 
       def extract_added_fonts(pres)
+        File.exist?(pres) or return
         xml = Nokogiri::XML(File.read(pres, encoding: "UTF-8"), &:huge)
         x = xml.xpath("//*[local-name() = 'presentation-metadata']/" \
           "*[local-name() = 'fonts']")
-        x.empty? and return nil
+        x.empty? and return
         x.map(&:text).join(";")
       end
 
