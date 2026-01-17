@@ -131,9 +131,11 @@ module Metanorma
 
       def add_document_suffix(identifier, doc)
         document_suffix = Metanorma::Utils::to_ncname(identifier)
+        no_suffix_ids = doc.xpath("//m:svg//*/@id", "m" => "http://www.w3.org/2000/svg")
+          .map(&:text)
         Util::anchor_id_attributes.each do |(tag_name, attr_name)|
           Util::add_suffix_to_attrs(doc, document_suffix, tag_name, attr_name,
-                                    @isodoc)
+                                    @isodoc, no_suffix_ids)
         end
         url_in_css_styles(doc, document_suffix)
         doc.root["document_suffix"] ||= ""

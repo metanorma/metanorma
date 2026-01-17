@@ -10,10 +10,10 @@ module Metanorma
           @isodoc = isodoc
           key = (0...8).map { rand(65..90).chr }.join # random string
           xml.root["type"] = key
-          Util::anchor_id_attributes.each do |(tag_name, attr_name)|
-              #tag_name == "xref" and tag_name = "fmt-xref"
+          exc = xml.xpath("//m:svg//*/@id", "m" => "http://www.w3.org/2000/svg").map(&:text)
+          Util::anchor_id_attributes.each do |(tag, attr)|
             ::Metanorma::Collection::Util::add_suffix_to_attrs(
-              xml, xml.root["document_suffix"], tag_name, attr_name, isodoc
+              xml, xml.root["document_suffix"], tag, attr, isodoc, exc
             )
           end
           key
@@ -87,7 +87,8 @@ module Metanorma
           [bibitems, indirect_bibitems]
         end
 
-        def xref_to_internal_eref_anchor(xref, bibitems, document_suffix, presxml)
+        def xref_to_internal_eref_anchor(xref, bibitems, document_suffix,
+presxml)
           t = xref["target"]
           key = xref["type"]
           if d = bibitems[t]&.at(ns("./docidentifier[@type = 'repository']"))
@@ -126,7 +127,8 @@ module Metanorma
               url = select_citation_uri(bibitems[x], lang)
               bibids[x]&.each do |e|
                 e.at(ns("./localityStack | ./locality")) and next
-                id = eref_to_internal_eref1(e, key, url, indirect, presxml) and m << id
+                id = eref_to_internal_eref1(e, key, url, indirect,
+                                            presxml) and m << id
               end
             end
         end
@@ -136,7 +138,9 @@ module Metanorma
             .delete_if { |_, v| internal_bib?(v) }
           indirect = ::Metanorma::Collection::Util::gather_bibitems(xml)
             .select { |_, v| indirect_bib?(v) }
-          bibitemids = ::Metanorma::Collection::Util::gather_bibitemids(section, presxml)
+          bibitemids = ::Metanorma::Collection::Util::gather_bibitemids(
+            section, presxml
+          )
           lang = xml.at(ns("//bibdata/language"))&.text || "en"
           [bibitems, indirect, bibitemids, lang]
         end
@@ -167,7 +171,8 @@ module Metanorma
         end
 
         def eref_to_internal_eref_select(section, _xml, bibitems, presxml)
-          refs = ::Metanorma::Collection::Util::gather_bibitemids(section, presxml).keys
+          refs = ::Metanorma::Collection::Util::gather_bibitemids(section,
+                                                                  presxml).keys
           refs.uniq.reject do |x|
             b = bibitems[x] and (indirect_bib?(b) || internal_bib?(b))
           end
