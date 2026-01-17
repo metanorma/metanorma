@@ -36,11 +36,12 @@ module Metanorma
           end
         end
 
-        def add_suffix_to_attrs(doc, suffix, tag_name, attr_name, isodoc)
+        def add_suffix_to_attrs(doc, suffix, tag_name, attr_name, isodoc, exc = [])
           (suffix.nil? || suffix.empty?) and return
+          require "debug"; binding.b if suffix == "000000000"
           doc.xpath(isodoc.ns("//#{tag_name}[@#{attr_name}]")).each do |elem|
             a = elem.attributes[attr_name].value
-            /_#{suffix}$/.match?(a) or
+            exc.include?(a) || /_#{suffix}$/.match?(a) or
               elem.attributes[attr_name].value = "#{a}_#{suffix}"
           end
         end
