@@ -199,14 +199,34 @@ module Metanorma
       end
 
       def concatenate_outputs(options)
-        pres = File.join(@outdir, "collection.presentation.xml")
-        options[:format].include?(:pdf) and pdfconv({}).convert(pres)
+        pres, compile_opts = concatenate_outputs_prep(options)
+        warn pp compile_opts
+        options[:format].include?(:pdf) and pdfconv(compile_opts).convert(pres)
         options[:format].include?(:"pdf-portfolio") and
           pdfconv(pdf_portfolio_mn2pdf_options)
             .convert(pres, nil, nil,
                      File.join(@outdir, "collection.portfolio.pdf"))
         options[:format].include?(:doc) and docconv_convert(pres)
         bilingual_output(options, pres)
+      end
+
+      def concatenate_outputs_prep(_options)
+        pres = File.join(@outdir, "collection.presentation.xml")
+        fonts = extract_added_fonts(pres)
+        fonts and mn2pdf = {
+          font_manifest: ::Metanorma::Util::FontistHelper
+            .location_manifest(@compile.processor, { fonts: fonts }),
+        }
+        [pres, { fonts: fonts, mn2pdf: mn2pdf }.compact]
+      end
+
+      def extract_added_fonts(pres)
+        File.exist?(pres) or return
+        xml = Nokogiri::XML(File.read(pres, encoding: "UTF-8"), &:huge)
+        x = xml.xpath("//*[local-name() = 'presentation-metadata']/" \
+          "*[local-name() = 'fonts']")
+        x.empty? and return
+        x.map(&:text).join(";")
       end
 
       def pdf_portfolio_mn2pdf_options
@@ -249,7 +269,6 @@ module Metanorma
       # collection manifest
       def coverpage
         @coverpage or return
-
         @coverpage_path = Util::rel_path_resolve(@dirname, @coverpage)
         warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
 

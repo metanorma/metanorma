@@ -2,6 +2,7 @@ require "isodoc"
 require "htmlentities"
 require "metanorma-utils"
 require_relative "filelookup_sectionsplit"
+require_relative "base"
 
 module Metanorma
   class Collection
@@ -95,22 +96,30 @@ module Metanorma
         entry[:bibitem].at("./*[local-name() = 'ext']")&.remove
       end
 
+      def file_entry(ref, identifier)
+        ref.file or return
+        abs = @documents[Util::key identifier].file
+        ret = if ref.file then file_entry_struct(ref, abs)
+              else { type: "id", ref: ref.id }
+              end
+        file_entry_copy(ref, ret)
+        ret.compact
+      end
+
       # ref is the absolute source file address
       # rel_path is the relative source file address, relative to the YAML location
       # out_path is the destination file address, with any references outside
       # the working directory (../../...) truncated, and based on relative path
       # identifier is the id with only spaces, no nbsp
-      def file_entry(ref, identifier)
-        ref.file or return
-        abs = @documents[Util::key identifier].file
-        ret = if ref.file
-                { type: "fileref", ref: abs, rel_path: ref.file, url: ref.url,
-                  out_path: output_file_path(ref), pdffile: ref.pdffile,
-                  format: ref.format&.map(&:to_sym) }.compact
-              else { type: "id", ref: ref.id }
-              end
-        file_entry_copy(ref, ret)
-        ret.compact
+      # extract_opts are the compilation options extracted as document attributes
+      def file_entry_struct(ref, abs)
+        adoc = abs.sub(/\.xml$/, ".adoc")
+        if adoc.end_with?(".adoc") && File.exist?(adoc)
+          opts = Metanorma::Input::Asciidoc.new.extract_options(File.read(adoc))
+        end
+        { type: "fileref", ref: abs, rel_path: ref.file, url: ref.url,
+          out_path: output_file_path(ref), pdffile: ref.pdffile,
+          format: ref.format&.map(&:to_sym), extract_opts: opts }.compact
       end
 
       # TODO make the output file location reflect source location universally,
@@ -147,13 +156,6 @@ module Metanorma
       def url(ident, options)
         data = get(ident)
         data[:url] || targetfile(data, options)[1]
-      end
-
-      # are references to the file to be linked to a file in the collection,
-      # or externally? Determines whether file suffix anchors are to be used
-      def url?(ident)
-        data = get(ident) or return false
-        data[:url]
       end
 
       # return file contents + output filename for each file in the collection,
@@ -226,37 +228,6 @@ module Metanorma
           x["id"] and ret[x["id"]] = true
         end
         ret
-      end
-
-      def key(ident)
-        @c.decode(ident).gsub(/(\p{Zs})+/, " ")
-          .sub(/^metanorma-collection /, "")
-      end
-
-      def keys
-        @files.keys
-      end
-
-      def get(ident, attr = nil)
-        if attr then @files[key(ident)][attr]
-        else @files[key(ident)]
-        end
-      end
-
-      def set(ident, attr, value)
-        @files[key(ident)][attr] = value
-      end
-
-      def each
-        @files.each
-      end
-
-      def each_with_index
-        @files.each_with_index
-      end
-
-      def ns(xpath)
-        @isodoc.ns(xpath)
       end
     end
   end
