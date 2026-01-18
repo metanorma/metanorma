@@ -92,20 +92,28 @@ module Metanorma
           File.join(taste.directory, ret)
         end
 
-        # update relative URLs, url(#...), in CSS in @style attrs (including SVG)
-        def url_in_css_styles(doc, document_suffix)
-          doc.xpath("//*[@style]").each do |s|
-            s["style"] = url_in_css_styles1(s["style"], document_suffix)
-          end
-          doc.xpath("//i:svg//i:style", "i" => "http://www.w3.org/2000/svg")
-            .each do |s|
-              s.children = url_in_css_styles1(s.text, document_suffix)
+        # update relative URLs, url(#...), in CSS in @style attrs (incl. SVG)
+        # include SVG url(#..) attrs,
+        # not processed already by add_suffix_to_attrs
+        def url_in_css_styles(doc, ids, document_suffix)
+          Vectory::SvgDocument.update_ids_css(doc.root, ids, document_suffix)
+          doc.xpath("//i:svg", "i" => "http://www.w3.org/2000/svg").each do |s|
+          Vectory::SvgDocument.update_ids_attrs(s, ids, document_suffix)
           end
         end
 
-        def url_in_css_styles1(style, document_suffix)
-          style.gsub(%r{url\(#([^()]+)\)}, "url(#\\1_#{document_suffix})")
-        end
+        #           doc.xpath("//*[@style]").each do |s|
+        #             s["style"] = url_in_css_styles1(s["style"], document_suffix)
+        #           end
+        #           doc.xpath("//i:svg//i:style", "i" => "http://www.w3.org/2000/svg")
+        #             .each do |s|
+        #               s.children = url_in_css_styles1(s.text, document_suffix)
+        #           end
+        #
+        #         # KILL
+        #         def url_in_css_styles1(style, document_suffix)
+        #           style.gsub(%r{url\(#([^()]+)\)}, "url(#\\1_#{document_suffix})")
+        #         end
 
         class Dummy
           def attr(_key); end

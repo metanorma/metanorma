@@ -4,5 +4,6 @@ gem "isodoc-i18n", git: "https://github.com/metanorma/isodoc-i18n", branch: "mai
 gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "main"
 gem "metanorma-taste", git: "https://github.com/metanorma/metanorma-taste", branch: "main"
 gem "relaton-render", git: "https://github.com/relaton/relaton-render", branch: "main"
+gem "vectory", git: "https://github.com/claricle/vectory", branch: "fix/style-attribute-disambig-id-css"
 gem "metanorma-cli"
 
