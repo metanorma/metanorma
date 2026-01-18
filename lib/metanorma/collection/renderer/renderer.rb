@@ -86,7 +86,13 @@ module Metanorma
       end
 
       def directives_normalise(directives)
-        @coverpage_pdf_portflio or return directives
+        @coverpage_pdf_portflio and
+          directives = directives_normalise_coverpage_pdf_portfolio(directives)
+        directives_normalise_keystore_pdf_portfolio(directives)
+      end
+
+      # KILL
+      def directives_normalise_coverpage_pdf_portfolio(directives)
         directives.reject! { |d| d.key == "coverpage-pdf-portfolio" }
         absolute_coverpage_pdf_portflio = @coverpage_pdf_portflio &&
           Pathname.new(@coverpage_pdf_portflio).absolute?
@@ -97,6 +103,29 @@ module Metanorma
             .relative_path_from(Pathname.new(@outdir)).to_s
         directives << ::Metanorma::Collection::Config::Directive
           .new(key: "coverpage-pdf-portfolio", value: @coverpage_pdf_portflio)
+        directives
+      end
+
+      def directives_normalise_coverpage_pdf_portfolio(directives)
+        directives_resolve_filepath(directives, "coverpage-pdf-portfolio",
+                                    @coverpage_pdf_portflio)
+      end
+
+      def directives_normalise_keystore_pdf_portfolio(directives)
+        f = directives.find { |d| d.key == "keystore-pdf-portfolio" }
+        f.nil? || f.value.nil? and return directives
+        directives_resolve_filepath(directives, "keystore-pdf-portfolio",
+                                    f.value)
+      end
+
+      def directives_resolve_filepath(directives, name, val)
+        abs = Pathname.new(val).absolute?
+        directives.reject! { |d| d.key == name }
+        val = Util::rel_path_resolve(@dirname, val)
+        abs or
+          val = Pathname.new(val).relative_path_from(Pathname.new(@outdir)).to_s
+        directives << ::Metanorma::Collection::Config::Directive
+          .new(key: name, value: val)
         directives
       end
 
@@ -173,11 +202,17 @@ module Metanorma
         pres = File.join(@outdir, "collection.presentation.xml")
         options[:format].include?(:pdf) and pdfconv({}).convert(pres)
         options[:format].include?(:"pdf-portfolio") and
-          pdfconv({ "pdf-portfolio": "true" })
+          pdfconv(pdf_portfolio_mn2pdf_options)
             .convert(pres, nil, nil,
                      File.join(@outdir, "collection.portfolio.pdf"))
         options[:format].include?(:doc) and docconv_convert(pres)
         bilingual_output(options, pres)
+      end
+
+      def pdf_portfolio_mn2pdf_options
+        f1 = @directives.find { |d| d.key == "keystore-pdf-portfolio" }&.value
+        f2 = @directives.find { |d| d.key == "keystore-password-pdf-portfolio" }&.value
+        {  "pdf-portfolio": "true", pdfkeystore: f1, pdfkeystorepassword: f2 }.compact
       end
 
       def bilingual_output(options, pres)

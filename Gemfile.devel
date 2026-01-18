@@ -5,5 +5,6 @@ gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", 
 gem "metanorma-taste", git: "https://github.com/metanorma/metanorma-taste", branch: "main"
 gem "relaton-render", git: "https://github.com/relaton/relaton-render", branch: "main"
 gem "vectory", git: "https://github.com/claricle/vectory", branch: "fix/style-attribute-disambig-id-css"
+gem "fontist", github: "fontist/fontist", branch: "rt-fontisan-unibuf"
 gem "metanorma-cli"
 

@@ -29,6 +29,14 @@
   <directive>
       <key>coverpage-pdf-portfolio</key>
       <value>cover.pdf</value>
+    </directive>
+  <directive>
+     <key>keystore-pdf-portfolio</key>
+     <value>keystore.p12</value>
+  </directive>
+  <directive>
+     <key>keystore-password-pdf-portfolio</key>
+     <value>123456</value>
   </directive>
   <entry index="true">
     <identifier>_</identifier>
