@@ -140,21 +140,14 @@ module Metanorma
 
       def add_document_suffix(identifier, doc)
         document_suffix = Metanorma::Utils::to_ncname(identifier)
+        ids = doc.xpath("./@id | .//@id").map(&:value)
         Util::anchor_id_attributes.each do |(tag_name, attr_name)|
           Util::add_suffix_to_attrs(doc, document_suffix, tag_name, attr_name,
                                     @isodoc)
         end
-        url_in_css_styles(doc, document_suffix)
+        Util::url_in_css_styles(doc, ids, document_suffix)
         doc.root["document_suffix"] ||= ""
         doc.root["document_suffix"] += document_suffix
-      end
-
-      # update relative URLs, url(#...), in CSS in @style attrs (including SVG)
-      def url_in_css_styles(doc, document_suffix)
-        doc.xpath("//*[@style]").each do |s|
-          s["style"] = s["style"]
-            .gsub(%r{url\(#([^()]+)\)}, "url(#\\1_#{document_suffix})")
-        end
       end
 
       # return citation url for file
