@@ -182,11 +182,15 @@ module Metanorma
       def locate_internal_refs1_prep(file)
         xml = Nokogiri::XML(file, &:huge)
         r = xml.root["document_suffix"]
-        xml.xpath("//*[@id]").each_with_object({}) do |i, x|
-          /^semantic_/.match?(i.name) and next
+        ret = xml.xpath("//*[@id]").each_with_object({}) do |i, x|
           x[i["id"]] = i
           r and x[i["id"].sub(/_#{r}$/, "")] = i
         end
+        xml.xpath("//*[@anchor]").each do |i|
+          ret[i["anchor"]] = i
+          r and ret[i["anchor"].sub(/_#{r}$/, "")] = i
+        end
+        ret
       end
 
       def update_bibitem(bib, identifier)
