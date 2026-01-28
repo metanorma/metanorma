@@ -9,12 +9,13 @@ module Metanorma
 
         def gather_bibitems(xml)
           xml.xpath("//xmlns:bibitem[@id]").each_with_object({}) do |b, m|
-            if m[b["id"]]
+            id = b["anchor"] || b["id"]
+            if m[id]
               b.remove
               next
               # we can't update duplicate bibitem, processing updates wrong one
             else
-              m[b["id"]] = b
+              m[id] = b
             end
           end
         end
