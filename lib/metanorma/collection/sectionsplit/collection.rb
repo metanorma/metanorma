@@ -39,18 +39,17 @@ module Metanorma
       end
 
       def collectionyaml(files, xml)
-        #warn xml.to_xml
         ret = {
           directives: ["presentation-xml", "bare-after-first"],
           bibdata: {
             title: {
               type: "title-main", language: @lang,
-              content: xml.at(ns("//bibdata/title")).text
+              content: xml.at(ns("//bibdata/title"))&.text || "[TITLE]"
             },
             type: "collection",
             docid: {
-              type: xml.at(ns("//bibdata/docidentifier/@type")).text,
-              id: xml.at(ns("//bibdata/docidentifier")).text,
+              type: xml.at(ns("//bibdata/docidentifier/@type"))&.text || "[FLAVOR]",
+              id: xml.at(ns("//bibdata/docidentifier"))&.text || "[DOCID]",
             },
           },
           manifest: {
