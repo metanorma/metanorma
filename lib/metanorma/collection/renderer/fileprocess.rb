@@ -194,14 +194,24 @@ module Metanorma
       end
 
       def update_bibitem(bib, identifier)
-        docid = get_bibitem_docid(bib, identifier) or return
-        newbib = dup_bibitem(docid, bib)
-        url = @files.url(docid, relative: true,
-                                doc: !@files.get(docid, :attachment))
-        dest = newbib.at("./docidentifier") || newbib.at(ns("./docidentifier"))
+        newbib, url = update_bibitem_prep(bib, identifier)
+        newbib or return
+        dest = begin
+          newbib.at("./docidentifier") || newbib.at(ns("./docidentifier"))
+        rescue StandardError
+          nil
+        end
         dest or dest = newbib.elements[-1]
         dest.previous = "<uri type='citation'>#{url}</uri>"
         bib.replace(newbib)
+      end
+
+      def update_bibitem_prep(bib, identifier)
+        docid = get_bibitem_docid(bib, identifier) or return [nil, nil]
+        newbib = dup_bibitem(docid, bib)
+        url = @files.url(docid, relative: true,
+                                doc: !@files.get(docid, :attachment))
+        [newbib, url]
       end
     end
   end
