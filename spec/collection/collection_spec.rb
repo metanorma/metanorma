@@ -73,16 +73,20 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: rice-en.final.xml
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             - identifier: ISO 17302:2016
               url: example/url
               index: true
               file: dummy.xml
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             - identifier: ISO 1701:1974
               index: true
               file: rice1-en.final.xml
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             bibdata:
+            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
           - type: subcollection
             title: Amendments
             index: true
@@ -91,7 +95,9 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: rice-amd.final.xml
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             bibdata:
+            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
           - type: attachments
             title: Attachments
             index: true
@@ -101,13 +107,17 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: pics/action_schemaexpg1.svg
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             - identifier: rice_image1.png
               attachment: true
               index: true
               file: "../../assets/rice_image1.png"
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             bibdata:
+            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
           bibdata:
+          sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
         format:
         - html
         coverpage: cover.html
@@ -119,8 +129,6 @@ RSpec.describe Metanorma::Collection do
 
           == Exordium
           Hic explicit
-
-
       OUTPUT
     end
 

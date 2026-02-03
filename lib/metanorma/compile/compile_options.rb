@@ -123,8 +123,8 @@ module Metanorma
       def copy_isodoc_options_attrs(options, ret)
         ret[:datauriimage] = true if options[:datauriimage]
         ret[:sourcefilename] = options[:filename]
-        %i(bare sectionsplit install_fonts baseassetpath aligncrosselements
-           tocfigures toctables tocrecommendations strict)
+        %i(bare sectionsplit sectionsplit_filename install_fonts baseassetpath
+           aligncrosselements tocfigures toctables tocrecommendations strict)
           .each { |x| ret[x] ||= options[x] }
       end
 

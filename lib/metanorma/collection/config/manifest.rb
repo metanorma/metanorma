@@ -27,6 +27,8 @@ module Metanorma
         attribute :file, :string
         attribute :pdffile, :string
         attribute :format, :string, collection: true
+        attribute :output_filename, :string
+        attribute :sectionsplit_filename, :string
 
         yaml do
           map "identifier", to: :identifier
@@ -50,6 +52,8 @@ module Metanorma
           map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
                                                to: :bibdata_to_yaml }
           map "format", to: :format, render_default: true
+          map "output-filename", to: :output_filename
+          map "sectionsplit-filename", to: :sectionsplit_filename
         end
 
         xml do
@@ -68,6 +72,12 @@ module Metanorma
           map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
                                                        to: :bibdata_to_xml }
           map_element "entry", to: :entry
+          map_element "output-filename", to: :output_filename,
+                                         with: { from: :output_filename_from_xml,
+                                                 to: :nop_to_xml }
+          map_element "sectionsplit-filename", to: :sectionsplit_filename,
+                                               with: { from: :sectionsplit_filename_from_xml,
+                                                       to: :nop_to_xml }
         end
 
         def entry_from_xml(model, node)
@@ -79,6 +89,14 @@ module Metanorma
             elem = e.to_xml
             doc.add_element(parent, elem)
           end
+        end
+
+        def output_filename_from_xml(model, node)
+          model.output_filename ||= node.content
+        end
+
+        def sectionsplit_filename_from_xml(model, node)
+          model.sectionsplit_filename ||= node.content
         end
 
         def level_from_yaml(model, value)

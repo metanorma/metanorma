@@ -55,7 +55,14 @@ module Metanorma
           manifest: {
             level: "collection", title: "Collection",
             docref: files.sort_by { |f| f[:order] }.each.map do |f|
-              { fileref: f[:url], identifier: f[:title] }
+              # XML fileref should always be just the basename (files go in root of _files dir)
+              # f[:url] already includes .xml extension, so just use basename
+              entry = { fileref: File.basename(f[:url]), identifier: f[:title] }
+              # Only include sectionsplit_filename if it has a directory structure
+              if @sectionsplit_filename && File.dirname(@sectionsplit_filename) != "."
+                entry[:"sectionsplit-filename"] = @sectionsplit_filename
+              end
+              entry
             end
           },
         }

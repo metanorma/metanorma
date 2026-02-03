@@ -1,4 +1,5 @@
 require "yaml"
+require "fileutils"
 require_relative "../../util/util"
 require_relative "../xrefprocess/xrefprocess"
 require_relative "collection"
@@ -21,6 +22,9 @@ module Metanorma
         @isodoc = opts[:isodoc]
         @isodoc_presxml = opts[:isodoc_presxml]
         @document_suffix = opts[:document_suffix]
+        @sectionsplit_filename = opts[:sectionsplit_filename] ||
+          "{basename_legacy}.{sectionsplit-num}"
+        @parent_idx = opts[:parent_idx] || 0
       end
 
       def ns(xpath)
@@ -49,6 +53,7 @@ module Metanorma
       def sectionsplit1(xml, empty, empty1, idx)
         ret = SPLITSECTIONS.each_with_object([]) do |n, m|
           conflate_floatingtitles(xml.xpath(ns(n[0]))).each do |s|
+            # require "debug"; binding.b
             sectionsplit2(xml, idx.zero? ? empty : empty1, s, n[1],
                           { acc: m, idx: idx })
             idx += 1
@@ -61,8 +66,13 @@ module Metanorma
 
       def sectionsplit2(xml, empty, chunks, parentnode, opt)
         @pool.post do
-          warn "#{@base}.#{opt[:idx]}"
-          a = sectionfile(xml, empty, "#{@base}.#{opt[:idx]}", chunks,
+          output_filename = @sectionsplit_filename
+            &.gsub(/\{document-num\}/, @parent_idx.to_s)
+            &.gsub(/\{basename_legacy\}/, @base)
+            &.gsub(/\{basename\}/, File.basename(@base, ".*"))
+            &.gsub(/\{sectionsplit-num\}/, opt[:idx].to_s)
+          warn "Sectionsplit: #{output_filename}"
+          a = sectionfile(xml, empty, output_filename, chunks,
                           parentnode)
           @mutex.synchronize { opt[:acc] << a }
         end
@@ -154,11 +164,12 @@ module Metanorma
         sectionfile_fn_filter(sectionfile_annotation_filter(out))
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc, true)
-        outname = "#{file}.xml"
-        File.open(File.join(@splitdir, outname), "w:UTF-8") do |f|
-          f.write(out)
-        end
-        outname
+        # XML files always go in root of splitdir, only HTML files use subdirectories
+        xml_filename = "#{File.basename(file)}.xml"
+        full_path = File.join(@splitdir, xml_filename)
+        File.open(full_path, "w:UTF-8") { |f| f.write(out) }
+        # Return filename with .xml extension (for reading later) and directory (for HTML output)
+        "#{file}.xml"
       end
 
       def sectionfile_insert(ins, chunks, parentnode)

@@ -64,14 +64,48 @@ module Metanorma
       # to the nominated new file name
       def file_compile_format(fname, ident, format, outputs, new_output_fname)
         ext = @compile.processor.output_formats[format]
-        output_fname = File.basename(fname).sub(/(?<=\.)[^.]+$/, ext.to_s)
+        fname_base = File.basename(fname)
+        output_fname = fname_base.sub(/(?<=\.)[^.]+$/, ext.to_s)
+
         if new_output_fname
           FileUtils.mv(File.join(@outdir, output_fname),
                        File.join(@outdir, new_output_fname))
           output_fname = new_output_fname
+        elsif @files.preserve_directory_structure?(ident) || File.dirname(fname) != "."
+          # Preserve directory structure if custom filename pattern includes directories
+          # or if fname itself contains a directory
+          fname_dir = File.dirname(fname)
+          if fname_dir != "."
+            output_fname = File.join(fname_dir, output_fname)
+          end
+          output_fname = preserve_output_dir_structure(fname, output_fname)
         end
         (/html$/.match?(ext) && @files.get(ident, :sectionsplit)) or
           outputs[format] = File.join(@outdir, output_fname)
+      end
+
+      # Preserve directory structure from input filename in output
+      # Only move HTML and presentation files, not source XML files
+      def preserve_output_dir_structure(fname, output_fname)
+        fname_dir = File.dirname(fname)
+        if fname_dir != "."
+          # output_fname might already include the directory, so get just the basename for source
+          output_basename = File.basename(output_fname)
+          # Only move HTML and presentation.xml files to subdirectory
+          # Source .xml files should stay at root for sectionsplit
+          should_move = output_basename.end_with?(".html", ".presentation.xml")
+          if should_move
+            output_with_dir = File.join(fname_dir, output_basename)
+            output_dest = File.join(@outdir, output_with_dir)
+            output_src = File.join(@outdir, output_basename)
+            if File.exist?(output_src) && output_src != output_dest
+              FileUtils.mkdir_p(File.dirname(output_dest))
+              FileUtils.mv(output_src, output_dest)
+              return output_with_dir
+            end
+          end
+        end
+        output_fname
       end
 
       def copy_file_to_dest(identifier)

@@ -79,6 +79,7 @@ module Metanorma
         @directives = collection.directives
 
         # list of files in the collection
+        #require 'debug'; binding.b
         @files = Metanorma::Collection::FileLookup.new(folder, self)
         @files.add_section_split
         isodoc_populate
