@@ -169,6 +169,7 @@ module Metanorma
         full_path = File.join(@splitdir, xml_filename)
         File.open(full_path, "w:UTF-8") { |f| f.write(out) }
         # Return filename with .xml extension (for reading later) and directory (for HTML output)
+        # file parameter already contains directory if sectionsplit_filename has one
         "#{file}.xml"
       end
 

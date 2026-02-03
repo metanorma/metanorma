@@ -101,19 +101,31 @@ module Metanorma
         anchors = read_anchors(xml)
         # Preserve directory structure in out_path if parent has custom sectionsplit_filename with directory
         sectionsplit_fname = @files[key][:sectionsplit_filename]
+
+        # file[:url] from sectionsplit.rb should contain full path (from output_filename)
+        # but due to how file is passed around, we need to recompute from the actual split filename
+        # The file title gives us the computed filename from sectionsplit
+        # Extract just the base filename without extension
+        base_filename = File.basename(file[:url], ".xml")
+
+        # If sectionsplit pattern has directory, prepend it
         out_path_value = if sectionsplit_fname && File.dirname(sectionsplit_fname) != "."
-                           file[:url] # file[:url] already has directory from sectionsplit
+                           # Pattern has directory - use it
+                           File.join(File.dirname(sectionsplit_fname),
+                                     base_filename)
                          else
-                           File.basename(file[:url])
+                           # No directory in pattern
+                           base_filename
                          end
-        # require "debug"; binding.b
+
         m = { parentid: key, presentationxml: true, type: "fileref",
               rel_path: out_path_value, out_path: out_path_value,
               anchors: anchors, anchors_lookup: anchors_lookup(anchors),
               ids: read_ids(xml), format: @files[key][:format],
               sectionsplit_output: true, indirect_key: @sectionsplit.key,
               bibdata: @files[key][:bibdata], ref: presfile,
-              sectionsplit_filename: sectionsplit_fname }
+              sectionsplit_filename: sectionsplit_fname,
+              idx: @files[key][:idx] }
         m[:bare] = true unless idx.zero?
         manifest[newkey] = m
         # Don't delete split output files - we want to keep them!

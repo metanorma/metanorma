@@ -270,14 +270,19 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/file_test_sectionsplit_0_9.xml")).to be false
     expect(File.exist?("#{f}/file_test_sectionsplit_0_10.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+
+    # Clean up for next test - remove both collection and _files directories
+    FileUtils.rm_rf "spec/fixtures/collection/test_sectionsplit.html_collection"
+    FileUtils.rm_rf Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files")
   end
 
   it "processes directories for output filename customisation on section split HTML" do
     FileUtils.rm_rf "test_collection"
     FileUtils.rm_rf "test_files"
+    # Clean up both the collection directory and the _files directory completely
+    FileUtils.rm_rf "spec/fixtures/collection/test_sectionsplit.html_collection"
+    FileUtils.rm_rf Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files")
     f = "spec/fixtures/collection/test_sectionsplit.html_collection"
-    FileUtils.rm_rf "#{f}/index.html"
-    FileUtils.rm_rf Dir.glob("#{f}/file_test_sectionsplit_*_*.html")
     mock_render
     Metanorma::Compile.new.compile("spec/fixtures/collection/test_sectionsplit.xml",
                                    type: "iso",
@@ -394,6 +399,83 @@ RSpec.describe Metanorma::Collection do
     expect(p.to_xml.gsub(/ (source|id|semx-id)="[^"]+"/, "")).to be_equivalent_to <<~OUTPUT
       <p>This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope" citeas="ISO 17301-1:2016/Amd.1:2017"/><semx element="eref"><fmt-link target="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</fmt-link></semx>.</p>
     OUTPUT
+    FileUtils.rm_rf of
+  end
+
+  it "YAML collection with multiple documents sectionsplit, document renaming" do
+    FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
+                 "action_schemaexpg1.svg"
+    file = "#{INPATH}/collection_sectionsplit_rename.yml"
+    of = File.join(FileUtils.pwd, OUTPATH)
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation html xml],
+      output_folder: of,
+      coverpage: "collection_cover.html",
+      compile: {
+        install_fonts: false,
+      },
+    )
+
+    # Test collection-level files
+    expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/ISO_17301-1_2016_index.html")).to be true
+    expect(File.exist?("#{OUTPATH}/index.html")).to be true
+    expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
+      .to include "ISO Collection 1"
+
+    # Test rice-en.final (document 0, sectionsplit enabled)
+    # HTML files go to d0/ subdirectory
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_0.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_1.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_2.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_3.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_4.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_5.html")).to be true
+
+    # Presentation.xml files go to d0/ subdirectory
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_0.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_1.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_2.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_3.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_4.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_5.presentation.xml")).to be true
+
+    # XML files stay in root (by design for sectionsplit)
+    expect(File.exist?("#{OUTPATH}/rice-en.final_0.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_1.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_2.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_3.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_4.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_5.xml")).to be true
+
+    # Error HTML files stay in root
+    expect(File.exist?("#{OUTPATH}/rice-en.final_0.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_1.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_2.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_3.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_4.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_5.err.html")).to be true
+
+    # Test dummy (document 1, no sectionsplit) - generates regular files, not split
+    expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
+
+    # Test rice1-en.final (document 2, no sectionsplit) - generates regular files, not split
+    expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml")).to be true
+
+    # Test rice-amd.final (document 3, no sectionsplit) - generates regular files, not split
+    expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml")).to be true
+
+    # Test attachments
+    expect(File.exist?("#{OUTPATH}/_dummy_attachments/LICENSE1.TXT")).to be true
+
     FileUtils.rm_rf of
   end
 

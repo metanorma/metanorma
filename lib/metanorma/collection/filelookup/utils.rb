@@ -11,6 +11,38 @@ module Metanorma
         ret
       end
 
+      # map locality type and label (e.g. "clause" "1") to id = anchor for
+      # a document
+      # Note: will only key clauses, which have unambiguous reference label in
+      # locality. Notes, examples etc with containers are just plunked against
+      # UUIDs, so that their IDs can at least be registered to be tracked
+      # as existing.
+      def read_anchors(xml)
+        xrefs = @isodoc.xref_init(@lang, @script, @isodoc, @isodoc.i18n,
+                                  { locale: @locale })
+        xrefs.parse xml
+        xrefs.get.each_with_object({}) do |(k, v), ret|
+          read_anchors1(k, v, ret)
+        end
+      end
+
+      def read_anchors1(key, val, ret)
+        val[:type] ||= "clause"
+        ret[val[:type]] ||= {}
+        index = if val[:container] || val[:label].nil? || val[:label].empty?
+                  UUIDTools::UUID.random_create.to_s
+                else val[:label].gsub(%r{<[^>]+>}, "")
+                end
+        ret[val[:type]][index] = key
+        v = val[:value] and ret[val[:type]][v.gsub(%r{<[^>]+>}, "")] = key
+      end
+
+      def anchors_lookup(anchors)
+        anchors.values.each_with_object({}) do |v, m|
+          v.each_value { |v1| m[v1] = true }
+        end
+      end
+
       # return citation url for file
       # @param doc [Boolean] I am a Metanorma document,
       # so my URL should end with html or pdf or whatever

@@ -29,6 +29,7 @@ module Metanorma
         attribute :format, :string, collection: true
         attribute :output_filename, :string
         attribute :sectionsplit_filename, :string
+        attribute :sectionsplit_output, :boolean
 
         yaml do
           map "identifier", to: :identifier
@@ -54,6 +55,7 @@ module Metanorma
           map "format", to: :format, render_default: true
           map "output-filename", to: :output_filename
           map "sectionsplit-filename", to: :sectionsplit_filename
+          map "sectionsplit-output", to: :sectionsplit_output
         end
 
         xml do
