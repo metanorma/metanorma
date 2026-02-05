@@ -97,9 +97,9 @@ module Metanorma
         # include SVG url(#..) attrs,
         # not processed already by add_suffix_to_attrs
         def url_in_css_styles(doc, ids, document_suffix)
-          Vectory::SvgDocument.update_ids_css(doc.root, ids, document_suffix)
           doc.xpath("//i:svg", "i" => "http://www.w3.org/2000/svg").each do |s|
-          Vectory::SvgDocument.update_ids_attrs(s, ids, document_suffix)
+            svg = Vectory::SvgDocument.new(s.to_xml)
+            svg.suffix_ids(document_suffix)
           end
         end
 

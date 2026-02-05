@@ -11,3 +11,18 @@ begin
 rescue StandardError
   nil
 end
+
+gem "canon", "~>0.1.8"
+gem "debug"
+gem "equivalent-xml"
+gem "metanorma-iho"
+gem "metanorma-iso", ">= 3.2.0"
+gem "mnconvert"
+gem "pry"
+gem "rake", "~> 13.0"
+gem "rspec", "~> 3.0"
+gem "rspec-command", "~> 1.0"
+gem "rubocop", "~> 1"
+gem "rubocop-performance"
+gem "sassc-embedded", "~> 1"
+gem "simplecov", "~> 0.15"
