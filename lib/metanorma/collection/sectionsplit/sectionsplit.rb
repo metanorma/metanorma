@@ -164,12 +164,13 @@ module Metanorma
         sectionfile_fn_filter(sectionfile_annotation_filter(out))
         Metanorma::Collection::XrefProcess::xref_process(out, xml, @key,
                                                          @ident, @isodoc, true)
-        # XML files always go in root of splitdir, only HTML files use subdirectories
+        # XML files are always written flat to the splitdir (_files directory)
+        # Directory structure from sectionsplit_filename is only used for HTML output
         xml_filename = "#{File.basename(file)}.xml"
         full_path = File.join(@splitdir, xml_filename)
         File.open(full_path, "w:UTF-8") { |f| f.write(out) }
-        # Return filename with .xml extension (for reading later) and directory (for HTML output)
-        # file parameter already contains directory if sectionsplit_filename has one
+        # Return full file path (with directory) for use in manifest
+        # This preserves directory info for HTML rendering without affecting XML storage
         "#{file}.xml"
       end
 

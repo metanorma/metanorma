@@ -126,11 +126,12 @@ explicit_custom: false)
           output_basename = File.basename(output_fname)
           # Determine if we should move based on format extension
           ext = format ? @compile.processor.output_formats[format].to_s : ""
-          # If explicit_custom (from output-filename), move HTML, DOC, PDF (but not XML)
+          # If explicit_custom (from output-filename), move HTML, DOC, PDF, presentation.xml (but not regular XML)
           # Otherwise, only move HTML/presentation files (default behavior)
           should_move = if explicit_custom
-                          # For explicit output-filename: move html, doc, pdf (not xml)
-                          ext.end_with?("html") || ext == "doc" || ext == "pdf"
+                          # For explicit output-filename: move html, doc, pdf, presentation.xml (not regular xml)
+                          ext.end_with?("html") || ext == "doc" || ext == "pdf" ||
+                            output_basename.end_with?(".presentation.xml")
                         else
                           # Default behavior: only HTML and presentation
                           ext.end_with?("html") || output_basename.end_with?(
@@ -147,12 +148,14 @@ explicit_custom: false)
               # Note: .err.html files are left in the root directory intentionally
               # They are not moved to subdirectories with their parent HTML files
               return output_with_dir
-            elsif File.exist?(output_dest) && File.exist?(output_src)
-              # File was moved but source still exists (shouldn't happen), clean up source
-              FileUtils.rm_f(output_src)
-              err_src = output_src.sub(/\.html$/, ".err.html")
-              if File.exist?(err_src)
-                FileUtils.rm_f(err_src)
+            elsif File.exist?(output_dest)
+              # File already exists at destination (from a previous call)
+              # Return the correct path with directory
+              if File.exist?(output_src)
+                # Source still exists, clean it up
+                FileUtils.rm_f(output_src)
+                err_src = output_src.sub(/\.html$/, ".err.html")
+                FileUtils.rm_f(err_src) if File.exist?(err_src)
               end
               return output_with_dir
             end

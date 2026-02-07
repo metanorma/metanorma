@@ -102,20 +102,18 @@ module Metanorma
         # Preserve directory structure in out_path if parent has custom sectionsplit_filename with directory
         sectionsplit_fname = @files[key][:sectionsplit_filename]
 
-        # file[:url] from sectionsplit.rb should contain full path (from output_filename)
-        # but due to how file is passed around, we need to recompute from the actual split filename
-        # The file title gives us the computed filename from sectionsplit
-        # Extract just the base filename without extension
+        # file[:url] from sectionsplit.rb already has placeholders substituted and includes full path
+        # Use it directly for out_path (without .xml extension)
         base_filename = File.basename(file[:url], ".xml")
 
-        # If sectionsplit pattern has directory, prepend it
-        out_path_value = if sectionsplit_fname && File.dirname(sectionsplit_fname) != "."
-                           # Pattern has directory - use it
-                           File.join(File.dirname(sectionsplit_fname),
-                                     base_filename)
-                         else
-                           # No directory in pattern
+        # Get the directory from file[:url] which already has placeholders substituted
+        file_dir = File.dirname(file[:url])
+
+        # If file[:url] has a directory (i.e., placeholders were substituted), use it
+        out_path_value = if file_dir == "."
                            base_filename
+                         else
+                           File.join(file_dir, base_filename)
                          end
 
         m = { parentid: key, presentationxml: true, type: "fileref",
@@ -133,11 +131,10 @@ module Metanorma
       end
 
       def add_section_split_instance_prep(file, key)
-        # XML files are always in the root of _files directory
-        # Only HTML output files go into subdirectories
-        # file[:url] already includes .xml extension
-        presfile = File.join(File.dirname(@files[key][:ref]),
-                             File.basename(file[:url]))
+        # XML files are always stored flat in the _files directory (no subdirectories)
+        # file[:url] contains full path with directory for HTML output, but XML is basename only
+        xml_basename = File.basename(file[:url])
+        presfile = File.join(File.dirname(@files[key][:ref]), xml_basename)
         newkey = key("#{key.strip} #{file[:title]}")
         xml = Nokogiri::XML(File.read(presfile), &:huge)
         [presfile, newkey, xml]

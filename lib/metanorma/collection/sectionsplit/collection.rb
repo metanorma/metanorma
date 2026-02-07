@@ -55,10 +55,10 @@ module Metanorma
           manifest: {
             level: "collection", title: "Collection",
             docref: files.sort_by { |f| f[:order] }.each.map do |f|
-              # XML files are always in root of _files directory, so fileref is always basename
-              # f[:url] already includes .xml extension and may include directory prefix
-              # The directory structure for HTML output is preserved via sectionsplit-filename field
-              entry = { fileref: File.basename(f[:url]), identifier: f[:title] }
+              # XML files are always stored flat, so fileref is always the basename
+              # f[:url] may include directory for HTML output, but XML is basename only
+              fileref = File.basename(f[:url])
+              entry = { fileref: fileref, identifier: f[:title] }
               # Include sectionsplit_filename and sectionsplit-output when there's a directory structure
               # This tells the renderer to preserve directory structure in HTML output
               if @sectionsplit_filename && File.dirname(@sectionsplit_filename) != "."
