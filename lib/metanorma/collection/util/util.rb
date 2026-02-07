@@ -1,7 +1,14 @@
+require "marcel"
+
 module Metanorma
   class Collection
     module Util
       class << self
+        def mime_file_recognised?(filename)
+          mime_type = Marcel::MimeType.for name: filename
+          mime_type != "application/octet-stream"
+        end
+
         def anchor_id_attributes
           Metanorma::Utils::anchor_attributes(presxml: true) +
             [%w(* id), %w(* anchor), %w(link bibitemid), %w(fmt-link bibitemid)]
@@ -99,7 +106,7 @@ module Metanorma
         def url_in_css_styles(doc, ids, document_suffix)
           Vectory::SvgDocument.update_ids_css(doc.root, ids, document_suffix)
           doc.xpath("//i:svg", "i" => "http://www.w3.org/2000/svg").each do |s|
-          Vectory::SvgDocument.update_ids_attrs(s, ids, document_suffix)
+            Vectory::SvgDocument.update_ids_attrs(s, ids, document_suffix)
           end
         end
 

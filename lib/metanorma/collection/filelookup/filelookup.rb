@@ -1,7 +1,7 @@
 require "isodoc"
 require "htmlentities"
 require "metanorma-utils"
-require "mime/types"
+require "marcel"
 require_relative "filelookup_sectionsplit"
 require_relative "utils"
 
@@ -257,12 +257,12 @@ module Metanorma
       # Check if file has a recognized MIME type (other than XML)
       # If so, don't append .html (e.g., .svg, .png, .jpg, etc.)
       # Only process if it doesn't have a recognized non-XML extension
+      # If filename ends in .xml, replace with .html
+      # Otherwise (including sectionsplit files like "file.xml.0" or
+      # custom titles), append .html
       def ref_file_xml2html(filename)
-        mime_types = MIME::Types.type_for(filename)
-        has_recognized_extension = !mime_types.empty?
-        unless has_recognized_extension && !filename.end_with?(".xml")
-          # If filename ends in .xml, replace with .html
-          # Otherwise (including sectionsplit files like "file.xml.0" or custom titles), append .html
+        unless Util::mime_file_recognised?(filename) &&
+            !filename.end_with?(".xml")
           filename = if filename.end_with?(".xml")
                        filename.sub(/\.xml$/, ".html")
                      else "#{filename}.html"

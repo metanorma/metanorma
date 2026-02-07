@@ -82,8 +82,10 @@ module Metanorma
           # Get the custom directory structure from the file metadata
           # Substitute placeholders like {document-num}
           idx = @files.get(ident, :idx)
-          basename = File.basename(fname, ".*")
-          basename_legacy = File.basename(fname)
+          # Get basename from the ORIGINAL source file, not the renamed output
+          original_file = @files.get(ident, :ref)
+          basename = File.basename(original_file, ".*")
+          basename_legacy = File.basename(original_file)
           custom_fname = @files.substitute_filename_pattern(
             custom_fname,
             document_num: idx,
@@ -94,8 +96,9 @@ module Metanorma
           if fname_dir != "."
             # Don't add directory here - let preserve_output_dir_structure handle it
             # to avoid double-adding the directory path
+            # Pass explicit_custom flag to indicate this is from output-filename
             output_fname = preserve_output_dir_structure(custom_fname, output_fname,
-                                                         format)
+                                                         format, explicit_custom: true)
           end
         elsif File.dirname(fname) != "."
           # Preserve directory structure if fname itself contains a directory
@@ -109,20 +112,31 @@ module Metanorma
       end
 
       # Preserve directory structure from input filename in output
-      # Only move HTML and presentation files, not source XML files
+      # Move HTML, DOC, PDF to subdirectories when explicit output-filename is set
+      # XML and presentation.xml stay in root directory (default behavior)
       # @param fname [String] input filename (may include directory)
       # @param output_fname [String] output filename (may already include directory)
       # @param format [Symbol] output format (:html, :presentation, etc.)
-      def preserve_output_dir_structure(fname, output_fname, format = nil)
+      # @param explicit_custom [Boolean] true if this is from an explicit output-filename directive
+      def preserve_output_dir_structure(fname, output_fname, format = nil,
+explicit_custom: false)
         fname_dir = File.dirname(fname)
         if fname_dir != "."
           # output_fname might already include the directory, so get just the basename for source
           output_basename = File.basename(output_fname)
           # Determine if we should move based on format extension
           ext = format ? @compile.processor.output_formats[format].to_s : ""
-          should_move = ext.end_with?("html") || output_basename.end_with?(
-            ".html", ".presentation.xml"
-          )
+          # If explicit_custom (from output-filename), move HTML, DOC, PDF (but not XML)
+          # Otherwise, only move HTML/presentation files (default behavior)
+          should_move = if explicit_custom
+                          # For explicit output-filename: move html, doc, pdf (not xml)
+                          ext.end_with?("html") || ext == "doc" || ext == "pdf"
+                        else
+                          # Default behavior: only HTML and presentation
+                          ext.end_with?("html") || output_basename.end_with?(
+                            ".html", ".presentation.xml"
+                          )
+                        end
           if should_move
             output_with_dir = File.join(fname_dir, output_basename)
             output_dest = File.join(@outdir, output_with_dir)
