@@ -39,24 +39,33 @@ module Metanorma
       end
 
       def collectionyaml(files, xml)
-        #warn xml.to_xml
         ret = {
           directives: ["presentation-xml", "bare-after-first"],
           bibdata: {
             title: {
               type: "title-main", language: @lang,
-              content: xml.at(ns("//bibdata/title")).text
+              content: xml.at(ns("//bibdata/title"))&.text || "[TITLE]"
             },
             type: "collection",
             docid: {
-              type: xml.at(ns("//bibdata/docidentifier/@type")).text,
-              id: xml.at(ns("//bibdata/docidentifier")).text,
+              type: xml.at(ns("//bibdata/docidentifier/@type"))&.text || "[FLAVOR]",
+              id: xml.at(ns("//bibdata/docidentifier"))&.text || "[DOCID]",
             },
           },
           manifest: {
             level: "collection", title: "Collection",
             docref: files.sort_by { |f| f[:order] }.each.map do |f|
-              { fileref: f[:url], identifier: f[:title] }
+              # XML files are always stored flat, so fileref is always the basename
+              # f[:url] may include directory for HTML output, but XML is basename only
+              fileref = File.basename(f[:url])
+              entry = { fileref: fileref, identifier: f[:title] }
+              # Include sectionsplit_filename and sectionsplit-output when there's a directory structure
+              # This tells the renderer to preserve directory structure in HTML output
+              if @sectionsplit_filename && File.dirname(@sectionsplit_filename) != "."
+                entry[:"sectionsplit-filename"] = @sectionsplit_filename
+                entry[:"sectionsplit-output"] = true
+              end
+              entry
             end
           },
         }

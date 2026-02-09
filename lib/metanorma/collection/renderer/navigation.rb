@@ -39,9 +39,23 @@ module Metanorma
         @c.decode(@isodoc.docid_prefix(nil, ident))
       end
 
+      # Check if file has a recognized MIME type (other than XML)
+      # If so, don't append .html (e.g., .svg, .png, .jpg, etc.)
       def index_link(docref, ident)
         if docref.file
-          @files.get(ident, :out_path).sub(/\.xml$/, ".html")
+          out_path = @files.get(ident, :out_path)
+          # Ensure the path ends with .html for documents, but not for recognized file types
+          if Util::mime_file_recognised?(out_path) && !out_path.end_with?(".xml")
+            # File has a recognized extension (like .svg, .png), keep it as is
+            out_path
+          elsif out_path.end_with?(".xml")
+            out_path.sub(/\.xml$/, ".html")
+          elsif out_path.end_with?(".html")
+            out_path
+          else
+            "#{out_path}.html"
+          end
+
         else "#{docref.id}.html"
         end
       end

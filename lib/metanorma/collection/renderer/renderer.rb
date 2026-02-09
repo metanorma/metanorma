@@ -1,5 +1,6 @@
 require "isodoc"
 require "htmlentities"
+require "mime/types"
 require_relative "fileprocess"
 require_relative "../../util/fontist_helper"
 require_relative "../../util/util"
@@ -79,6 +80,7 @@ module Metanorma
         @directives = collection.directives
 
         # list of files in the collection
+        # require 'debug'; binding.b
         @files = Metanorma::Collection::FileLookup.new(folder, self)
         @files.add_section_split
         isodoc_populate
@@ -231,8 +233,11 @@ module Metanorma
 
       def pdf_portfolio_mn2pdf_options
         f1 = @directives.find { |d| d.key == "keystore-pdf-portfolio" }&.value
-        f2 = @directives.find { |d| d.key == "keystore-password-pdf-portfolio" }&.value
-        {  "pdf-portfolio": "true", pdfkeystore: f1, pdfkeystorepassword: f2 }.compact
+        f2 = @directives.find do |d|
+          d.key == "keystore-password-pdf-portfolio"
+        end&.value
+        {  "pdf-portfolio": "true", pdfkeystore: f1,
+           pdfkeystorepassword: f2 }.compact
       end
 
       def bilingual_output(options, pres)

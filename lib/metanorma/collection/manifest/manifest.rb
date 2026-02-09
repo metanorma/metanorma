@@ -14,7 +14,6 @@ module Metanorma
       # @param docref [Array<Hash{String=>String}>]
       # @param manifest [Array<Metanorma::Collection::Manifest>]
       def initialize(config, collection, dir)
-        #require "debug"; binding.b
         @collection = collection
         @dir = dir
         @disambig = ::Metanorma::Collection::Util::DisambigFiles.new
@@ -22,9 +21,9 @@ module Metanorma
       end
 
       def manifest_postprocess(config)
-        #require "debug"; binding.b
         manifest_bibdata(config)
         manifest_expand_yaml(config, @dir)
+        manifest_output_filenames(config)
         manifest_compile_adoc(config)
         manifest_filexist(config)
         manifest_sectionsplit(config)
@@ -39,6 +38,17 @@ module Metanorma
       end
 
       GUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+
+      def manifest_output_filenames(config, parent = nil)
+        config.output_filename ||=
+          parent&.output_filename # || "{basename}.{document-num}"
+        config.sectionsplit_filename ||= parent&.sectionsplit_filename ||
+          "{basename_legacy}.{sectionsplit-num}"
+        # "{basename}-{document-num}.{sectionsplit-num}"
+        Array(config.entry).each do |f|
+          manifest_output_filenames(f, config)
+        end
+      end
 
       def manifest_identifier(config)
         no_id = populate_id_from_doc(config)
@@ -169,7 +179,8 @@ module Metanorma
         ::Metanorma::Compile.new
           .compile(f, agree_to_terms: true, install_fonts: false,
                       extension_keys: [:xml])
-        ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...done!", :warning)
+        ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...done!",
+                              :warning)
       end
 
       def compile_adoc_file?(file)

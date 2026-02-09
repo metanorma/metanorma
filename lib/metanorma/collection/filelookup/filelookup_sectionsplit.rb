@@ -6,8 +6,8 @@ module Metanorma
       def add_section_split
         ret = @files.keys.each_with_object({}) do |k, m|
           if @files[k][:sectionsplit] && !@files[k][:attachment]
-            process_section_split_instance(k, m)
-            cleanup_section_split_instance(k, m)
+            original_out_path = process_section_split_instance(k, m)
+            cleanup_section_split_instance(k, m, original_out_path)
           end
           m[k] = @files[k]
         end
@@ -15,6 +15,8 @@ module Metanorma
       end
 
       def process_section_split_instance(key, manifest)
+        # Save the original out_path before it gets modified
+        original_out_path = @files[key][:out_path]
         s, sectionsplit_manifest = sectionsplit(key)
         # section_split_instance_threads(s, manifest, key)
         s.each_with_index do |f1, i|
@@ -23,6 +25,8 @@ module Metanorma
         a = add_section_split_attachments(sectionsplit_manifest, key) and
           manifest["#{key}:attachments"] = a
         add_section_split_cover(manifest, sectionsplit_manifest, key)
+        # Return the original path for cleanup
+        original_out_path
       end
 
       def section_split_instance_threads(s, manifest, key)
@@ -37,8 +41,17 @@ module Metanorma
         pool.wait_for_termination
       end
 
-      def cleanup_section_split_instance(key, manifest)
+      def cleanup_section_split_instance(key, manifest, original_out_path)
+        # Delete the sectionsplit index.html from source directory after it's copied to output
         @files_to_delete << manifest["#{key}:index.html"][:ref]
+        # Delete the original files when sectionsplit happens (all formats: html, xml, presentation.xml)
+        # Use the saved original out_path (before it was changed to index.html)
+        if original_out_path
+          base = File.join(@parent.outdir, original_out_path.sub(/\.xml$/, ""))
+          @files_to_delete << "#{base}.html"
+          @files_to_delete << "#{base}.xml"
+          @files_to_delete << "#{base}.presentation.xml"
+        end
         # @files[key].delete(:ids).delete(:anchors)
         @files[key][:indirect_key] = @sectionsplit.key
       end
@@ -85,20 +98,42 @@ module Metanorma
       def add_section_split_instance(file, manifest, key, idx)
         presfile, newkey, xml = add_section_split_instance_prep(file, key)
         anchors = read_anchors(xml)
+        # Preserve directory structure in out_path if parent has custom sectionsplit_filename with directory
+        sectionsplit_fname = @files[key][:sectionsplit_filename]
+
+        # file[:url] from sectionsplit.rb already has placeholders substituted and includes full path
+        # Use it directly for out_path (without .xml extension)
+        base_filename = File.basename(file[:url], ".xml")
+
+        # Get the directory from file[:url] which already has placeholders substituted
+        file_dir = File.dirname(file[:url])
+
+        # If file[:url] has a directory (i.e., placeholders were substituted), use it
+        out_path_value = if file_dir == "."
+                           base_filename
+                         else
+                           File.join(file_dir, base_filename)
+                         end
+
         m = { parentid: key, presentationxml: true, type: "fileref",
-              rel_path: file[:url], out_path: File.basename(file[:url]),
+              rel_path: out_path_value, out_path: out_path_value,
               anchors: anchors, anchors_lookup: anchors_lookup(anchors),
               ids: read_ids(xml), format: @files[key][:format],
               sectionsplit_output: true, indirect_key: @sectionsplit.key,
-              bibdata: @files[key][:bibdata], ref: presfile }
+              bibdata: @files[key][:bibdata], ref: presfile,
+              sectionsplit_filename: sectionsplit_fname,
+              idx: @files[key][:idx] }
         m[:bare] = true unless idx.zero?
         manifest[newkey] = m
-        @files_to_delete << file[:url]
+        # Don't delete split output files - we want to keep them!
+        # The original parent HTML file is deleted in cleanup_section_split_instance
       end
 
       def add_section_split_instance_prep(file, key)
-        presfile = File.join(File.dirname(@files[key][:ref]),
-                             File.basename(file[:url]))
+        # XML files are always stored flat in the _files directory (no subdirectories)
+        # file[:url] contains full path with directory for HTML output, but XML is basename only
+        xml_basename = File.basename(file[:url])
+        presfile = File.join(File.dirname(@files[key][:ref]), xml_basename)
         newkey = key("#{key.strip} #{file[:title]}")
         xml = Nokogiri::XML(File.read(presfile), &:huge)
         [presfile, newkey, xml]
@@ -106,11 +141,16 @@ module Metanorma
 
       def sectionsplit(ident)
         file = @files[ident][:ref]
+        # @base must always be just basename, never contain directory components
+        # Directory structure comes from sectionsplit_filename pattern only
+        base = File.basename(@files[ident][:out_path] || file)
         @sectionsplit = ::Metanorma::Collection::Sectionsplit
-          .new(input: file, base: @files[ident][:out_path],
+          .new(input: file, base: base,
                dir: File.dirname(file), output: @files[ident][:out_path],
                compile_opts: @parent.compile_options, ident: ident,
                fileslookup: self, isodoc: @isodoc,
+               parent_idx: @files[ident][:idx],
+               sectionsplit_filename: @files[ident][:sectionsplit_filename],
                isodoc_presxml: @isodoc_presxml,
                document_suffix: @files[ident][:document_suffix])
         coll = @sectionsplit.sectionsplit.sort_by { |f| f[:order] }
