@@ -124,7 +124,8 @@ module Metanorma
         ret[:datauriimage] = true if options[:datauriimage]
         ret[:sourcefilename] = options[:filename]
         %i(bare sectionsplit sectionsplit_filename install_fonts baseassetpath
-           aligncrosselements tocfigures toctables tocrecommendations strict)
+           aligncrosselements tocfigures toctables tocrecommendations strict
+           fonts)
           .each { |x| ret[x] ||= options[x] }
       end
 
