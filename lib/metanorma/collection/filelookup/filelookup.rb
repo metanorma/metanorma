@@ -337,6 +337,7 @@ module Metanorma
           x["id"] and ret[x["id"]] = true
        
         ret
+        end
       # Check if we should preserve directory structure for an identifier
       # Returns the custom filename if directory structure should be preserved,
       # nil otherwise
