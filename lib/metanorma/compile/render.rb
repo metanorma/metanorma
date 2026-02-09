@@ -159,6 +159,7 @@ module Metanorma
       ::Metanorma::Collection::Sectionsplit.new(
         input: input_filename, isodoc: @isodoc, xml: presxml,
         base: File.basename(output_filename || filename),
+        sectionsplit_filename: opts[:sectionsplit_filename],
         output: output_filename || filename, dir: dir, compile_opts: opts
       ).build_collection
     end

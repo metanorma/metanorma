@@ -10,9 +10,11 @@ module Metanorma
       # compile and output individual file in collection
       # warn "metanorma compile -x html #{f.path}"
       def file_compile(file, filename, identifier)
-        @files.get(identifier, :sectionsplit) and return
+        sectionsplit_val = @files.get(identifier, :sectionsplit)
+        sectionsplit_val and return
         opts = compile_options_base(identifier)
           .merge(compile_options_update(identifier))
+
         @compile.compile file, opts
         @files.set(identifier, :outputs, {})
         file_compile_formats(filename, identifier, opts)
@@ -64,14 +66,102 @@ module Metanorma
       # to the nominated new file name
       def file_compile_format(fname, ident, format, outputs, new_output_fname)
         ext = @compile.processor.output_formats[format]
-        output_fname = File.basename(fname).sub(/(?<=\.)[^.]+$/, ext.to_s)
+        fname_base = File.basename(fname)
+        # ONLY replace .xml or .html extensions, NEVER remove section numbers like .0
+        output_fname = if /\.(xml|html)$/.match?(fname_base)
+                         fname_base.sub(/\.(xml|html)$/, ".#{ext}")
+                       else
+                         "#{fname_base}.#{ext}"
+                       end
+
         if new_output_fname
           FileUtils.mv(File.join(@outdir, output_fname),
                        File.join(@outdir, new_output_fname))
           output_fname = new_output_fname
+        elsif (custom_fname = @files.preserve_directory_structure?(ident))
+          # Get the custom directory structure from the file metadata
+          # Substitute placeholders like {document-num}
+          idx = @files.get(ident, :idx)
+          # Get basename from the ORIGINAL source file, not the renamed output
+          original_file = @files.get(ident, :ref)
+          basename = File.basename(original_file, ".*")
+          basename_legacy = File.basename(original_file)
+          custom_fname = @files.substitute_filename_pattern(
+            custom_fname,
+            document_num: idx,
+            basename: basename,
+            basename_legacy: basename_legacy,
+          )
+          fname_dir = File.dirname(custom_fname)
+          if fname_dir != "."
+            # Don't add directory here - let preserve_output_dir_structure handle it
+            # to avoid double-adding the directory path
+            # Pass explicit_custom flag to indicate this is from output-filename
+            output_fname = preserve_output_dir_structure(custom_fname, output_fname,
+                                                         format, explicit_custom: true)
+          end
+        elsif File.dirname(fname) != "."
+          # Preserve directory structure if fname itself contains a directory
+          fname_dir = File.dirname(fname)
+          output_fname = File.join(fname_dir, output_fname)
+          output_fname = preserve_output_dir_structure(fname, output_fname,
+                                                       format)
         end
-        (/html$/.match?(ext) && @files.get(ident, :sectionsplit)) or
-          outputs[format] = File.join(@outdir, output_fname)
+        should_skip = /html$/.match?(ext) && @files.get(ident, :sectionsplit)
+        should_skip or outputs[format] = File.join(@outdir, output_fname)
+      end
+
+      # Preserve directory structure from input filename in output
+      # Move HTML, DOC, PDF to subdirectories when explicit output-filename is set
+      # XML and presentation.xml stay in root directory (default behavior)
+      # @param fname [String] input filename (may include directory)
+      # @param output_fname [String] output filename (may already include directory)
+      # @param format [Symbol] output format (:html, :presentation, etc.)
+      # @param explicit_custom [Boolean] true if this is from an explicit output-filename directive
+      def preserve_output_dir_structure(fname, output_fname, format = nil,
+explicit_custom: false)
+        fname_dir = File.dirname(fname)
+        if fname_dir != "."
+          # output_fname might already include the directory, so get just the basename for source
+          output_basename = File.basename(output_fname)
+          # Determine if we should move based on format extension
+          ext = format ? @compile.processor.output_formats[format].to_s : ""
+          # If explicit_custom (from output-filename), move HTML, DOC, PDF, presentation.xml (but not regular XML)
+          # Otherwise, only move HTML/presentation files (default behavior)
+          should_move = if explicit_custom
+                          # For explicit output-filename: move html, doc, pdf, presentation.xml (not regular xml)
+                          ext.end_with?("html") || ext == "doc" || ext == "pdf" ||
+                            output_basename.end_with?(".presentation.xml")
+                        else
+                          # Default behavior: only HTML and presentation
+                          ext.end_with?("html") || output_basename.end_with?(
+                            ".html", ".presentation.xml"
+                          )
+                        end
+          if should_move
+            output_with_dir = File.join(fname_dir, output_basename)
+            output_dest = File.join(@outdir, output_with_dir)
+            output_src = File.join(@outdir, output_basename)
+            if File.exist?(output_src) && output_src != output_dest
+              FileUtils.mkdir_p(File.dirname(output_dest))
+              FileUtils.mv(output_src, output_dest)
+              # Note: .err.html files are left in the root directory intentionally
+              # They are not moved to subdirectories with their parent HTML files
+              return output_with_dir
+            elsif File.exist?(output_dest)
+              # File already exists at destination (from a previous call)
+              # Return the correct path with directory
+              if File.exist?(output_src)
+                # Source still exists, clean it up
+                FileUtils.rm_f(output_src)
+                err_src = output_src.sub(/\.html$/, ".err.html")
+                FileUtils.rm_f(err_src) if File.exist?(err_src)
+              end
+              return output_with_dir
+            end
+          end
+        end
+        output_fname
       end
 
       def copy_file_to_dest(identifier)
@@ -99,7 +189,13 @@ module Metanorma
             file, fname = @files.targetfile_id(ident, read: true)
             warn "\n\n\n\n\nProcess #{fname}: #{DateTime.now.strftime('%H:%M:%S')}"
             collection_xml = update_xrefs(file, ident, internal_refs)
-            collection_filename = File.basename(fname, File.extname(fname))
+            # Strip .xml or .html extension, but NOT section numbers like .0
+            fname_base = File.basename(fname)
+            collection_filename = if /\.(xml|html)$/.match?(fname_base)
+                                    fname_base.sub(/\.(xml|html)$/, "")
+                                  else
+                                    fname_base
+                                  end
             collection_xml_path = File.join(Dir.tmpdir,
                                             "#{collection_filename}.xml")
             File.write collection_xml_path, collection_xml, encoding: "UTF-8"

@@ -24,16 +24,16 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.required_ruby_version = ">= 3.1.0"
 
-  spec.add_dependency "asciidoctor"
+  spec.add_runtime_dependency "asciidoctor"
+  spec.add_runtime_dependency "concurrent-ruby"
+  spec.add_runtime_dependency "fontist", ">= 2.0.0"
+  spec.add_runtime_dependency "htmlentities"
+  spec.add_runtime_dependency "isodoc", ">= 3.0.0"
+  spec.add_runtime_dependency "marcel"
+  spec.add_runtime_dependency "metanorma-taste", "~> 0.1.0"
+  spec.add_runtime_dependency "mn2pdf", "~> 2"
+  spec.add_runtime_dependency "nokogiri"
   spec.add_development_dependency "canon", "= 0.1.3"
-  spec.add_dependency "concurrent-ruby"
-  spec.add_dependency "fontist", ">= 2.0.0"
-  spec.add_dependency "htmlentities"
-  spec.add_dependency "isodoc", ">= 3.0.0"
-  spec.add_dependency "metanorma-taste", "~> 0.1.0"
-  spec.add_dependency "mn2pdf", "~> 2"
-  spec.add_dependency "nokogiri"
-  spec.add_dependency "vectory", "~> 0.8.2"
 
   # relaton-cli is required by Metanorma::Collection
   spec.add_dependency "relaton-cli"
