@@ -44,12 +44,14 @@ module Metanorma
           end
         end
 
-        def add_suffix_to_attrs(doc, suffix, tag_name, attr_name, isodoc)
+        # Skip SVGs, they are processed by Vectory::SvgDocument#suffix_ids
+        def add_suffix_to_attrs(doc, suffix, tag, attr, isodoc)
           (suffix.nil? || suffix.empty?) and return
-          doc.xpath(isodoc.ns("//#{tag_name}[@#{attr_name}]")).each do |elem|
-            a = elem.attributes[attr_name].value
+          doc.xpath(isodoc.ns("//#{tag}[@#{attr}][not(ancestor-or-self::*[local-name()='svg'])]")).each do |elem|
+            # doc.xpath(isodoc.ns("//#{tag}[@#{attr}]")).each do |elem|
+            a = elem.attributes[attr].value
             /_#{suffix}$/.match?(a) or
-              elem.attributes[attr_name].value = "#{a}_#{suffix}"
+              elem.attributes[attr].value = "#{a}_#{suffix}"
           end
         end
 
@@ -100,12 +102,14 @@ module Metanorma
           File.join(taste.directory, ret)
         end
 
-        # update relative URLs, url(#...), in CSS in @style attrs (incl. SVG), and in
-        # include SVG url(#..) attrs,
+        SVG_NS = "http://www.w3.org/2000/svg".freeze
+
+        # update relative URLs, url(#...), in CSS in @style attrs (incl. SVG),
+        # and in include SVG url(#..) attrs,
         # not processed already by add_suffix_to_attrs
         def url_in_css_styles(doc, ids, document_suffix)
           update_ids_css(doc.root, ids, document_suffix)
-          doc.xpath("//i:svg", "i" => "http://www.w3.org/2000/svg").each do |s|
+          doc.xpath("//i:svg", "i" => SVG_NS).each do |s|
             svg = Vectory::SvgDocument.new(s.to_xml)
             svg.suffix_ids(document_suffix)
           end
@@ -115,20 +119,28 @@ module Metanorma
         # which are processed separately by Vectory::SvgDocument#suffix_ids
         def update_ids_css(document, ids, suffix)
           suffix = suffix.is_a?(Integer) ? sprintf("%09d", suffix) : suffix
-          svg_ns = "http://www.w3.org/2000/svg"
-
-          # Process style elements that are NOT descendants of SVG elements
           document.xpath(".//m:style[not(ancestor::i:svg)]",
-                         "m" => svg_ns, "i" => svg_ns).each do |s|
-            c = s.children.to_xml
-            s.children = update_ids_css_string(c, ids, suffix)
+                         "m" => SVG_NS, "i" => SVG_NS).each do |s|
+            s.children = update_ids_css_string(s.children.to_xml, ids, suffix)
           end
-
-          # Process elements with style attributes that are NOT descendants of SVG elements
           document.xpath(".//*[@style][not(ancestor::i:svg)]",
-                         "i" => svg_ns).each do |s|
+                         "i" => SVG_NS).each do |s|
             s["style"] = update_ids_css_string(s["style"], ids, suffix)
           end
+        end
+
+        # Updates ID references in a CSS style string.
+        # Replicates Vectory update_ids_css_string
+        def update_ids_css_string(style, ids, suffix)
+          ids.each do |i|
+            style = style.gsub(%r[##{i}\b],
+                               sprintf("#%<id>s_%<suffix>s", id: i,
+                                                             suffix: suffix))
+              .gsub(%r(\[id\s*=\s*['"]?#{i}['"]?\]),
+                    sprintf("[id='%<id>s_%<suffix>s']", id: i,
+                                                        suffix: suffix))
+          end
+          style
         end
 
         #           doc.xpath("//*[@style]").each do |s|
