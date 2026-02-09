@@ -93,13 +93,34 @@ module Metanorma
           File.join(taste.directory, ret)
         end
 
-        # update relative URLs, url(#...), in CSS in @style attrs (incl. SVG)
+        # update relative URLs, url(#...), in CSS in @style attrs (incl. SVG), and in
         # include SVG url(#..) attrs,
         # not processed already by add_suffix_to_attrs
         def url_in_css_styles(doc, ids, document_suffix)
+          update_ids_css(doc.root, ids, document_suffix)
           doc.xpath("//i:svg", "i" => "http://www.w3.org/2000/svg").each do |s|
             svg = Vectory::SvgDocument.new(s.to_xml)
             svg.suffix_ids(document_suffix)
+          end
+        end
+
+        # replicates Vectory update_ids_css, but skips over svgs,
+        # which are processed separately by Vectory::SvgDocument#suffix_ids
+        def update_ids_css(document, ids, suffix)
+          suffix = suffix.is_a?(Integer) ? sprintf("%09d", suffix) : suffix
+          svg_ns = "http://www.w3.org/2000/svg"
+
+          # Process style elements that are NOT descendants of SVG elements
+          document.xpath(".//m:style[not(ancestor::i:svg)]",
+                         "m" => svg_ns, "i" => svg_ns).each do |s|
+            c = s.children.to_xml
+            s.children = update_ids_css_string(c, ids, suffix)
+          end
+
+          # Process elements with style attributes that are NOT descendants of SVG elements
+          document.xpath(".//*[@style][not(ancestor::i:svg)]",
+                         "i" => svg_ns).each do |s|
+            s["style"] = update_ids_css_string(s["style"], ids, suffix)
           end
         end
 
