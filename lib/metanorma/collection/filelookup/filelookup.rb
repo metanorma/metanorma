@@ -335,7 +335,7 @@ module Metanorma
         xml.traverse do |x|
           x.text? and next
           x["id"] and ret[x["id"]] = true
-        end
+       
         ret
       # Check if we should preserve directory structure for an identifier
       # Returns the custom filename if directory structure should be preserved,
