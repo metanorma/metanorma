@@ -33,22 +33,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "metanorma-taste", "~> 0.1.0"
   spec.add_runtime_dependency "mn2pdf", "~> 2"
   spec.add_runtime_dependency "nokogiri"
+  spec.add_development_dependency "canon", "= 0.1.3"
 
   # relaton-cli is required by Metanorma::Collection
   spec.add_dependency "relaton-cli"
-
-  spec.add_development_dependency "debug"
-  spec.add_development_dependency "equivalent-xml"
-  spec.add_development_dependency "metanorma-iso", ">= 3.2.0"
-  spec.add_development_dependency "metanorma-iho"
-  spec.add_development_dependency "mnconvert"
-  spec.add_development_dependency "pry"
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "rspec-command", "~> 1.0"
-  spec.add_development_dependency "rubocop", "~> 1"
-  spec.add_development_dependency "rubocop-performance"
-  spec.add_development_dependency "sassc-embedded", "~> 1"
-  spec.add_development_dependency "simplecov", "~> 0.15"
-  spec.add_development_dependency "canon", "= 0.1.3"
 end
