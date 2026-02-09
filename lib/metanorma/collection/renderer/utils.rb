@@ -1,3 +1,5 @@
+require "marcel"
+
 module Metanorma
   class Collection
     class Renderer
@@ -150,8 +152,8 @@ module Metanorma
 
       def svg_in_path?(path)
         File.file?(path) or return false
-        types = MIME::Types.type_for(path) or return false
-        types.first == "image/svg+xml" or return false
+        type = Marcel::MimeType.for(name: path) or return false
+        type == "image/svg+xml" or return false
         svg = File.read(path, encoding: "utf-8") or return false
         svg
       end
