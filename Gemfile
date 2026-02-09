@@ -12,7 +12,6 @@ rescue StandardError
   nil
 end
 
-gem "canon", "~>0.1.8"
 gem "debug"
 gem "equivalent-xml"
 gem "metanorma-iho"
