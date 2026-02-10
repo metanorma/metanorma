@@ -66,8 +66,8 @@ RSpec.describe Metanorma::Collection do
         .to be_equivalent_to "background: url(#svg1); foreground: url(_001); middleground: url(#fig1);"
       expect(conact_file_doc_xml.at("//i:strong/@style", "i" => "https://www.metanorma.org/ns/standoc").text)
         .to be_equivalent_to "background: url(#svg1_ISO_17301-1_2016); foreground: url(_001); middleground: url(#fig1_ISO_17301-1_2016);"
-      #expect(conact_file_doc_xml.at("//i:svg//i:style", "i" => "http://www.w3.org/2000/svg").text)
-        #.to include "url(#clippath_inject_2)"
+      # expect(conact_file_doc_xml.at("//i:svg//i:style", "i" => "http://www.w3.org/2000/svg").text)
+      # .to include "url(#clippath_inject_2)"
 
       expect(File.exist?("#{INPATH}/collection1.err.html")).to be true
       expect(File.read("#{INPATH}/collection1.err.html", encoding: "utf-8"))
@@ -405,6 +405,89 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.1.svg")).to be true
       FileUtils.rm_f("tmp_document-1.presentation.xml")
       FileUtils.rm_f("tmp_document-2.presentation.xml")
+    end
+
+    it "YAML collection with renamed outputs" do
+      mock_pdf
+      FileUtils.rm_f "#{OUTPATH}/collection.err.html"
+      FileUtils.rm_f "#{OUTPATH}/collection1.err.html"
+      FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
+                   "action_schemaexpg1.svg"
+      file = "#{INPATH}/collection.rename.yml"
+      # xml = file.read file, encoding: "utf-8"
+      of = File.join(FileUtils.pwd, OUTPATH)
+      col = Metanorma::Collection.parse file
+      col.render(
+        format: %i[presentation html xml rxl],
+        output_folder: of,
+        compile: {
+          install_fonts: false,
+        },
+      )
+      expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
+      concat_text = read_and_cleanup "#{INPATH}/collection_rename.xml"
+      concat_file = read_and_cleanup "#{OUTPATH}/collection.xml"
+      expect(Canon.format_xml(cleanup_guid(concat_file.gsub("><", ">\n<")))
+        .sub(%r{xlink:href=['"]data:image/gif;base64,[^"']*['"]},
+             "xlink:href='data:image/gif;base64,_'"))
+        .to be_equivalent_to Canon.format_xml(cleanup_guid(concat_text.gsub("><", ">\n<")))
+          .sub(%r{xlink:href=['"]data:image/gif;base64[^"']*['"]},
+               "xlink:href='data:image/gif;base64,_'")
+      conact_file_doc_xml = Nokogiri::XML(concat_file)
+      concat_text_doc_xml = File.open("#{INPATH}/rice-en.final.xml") do |f|
+        Nokogiri::XML(f)
+      end
+
+      expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/index.html")).to be true
+      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
+        .to include "<h1>ISO Collection 1"
+      expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
+        .to include "ISO&nbsp;17301-1:2016/Amd.1:2017"
+      expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
+      expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.html")).to be false
+      expect(File.exist?("#{OUTPATH}/dummy.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/rice2.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/dummy/rice2.html")).to be true
+      expect(File.exist?("#{OUTPATH}/dummy/rice2.presentation.xml")).to be true
+      expect(File.read("#{OUTPATH}/rice2.xml"))
+        .not_to be_equivalent_to File.read("#{OUTPATH}/dummy/rice2.presentation.xml")
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml"))
+        .to be false
+      expect(File.exist?("#{OUTPATH}/rice4.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final/rice4.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-amd.final/rice4.presentation.xml"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final.html")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/rice-en.final.presentation.xml"))
+        .to be false
+      expect(File.exist?("#{OUTPATH}/rice1.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final/rice1.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice-en.final/rice1.presentation.xml"))
+        .to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be false
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be false
+      expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
+        .to be false
+      expect(File.exist?("#{OUTPATH}/rice3.xml")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final/rice3.html")).to be true
+      expect(File.exist?("#{OUTPATH}/rice1-en.final/rice3.presentation.xml"))
+        .to be true
+      rice = File.read("#{OUTPATH}/rice-en.final/rice1.html")
+      expect(rice).to include %(This document is updated in <a href="rice-amd.final/rice4.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+      expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
+      # demonstrate that erefs are removed if they point to another document in the repository,
+      # but that document is not supplied
+      expect(rice).to include %{This document uses schemas <a href="#express-schema_E0_ISO_17301-1_2016">E0/A0</a>, <a href="dummy/rice2.html#A1_ISO_17302_2016">E1/A1</a> and <a href="dummy/rice2.html#E2_ISO_17302_2016">E2</a> as well as <a href="#express-schema_E0_ISO_17301-1_2016">metanorma-collection Missing:express-schema:E0 / current-metanorma-collection/Missing:express-schema:E0</a>.}
+      expect(rice).to include %(This document is also unrelated to <a href="dummy/rice2.html#what">)
+      # resolves erefs to clauses to anchors
+      expect(rice).to include %(This document is unrelated <a href="rice1-en.final/rice3.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">1701</span>:<span class="stdyear">1974</span></a>, see e.g. <a href="rice1-en.final/rice3.html#_scope_ISO_1701_1974"><span class="stdpublisher">ISO </span><span class="stddocNumber">1701</span>:<span class="stdyear">1974</span>,  <span class="citesec">Clause 1</span></a>.)
+      FileUtils.rm_rf of
     end
 
     it "recompiles XML" do

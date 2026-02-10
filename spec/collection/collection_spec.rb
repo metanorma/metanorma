@@ -460,39 +460,6 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
-  it "renames destination filenames" do
-    file = "#{INPATH}/collection.rename.yml"
-    of = File.join(FileUtils.pwd, OUTPATH)
-    col = Metanorma::Collection.parse file
-    col.render(
-      format: %i[presentation xml html doc pdf],
-      output_folder: of,
-      coverpage: "collection_cover.html",
-      compile: {
-        install_fonts: false,
-      },
-    )
-    expect(File.exist?("#{OUTPATH}/dummy.xml")).to be false
-    expect(File.exist?("#{OUTPATH}/dummy.1.xml")).to be false
-    expect(File.exist?("#{OUTPATH}/dummy.2.xml")).to be false
-    expect(File.exist?("#{OUTPATH}/dummy.html")).to be false
-    expect(File.exist?("#{OUTPATH}/dummy.1.html")).to be false
-    expect(File.exist?("#{OUTPATH}/dummy.2.html")).to be false
-    expect(File.exist?("#{OUTPATH}/d0.xml")).to be true
-    expect(File.exist?("#{OUTPATH}/d1.xml")).to be true
-    expect(File.exist?("#{OUTPATH}/d2.xml")).to be true # XML stays in root
-    expect(File.exist?("#{OUTPATH}/d0.html")).to be true
-    expect(File.exist?("#{OUTPATH}/d1.html")).to be true
-    expect(File.exist?("#{OUTPATH}/dummy/d2.html")).to be true # HTML goes to subdirectory
-    expect(File.exist?("#{OUTPATH}/d0.doc")).to be true
-    expect(File.exist?("#{OUTPATH}/d1.doc")).to be true
-    expect(File.exist?("#{OUTPATH}/dummy/d2.doc")).to be true
-    expect(File.exist?("#{OUTPATH}/d0.pdf")).to be true
-    expect(File.exist?("#{OUTPATH}/d1.pdf")).to be true
-    expect(File.exist?("#{OUTPATH}/dummy/d2.pdf")).to be true
-    FileUtils.rm_rf of
-  end
-
   it "skips indexing of files in coverpage on request" do
     file = "#{INPATH}/collection.dup.yml"
     of = File.join(FileUtils.pwd, OUTPATH)

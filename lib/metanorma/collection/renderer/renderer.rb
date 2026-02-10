@@ -78,9 +78,7 @@ module Metanorma
           collection.coverpage_pdf_portfolio || Util::taste2coverpage_pdf_portfolio(@flavor)
         collection.directives = directives_normalise(collection.directives)
         @directives = collection.directives
-
         # list of files in the collection
-        # require 'debug'; binding.b
         @files = Metanorma::Collection::FileLookup.new(folder, self)
         @files.add_section_split
         isodoc_populate
@@ -254,10 +252,8 @@ module Metanorma
       # collection manifest
       def coverpage
         @coverpage or return
-
         @coverpage_path = Util::rel_path_resolve(@dirname, @coverpage)
         warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
-
         File.open(File.join(@outdir, "index.html"), "w:UTF-8") do |f|
           f.write @isodoc.populate_template(File.read(@coverpage_path))
         end

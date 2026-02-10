@@ -235,7 +235,7 @@ module Metanorma
         options = { read: false, doc: true, relative: false }.merge(options)
         path = options[:relative] ? data[:rel_path] : data[:ref]
         if data[:type] == "fileref"
-          ref_file path, data[:out_path], options[:read], options[:doc]
+          ref_file path, data, options[:read], options[:doc]
         else
           xml_file data[:id], options[:read]
         end
@@ -245,10 +245,18 @@ module Metanorma
         targetfile(get(ident), options)
       end
 
-      def ref_file(ref, out, read, doc)
+      def ref_file(ref, data, read, doc)
         file = File.read(ref, encoding: "utf-8") if read
-        filename = out.dup
-        if doc
+        # Use the actual output path from :outputs if available (set after compilation)
+        # Otherwise fall back to :out_path (set at initialization)
+        filename = if doc && data[:outputs] && data[:outputs][:html]
+                     data[:outputs][:html].sub(
+                       %r{^#{Regexp.escape(@parent.outdir)}/}, ""
+                     )
+                   else
+                     data[:out_path].dup
+                   end
+        if doc && !data[:outputs]
           filename = ref_file_xml2html(filename)
         end
         [file, filename]
