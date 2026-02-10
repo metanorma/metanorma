@@ -159,6 +159,9 @@ explicit_custom: false)
               end
               return output_with_dir
             end
+          else
+            # File was not moved - return just the basename since it's in root directory
+            return output_basename
           end
         end
         output_fname
