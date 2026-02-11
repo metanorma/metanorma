@@ -183,7 +183,17 @@ module Metanorma
         newbib = dup_bibitem(docid, bib)
         url = @files.url(docid, relative: true,
                                 doc: !@files.get(docid, :attachment))
+        # Use :outputs[:html] if available (after compilation),
+        # otherwise convert :out_path to HTML (before compilation)
         current_html = @files.get(identifier, :outputs)&.dig(:html)
+        if !current_html && (out_path = @files.get(identifier, :out_path))
+          # Convert .xml to .html, following same logic as ref_file_xml2html
+          current_html = if out_path.end_with?(".xml")
+                           out_path.sub(/\.xml$/, ".html")
+                         else
+                           "#{out_path}.html"
+                         end
+        end
         url = make_relative_path(current_html, url) if current_html
         [newbib, url]
       end

@@ -36,7 +36,7 @@ manifest:
           output-filename: "{basename}/rice1"
         - fileref: dummy.xml
           identifier: ISO 17302:2016
-          output-filename: "{basename}/rice2"
+          output-filename: "rice-en.final/rice2"
         - fileref: rice1-en.final.xml
           identifier: ISO 1701:1974
           output-filename: "{basename}/rice3"
