@@ -10,7 +10,7 @@ on:
 
 jobs:
   rake:
-    uses: metanorma/ci/.github/workflows/inkscape-rake.yml@main
+    uses: metanorma/ci/.github/workflows/inkscape-rake.yml@rt-add-fontist-repo-action
     with:
       private-fonts: true
     secrets:
