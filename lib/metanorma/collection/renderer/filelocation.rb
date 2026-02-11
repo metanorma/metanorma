@@ -150,7 +150,9 @@ explicit_custom: false)
         out = Pathname.new(@files.get(identifier, :out_path)).cleanpath
         out.absolute? and
           out = out.relative_path_from(File.expand_path(FileUtils.pwd))
-        dest = File.join(@outdir, @disambig.source2dest_filename(out.to_s))
+        dest = File.join(@outdir,
+                         @disambig.source2dest_filename(out.to_s,
+                                                        preserve_dirs: true))
         FileUtils.mkdir_p(File.dirname(dest))
         source = @files.get(identifier, :ref)
         source != dest and FileUtils.cp_r source, dest, remove_destination: true

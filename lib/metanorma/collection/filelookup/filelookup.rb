@@ -178,14 +178,17 @@ module Metanorma
               # The directory will be applied during file_compile_format
               # via preserve_directory_structure?
               File.basename(ref.file)
-            elsif file_has_dir
-              ref.file # Preserve directory structure already in ref.file
             elsif ref.output_filename
               substitute_filename_pattern(ref.output_filename, **params)
+            elsif file_has_dir
+              ref.file # Preserve directory structure already in ref.file
+            elsif ref.attachment
+              ref.file
             else File.basename(ref.file)
             end
-        ref.attachment and f = ref.file
-        @disambig.source2dest_filename(f)
+        ret = @disambig.source2dest_filename(f, preserve_dirs: ref.attachment)
+        warn ret
+        ret
       end
 
       def output_file_path_prep(ref, idx)

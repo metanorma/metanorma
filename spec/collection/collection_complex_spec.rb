@@ -444,8 +444,7 @@ RSpec.describe Metanorma::Collection do
         .to include "<h1>ISO Collection 1"
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "ISO&nbsp;17301-1:2016/Amd.1:2017"
-      expect(File.exist?("#{OUTPATH}/pics/action_schemaexpg1.svg")).to be true
-      expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
+      #expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.html")).to be false
       expect(File.exist?("#{OUTPATH}/dummy.xml")).to be false
       expect(File.exist?("#{OUTPATH}/rice2.xml")).to be true
@@ -478,6 +477,10 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/rice1-en.final/rice3.html")).to be true
       expect(File.exist?("#{OUTPATH}/rice1-en.final/rice3.presentation.xml"))
         .to be true
+      expect(File.exist?("#{OUTPATH}/action_schemaexpg1.svg")).to be true
+      expect(File.exist?("#{OUTPATH}/rice_image1.png")).to be false
+      expect(File.exist?("#{OUTPATH}/action_schemaexpg1.1.svg")).to be true
+      expect(File.exist?("#{OUTPATH}/att/action_schemaexpg1.svg")).to be true
       rice = File.read("#{OUTPATH}/rice-en.final/rice1.html")
       expect(rice).to include %(This document is updated in <a href="../rice-amd.final/rice4.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
       expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)

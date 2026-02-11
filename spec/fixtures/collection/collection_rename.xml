@@ -304,11 +304,14 @@
                 <format>xml</format>
                 <format>presentation</format>
                 <format>html</format>
-                <entry target="doc000000004" attachment="true" index="true" fileref="pics/action_schemaexpg1.svg">
+                <entry target="doc000000004" attachment="true" index="true" fileref="action_schemaexpg1.svg">
                    <identifier>action_schemaexpg1.svg</identifier>
                 </entry>
                 <entry target="doc000000005" attachment="true" index="true" fileref="../../assets/rice_image1.png">
                    <identifier>rice_image1.png</identifier>
+                </entry>
+                <entry target="doc000000006" attachment="true" index="true" fileref="../../assets/rice_image1.png">
+                   <identifier>rice_image2.png</identifier>
                 </entry>
              </entry>
           </entry>
@@ -726,7 +729,7 @@
                          </copyright>
                       </bibitem>
                       <bibitem id="ISO712_ISO_17301-1_2016" type="standard">
-                         <fetched>2026-02-11</fetched>
+                         <fetched>2026-02-12</fetched>
                          <title type="title-intro" format="text/plain" language="en" script="Latn">Cereals and cereal products</title>
                          <title type="title-main" format="text/plain" language="en" script="Latn">Determination of moisture content</title>
                          <title type="main" format="text/plain" language="en" script="Latn">Cereals and cereal products – Determination of moisture content</title>
@@ -772,7 +775,7 @@
                          </relation>
                          <relation type="instance">
                             <bibitem type="standard">
-                               <fetched>2026-02-11</fetched>
+                               <fetched>2026-02-12</fetched>
                                <title type="title-intro" format="text/plain" language="en" script="Latn">Cereals and cereal products</title>
                                <title type="title-main" format="text/plain" language="en" script="Latn">Determination of moisture content</title>
                                <title type="title-part" format="text/plain" language="en" script="Latn">Reference method</title>
@@ -925,7 +928,7 @@
                          </copyright>
                       </bibitem>
                       <bibitem hidden="true" id="action_schemaexpg1.svg_ISO_17301-1_2016">
-                         <uri type="citation">../pics/action_schemaexpg1.svg</uri>
+                         <uri type="citation">../action_schemaexpg1.svg</uri>
                          <docidentifier>action_schemaexpg1.svg</docidentifier>
                       </bibitem>
                    </references>
@@ -1814,6 +1817,12 @@
           <doc-container id="doc000000005">
              <bibdata>
                 <docidentifier>rice_image1.png</docidentifier>
+             </bibdata>
+             <attachment>data:image/png</attachment>
+          </doc-container>
+          <doc-container id="doc000000006">
+             <bibdata>
+                <docidentifier>rice_image2.png</docidentifier>
              </bibdata>
              <attachment>data:image/png</attachment>
           </doc-container>

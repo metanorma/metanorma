@@ -49,11 +49,16 @@ manifest:
     - level: attachments
       title: Attachments
       docref:
-        - fileref: pics/action_schemaexpg1.svg
+        - fileref: action_schemaexpg1.svg
           identifier: action_schemaexpg1.svg
           attachment: true
         - fileref: ../../assets/rice_image1.png
           identifier: rice_image1.png
+          output-filename: "action_schemaexpg1.svg"
+          attachment: true
+        - fileref: ../../assets/rice_image1.png
+          identifier: rice_image2.png
+          output-filename: "att/action_schemaexpg1.svg"
           attachment: true
 prefatory-content: 
 |
