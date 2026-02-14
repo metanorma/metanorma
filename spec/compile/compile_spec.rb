@@ -44,6 +44,7 @@ RSpec.describe Metanorma::Compile do
         tocrecommendations: true,
         i18nyaml: "spec/assets/i.yaml",
         relatonrenderconfig: "spec/assets/j.yaml",
+        fonts: "Source Serif Pro",
         output_formats: {
           presentation: "presentation.xml",
         },
@@ -68,6 +69,7 @@ RSpec.describe Metanorma::Compile do
       agree_to_terms: true,
       i18nyaml: "spec/assets/i.yaml",
       relatonrenderconfig: "spec/assets/j.yaml",
+      fonts: "Source Serif Pro",
       log: log,
       output_formats: {
         doc: "doc",
