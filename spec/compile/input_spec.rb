@@ -66,7 +66,29 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :pdf-stylesheet-override: bd
       :relaton-render-config: be
     INPUT
-    output = {:aligncrosselements=>"ab", :bare=>"w", :baseassetpath=>"aa", :bodyfont=>"b", :breakupurlsintables=>true, :datauriimage=>false, :doctoclevels=>"s", :documentscheme=>"av", :fontlicenseagreement=>"at", :fonts=>"as", :header=>"m", :headerfont=>"c", :hierarchicalassets=>true, :htmlcoverpage=>"g", :htmlintropage=>"h", :htmlstylesheet=>"f", :htmlstylesheet_override=>"x", :htmltoclevels=>"r", :i18nyaml=>"e", :ieeedtd=>"aw", :isowordbgstripcolor=>"ay", :isowordtemplate=>"au", :localizenumber=>"ax", :modspecidentifierbase=>"az", :olstyle=>"q", :pdfallowaccesscontent=>"an", :pdfallowassembledocument=>"ai", :pdfallowcopycontent=>"ag", :pdfalloweditannotations=>"aj", :pdfalloweditcontent=>"ah", :pdfallowfillinforms=>"am", :pdfallowprint=>"ak", :pdfallowprinthq=>"al", :pdfencrypt=>"ac", :pdfencryptionlength=>"ad", :pdfencryptmetadata=>"ao", :pdfownerpassword=>"af", :pdfstylesheet=>"bc", :pdfstylesheet_override=>"bd", :pdfuserpassword=>"ae", :relatonrenderconfig=>"be", :scripts=>"i", :scripts_override=>"z", :scripts_pdf=>"j", :sectionsplit=>"a", :sourcehighlighter=>true, :standardstylesheet=>"l", :suppressasciimathdup=>true, :titlefont=>"d", :tocfigures=>true, :toclevels=>"ba", :tocrecommendations=>true, :toctables=>true, :ulstyle=>"p", :usexinclude=>true, :wordcoverpage=>"n", :wordintropage=>"o", :wordstylesheet=>"k", :wordstylesheet_override=>"y"}
+    output = { aligncrosselements: "ab", bare: "w", baseassetpath: "aa",
+               bodyfont: "b", breakupurlsintables: true, datauriimage: false,
+               doctoclevels: "s", documentscheme: "av",
+               fontlicenseagreement: "at", fonts: "as", header: "m",
+               headerfont: "c", hierarchicalassets: true, htmlcoverpage: "g",
+               htmlintropage: "h", htmlstylesheet: "f",
+               htmlstylesheet_override: "x", htmltoclevels: "r", i18nyaml: "e",
+               ieeedtd: "aw", isowordbgstripcolor: "ay", isowordtemplate: "au",
+               localizenumber: "ax", modspecidentifierbase: "az", olstyle: "q",
+               pdfallowaccesscontent: "an", pdfallowassembledocument: "ai",
+               pdfallowcopycontent: "ag", pdfalloweditannotations: "aj",
+               pdfalloweditcontent: "ah", pdfallowfillinforms: "am",
+               pdfallowprint: "ak", pdfallowprinthq: "al", pdfencrypt: "ac",
+               pdfencryptionlength: "ad", pdfencryptmetadata: "ao",
+               pdfownerpassword: "af", pdfstylesheet: "bc",
+               pdfstylesheet_override: "bd", pdfuserpassword: "ae",
+               relatonrenderconfig: "be", scripts: "i", scripts_override: "z",
+               scripts_pdf: "j", sectionsplit: "a", sourcehighlighter: true,
+               standardstylesheet: "l", suppressasciimathdup: true,
+               titlefont: "d", tocfigures: true, toclevels: "ba",
+               tocrecommendations: true, toctables: true, ulstyle: "p",
+               usexinclude: true, wordcoverpage: "n", wordintropage: "o",
+               wordstylesheet: "k", wordstylesheet_override: "y" }
     expect(Metanorma::Input::Asciidoc.new
         .extract_options(input)).to eq output
 
@@ -143,8 +165,11 @@ RSpec.describe Metanorma::Input::Asciidoc do
       Author
 
     INPUT
-    output = 
-      {:breakupurlsintables=>false, :datauriimage=>true, :hierarchicalassets=>false, :sourcehighlighter=>true, :suppressasciimathdup=>true, :tocfigures=>false, :tocrecommendations=>false, :toctables=>false, :usexinclude=>true}
+    output =
+      { breakupurlsintables: false, datauriimage: true,
+        hierarchicalassets: false, sourcehighlighter: true,
+        suppressasciimathdup: true, tocfigures: false,
+        tocrecommendations: false, toctables: false, usexinclude: true }
     expect(Metanorma::Input::Asciidoc.new
       .extract_options(input)).to eq output
   end
@@ -163,8 +188,11 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :datauriimage:
       :source-highlighter:
     INPUT
-    output = 
-      {:breakupurlsintables=>true, :datauriimage=>true, :hierarchicalassets=>true, :sourcehighlighter=>true, :suppressasciimathdup=>true, :tocfigures=>true, :tocrecommendations=>false, :toctables=>true, :usexinclude=>true}
+    output =
+      { breakupurlsintables: true, datauriimage: true,
+        hierarchicalassets: true, sourcehighlighter: true,
+        suppressasciimathdup: true, tocfigures: true,
+        tocrecommendations: false, toctables: true, usexinclude: true }
     expect(Metanorma::Input::Asciidoc.new
       .extract_options(input)).to eq output
   end
@@ -183,8 +211,11 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :data-uri-image: false
       :source-highlighter: false
     INPUT
-    output = 
-      {:breakupurlsintables=>true, :datauriimage=>false, :hierarchicalassets=>false, :sourcehighlighter=>false, :suppressasciimathdup=>true, :tocfigures=>false, :tocrecommendations=>false, :toctables=>false, :usexinclude=>false}
+    output =
+      { breakupurlsintables: true, datauriimage: false,
+        hierarchicalassets: false, sourcehighlighter: false,
+        suppressasciimathdup: true, tocfigures: false,
+        tocrecommendations: false, toctables: false, usexinclude: false }
     expect(Metanorma::Input::Asciidoc.new
       .extract_options(input)).to eq output
   end
@@ -199,8 +230,9 @@ RSpec.describe Metanorma::Input::Asciidoc do
       :mn-keep-asciimath:
       :novalid:
     INPUT
-    output = 
-      {:asciimath=>true, :extensions=>"b", :novalid=>true, :relaton=>"c", :type=>"a"}
+    output =
+      { asciimath: true, extensions: "b", novalid: true, relaton: "c",
+        type: "a" }
     expect(Metanorma::Input::Asciidoc.new
       .extract_metanorma_options(input)).to eq output
 
@@ -209,12 +241,12 @@ RSpec.describe Metanorma::Input::Asciidoc do
       .to eq output
 
     expect(Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(input.sub(/document-class/, "flavor"))
-      ).to eq output
+      .extract_metanorma_options(input
+      .sub(/document-class/, "flavor"))).to eq output
 
     expect(Metanorma::Input::Asciidoc.new
-      .extract_metanorma_options(input.gsub(":mn-", ":").sub(/document-class/, "flavor"))
-      ).to eq output
+      .extract_metanorma_options(input.gsub(":mn-", ":")
+      .sub(/document-class/, "flavor"))).to eq output
 
     input = <<~INPUT
       = Document title
@@ -229,7 +261,7 @@ RSpec.describe Metanorma::Input::Asciidoc do
       = Document title
       Author
     INPUT
-    output = 
+    output =
       {}
     expect(Metanorma::Input::Asciidoc.new
       .extract_metanorma_options(input)).to eq output
