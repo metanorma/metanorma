@@ -31,10 +31,10 @@ module Metanorma
         ret[val[:type]] ||= {}
         index = if val[:container] || val[:label].nil? || val[:label].empty?
                   UUIDTools::UUID.random_create.to_s
-                else val[:label].gsub(%r{<[^>]+>}, "")
+                else val[:label].gsub(%r{<[^<>]+>}, "")
                 end
         ret[val[:type]][index] = key
-        v = val[:value] and ret[val[:type]][v.gsub(%r{<[^>]+>}, "")] = key
+        v = val[:value] and ret[val[:type]][v.gsub(%r{<[^<>]+>}, "")] = key
       end
 
       def anchors_lookup(anchors)
