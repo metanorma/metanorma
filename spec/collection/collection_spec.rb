@@ -629,8 +629,8 @@ RSpec.describe Metanorma::Collection do
   end
 
   it "uses local bibdata, preface in prefatory content if needed" do
-    system 'fontist install "Source Serif Pro --accept-all-licenses"'
-    system 'fontist install "STKaiti --accept-all-licenses"'
+    system 'fontist install "Source Serif Pro" --accept-all-licenses'
+    system 'fontist install "STKaiti" --accept-all-licenses'
     of = File.join(FileUtils.pwd, OUTPATH)
     col = Metanorma::Collection.parse "#{INPATH}/collection-iho.yml"
     col.render(
@@ -651,8 +651,8 @@ RSpec.describe Metanorma::Collection do
 
   it "extract custom fonts from collection XML for PDF" do
     mock_pdf
-    system 'fontist install "Source Serif Pro --accept-all-licenses"'
-    system 'fontist install "STKaiti --accept-all-licenses"'
+    system 'fontist install "Source Serif Pro" --accept-all-licenses'
+    system 'fontist install "STKaiti" --accept-all-licenses'
     of = File.join(FileUtils.pwd, OUTPATH)
     col = Metanorma::Collection.parse "#{INPATH}/collection-iho.yml"
     renderer = nil
