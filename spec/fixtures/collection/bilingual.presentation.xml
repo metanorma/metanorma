@@ -1,5 +1,5 @@
- <doc-container id="doc000000000">
-          <metanorma xmlns="https://www.metanorma.org/ns/bipm" cross-align="true" first="" type="presentation" version="2.4.10" flavor="iso" document_suffix="ISO_JCGM_100_2008_EN_">
+<doc-container id="doc000000000">
+  <metanorma xmlns="https://www.metanorma.org/ns/bipm" cross-align="true" first="" type="presentation" version="2.4.10" flavor="iso" document_suffix="ISO_JCGM_100_2008_EN_">
              <bibdata type="standard">
                 <title language="en" format="text/plain" type="title-main">Evaluation of measurement data</title>
                 <title language="en" format="text/plain" type="title-part">Guide to the expression of uncertainty in measurement</title>
@@ -48695,7 +48695,7 @@
                             </note>
                          </formattedref>
                          <docidentifier type="metanorma-ordinal">[2]</docidentifier>
-                         <note type="display" original-id="_" id="_" autonum="1">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">
                                The English translation of Recommendation INC-1 (1980) given in the
                                <xref target="cls_0_ISO_JCGM_100_2008_EN_"/>
@@ -48830,7 +48830,7 @@
                             </note>
                          </formattedref>
                          <docidentifier type="metanorma-ordinal">[2]</docidentifier>
-                         <note type="display" original-id="_" id="_" autonum="1">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">
                                La traduction en langue anglaise de la Recommandation INC-1 (1980) donnée en
                                <xref target="scls_0-7_ISO_JCGM_100_2008_FR_"/>
@@ -49009,7 +49009,7 @@
                             </note>
                          </formattedref>
                          <docidentifier type="metanorma-ordinal">[5]</docidentifier>
-                         <note type="display" original-id="_" id="_" autonum="2">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">
                                This standard is currently
                                <fn original-id="_" original-reference="12">
@@ -49118,7 +49118,7 @@
                                </semx>
                             </note>
                          </formattedref>
-                         <fetched>2026-02-02</fetched>
+                         <fetched>2026-02-15</fetched>
                          <title type="title-intro" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai</title>
                          <title type="title-main" format="text/plain" language="fr" script="Latn">Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
                          <title type="main" format="text/plain" language="fr" script="Latn">Fidélité des méthodes d’essai — Détermination de la répétabilité et de la reproductibilité d’une méthode d’essai normalisée par essais interlaboratoires</title>
@@ -49218,7 +49218,7 @@
                             </bibitem>
                          </relation>
                          <place>Geneva</place>
-                         <note type="display" original-id="_" id="_" autonum="2">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">
                                Cette norme est actuellement en révision
                                <fn original-id="_" original-reference="13">
@@ -49405,20 +49405,20 @@
                             </note>
                          </formattedref>
                          <docidentifier type="metanorma-ordinal">[6]</docidentifier>
-                         <note type="display" original-id="_" id="_" autonum="3">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">The abbreviation of the title of this vocabulary is VIM.</p>
                          </note>
-                         <note type="display" original-id="_" id="_" autonum="4">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">
                                The definitions of terms given in
                                <xref target="annexB_ISO_JCGM_100_2008_EN_"/>
                                are taken from the revised English text of the VIM in its final form prior to publication.
                             </p>
                          </note>
-                         <note type="display" original-id="_" id="_" autonum="5">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">The second edition of the VIM was published by the International Organization for Standardization (ISO) in the name of the following seven organizations that participate in the work of ISO Technical Advisory Group 4 (TAG 4), the group that supported the development of the VIM: the Bureau International des Poids et Mesures (BIPM), the International Electrotechnical Commission (IEC), the International Federation of Clinical Chemistry (IFCC), ISO, the International Union of Pure and Applied Chemistry (IUPAC), the International Union of Pure and Applied Physics (IUPAP), and the International Organization of Legal Metrology (OIML).</p>
                          </note>
-                         <note type="display" original-id="_" id="_" autonum="6">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">The first edition of the VIM was published by ISO in 1984 in the name of the BIPM, IEC, ISO, and OIML.</p>
                          </note>
                       </bibitem>
@@ -49581,16 +49581,16 @@
                             </note>
                          </formattedref>
                          <docidentifier type="metanorma-ordinal">[6]</docidentifier>
-                         <note type="display" original-id="_" id="_" autonum="3">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">L’abréviation du titre de ce vocabulaire est VIM.</p>
                          </note>
-                         <note type="display" original-id="_" id="_" autonum="4">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">Les définitions des termes donnés en Annexe B proviennent du texte français de ce vocabulaire, sous sa forme publiée, moyennant une correction pour le terme «distribution» (de probabilité), correctement appelé «loi» (de probabilité).</p>
                          </note>
-                         <note type="display" original-id="_" id="_" autonum="5">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">La seconde édition du VIM est publiée par l’Organisation internationale de normalisation (ISO) au nom des sept organisations suivantes qui participent au travail du Groupe technique consultatif 4 de I’ISO (TAG 4), groupe chargé de la mise au point du VIM: le Bureau international des poids et mesures (BIPM), la Commission électrotechnique internationale, la Fédération internationale de chimie clinique (FICC), I’ISO, l’Union internationale de chimie pure et appliquée (UICPA), l’Union internationale de physique pure et appliquée (UIPPA) et l’Organisation internationale de métrologie légale (OIML).</p>
                          </note>
-                         <note type="display" original-id="_" id="_" autonum="6">
+                         <note type="display" original-id="_" id="_">
                             <p original-id="_">La première édition du VIM a été publiée par l’ISO en 1984 au nom du BIPM, de la CEI, de I’ISO et de l’OIML.</p>
                          </note>
                       </bibitem>
@@ -55963,4 +55963,3 @@
              </fmt-footnote-container>
           </metanorma>
        </doc-container>
-

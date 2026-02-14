@@ -15,7 +15,7 @@ end
 gem "debug"
 gem "equivalent-xml"
 #gem "metanorma-iho"
-gem "metanorma-iso", ">= 3.2.0"
+#gem "metanorma-iso", ">= 3.2.0"
 gem "mnconvert"
 gem "pry"
 gem "rake", "~> 13.0"

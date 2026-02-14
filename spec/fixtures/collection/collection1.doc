@@ -25,67 +25,7 @@
                 <p class="MsoNormal">Intro ISO Collection 1 </p>
                 <div class="authority">
                    <div class="boilerplate-copyright">
-                      <div>
-                         <a name="_" id="_"/>
-                         <p class="zzCopyright">
-                            <a name="boilerplate-year_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-year_ISO_17301-1_2016_Amd.1_2017"/>
-                            © ISO 2017
-                         </p>
-                         <p class="zzCopyright">
-                            <a name="boilerplate-message_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-message_ISO_17301-1_2016_Amd.1_2017"/>
-                            All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.
-                         </p>
-                         <p style="text-align:left;" align="left" class="zzCopyright">
-                            <a name="boilerplate-address_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-address_ISO_17301-1_2016_Amd.1_2017"/>
-                            ISO copyright office
-                            <br/>
-                            Ch. de Blandonnet 8 • CP 401
-                            <br/>
-                            CH-1214 Vernier, Geneva, Switzerland
-                            <br/>
-                            Tel.  + 41 22 749 01 11
-                            <br/>
-                            Fax  + 41 22 749 09 47
-                            <br/>
-                            Email: copyright@iso.org
-                            <br/>
-                            Website: www.iso.org
-                         </p>
-                         <p class="zzCopyright">
-                            <a name="boilerplate-place_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-place_ISO_17301-1_2016_Amd.1_2017"/>
-                            Published in Switzerland
-                         </p>
-                      </div>
-                   </div>
-                </div>
-                <p class="MsoNormal">
-                   <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
-                </p>
-                <div class="Section3">
-                   <a name="_" id="_"/>
-                   <p class="IntroTitle">Clause</p>
-                   <p class="MsoNormal">
-                      <a name="_" id="_"/>
-                      Welcome to our collection
-                   </p>
-                </div>
-                <p class="MsoNormal"> </p>
-             </div>
-             <p class="MsoNormal">
-                <br clear="all" class="section"/>
-             </p>
-             <div class="WordSection3">
-                <div class="WordSection1">
-                   <p class="MsoNormal">Cover Document Specification and test methods — Part 1: Rice 17301</p>
-                   <p class="MsoNormal"> </p>
-                </div>
-                <p class="MsoNormal">
-                   <br clear="all" class="section"/>
-                </p>
-                <div class="WordSection2">
-                   <p class="MsoNormal">Intro Document Specification and test methods — Part 1: Rice 17301</p>
-                   <div class="authority">
-                      <div class="boilerplate-copyright">
+                      <div class="zzCopyrightContainer">
                          <div>
                             <a name="_" id="_"/>
                             <p class="zzCopyright">
@@ -116,6 +56,70 @@
                                <a name="boilerplate-place_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-place_ISO_17301-1_2016_Amd.1_2017"/>
                                Published in Switzerland
                             </p>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+                <p class="MsoNormal">
+                   <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
+                </p>
+                <div class="Section3">
+                   <a name="_" id="_"/>
+                   <p class="IntroTitle">Clause</p>
+                   <p class="MsoNormal">
+                      <a name="_" id="_"/>
+                      Welcome to our collection
+                   </p>
+                </div>
+                <p class="MsoNormal"> </p>
+             </div>
+             <p class="MsoNormal">
+                <br clear="all" class="section"/>
+             </p>
+             <div class="WordSection3">
+                <div class="WordSection1">
+                   <p class="MsoNormal">Cover Document Specification and test methods — Rice 17301</p>
+                   <p class="MsoNormal"> </p>
+                </div>
+                <p class="MsoNormal">
+                   <br clear="all" class="section"/>
+                </p>
+                <div class="WordSection2">
+                   <p class="MsoNormal">Intro Document Specification and test methods — Rice 17301</p>
+                   <div class="authority">
+                      <div class="boilerplate-copyright">
+                         <div class="zzCopyrightContainer">
+                            <div>
+                               <a name="_" id="_"/>
+                               <p class="zzCopyright">
+                                  <a name="boilerplate-year_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-year_ISO_17301-1_2016_Amd.1_2017"/>
+                                  © ISO 2017
+                               </p>
+                               <p class="zzCopyright">
+                                  <a name="boilerplate-message_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-message_ISO_17301-1_2016_Amd.1_2017"/>
+                                  All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.
+                               </p>
+                               <p style="text-align:left;" align="left" class="zzCopyright">
+                                  <a name="boilerplate-address_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-address_ISO_17301-1_2016_Amd.1_2017"/>
+                                  ISO copyright office
+                                  <br/>
+                                  Ch. de Blandonnet 8 • CP 401
+                                  <br/>
+                                  CH-1214 Vernier, Geneva, Switzerland
+                                  <br/>
+                                  Tel.  + 41 22 749 01 11
+                                  <br/>
+                                  Fax  + 41 22 749 09 47
+                                  <br/>
+                                  Email: copyright@iso.org
+                                  <br/>
+                                  Website: www.iso.org
+                               </p>
+                               <p class="zzCopyright">
+                                  <a name="boilerplate-place_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-place_ISO_17301-1_2016_Amd.1_2017"/>
+                                  Published in Switzerland
+                               </p>
+                            </div>
                          </div>
                       </div>
                    </div>
@@ -166,10 +170,8 @@
                 <div class="WordSection3">
                    <p class="zzSTDTitle1">
                       <span class="boldtitle">Specification and test methods — </span>
-                      <span class="nonboldtitle">Part 1:</span>
                       <span class="boldtitle">Rice</span>
                    </p>
-                   <p class="zzSTDTitle2">AMENDMENT 1: Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</p>
                    <div>
                       <a name="_introduction_ISO_17301-1_2016_Amd.1_2017" id="_introduction_ISO_17301-1_2016_Amd.1_2017"/>
                       <h1>Introduction</h1>
@@ -410,36 +412,38 @@
                    <p class="MsoNormal">Intro Document Dummy document 17302</p>
                    <div class="authority">
                       <div class="boilerplate-copyright">
-                         <div>
-                            <a name="_" id="_"/>
-                            <p class="zzCopyright">
-                               <a name="boilerplate-year_ISO_17302" id="boilerplate-year_ISO_17302"/>
-                               © ISO 2016
-                            </p>
-                            <p class="zzCopyright">
-                               <a name="boilerplate-message_ISO_17302" id="boilerplate-message_ISO_17302"/>
-                               All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.
-                            </p>
-                            <p style="text-align:left;" align="left" class="zzCopyright">
-                               <a name="boilerplate-address_ISO_17302" id="boilerplate-address_ISO_17302"/>
-                               ISO copyright office
-                               <br/>
-                               Ch. de Blandonnet 8 • CP 401
-                               <br/>
-                               CH-1214 Vernier, Geneva, Switzerland
-                               <br/>
-                               Tel.  + 41 22 749 01 11
-                               <br/>
-                               Fax  + 41 22 749 09 47
-                               <br/>
-                               Email: copyright@iso.org
-                               <br/>
-                               Website: www.iso.org
-                            </p>
-                            <p class="zzCopyright">
-                               <a name="boilerplate-place_ISO_17302" id="boilerplate-place_ISO_17302"/>
-                               Published in Switzerland
-                            </p>
+                         <div class="zzCopyrightContainer">
+                            <div>
+                               <a name="_" id="_"/>
+                               <p class="zzCopyright">
+                                  <a name="boilerplate-year_ISO_17302" id="boilerplate-year_ISO_17302"/>
+                                  © ISO 2016
+                               </p>
+                               <p class="zzCopyright">
+                                  <a name="boilerplate-message_ISO_17302" id="boilerplate-message_ISO_17302"/>
+                                  All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.
+                               </p>
+                               <p style="text-align:left;" align="left" class="zzCopyright">
+                                  <a name="boilerplate-address_ISO_17302" id="boilerplate-address_ISO_17302"/>
+                                  ISO copyright office
+                                  <br/>
+                                  Ch. de Blandonnet 8 • CP 401
+                                  <br/>
+                                  CH-1214 Vernier, Geneva, Switzerland
+                                  <br/>
+                                  Tel.  + 41 22 749 01 11
+                                  <br/>
+                                  Fax  + 41 22 749 09 47
+                                  <br/>
+                                  Email: copyright@iso.org
+                                  <br/>
+                                  Website: www.iso.org
+                               </p>
+                               <p class="zzCopyright">
+                                  <a name="boilerplate-place_ISO_17302" id="boilerplate-place_ISO_17302"/>
+                                  Published in Switzerland
+                               </p>
+                            </div>
                          </div>
                       </div>
                    </div>
