@@ -649,6 +649,8 @@ RSpec.describe Metanorma::Collection do
 
   it "extract custom fonts from collection XML for PDF" do
     mock_pdf
+    system 'fontist install "Source Serif Pro"'
+    system "fontist install STKaiti"
     of = File.join(FileUtils.pwd, OUTPATH)
     col = Metanorma::Collection.parse "#{INPATH}/collection-iho.yml"
     renderer = nil
