@@ -1,5 +1,6 @@
 require "isodoc"
 require "htmlentities"
+require "mime/types"
 require_relative "fileprocess"
 require_relative "../../util/fontist_helper"
 require_relative "../../util/util"
@@ -77,7 +78,6 @@ module Metanorma
           collection.coverpage_pdf_portfolio || Util::taste2coverpage_pdf_portfolio(@flavor)
         collection.directives = directives_normalise(collection.directives)
         @directives = collection.directives
-
         # list of files in the collection
         @files = Metanorma::Collection::FileLookup.new(folder, self)
         @files.add_section_split
@@ -211,8 +211,11 @@ module Metanorma
 
       def pdf_portfolio_mn2pdf_options
         f1 = @directives.find { |d| d.key == "keystore-pdf-portfolio" }&.value
-        f2 = @directives.find { |d| d.key == "keystore-password-pdf-portfolio" }&.value
-        {  "pdf-portfolio": "true", pdfkeystore: f1, pdfkeystorepassword: f2 }.compact
+        f2 = @directives.find do |d|
+          d.key == "keystore-password-pdf-portfolio"
+        end&.value
+        {  "pdf-portfolio": "true", pdfkeystore: f1,
+           pdfkeystorepassword: f2 }.compact
       end
 
       def bilingual_output(options, pres)
@@ -249,10 +252,8 @@ module Metanorma
       # collection manifest
       def coverpage
         @coverpage or return
-
         @coverpage_path = Util::rel_path_resolve(@dirname, @coverpage)
         warn "\n\n\n\n\nCoverpage: #{DateTime.now.strftime('%H:%M:%S')}"
-
         File.open(File.join(@outdir, "index.html"), "w:UTF-8") do |f|
           f.write @isodoc.populate_template(File.read(@coverpage_path))
         end

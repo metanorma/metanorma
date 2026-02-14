@@ -22,7 +22,8 @@ module Metanorma
         @ncnames = {}
         @nested or update_indirect_refs_to_docs(xml, docid, internal_refs, sso)
         @files.add_document_suffix(docid, xml)
-        @nested or update_sectionsplit_refs_to_docs(xml, internal_refs, sso)
+        @nested or update_sectionsplit_refs_to_docs(xml, docid, internal_refs,
+                                                    sso)
         update_direct_refs_to_docs(xml, docid, sso)
         ::Metanorma::Collection::Util::hide_refs(xml)
         sso and eref2link(xml, sso)
@@ -38,7 +39,8 @@ module Metanorma
         [docxml, sso]
       end
 
-      def update_sectionsplit_refs_to_docs(docxml, internal_refs, presxml)
+      def update_sectionsplit_refs_to_docs(docxml, docid, internal_refs,
+presxml)
         Util::gather_citeases(docxml, presxml).each do |k, v|
           (@files.get(k) && @files.get(k, :sectionsplit)) or next
           opts = { key: @files.get(k, :indirect_key),
@@ -47,7 +49,7 @@ module Metanorma
           refs = v.each_with_object({}) do |eref, m|
             update_sectionsplit_eref_to_doc(eref, internal_refs, m, opts)
           end
-          add_hidden_bibliography(docxml, refs)
+          add_hidden_bibliography(docxml, refs, docid)
         end
       end
 

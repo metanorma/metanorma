@@ -1,3 +1,5 @@
+require "marcel"
+
 module Metanorma
   class Collection
     class Renderer
@@ -59,8 +61,8 @@ module Metanorma
         tag = presxml ? "fmt-eref" : "eref"
         docxml.xpath(ns("//#{tag}"))
           .each_with_object({ citeas: {}, bibitemid: {} }) do |i, m|
-          m[:citeas][i["citeas"]] = true
-          m[:bibitemid][i["bibitemid"]] = true
+            m[:citeas][i["citeas"]] = true
+            m[:bibitemid][i["bibitemid"]] = true
         end
       end
 
@@ -69,14 +71,33 @@ module Metanorma
           "#{val}</docidentifier>"
       end
 
-      def add_hidden_bibliography(xml, refs)
+      def add_hidden_bibliography(xml, refs, current_id = nil)
         ins = new_hidden_ref(xml)
+        current_html = if current_id
+                         @files.get(current_id,
+                                    :outputs)&.dig(:html)
+                       else
+                         nil
+                       end
         refs.each do |k, v|
           url = @files.url(v, {})
+          url = make_relative_path(current_html, url) if current_html
           ins << <<~XML
             <bibitem id="#{k}" anchor="#{k}">#{docid_xml(v)}<uri type='citation'>#{url}</uri></bibitem>
           XML
         end
+      end
+
+      def make_relative_path(from_file, to_file)
+        return to_file if to_file.nil? || to_file.to_s.empty?
+        return to_file if to_file.start_with?("http://", "https://", "#")
+
+        from_dir = File.dirname(from_file)
+        return to_file if from_dir == "."
+
+        from_path = Pathname.new(from_dir)
+        to_path = Pathname.new(to_file)
+        to_path.relative_path_from(from_path).to_s
       end
 
       private
@@ -150,8 +171,8 @@ module Metanorma
 
       def svg_in_path?(path)
         File.file?(path) or return false
-        types = MIME::Types.type_for(path) or return false
-        types.first == "image/svg+xml" or return false
+        type = Marcel::MimeType.for(name: path) or return false
+        type == "image/svg+xml" or return false
         svg = File.read(path, encoding: "utf-8") or return false
         svg
       end

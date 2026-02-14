@@ -29,6 +29,8 @@ RSpec.describe Metanorma::Collection do
                                    agree_to_terms: true)
     f = "spec/fixtures/collection/test_sectionsplit.html_collection"
     expect(File.exist?("#{f}/index.html")).to be true
+    index = File.read("#{f}/index.html")
+    expect(index).to include '<a href="test_sectionsplit.html.1.html">'
     expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be true
@@ -195,6 +197,146 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_f "tmp_test_sectionsplit.presentation.xml"
   end
 
+  it "processes output filename customisation on section split HTML" do
+    FileUtils.rm_rf "test_collection"
+    FileUtils.rm_rf "test_files"
+    f = "spec/fixtures/collection/test_sectionsplit.html_collection"
+    FileUtils.rm_rf "#{f}/index.html"
+    # require "debug"; binding.b
+    FileUtils.rm_rf Dir.glob("#{f}/test_sectionsplit.html.*.html")
+    expect(File.exist?("#{f}/index.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.4.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
+
+    mock_render
+    Metanorma::Compile.new.compile("spec/fixtures/collection/test_sectionsplit.xml",
+                                   type: "iso",
+                                   extension_keys: %i[presentation html],
+                                   bare: nil,
+                                   sectionsplit: "true",
+                                   sectionsplit_filename: "file_{basename}_{document-num}_{sectionsplit-num}",
+                                   datauriimage: true,
+                                   agree_to_terms: true)
+    f = "spec/fixtures/collection/test_sectionsplit.html_collection"
+    expect(File.exist?("#{f}/index.html")).to be true
+    index = File.read("#{f}/index.html")
+    expect(index).not_to include '<a href="test_sectionsplit.html.1.html">'
+    expect(index).to include '<a href="file_test_sectionsplit_0_1.html">'
+    expect(File.exist?("#{f}/test_sectionsplit.html.0.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.1.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.2.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.3.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.4.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.5.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.6.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.7.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.8.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_0.html")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_1.html")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_2.html")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_3.html")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_4.html")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_5.html")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_6.html")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_7.html")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_8.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_9.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_10.html")).to be false
+
+    expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
+    f = Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files").first
+    expect(File.exist?("#{f}/cover.html")).to be true
+
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_0.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_1.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_2.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_3.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_4.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_5.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_6.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_7.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_8.xml")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_9.xml")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_10.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+
+    # Clean up for next test - remove both collection and _files directories
+    FileUtils.rm_rf "spec/fixtures/collection/test_sectionsplit.html_collection"
+    FileUtils.rm_rf Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files")
+  end
+
+  it "processes directories for output filename customisation on section split HTML" do
+    FileUtils.rm_rf "test_collection"
+    FileUtils.rm_rf "test_files"
+    # Clean up both the collection directory and the _files directory completely
+    FileUtils.rm_rf "spec/fixtures/collection/test_sectionsplit.html_collection"
+    FileUtils.rm_rf Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files")
+    f = "spec/fixtures/collection/test_sectionsplit.html_collection"
+    mock_render
+    Metanorma::Compile.new.compile("spec/fixtures/collection/test_sectionsplit.xml",
+                                   type: "iso",
+                                   extension_keys: %i[presentation html],
+                                   bare: nil,
+                                   sectionsplit: "true",
+                                   sectionsplit_filename: "outdir/file_{basename}_{document-num}_{sectionsplit-num}",
+                                   datauriimage: true,
+                                   agree_to_terms: true)
+    expect(File.exist?("#{f}/index.html")).to be true
+    index = File.read("#{f}/index.html")
+    expect(index).not_to include '<a href="file_test_sectionsplit_0_1.html">'
+    expect(index).to include '<a href="outdir/file_test_sectionsplit_0_1.html">'
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_0.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_1.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_2.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_3.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_4.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_5.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_6.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_7.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_8.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_9.html")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_10.html")).to be false
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_0.html")).to be true
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_1.html")).to be true
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_2.html")).to be true
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_3.html")).to be true
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_4.html")).to be true
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_5.html")).to be true
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_6.html")).to be true
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_7.html")).to be true
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_8.html")).to be false
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_9.html")).to be false
+    expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_10.html")).to be false
+
+    expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
+    f = Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files").first
+    expect(File.exist?("#{f}/cover.html")).to be true
+
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_0.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_1.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_2.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_3.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_4.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_5.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_6.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_7.xml")).to be true
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_8.xml")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_9.xml")).to be false
+    expect(File.exist?("#{f}/file_test_sectionsplit_0_10.xml")).to be false
+    expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+  end
+
   it "YAML collection with multiple documents sectionsplit (source document for links)" do
     FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                  "action_schemaexpg1.svg"
@@ -260,6 +402,83 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
+  it "YAML collection with multiple documents sectionsplit, document renaming" do
+    FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
+                 "action_schemaexpg1.svg"
+    file = "#{INPATH}/collection_sectionsplit_rename.yml"
+    of = File.join(FileUtils.pwd, OUTPATH)
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation html xml],
+      output_folder: of,
+      coverpage: "collection_cover.html",
+      compile: {
+        install_fonts: false,
+      },
+    )
+
+    # Test collection-level files
+    expect(File.exist?("#{OUTPATH}/collection.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/collection.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/ISO_17301-1_2016_index.html")).to be true
+    expect(File.exist?("#{OUTPATH}/index.html")).to be true
+    expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
+      .to include "ISO Collection 1"
+
+    # Test rice-en.final (document 0, sectionsplit enabled)
+    # HTML files go to d0/ subdirectory
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_0.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_1.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_2.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_3.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_4.html")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_5.html")).to be true
+
+    # Presentation.xml files go to d0/ subdirectory
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_0.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_1.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_2.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_3.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_4.presentation.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/d0/rice-en.final_5.presentation.xml")).to be true
+
+    # XML files stay in root (by design for sectionsplit)
+    expect(File.exist?("#{OUTPATH}/rice-en.final_0.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_1.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_2.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_3.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_4.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_5.xml")).to be true
+
+    # Error HTML files stay in root
+    expect(File.exist?("#{OUTPATH}/rice-en.final_0.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_1.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_2.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_3.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_4.err.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-en.final_5.err.html")).to be true
+
+    # Test dummy (document 1, no sectionsplit) - generates regular files, not split
+    expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
+
+    # Test rice1-en.final (document 2, no sectionsplit) - generates regular files, not split
+    expect(File.exist?("#{OUTPATH}/rice1-en.final.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice1-en.final.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml")).to be true
+
+    # Test rice-amd.final (document 3, no sectionsplit) - generates regular files, not split
+    expect(File.exist?("#{OUTPATH}/rice-amd.final.html")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-amd.final.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/rice-amd.final.presentation.xml")).to be true
+
+    # Test attachments
+    expect(File.exist?("#{OUTPATH}/_dummy_attachments/LICENSE1.TXT")).to be true
+
+    FileUtils.rm_rf of
+  end
+
   it "YAML collection with multiple documents sectionsplit (target document for links)" do
     FileUtils.cp "#{INPATH}/action_schemaexpg1.svg",
                  "action_schemaexpg1.svg"
@@ -312,7 +531,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{OUTPATH}/rice-en.final.html"))
       .to include %(This document is also unrelated to <a href="dummy.xml.3.html#what">)
     expect(File.read("#{OUTPATH}/rice-en.final.html"))
-      .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302:2016 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas E0/A0, <a href="dummy.xml.2.html#A1_ISO_17302_2016_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_2016_ISO_17302_2016_4">E2</a> as well as <a href="#express-schema_E0_ISO_17301-1_2016">metanorma-collection Missing:express-schema:E0 / current-metanorma-collection/Missing:express-schema:E0</a>.</p>}
+      .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302:2016 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas <a href="#express-schema_E0_ISO_17301-1_2016">E0/A0</a>, <a href="dummy.xml.2.html#A1_ISO_17302_2016_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_2016_ISO_17302_2016_4">E2</a> as well as <a href="#express-schema_E0_ISO_17301-1_2016">metanorma-collection Missing:express-schema:E0 / current-metanorma-collection/Missing:express-schema:E0</a>.</p>}
     FileUtils.rm_rf of
   end
 
@@ -383,37 +602,37 @@ RSpec.describe Metanorma::Collection do
     xml = "<xml>#{xml0.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
       <xml>
-          <a class="FootnoteRef" href="#fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:1">
-             <sup>1)</sup>
-          </a>
-          <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
-             <sup>2)</sup>
-          </a>
-          <aside id="fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
-             <p id="_">
-                <a class="FootnoteRef" href="#fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
-                   <sup>1)</sup>
-                </a>
-                First footnote
-             </p>
-             <a href="#fnref:1">↩</a>
-          </aside>
-          <a class="FootnoteRef" href="#fn:_97_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
-             <sup>1)</sup>
-          </a>
-          <aside id="fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
-             <p id="_">
-                <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
-                   <sup>2)</sup>
-                </a>
-                Second footnote
-             </p>
-             <a href="#fnref:2">↩</a>
-          </aside>
-          <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
-             <sup>2)</sup>
-          </a>
-       </xml>
+         <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:1">
+            <sup>1)</sup>
+         </a>
+         <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
+            <sup>2)</sup>
+         </a>
+         <aside id="fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+                  <sup>1)</sup>
+               </a>
+               First footnote
+            </p>
+            <a href="#fnref:1">↩</a>
+         </aside>
+         <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+            <sup>1)</sup>
+         </a>
+         <aside id="fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" class="footnote">
+            <p id="_">
+               <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+                  <sup>2)</sup>
+               </a>
+               Second footnote
+            </p>
+            <a href="#fnref:2">↩</a>
+         </aside>
+         <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+            <sup>2)</sup>
+         </a>
+      </xml>
     OUTPUT
     expect(file0).to include("First annotation")
     expect(file0).to include("Second annotation")
@@ -427,34 +646,34 @@ RSpec.describe Metanorma::Collection do
     xml = "<xml>#{xml1.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
       <xml>
-         <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
+         <a class="FootnoteRef" href="#fn:_103_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
             <sup>3)</sup>
          </a>
-         <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
+         <a class="FootnoteRef" href="#fn:_104_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
             <sup>4)</sup>
          </a>
-         <aside id="fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
+         <aside id="fn:_103_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
             <p id="_">
-               <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+               <a class="FootnoteRef" href="#fn:_103_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                   <sup>3)</sup>
                </a>
                Third footnote
             </p>
             <a href="#fnref:1">↩</a>
          </aside>
-         <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+         <a class="FootnoteRef" href="#fn:_103_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
             <sup>3)</sup>
          </a>
-         <aside id="fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
+         <aside id="fn:_104_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" class="footnote">
             <p id="_">
-               <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+               <a class="FootnoteRef" href="#fn:_104_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                   <sup>4)</sup>
                </a>
                Fourth footnote
             </p>
             <a href="#fnref:2">↩</a>
          </aside>
-         <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+         <a class="FootnoteRef" href="#fn:_104_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
             <sup>4)</sup>
          </a>
       </xml>
@@ -471,34 +690,34 @@ RSpec.describe Metanorma::Collection do
     xml = "<xml>#{xml2.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
       <xml>
-         <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
+         <a class="FootnoteRef" href="#fn:_105_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
             <sup>5)</sup>
          </a>
-         <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
+         <a class="FootnoteRef" href="#fn:_106_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
             <sup>6)</sup>
          </a>
-         <aside id="fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
+         <aside id="fn:_105_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
             <p id="_">
-               <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+               <a class="FootnoteRef" href="#fn:_105_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                   <sup>5)</sup>
                </a>
                Fifth footnote
             </p>
             <a href="#fnref:1">↩</a>
          </aside>
-         <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+         <a class="FootnoteRef" href="#fn:_105_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
             <sup>5)</sup>
          </a>
-         <aside id="fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
+         <aside id="fn:_106_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" class="footnote">
             <p id="_">
-               <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+               <a class="FootnoteRef" href="#fn:_106_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                   <sup>6)</sup>
                </a>
                Sixth footnote
             </p>
             <a href="#fnref:2">↩</a>
          </aside>
-         <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+         <a class="FootnoteRef" href="#fn:_106_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
             <sup>6)</sup>
          </a>
       </xml>

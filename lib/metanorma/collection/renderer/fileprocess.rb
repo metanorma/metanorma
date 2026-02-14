@@ -3,6 +3,7 @@
 require "isodoc"
 require "metanorma-utils"
 require_relative "fileparse"
+require_relative "filelocation"
 
 module Metanorma
   class Collection
@@ -10,9 +11,11 @@ module Metanorma
       # compile and output individual file in collection
       # warn "metanorma compile -x html #{f.path}"
       def file_compile(file, filename, identifier)
-        @files.get(identifier, :sectionsplit) and return
+        sectionsplit_val = @files.get(identifier, :sectionsplit)
+        sectionsplit_val and return
         opts = compile_options_base(identifier)
           .merge(compile_options_update(identifier))
+
         @compile.compile file, opts
         @files.set(identifier, :outputs, {})
         file_compile_formats(filename, identifier, opts)
@@ -49,41 +52,6 @@ module Metanorma
       #         ret
       #       end
 
-      def file_compile_formats(filename, identifier, opts)
-        f = @files.get(identifier, :outputs)
-        format = opts[:extension_keys]
-        concatenate_presentation?({ format: }) and format << :presentation
-        format.each do |e|
-          e == :pdf and output_filename = opts[:pdffile]
-          file_compile_format(filename, identifier, e, f, output_filename)
-        end
-        @files.set(identifier, :outputs, f)
-      end
-
-      # if new_output_fname is present, move generated file for format
-      # to the nominated new file name
-      def file_compile_format(fname, ident, format, outputs, new_output_fname)
-        ext = @compile.processor.output_formats[format]
-        output_fname = File.basename(fname).sub(/(?<=\.)[^.]+$/, ext.to_s)
-        if new_output_fname
-          FileUtils.mv(File.join(@outdir, output_fname),
-                       File.join(@outdir, new_output_fname))
-          output_fname = new_output_fname
-        end
-        (/html$/.match?(ext) && @files.get(ident, :sectionsplit)) or
-          outputs[format] = File.join(@outdir, output_fname)
-      end
-
-      def copy_file_to_dest(identifier)
-        out = Pathname.new(@files.get(identifier, :out_path)).cleanpath
-        out.absolute? and
-          out = out.relative_path_from(File.expand_path(FileUtils.pwd))
-        dest = File.join(@outdir, @disambig.source2dest_filename(out.to_s))
-        FileUtils.mkdir_p(File.dirname(dest))
-        source = @files.get(identifier, :ref)
-        source != dest and FileUtils.cp_r source, dest, remove_destination: true
-      end
-
       # process each file in the collection
       # files are held in memory, and altered as postprocessing
       def files # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
@@ -99,7 +67,11 @@ module Metanorma
             file, fname = @files.targetfile_id(ident, read: true)
             warn "\n\n\n\n\nProcess #{fname}: #{DateTime.now.strftime('%H:%M:%S')}"
             collection_xml = update_xrefs(file, ident, internal_refs)
-            collection_filename = File.basename(fname, File.extname(fname))
+            # Strip .xml or .html extension, but NOT section numbers like .0
+            fname_base = File.basename(fname)
+            collection_filename = fname_base
+            /\.(xml|html)$/.match?(fname_base) and
+              collection_filename = fname_base.sub(/\.(xml|html)$/, "")
             collection_xml_path = File.join(Dir.tmpdir,
                                             "#{collection_filename}.xml")
             File.write collection_xml_path, collection_xml, encoding: "UTF-8"
@@ -211,6 +183,18 @@ module Metanorma
         newbib = dup_bibitem(docid, bib)
         url = @files.url(docid, relative: true,
                                 doc: !@files.get(docid, :attachment))
+        # Use :outputs[:html] if available (after compilation),
+        # otherwise convert :out_path to HTML (before compilation)
+        current_html = @files.get(identifier, :outputs)&.dig(:html)
+        if !current_html && (out_path = @files.get(identifier, :out_path))
+          # Convert .xml to .html, following same logic as ref_file_xml2html
+          current_html = if out_path.end_with?(".xml")
+                           out_path.sub(/\.xml$/, ".html")
+                         else
+                           "#{out_path}.html"
+                         end
+        end
+        url = make_relative_path(current_html, url) if current_html
         [newbib, url]
       end
     end

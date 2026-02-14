@@ -46,6 +46,7 @@ module Metanorma
         end
 
         def nop_to_yaml(model, doc); end
+        def nop_to_xml(model, parent, doc); end
 
         def documents_from_xml(model, value)
           model.documents = value

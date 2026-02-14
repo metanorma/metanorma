@@ -73,16 +73,20 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: rice-en.final.xml
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             - identifier: ISO 17302:2016
               url: example/url
               index: true
               file: dummy.xml
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             - identifier: ISO 1701:1974
               index: true
               file: rice1-en.final.xml
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             bibdata:
+            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
           - type: subcollection
             title: Amendments
             index: true
@@ -91,7 +95,9 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: rice-amd.final.xml
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             bibdata:
+            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
           - type: attachments
             title: Attachments
             index: true
@@ -101,13 +107,17 @@ RSpec.describe Metanorma::Collection do
               index: true
               file: pics/action_schemaexpg1.svg
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             - identifier: rice_image1.png
               attachment: true
               index: true
               file: "../../assets/rice_image1.png"
               bibdata:
+              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
             bibdata:
+            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
           bibdata:
+          sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
         format:
         - html
         coverpage: cover.html
@@ -119,8 +129,6 @@ RSpec.describe Metanorma::Collection do
 
           == Exordium
           Hic explicit
-
-
       OUTPUT
     end
 
@@ -246,6 +254,9 @@ RSpec.describe Metanorma::Collection do
                       <entry target="doc000000004" attachment="true" index="true" fileref="document-2/img/action_schemaexpg3.svg">
                         <identifier>action_schemaexpg3.svg</identifier>
                       </entry>
+                       <entry target="doc000000005" attachment="true" index="true" fileref="document-2/img/action_schemaexpg3.svg">
+                      <identifier>action_schemaexpg3bis.svg</identifier>
+                   </entry>
                     </entry>
                   </entry>
                 </entry>
@@ -436,7 +447,7 @@ RSpec.describe Metanorma::Collection do
     of = File.join(FileUtils.pwd, OUTPATH)
     col = Metanorma::Collection.parse file
     col.render(
-      format: %i[presentation xml],
+      format: %i[presentation xml html],
       output_folder: of,
       coverpage: "collection_cover.html",
       compile: {
@@ -446,6 +457,9 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
     expect(File.exist?("#{OUTPATH}/dummy.1.xml")).to be true
     expect(File.exist?("#{OUTPATH}/dummy.2.xml")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.1.html")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.2.html")).to be true
     FileUtils.rm_rf of
   end
 

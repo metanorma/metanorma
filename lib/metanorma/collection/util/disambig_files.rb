@@ -10,13 +10,12 @@ module Metanorma
           name.sub(%r{^(\./)?(\.\./)+}, "")
         end
 
-        def source2dest_filename(name, disambig = true)
+        def source2dest_filename(name, disambig: true, preserve_dirs: false)
           n = strip_root(name)
-          dir = File.dirname(n)
-          base = File.basename(n)
-          if disambig && @seen_filenames.include?(base)
+          dir = preserve_dirs ? "." : File.dirname(n)
+          base = preserve_dirs ? n : File.basename(n)
+          disambig && @seen_filenames.include?(base) and
             base = disambiguate_filename(base)
-          end
           @seen_filenames << base
           dir == "." ? base : File.join(dir, base)
         end

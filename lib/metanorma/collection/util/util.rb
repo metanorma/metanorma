@@ -1,7 +1,14 @@
+require "marcel"
+
 module Metanorma
   class Collection
     module Util
       class << self
+        def mime_file_recognised?(filename)
+          mime_type = Marcel::MimeType.for name: filename
+          mime_type != "application/octet-stream"
+        end
+
         def anchor_id_attributes
           Metanorma::Utils::anchor_attributes(presxml: true) +
             [%w(* id), %w(* anchor), %w(link bibitemid), %w(fmt-link bibitemid)]
