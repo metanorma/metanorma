@@ -609,7 +609,7 @@ RSpec.describe Metanorma::Collection do
       format: %i[presentation xml],
       output_folder: of,
       coverpage: "collection_cover.html",
-      compile: { install_fonts: false },
+      compile: { install_fonts: true, agree_to_terms: true },
     )
     expect(File.read("#{of}/collection.xml"))
       .not_to include(isostring)
@@ -635,7 +635,7 @@ RSpec.describe Metanorma::Collection do
       format: %i[html presentation xml],
       output_folder: of,
       coverpage: "cover-iho.html",
-      compile: { install_fonts: false },
+      compile: { install_fonts: true, agree_to_terms: true },
     )
     # manifest docid has docid type iso
     index = File.read("#{of}/index.html")
