@@ -28,3 +28,6 @@ manifest:
         - fileref: img/action_schemaexpg3.svg
           identifier: action_schemaexpg3.svg
           attachment: true
+        - fileref: img/action_schemaexpg3.svg
+          identifier: action_schemaexpg3bis.svg
+          attachment: true

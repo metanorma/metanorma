@@ -346,7 +346,7 @@ RSpec.describe Metanorma::Collection do
       of = File.join(FileUtils.pwd, OUTPATH)
       # change file path of attachment in document-2/collection.yml to absolute
       f = "#{INPATH}/document-2/collection.yml"
-      a = File.read(f).sub(/img/, "#{File.expand_path(INPATH)}/document-2/img")
+      a = File.read(f).gsub(/img/, "#{File.expand_path(INPATH)}/document-2/img")
       File.open(f, "w") { |x| x.write(a) }
       col = Metanorma::Collection.parse file
       col.render(
@@ -356,6 +356,7 @@ RSpec.describe Metanorma::Collection do
           install_fonts: false,
         },
       )
+      system("ls -R #{OUTPATH}")
       expect(File.exist?("#{OUTPATH}/document-1.xml.0.html")).to be true
       expect(File.exist?("#{OUTPATH}/document-1.xml.1.html")).to be true
       expect(File.exist?("#{OUTPATH}/document-1.xml.2.html")).to be true
@@ -392,6 +393,7 @@ RSpec.describe Metanorma::Collection do
           install_fonts: false,
         },
       )
+      system("ls -R #{OUTPATH}")
       expect(File.exist?("#{OUTPATH}/document-1.xml.0.html")).to be true
       expect(File.exist?("#{OUTPATH}/document-1.xml.1.html")).to be true
       expect(File.exist?("#{OUTPATH}/document-1.xml.2.html")).to be true
@@ -402,7 +404,9 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/assets/rice_image1.png")).to be true
       # from: //.../spec/fixtures/collection/document-2/img/action_schemaexpg2.svg :
       # ambiguous name
-      expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.1.svg")).to be true
+      expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg2.svg")).to be true
+      expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg3.svg")).to be true
+      expect(File.exist?("#{OUTPATH}/document-2/img/action_schemaexpg3.1.svg")).to be true
       FileUtils.rm_f("tmp_document-1.presentation.xml")
       FileUtils.rm_f("tmp_document-2.presentation.xml")
     end
