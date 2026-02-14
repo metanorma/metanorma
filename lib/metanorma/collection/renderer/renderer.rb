@@ -215,10 +215,17 @@ module Metanorma
       def concatenate_outputs_prep(_options)
         pres = File.join(@outdir, "collection.presentation.xml")
         fonts = extract_added_fonts(pres)
-        fonts and mn2pdf = {
-          font_manifest: ::Metanorma::Util::FontistHelper
-            .location_manifest(@compile.processor, { fonts: fonts }),
-        }
+        if fonts
+          # Install fonts before trying to locate them
+          font_options = @compile_options.merge({ fonts: fonts })
+          ::Metanorma::Util::FontistHelper.install_fonts(@compile.processor,
+                                                         font_options)
+
+          mn2pdf = {
+            font_manifest: ::Metanorma::Util::FontistHelper
+              .location_manifest(@compile.processor, { fonts: fonts }),
+          }
+        end
         [pres, { fonts: fonts, mn2pdf: mn2pdf }.compact]
       end
 
