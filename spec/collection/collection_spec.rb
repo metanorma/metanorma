@@ -254,6 +254,9 @@ RSpec.describe Metanorma::Collection do
                       <entry target="doc000000004" attachment="true" index="true" fileref="document-2/img/action_schemaexpg3.svg">
                         <identifier>action_schemaexpg3.svg</identifier>
                       </entry>
+                       <entry target="doc000000005" attachment="true" index="true" fileref="document-2/img/action_schemaexpg3.svg">
+                      <identifier>action_schemaexpg3bis.svg</identifier>
+                   </entry>
                     </entry>
                   </entry>
                 </entry>
