@@ -213,7 +213,6 @@ module Metanorma
       def concatenate_outputs_prep(_options)
         pres = File.join(@outdir, "collection.presentation.xml")
         fonts = extract_added_fonts(pres)
-        require "debug"; binding.b
         if fonts
           # Install fonts before trying to locate them
           font_options = @compile_options.merge({ fonts: fonts })
