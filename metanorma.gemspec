@@ -34,6 +34,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "mn2pdf", "~> 2"
   spec.add_runtime_dependency "nokogiri"
   spec.add_development_dependency "canon", "= 0.1.3"
+  spec.add_development_dependency "metanorma-iho"
+  spec.add_development_dependency "metanorma-iso"
 
   # relaton-cli is required by Metanorma::Collection
   spec.add_dependency "relaton-cli"
