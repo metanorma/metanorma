@@ -35,6 +35,8 @@ module Metanorma
           map "bibdata", to: :bibdata, with: { from: :bibdata_from_yaml,
                                                to: :bibdata_to_yaml }
           map "manifest", to: :manifest
+          map "entry", to: :manifest, with: { from: :entry_from_yaml,
+                                              to: :nop_to_yaml }
           map "format", to: :format, render_default: true
           map "output_folder", to: :output_folder
           map "coverpage", to: :coverpage, render_default: true
@@ -127,6 +129,10 @@ module Metanorma
           doc["directives"] = model.directive.each_with_object([]) do |d, m|
             m << { d.key => d.value }
           end
+        end
+
+        def entry_from_yaml(model, value)
+          model.manifest ||= value
         end
 
         def self.flavor_from_yaml(yaml)
