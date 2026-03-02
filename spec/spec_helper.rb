@@ -117,6 +117,7 @@ def cleanup_guid(content)
     .gsub(%r{ source="_#{GUID}"}o, ' source="_"')
     .gsub(%r{ original-id="_#{GUID}"}o, ' original-id="_"')
     .gsub(%r{ name="_#{GUID}"}o, ' name="_"')
+    .gsub(%r{ name="_#{GUID}_[^"]+"}o, ' name="_"')
     .gsub(%r{_Toc[0-9]{9}}o, "_Toc")
 end
 
