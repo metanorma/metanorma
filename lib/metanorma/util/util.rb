@@ -9,7 +9,7 @@ module Metanorma
         end
 
         if type == :fatal
-          exit(1)
+          abort
         end
       end
 
