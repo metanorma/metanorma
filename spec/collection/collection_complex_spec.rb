@@ -139,13 +139,14 @@ RSpec.describe Metanorma::Collection do
                 })
       expect(cr.isodoc.meta.get[:bibdata])
         .to eq(
-          { "copyright" => [{ "from" => "2020", "owner" => [{ "abbreviation" => { "content" => "ISO" }, "name" => [{ "content" => "International Organization for Standardization" }] }] }],
-            "date" => [{ "type" => "created", "value" => "2020" }, { "type" => "issued", "value" => "2020" }],
-            "docid" => [{ "id" => "ISO 12345", "type" => "iso", "primary" => "true" }],
+          { "copyright" => [{"from" => "2020", "owner" => [{"organization" => {"abbreviation" => {"content" => "ISO"}, "name" => [{"content" => "International Organization for Standardization"}]}}]}],
+            "date" => [{"at" => "2020", "type" => "created"}, {"at" => "2020", "type" => "issued"}],
+            "docidentifier" => [{"content" => "ISO 12345", "primary" => true, "type" => "iso"}],
             "edition" => { "content" => "1" },
+            "ext" => {"flavor" => "iso"},
             "id" => "ISO12345",
-            "schema-version" => "v1.2.9",
-            "title" => [{ "content" => "ISO Collection 1", "format" => "text/plain", "language" => ["en"], "type" => "title-main" }],
+            "schema_version" => "v1.4.1",
+            "title" => [{"content" => "ISO Collection 1", "language" => "en", "type" => "title-main"}],
             "type" => "collection" },
         )
       expect(cr.isodoc.meta.get[:docrefs])

@@ -48,48 +48,61 @@ module Metanorma
 
         private
 
-        def mn2relaton_parser(tag)
+        # Select the appropriate Relaton parser class for the given flavor tag.
+        # @param tag [String, nil] flavor tag (e.g. "iso", "ietf")
+        # @param bibdata [Boolean] true when parsing a <bibdata> element (has <ext>);
+        #   false when parsing a <bibitem> element (no <ext>)
+        # @return [Class] Relaton parser class (Bibdata or Bibitem subclass)
+        def mn2relaton_parser(tag, bibdata: false)
           case tag
           when "bipm"
-            require "relaton_bipm" unless defined?(::RelatonBipm::XMLParser)
-            ::RelatonBipm::XMLParser
+            require "relaton/bipm" unless defined?(::Relaton::Bipm::Bibdata)
+            bibdata ? ::Relaton::Bipm::Bibdata : ::Relaton::Bipm::Bibitem
           when "bsi"
-            require "relaton_bsi" unless defined?(::RelatonBsi::XMLParser)
-            ::RelatonBsi::XMLParser
+            require "relaton/bsi" unless defined?(::Relaton::Bsi::Bibdata)
+            bibdata ? ::Relaton::Bsi::Bibdata : ::Relaton::Bsi::Bibitem
           when "ietf"
-            require "relaton_ietf" unless defined?(::RelatonIetf::XMLParser)
-            ::RelatonIetf::XMLParser
+            require "relaton/ietf" unless defined?(::Relaton::Ietf::Bibdata)
+            bibdata ? ::Relaton::Ietf::Bibdata : ::Relaton::Ietf::Bibitem
           when "iho"
-            require "relaton_iho" unless defined?(::RelatonIho::XMLParser)
-            ::RelatonIho::XMLParser
+            require "relaton/iho" unless defined?(::Relaton::Iho::Bibdata)
+            bibdata ? ::Relaton::Iho::Bibdata : ::Relaton::Iho::Bibitem
           when "itu"
-            require "relaton_itu" unless defined?(::RelatonItu::XMLParser)
-            ::RelatonItu::XMLParser
+            require "relaton/itu" unless defined?(::Relaton::Itu::Bibdata)
+            bibdata ? ::Relaton::Itu::Bibdata : ::Relaton::Itu::Bibitem
           when "iec"
-            require "relaton_iec" unless defined?(::RelatonIec::XMLParser)
-            ::RelatonIec::XMLParser
+            require "relaton/iec" unless defined?(::Relaton::Iec::Bibdata)
+            bibdata ? ::Relaton::Iec::Bibdata : ::Relaton::Iec::Bibitem
           when "iso"
-            require "relaton_iso" unless defined?(::RelatonIsoBib::XMLParser)
-            ::RelatonIsoBib::XMLParser
+            require "relaton/iso" unless defined?(::Relaton::Iso::Bibdata)
+            bibdata ? ::Relaton::Iso::Bibdata : ::Relaton::Iso::Bibitem
           when "nist"
-            require "relaton_nist" unless defined?(::RelatonNist::XMLParser)
-            ::RelatonNist::XMLParser
+            require "relaton/nist" unless defined?(::Relaton::Nist::Bibdata)
+            bibdata ? ::Relaton::Nist::Bibdata : ::Relaton::Nist::Bibitem
           when "ogc"
-            require "relaton_ogc" unless defined?(::RelatonOgc::XMLParser)
-            ::RelatonOgc::XMLParser
+            require "relaton/ogc" unless defined?(::Relaton::Ogc::Bibdata)
+            bibdata ? ::Relaton::Ogc::Bibdata : ::Relaton::Ogc::Bibitem
           else
-            ::RelatonBib::XMLParser
+            bibdata ? ::Relaton::Bib::Bibdata : ::Relaton::Bib::Bibitem
           end
         rescue LoadError => e
-          warn "Warning: Failed to load relaton gem for '#{tag}': #{e.message}. Falling back to RelatonBib::XMLParser"
-          ::RelatonBib::XMLParser
+          warn "Warning: Failed to load relaton gem for '#{tag}': #{e.message}. Falling back to Relaton::Bib::Bibdata/Bibitem"
+          bibdata ? ::Relaton::Bib::Bibdata : ::Relaton::Bib::Bibitem
         end
 
         # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
         # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
         def from_xml(xml)
           b = xml.at("//xmlns:bibitem|//xmlns:bibdata")
-          r = mn2relaton_parser(xml.root["flavor"])
+          # <bibitem> elements are always flavor-independent: use the base
+          # Relaton::Bib::Bibitem regardless of collection flavor.
+          # <bibdata> elements carry flavor-specific metadata (<ext> etc.) and
+          # must be parsed with the appropriate flavor Bibdata class.
+          r = if b.name == "bibitem"
+                ::Relaton::Bib::Bibitem
+              else
+                mn2relaton_parser(xml.root["flavor"], bibdata: true)
+              end
           # Relaton doesn't understand Pres XML tags
           b.xpath("//xmlns:fmt-identifier").each(&:remove)
           r.from_xml(b.to_xml)
@@ -137,9 +150,9 @@ module Metanorma
 
       # @return [String]
       def type
-        first = @bibitem.docidentifier.first
+        first = @bibitem.docidentifier&.first
         @type ||= (first&.type&.downcase ||
-                   first&.id&.match(/^[^\s]+/)&.to_s)&.downcase ||
+                   first&.content&.match(/^[^\s]+/)&.to_s)&.downcase ||
           "standoc"
       end
 
@@ -149,7 +162,7 @@ module Metanorma
         if @raw
           builder.parent.add_child(@bibitem.root)
         else
-          builder.send("metanorma") do |b|
+          builder.send(:metanorma) do |b|
             b << @bibitem.to_xml(bibdata: true)
           end
         end
