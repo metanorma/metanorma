@@ -3,10 +3,10 @@
              <title type="title-main" format="text/plain" language="en">ISO Collection 1</title>
              <docidentifier type="iso" primary="true">ISO 12345</docidentifier>
              <date type="created">
-                <on>2020-01-01</on>
+                <on>2020</on>
              </date>
              <date type="issued">
-                <on>2020-01-01</on>
+                <on>2020</on>
              </date>
              <edition>1</edition>
              <copyright>
@@ -17,7 +17,10 @@
                       <abbreviation>ISO</abbreviation>
                    </organization>
                 </owner>
-             </copyright>
+              </copyright>
+      <ext>
+         <flavor>iso</flavor>
+      </ext>
           </bibdata>
           <directive>
              <key>documents-internal</key>
@@ -98,7 +101,8 @@
                       <ext>
                          <doctype>international-standard</doctype>
                          <ics>
-                            <code>67.060</code>
+                           <code>67.060</code>
+                           <text>Cereals, pulses and derived products</text>
                          </ics>
                          <structuredidentifier>
                             <project-number part="1">ISO 17301</project-number>
@@ -153,7 +157,8 @@
                       <ext>
                          <doctype>international-standard</doctype>
                          <ics>
-                            <code>67.060</code>
+                           <code>67.060</code>
+                           <text>Cereals, pulses and derived products</text>
                          </ics>
                          <structuredidentifier>
                             <project-number>ISO 17302</project-number>
@@ -212,7 +217,8 @@
                       <ext>
                          <doctype>international-standard</doctype>
                          <ics>
-                            <code>67.060</code>
+                           <code>67.060</code>
+                           <text>Cereals, pulses and derived products</text>
                          </ics>
                          <structuredidentifier>
                             <project-number>ISO 1701</project-number>
@@ -251,7 +257,7 @@
                          <on>2016-05-01</on>
                       </date>
                       <date type="updated">
-                         <on>2017-02-01</on>
+                         <on>2017-02</on>
                       </date>
                       <contributor>
                          <role type="author"/>
@@ -287,12 +293,14 @@
                       <ext>
                          <doctype>amendment</doctype>
                          <ics>
-                            <code>67.060</code>
+                           <code>67.060</code>
+                           <text>Cereals, pulses and derived products</text>
                          </ics>
                          <structuredidentifier>
-                            <project-number part="1">17301</project-number>
+                            <project-number part="1" amendment="1" origyr="2016-05-01">17301</project-number>
                          </structuredidentifier>
                          <stagename>International standard</stagename>
+                         <updates-document-type>international-standard</updates-document-type>
                       </ext>
                    </bibdata>
                 </entry>
@@ -378,7 +386,8 @@
                    <ext>
                       <doctype>international-standard</doctype>
                       <ics>
-                         <code>67.060</code>
+                        <code>67.060</code>
+                        <text>Cereals, pulses and derived products</text>
                       </ics>
                       <structuredidentifier>
                          <project-number part="1">ISO 17301</project-number>
@@ -979,7 +988,8 @@
                    <ext>
                       <doctype>international-standard</doctype>
                       <ics>
-                         <code>67.060</code>
+                        <code>67.060</code>
+                        <text>Cereals, pulses and derived products</text>
                       </ics>
                       <structuredidentifier>
                          <project-number>ISO 17302</project-number>
@@ -1345,7 +1355,8 @@
                    <ext>
                       <doctype>international-standard</doctype>
                       <ics>
-                         <code>67.060</code>
+                        <code>67.060</code>
+                        <text>Cereals, pulses and derived products</text>
                       </ics>
                       <structuredidentifier>
                          <project-number>ISO 1701</project-number>
@@ -1636,7 +1647,8 @@
                    <ext>
                       <doctype>amendment</doctype>
                       <ics>
-                         <code>67.060</code>
+                        <code>67.060</code>
+                        <text>Cereals, pulses and derived products</text>
                       </ics>
                       <structuredidentifier>
                          <project-number part="1" amendment="1" origyr="2016-05-01">17301</project-number>

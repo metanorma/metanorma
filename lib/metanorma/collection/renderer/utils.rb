@@ -61,8 +61,8 @@ module Metanorma
         tag = presxml ? "fmt-eref" : "eref"
         docxml.xpath(ns("//#{tag}"))
           .each_with_object({ citeas: {}, bibitemid: {} }) do |i, m|
-            m[:citeas][i["citeas"]] = true
-            m[:bibitemid][i["bibitemid"]] = true
+          m[:citeas][i["citeas"]] = true
+          m[:bibitemid][i["bibitemid"]] = true
         end
       end
 
@@ -158,7 +158,7 @@ module Metanorma
           read_in_if_svg(i, directory.sub(%r{(?<!=/)$}, "/"))
         end
         docxml.xpath(ns("//image")).each do |i| # rubocop:disable Style/CombinableLoops
-          i["src"] && !i["src"].empty? or next
+          (i["src"] && !i["src"].empty?) or next
           i["src"] = Vectory::Utils::datauri(i["src"], directory)
         end
         docxml
@@ -209,11 +209,13 @@ module Metanorma
       def isodoc_populate
         @isodoc.info(@xml, nil)
         { navigation: indexfile(@manifest), nav_object: index_object(@manifest),
-          bibdata: @bibdata.to_hash, docrefs: liquid_docrefs(@manifest),
+          bibdata: YAML.safe_load(@bibdata.to_yaml,
+                                  permitted_classes: [Date, Symbol]),
+          docrefs: liquid_docrefs(@manifest),
           "prefatory-content": isodoc_builder(@xml.at("//prefatory-content")),
           "final-content": isodoc_builder(@xml.at("//final-content")),
-          doctitle: @bibdata.title.first.title.content,
-          docnumber: @bibdata.docidentifier.first.id }.each do |k, v|
+          doctitle: Array(@bibdata.title).first&.content,
+          docnumber: Array(@bibdata.docidentifier).first&.content }.each do |k, v|
           v and @isodoc.meta.set(k, v)
         end
       end
@@ -239,7 +241,7 @@ module Metanorma
       def error_anchor(erefs, docid)
         erefs.each do |e|
           msg = "<strong>** Unresolved reference to document #{docid} " \
-            "from eref</strong>"
+                "from eref</strong>"
           e << msg
           strip_eref(e)
           @log&.add("METANORMA_3", e, params: [docid])

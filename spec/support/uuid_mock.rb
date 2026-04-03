@@ -5,6 +5,7 @@
 # so that the tracked GUIDs can be seen as they are used
 # in generated ids and cross-references
 
+#require 'debug'; binding.b
 require "metanorma-standoc"
 
 module UuidMock

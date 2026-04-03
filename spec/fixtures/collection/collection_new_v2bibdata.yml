@@ -1,0 +1,19 @@
+---
+directives:
+- documents-inline
+bibdata:
+  title:
+  - language: en
+    content: bibdata - Test Title
+  docidentifier:
+  - type: iso
+    content: '12345'
+  edition:
+    content: '12'
+manifest:
+  level: collection
+  title: ISO Collection
+  sectionsplit: true
+  docref:
+  - file: document-1/collection.yml
+  - file: document-2/collection.yml
