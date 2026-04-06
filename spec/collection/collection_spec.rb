@@ -23,7 +23,7 @@ RSpec.describe Metanorma::Collection do
       expect(mc).to be_instance_of Metanorma::Collection
       yaml_out = mc.config.to_yaml
         .gsub(/identifier: ['"]?#{GUID}['"]?[\n\r]+\s*/mo, "\\1")
-        .gsub(/([\n\r]+\s+)schema-version: \S+[\n\r]+\s*/m, "\\1")
+        .gsub(/([\n\r]+\s+)schema_version: \S+[\n\r]+\s*/m, "\\1")
       expect(yaml_out).to be_equivalent_to <<~OUTPUT
         ---
        directives:

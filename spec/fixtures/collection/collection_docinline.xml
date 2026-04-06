@@ -209,7 +209,7 @@
       <type>subcollection</type>
       <title>Amendments</title>
       <entry target="doc000000003" index="true" fileref="rice-amd.final.xml">
-        <identifier>ISO 17301-1:2016/Amd.1:2017</identifier>
+        <identifier>ISO 17301-1:2016/Amd 1:2017</identifier>
         <bibdata type="standard">
           <title type="main" format="text/plain" language="en">Specification and test methods — Rice — Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</title>
           <title type="title-main" format="text/plain" language="en">Specification and test methods</title>
@@ -219,9 +219,9 @@
           <title type="title-main" format="text/plain" language="fr">Spécification et méthodes d’essai</title>
           <title type="title-part" format="text/plain" language="fr">Riz</title>
           <title type="title-amd" format="text/plain" language="fr">Fraction massique de matière étrangère, riz usiné (non gluant), diviseurs d’échantillon et recommandations relatives aux conditions d’entreposage et de transport</title>
-          <docidentifier type="ISO" primary="true">ISO 17301-1:2016/Amd.1:2017</docidentifier>
-          <docidentifier type="iso-with-lang">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
-          <docidentifier type="iso-reference">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
+          <docidentifier type="ISO" primary="true">ISO 17301-1:2016/Amd 1:2017</docidentifier>
+          <docidentifier type="iso-with-lang">ISO 17301-1:2016/Amd 1:2017(E)</docidentifier>
+          <docidentifier type="iso-reference">ISO 17301-1:2016/Amd 1:2017(E)</docidentifier>
           <docnumber>17301</docnumber>
           <date type="created">
             <on>2016-05-01</on>
@@ -481,9 +481,9 @@
         <title type="title-main" format="text/plain" language="fr">Spécification et méthodes d’essai</title>
         <title type="title-part" format="text/plain" language="fr">Riz</title>
         <title type="title-amd" format="text/plain" language="fr">Fraction massique de matière étrangère, riz usiné (non gluant), diviseurs d’échantillon et recommandations relatives aux conditions d’entreposage et de transport</title>
-        <docidentifier type="ISO" primary="true">ISO 17301-1:2016/Amd.1:2017</docidentifier>
-        <docidentifier type="iso-with-lang">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
-        <docidentifier type="iso-reference">ISO 17301-1:2016/Amd.1:2017(E)</docidentifier>
+        <docidentifier type="ISO" primary="true">ISO 17301-1:2016/Amd 1:2017</docidentifier>
+        <docidentifier type="iso-with-lang">ISO 17301-1:2016/Amd 1:2017(E)</docidentifier>
+        <docidentifier type="iso-reference">ISO 17301-1:2016/Amd 1:2017(E)</docidentifier>
         <docnumber>17301</docnumber>
         <date type="created">
           <on>2016-05-01</on>

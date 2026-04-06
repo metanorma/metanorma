@@ -137,6 +137,8 @@ RSpec.describe Metanorma::Collection do
                 compile: {
                   install_fonts: false,
                 })
+      b = cr.isodoc.meta.get[:bibdata]
+      b["schema_version"] = "v1.4.1" # static
       expect(cr.isodoc.meta.get[:bibdata])
         .to eq(
           { "copyright" => [{"from" => "2020", "owner" => [{"organization" => {"abbreviation" => {"content" => "ISO"}, "name" => [{"content" => "International Organization for Standardization"}]}}]}],
