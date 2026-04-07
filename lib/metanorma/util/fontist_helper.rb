@@ -116,11 +116,17 @@ module Metanorma
       end
 
       def self.location_manifest(processor, source_attributes)
-        return nil unless processor.respond_to?(:fonts_manifest) &&
-          !processor.fonts_manifest.nil?
+        base = if processor.respond_to?(:fonts_manifest) &&
+            !processor.fonts_manifest.nil?
+                 processor.fonts_manifest.dup
+               else
+                 {}
+               end
+
+        return nil if base.empty? && !source_attributes[:fonts]
 
         instance = Fontist::Manifest.from_hash(
-          append_source_fonts(processor.fonts_manifest.dup, source_attributes),
+          append_source_fonts(base, source_attributes),
           locations: true,
         )
 
