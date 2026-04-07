@@ -2,5 +2,8 @@ gem "relaton-cli", git: "https://github.com/relaton/relaton-cli", tag: "v2.0.0-a
 gem "relaton-render", git: "https://github.com/relaton/relaton-render", branch: "fix/relaton-2.0"
 gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "fix/relaton-2.0"
 gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/relaton-2.0"
+gem "metanorma-generic", git: "https://github.com/metanorma/metanorma-generic", branch: "fix/relaton-2.0"
+gem "metanorma-iho", git: "https://github.com/metanorma/metanorma-iho", branch: "fix/relaton-2.0"
+gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "fix/relaton-2.0"
 gem "glossarist", git: "https://github.com/glossarist/glossarist-ruby", tag: "fix/relaton-2.0"
 

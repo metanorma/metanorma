@@ -158,7 +158,7 @@ module Metanorma
         options[:site_generate] and options[:format] << :xml
         options[:format].include?(:rxl) or return
         File.open(File.join(@outdir, "collection.rxl"), "w:UTF-8") do |f|
-          f.write(@bibdata.to_xml)
+          f.write(@bibdata.to_xml(bibdata: true))
         end
       end
 
@@ -231,7 +231,7 @@ module Metanorma
         File.exist?(pres) or return
         xml = Nokogiri::XML(File.read(pres, encoding: "UTF-8"), &:huge)
         x = xml.xpath("//*[local-name() = 'presentation-metadata']/" \
-          "*[local-name() = 'fonts']")
+                      "*[local-name() = 'fonts']")
         x.empty? and return
         x.map(&:text).join(";")
       end
