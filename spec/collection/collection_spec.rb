@@ -35,7 +35,6 @@ RSpec.describe Metanorma::Collection do
        bibdata:
          id: ISO12345
          type: collection
-         schema_version: v1.4.1
          title:
          - language: en
            content: ISO Collection 1
@@ -463,7 +462,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(cleanup_id(mc.to_xml)).to be_equivalent_to xml
+      expect(Canon.format_xml(cleanup_id(mc.to_xml)))
+        .to be_equivalent_to Canon.format_xml(xml)
     end
 
     it "XML collection with docs inline" do

@@ -91,7 +91,12 @@ module Metanorma
         return unless validate_install_fonts(processor, options)
 
         @@updated_formulas_repo = false
-        manifest = processor.fonts_manifest.dup
+        manifest = if processor.respond_to?(:fonts_manifest) &&
+            !processor.fonts_manifest.nil?
+                     processor.fonts_manifest.dup
+                   else
+                     {}
+                   end
         append_source_fonts(manifest, options)
         agree_to_terms, can_without_fonts, no_progress = validate_options(options)
 
