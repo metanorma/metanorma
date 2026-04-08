@@ -63,7 +63,7 @@
                       <docidentifier type="ISO" primary="true">ISO 17301-1:2016</docidentifier>
                       <docidentifier type="iso-with-lang">ISO 17301-1:2016(E)</docidentifier>
                       <docidentifier type="iso-reference">ISO 17301-1:2016(E)</docidentifier>
-                      <docidentifier type="iso-tc">ISO 17301</docidentifier>
+                      <docidentifier type="iso-tc">17301</docidentifier>
                       <docnumber>17301</docnumber>
                       <contributor>
                          <role type="author"/>
