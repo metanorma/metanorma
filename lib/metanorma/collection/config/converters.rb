@@ -1,13 +1,47 @@
-require "relaton-cli"
+require "relaton/bib"
+require "relaton/bib/hash_parser_v1"
 
 module Metanorma
   class Collection
     module Config
       module Converters
+        # Keys present only in 1.x YAML format — unambiguously absent in 2.x
+        V1_BIBDATA_KEYS = %w[docid link biblionote].freeze
+
         def bibdata_from_yaml(model, value)
-          value and !value.empty? or return
+          (value and !value.empty?) or return
+          if value.is_a?(String)
+            value = YAML.safe_load_file(value,
+                                        permitted_classes: [Date,
+                                                            Symbol])
+          end
           force_primary_docidentifier_yaml(value)
-          model.bibdata = Relaton::Cli::YAMLConvertor.convert_single_file(value)
+          model.bibdata = if bibdata_yaml_v1_format?(value)
+                            # 1.x YAML format (docid:/link:/biblionote: present) —
+                            # bridge via HashParserV1 for backward compatibility
+                            h = Relaton::Bib::HashParserV1.hash_to_bib(value)
+                            Relaton::Bib::ItemData.new(**h)
+                          else
+                            # 2.x YAML format (docidentifier:/uri:/note: keys) —
+                            # parse directly with lutaml-model
+                            Relaton::Bib::Item.from_yaml(value.to_yaml)
+                          end
+        end
+
+        # Recursively detect 1.x-format YAML by presence of renamed keys.
+        # Checks the entire nested structure so relation:/contributor: entries
+        # are also detected.
+        def bibdata_yaml_v1_format?(obj)
+          case obj
+          when Hash
+            return true if (obj.keys.map(&:to_s) & V1_BIBDATA_KEYS).any?
+
+            obj.values.any? { |v| bibdata_yaml_v1_format?(v) }
+          when Array
+            obj.any? { |v| bibdata_yaml_v1_format?(v) }
+          else
+            false
+          end
         end
 
         def force_primary_docidentifier_yaml(value)
@@ -24,7 +58,10 @@ module Metanorma
         end
 
         def bibdata_to_yaml(model, doc)
-          doc["bibdata"] = model.bibdata&.to_hash
+          return unless model.bibdata
+
+          doc["bibdata"] = YAML.safe_load(model.bibdata.to_yaml,
+                                          permitted_classes: [Date, Symbol])
         end
 
         def bibdata_from_xml(model, node)
