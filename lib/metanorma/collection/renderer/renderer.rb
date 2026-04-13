@@ -37,8 +37,8 @@ module Metanorma
         check_options options
         @xml = Nokogiri::XML collection.to_xml # @xml is the collection manifest
         @xml.root.default_namespace = "http://metanorma.org"
-        @lang = collection.bibdata.language.first || "en"
-        @script = collection.bibdata.script.first || "Latn"
+        @lang = Array(collection.bibdata.language).first || "en"
+        @script = Array(collection.bibdata.script).first || "Latn"
         @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
         @registry = Metanorma::Registry.instance
         @flavor = options[:flavor] || flavor
@@ -158,7 +158,7 @@ module Metanorma
         options[:site_generate] and options[:format] << :xml
         options[:format].include?(:rxl) or return
         File.open(File.join(@outdir, "collection.rxl"), "w:UTF-8") do |f|
-          f.write(@bibdata.to_xml)
+          f.write(@bibdata.to_xml(bibdata: true))
         end
       end
 
@@ -231,7 +231,7 @@ module Metanorma
         File.exist?(pres) or return
         xml = Nokogiri::XML(File.read(pres, encoding: "UTF-8"), &:huge)
         x = xml.xpath("//*[local-name() = 'presentation-metadata']/" \
-          "*[local-name() = 'fonts']")
+                      "*[local-name() = 'fonts']")
         x.empty? and return
         x.map(&:text).join(";")
       end

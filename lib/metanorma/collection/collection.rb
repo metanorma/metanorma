@@ -191,12 +191,13 @@ module Metanorma
     # TODO: retrieve flavor based on @bibdata publisher when lookup implemented
     # Will still infer based on docid, but will validate it before proceeding
     def fetch_flavor
-      docid = @bibdata.docidentifier.first or return
-      f = docid.type.downcase || docid.id.sub(/\s.*$/, "").downcase or return
+      docid = @bibdata&.docidentifier&.first or return
+      f = docid.type&.downcase || docid.content&.sub(/\s.*$/,
+                                                     "")&.downcase or return
       f = Util::taste2flavor(f)
       require ::Metanorma::Compile.new.stdtype2flavor_gem(f)
       f
-    rescue LoadError
+    rescue LoadError, NameError
       nil
     end
   end
