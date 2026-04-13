@@ -37,8 +37,8 @@ module Metanorma
         check_options options
         @xml = Nokogiri::XML collection.to_xml # @xml is the collection manifest
         @xml.root.default_namespace = "http://metanorma.org"
-        @lang = collection.bibdata.language.first || "en"
-        @script = collection.bibdata.script.first || "Latn"
+        @lang = Array(collection.bibdata.language).first || "en"
+        @script = Array(collection.bibdata.script).first || "Latn"
         @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
         @registry = Metanorma::Registry.instance
         @flavor = options[:flavor] || flavor
