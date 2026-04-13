@@ -15,6 +15,20 @@ require "mn2pdf"
 require "xml-c14n"
 require_relative "support/uuid_mock"
 
+Canon::Config.instance.tap do |cfg|
+  # Configure Canon to use spec-friendly match profiles
+  cfg.xml.match.profile = :spec_friendly
+  cfg.html.match.profile = :spec_friendly
+
+  # Configure Canon to show all diffs (including inactive diffs)
+  cfg.html.diff.show_diffs = :normative
+  cfg.xml.diff.show_diffs = :normative
+
+  # Enable verbose diff output for debugging
+  # cfg.html.diff.verbose_diff = true
+  # cfg.xml.diff.verbose_diff = true
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

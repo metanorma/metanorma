@@ -7,10 +7,9 @@
                    <w:DoNotOptimizeForBrowser/>
                 </w:WordDocument>
              </xml>
-             <meta/>
-             Content-Type content="text/html; charset=utf-8"/&gt;
-             <link/>
-             File-List href="cid:filelist.xml"/&gt;
+             <meta http-equiv=Content-Type content="text/html; charset=utf-8"/>
+
+             <link rel=File-List href="cid:filelist.xml"/>
              <style/>
           </head>
           <body lang="EN-US" link="blue" vlink="#954F72" xml:lang="EN-US">
@@ -27,7 +26,7 @@
                    <div class="boilerplate-copyright">
                       <div class="zzCopyrightContainer">
                          <div>
-                            <a name="_" id="_"/>
+                            <a name="_" id="_"></a>
                             <p class="zzCopyright">
                                <a name="boilerplate-year_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-year_ISO_17301-1_2016_Amd.1_2017"/>
                                © ISO 2017
