@@ -446,6 +446,30 @@ RSpec.describe Metanorma::Collection do
       end
     end
 
+    describe "flavor-specific bibdata roundtrip" do
+      it "roundtrips ISO bibdata with structuredidentifier through from_xml/to_xml" do
+        require "relaton/iso"
+        xml = <<~XML
+          <bibdata type="standard">
+            <title language="en" format="text/plain" type="main">Test document</title>
+            <docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
+            <ext>
+              <doctype>international-standard</doctype>
+              <structuredidentifier>
+                <project-number>ISO 17302</project-number>
+              </structuredidentifier>
+            </ext>
+          </bibdata>
+        XML
+        item = Relaton::Iso::Item.from_xml(xml)
+        expect(item).to be_a(Relaton::Iso::ItemData)
+        expect(item.ext).to be_a(Relaton::Iso::Ext)
+        output = item.to_xml(bibdata: true)
+        expect(output).to include("<structuredidentifier>")
+        expect(output).to include("<project-number>ISO 17302</project-number>")
+      end
+    end
+
     it "XML collection" do
       mock_pdf
       file = "#{INPATH}/collection1.xml"
