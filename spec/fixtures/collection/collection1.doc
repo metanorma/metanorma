@@ -1,663 +1,520 @@
-       <html xmlns:epub="http://www.idpf.org/2007/ops" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" xmlns="http://www.w3.org/TR/REC-html40" lang="en" xml:lang="en">
-          <head>
-             <xml>
-                <w:WordDocument>
-                   <w:View>Print</w:View>
-                   <w:Zoom>100</w:Zoom>
-                   <w:DoNotOptimizeForBrowser/>
-                </w:WordDocument>
-             </xml>
-             <meta http-equiv=Content-Type content="text/html; charset=utf-8"/>
+<html xmlns:epub="http://www.idpf.org/2007/ops" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" xmlns="http://www.w3.org/TR/REC-html40" lang="en" xml:lang="en">
+  <head>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/>
+</w:WordDocument>
+</xml>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8"/>
+     
+  <link rel=File-List href="cid:filelist.xml"/>
+<style/></head>
+  <body lang="EN-US" link="blue" vlink="#954F72" xml:lang="EN-US">
+    <div class="WordSection1"><p class="MsoNormal">Cover ISO Collection 1 </p>
+<p class="MsoNormal">&#xA0;</p></div>
+    <p class="MsoNormal">
+      <br clear="all" class="section"/>
+    </p>
+    <div class="WordSection2"><p class="MsoNormal">Intro ISO Collection 1 </p>
+<div class="authority">
+  <div class="boilerplate-copyright"><div class="zzCopyrightContainer">
+    <div><a name="_" id="_"></a>
+    <p class="zzCopyright"><a name="boilerplate-year_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-year_ISO_17301-1_2016_Amd.1_2017"></a>
+    &#xA9; ISO 2017
+  </p>
+     
+  <p class="zzCopyright"><a name="boilerplate-message_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-message_ISO_17301-1_2016_Amd.1_2017"></a>
+    All rights
+reserved. Unless otherwise specified, no part of this publication may be
+reproduced or utilized otherwise in any form or by any means, electronic or
+mechanical, including photocopying, or posting on the internet or an intranet,
+without prior written permission. Permission can be requested from either ISO
+at the address below or ISO&#x2019;s member body in the country of the requester.
+  </p>
+     
+  <p style="text-align:left;" align="left" class="zzCopyright"><a name="boilerplate-address_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-address_ISO_17301-1_2016_Amd.1_2017"></a>
+    ISO copyright office<br/>
+    Ch. de Blandonnet 8 &#x2022; CP 401<br/>
+    CH-1214 Vernier, Geneva, Switzerland<br/>
+    Tel.&#xA0;&#xA0;+ 41 22 749 01 11<br/>
+    Fax&#xA0;&#xA0;+ 41 22 749 09 47<br/>
+    Email: copyright@iso.org<br/>
+    Website: www.iso.org
+  </p>
+    <p class="zzCopyright"><a name="boilerplate-place_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-place_ISO_17301-1_2016_Amd.1_2017"></a>
+    Published in Switzerland
+  </p>
+</div>
+  </div></div>
+     
+     
+</div><p class="MsoNormal"><br clear="all" style="mso-special-character:line-break;page-break-before:always"/></p><div class="Section3"><a name="_" id="_"></a><p class="IntroTitle">Clause</p><p class="MsoNormal"><a name="_" id="_"></a>Welcome to our collection</p></div><p class="MsoNormal">&#xA0;</p></div>
+    <p class="MsoNormal">
+      <br clear="all" class="section"/>
+    </p>
+    <div class="WordSection3">
+      <div class="WordSection1"><p class="MsoNormal">Cover Document Specification and test methods&#xA0;&#x2014; Rice 17301</p>
+<p class="MsoNormal">&#xA0;</p></div>
+      <p class="MsoNormal">
+  <br clear="all" class="section"/>
+</p>
+      <div class="WordSection2"><p class="MsoNormal">Intro Document Specification and test methods&#xA0;&#x2014; Rice 17301</p>
+<div class="authority">
+  <div class="boilerplate-copyright"><div class="zzCopyrightContainer">
+    <div><a name="_" id="_"></a>
+    <p class="zzCopyright"><a name="boilerplate-year_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-year_ISO_17301-1_2016_Amd.1_2017"></a>
+    &#xA9; ISO 2017
+  </p>
+     
+  <p class="zzCopyright"><a name="boilerplate-message_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-message_ISO_17301-1_2016_Amd.1_2017"></a>
+    All rights
+reserved. Unless otherwise specified, no part of this publication may be
+reproduced or utilized otherwise in any form or by any means, electronic or
+mechanical, including photocopying, or posting on the internet or an intranet,
+without prior written permission. Permission can be requested from either ISO
+at the address below or ISO&#x2019;s member body in the country of the requester.
+  </p>
+     
+  <p style="text-align:left;" align="left" class="zzCopyright"><a name="boilerplate-address_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-address_ISO_17301-1_2016_Amd.1_2017"></a>
+    ISO copyright office<br/>
+    Ch. de Blandonnet 8 &#x2022; CP 401<br/>
+    CH-1214 Vernier, Geneva, Switzerland<br/>
+    Tel.&#xA0;&#xA0;+ 41 22 749 01 11<br/>
+    Fax&#xA0;&#xA0;+ 41 22 749 09 47<br/>
+    Email: copyright@iso.org<br/>
+    Website: www.iso.org
+  </p>
+    <p class="zzCopyright"><a name="boilerplate-place_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-place_ISO_17301-1_2016_Amd.1_2017"></a>
+    Published in Switzerland
+  </p>
+</div>
+  </div></div>
+     
+     
+</div><p class="MsoNormal"><br clear="all" style="mso-special-character:line-break;page-break-before:always"/></p><div><a name="_" id="_"></a><p class="ForewordTitle">Foreword</p><p class="ForewordText"><a name="_" id="_"></a>ISO (the International Organization for Standardization) is a worldwide federation of national standards bodies (ISO member bodies). The work of preparing International Standards is normally carried out through ISO technical committees. Each member body interested in a subject for which a technical committee has been established has the right to be represented on that committee. International organizations, governmental and non-governmental, in liaison with ISO, also take part in the work. ISO collaborates closely with the International Electrotechnical Commission (IEC) on all matters of electrotechnical standardization.</p><p class="ForewordText"><a name="_" id="_"></a>The procedures used to develop this document and those intended for its further maintenance are described in the ISO/IEC Directives, Part 1. In particular the different approval criteria needed for the different types of ISO documents should be noted. This document was drafted in accordance with the editorial rules of the ISO/IEC Directives, Part 2 (see www.iso.org/directives).</p><p class="ForewordText"><a name="_" id="_"></a>Attention is drawn to the possibility that some of the elements of this document may be the subject of patent rights. ISO shall not be held responsible for identifying any or all such patent rights. Details of any patent rights identified during the development of the document will be in the Introduction and/or on the ISO list of patent declarations received (see www.iso.org/patents).</p><p class="ForewordText"><a name="_" id="_"></a>Any trade name used in this document is information given for the convenience of users and does not constitute an endorsement.</p><p class="ForewordText"><a name="_" id="_"></a>For an explanation on the voluntary nature of standards, the meaning of ISO specific terms and expressions related to conformity assessment, as well as information about ISO&#x2019;s adherence to the World Trade Organization (WTO) principles in the Technical Barriers to Trade (TBT) see the following URL: www.iso.org/iso/foreword.html.</p><p class="ForewordText"><a name="_" id="_"></a>This document was prepared by Technical Committee ISO/{technical-committee-type} 34, <i>Food products</i>, Subcommittee SC 4, <i>Cereals and pulses</i>.</p><p class="ForewordText"><a name="_" id="_"></a>A list of all parts in the ISO 17301 series can be found on the ISO website.</p></div><p class="MsoNormal">&#xA0;</p></div>
+      <p class="MsoNormal">
+  <br clear="all" class="section"/>
+</p>
+      <div class="WordSection3">
+  <p class="zzSTDTitle1">
+    <span class="boldtitle">Specification and test methods &#x2014; </span>
+    <span class="boldtitle">Rice</span>
+  </p>
+  <div><a name="_introduction_ISO_17301-1_2016_Amd.1_2017" id="_introduction_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>Introduction</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Delete the fourth to seventh paragraphs.</p>
+  </div>
+  <div><a name="_normative_references_ISO_17301-1_2016_Amd.1_2017" id="_normative_references_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>Normative references</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Replace the reference to ISO 16634:&#x2014; (including the footnote) with the following:</p>
+    <div class="Quote"><a name="_" id="_"></a>
+<p class="MsoNormal"><a name="_" id="_"></a>ISO 16634-2:2016, <i>Food products &#x2014; Determination of the total nitrogen content by combustion according to the Dumas principle and calculation of the crude protein content &#x2014; Part 2: Cereals, pulses and milled cereal products</i></p>
+</div>
+    <p class="MsoNormal"><a name="_" id="_"></a>Renumber subsequent footnotes.</p>
+  </div>
+  <div><a name="_4_1_second_paragraph_ISO_17301-1_2016_Amd.1_2017" id="_4_1_second_paragraph_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>4.1, second paragraph</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Replace the paragraph with the following:</p>
+    <div class="Quote"><a name="_" id="_"></a>
+<p class="MsoNormal"><a name="_" id="_"></a>There shall be a procedure to identify the maximum permissible levels for additives and pesticide residues and other contaminants in the country of destination.</p>
+</div>
+  </div>
+  <div><a name="_4_2_1_ISO_17301-1_2016_Amd.1_2017" id="_4_2_1_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>4.2.1</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Designate the existing NOTE as NOTE 1 and add the following new NOTE:</p>
+    <div class="Quote"><a name="_" id="_"></a>
+<p class="MsoNormal"><a name="_" id="_"></a>NOTE 2 For certain destinations, no differentiation is made between the organic and inorganic mass fractions of extraneous matter.</p>
+</div>
+  </div>
+  <div><a name="_4_2_2_table_1_ISO_17301-1_2016_Amd.1_2017" id="_4_2_2_table_1_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>4.2.2, Table 1</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>In the column &#x201C;in milled rice (non-glutinous)&#x201D;, replace the value &#x201C;0,3&#x201D; for &#x201C;Paddy&#x201D; with the value &#x201C;0,5&#x201D;.</p>
+  </div>
+  <div><a name="_6_3_first_paragraph_ISO_17301-1_2016_Amd.1_2017" id="_6_3_first_paragraph_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>6.3, first paragraph</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Replace the reference &#x201C;ISO 16634:&#x2014;, Clause 9&#x201D; with &#x201C;ISO 16634-2:2016, Clause 9&#x201D;.</p>
+  </div>
+  <div><a name="_clause_8_ISO_17301-1_2016_Amd.1_2017" id="_clause_8_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>Clause 8</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Add the following paragraph at the end of the clause:</p>
+    <div class="Quote"><a name="_" id="_"></a>
+<p class="MsoNormal"><a name="_" id="_"></a>Annex E gives recommendations relating to storage and transport conditions.</p>
+</div>
+  </div>
+  <div><a name="_clause_9_ISO_17301-1_2016_Amd.1_2017" id="_clause_9_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>Clause 9</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Replace the text with the following:</p>
+    <div class="Quote"><a name="_" id="_"></a>
+<p class="MsoNormal"><a name="_" id="_"></a>The marking on the packages shall clearly identify the type of rice.</p>
+</div>
+  </div>
+  <div><a name="_a_2_1_ISO_17301-1_2016_Amd.1_2017" id="_a_2_1_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>A.2.1</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Replace the text with the following:</p>
+    <div class="Quote"><a name="_" id="_"></a>
+<p class="MsoNormal"><a name="_" id="_"></a><b>A.2.1 Sample divider</b>, consisting of a conical sample divider or multiple-slot sample divider with a distribution system, e.g. conical (Boerner-type) divider such as that shown in Figure A.1 or multiple-slot (riffle-type) divider such as that shown in Figure A.2.</p>
+</div>
+  </div>
+  <div><a name="_figure_a_1_ISO_17301-1_2016_Amd.1_2017" id="_figure_a_1_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>Figure A.1</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Replace Figure A.1 with the following two figures:</p>
+    <div class="MsoNormal" style="text-align:center;"><a name="fig1_ISO_17301-1_2016_Amd.1_2017" id="fig1_ISO_17301-1_2016_Amd.1_2017"></a>
+     
+<img src="cid:_.png" height="615" width="420"/>
+<div align="left" style="page-break-after:avoid;"><div class="figdl" style="page-break-after:avoid;"><table class="figdl"><a name="_" id="_"></a><tr><td valign="top" align="left"><p align="left" style="margin-left:0pt;text-align:left;" class="MsoNormal">1</p></td><td valign="top">
+<p class="MsoNormal"><a name="_" id="_"></a>funnel</p>
+</td></tr><tr><td valign="top" align="left"><p align="left" style="margin-left:0pt;text-align:left;" class="MsoNormal">2</p></td><td valign="top">
+<p class="MsoNormal"><a name="_" id="_"></a>collection boxes</p>
+</td></tr></table></div></div><p class="FigureTitle" style="text-align:center;">Figure 1&#xA0;&#x2014; Conical (Boerner-type) divider</p></div>
+    <div class="MsoNormal" style="text-align:center;"><a name="fig2_ISO_17301-1_2016_Amd.1_2017" id="fig2_ISO_17301-1_2016_Amd.1_2017"></a>
+     
+<img src="cid:_.png" height="489" width="517"/>
+<div align="left" style="page-break-after:avoid;"><div class="figdl" style="page-break-after:avoid;"><table class="figdl"><a name="_" id="_"></a><tr><td valign="top" align="left"><p align="left" style="margin-left:0pt;text-align:left;" class="MsoNormal">1</p></td><td valign="top">
+<p class="MsoNormal"><a name="_" id="_"></a>slots</p>
+</td></tr><tr><td valign="top" align="left"><p align="left" style="margin-left:0pt;text-align:left;" class="MsoNormal">2</p></td><td valign="top">
+<p class="MsoNormal"><a name="_" id="_"></a>collection boxes</p>
+</td></tr></table></div></div><p class="FigureTitle" style="text-align:center;">Figure 2&#xA0;&#x2014; Multiple-slot (riffle-type) divider with two collection boxes</p></div>
+  </div>
+  <div><a name="_annex_e_ISO_17301-1_2016_Amd.1_2017" id="_annex_e_ISO_17301-1_2016_Amd.1_2017"></a>
+    <h1>Annex E</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>Add the following annex after Annex D, before the Bibliography.</p>
+    <div class="Quote"><a name="_" id="_"></a><p class="MsoNormal"><a name="_" id="_"></a>== Recommendations relating to storage and storage and transport conditions</p>
+<p class="MsoNormal"><a name="_" id="_"></a>Containers of rice should be stored in covered premises, well protected from the sun, rain and excessive heat.</p>
+<p class="MsoNormal"><a name="_" id="_"></a>The storeroom should be dry, free from unpleasant odours and protected against entry of insects and other vermin. Ventilation should be adjusted in such a way as to give good ventilation during dry weather and to be fully closed under damp conditions. Suitable provisions should be made for fumigation of storerooms.</p>
+<p class="MsoNormal"><a name="_" id="_"></a>Containers should be handled and transported in such a way that they are protected from the rain, sun or other sources of excessive heat, unpleasant odours and any other contamination (especially in the holds of ships).</p></div>
+  </div>
+</div>
+      <br clear="all" style="page-break-before:left;mso-break-type:section-break"/>
+      <div class="colophon"></div>
+      <p class="MsoNormal">
+  <br clear="all" class="section"/>
+</p>
+      <div class="WordSection1"><p class="MsoNormal">Cover Document Dummy document 17302</p>
+<p class="MsoNormal">&#xA0;</p></div>
+      <p class="MsoNormal">
+  <br clear="all" class="section"/>
+</p>
+      <div class="WordSection2"><p class="MsoNormal">Intro Document Dummy document 17302</p>
+<div class="authority">
+  <div class="boilerplate-copyright"><div class="zzCopyrightContainer">
+    <div><a name="_" id="_"></a>
+    <p class="zzCopyright"><a name="boilerplate-year_ISO_17302" id="boilerplate-year_ISO_17302"></a>
+    &#xA9; ISO 2016
+  </p>
+     
+  <p class="zzCopyright"><a name="boilerplate-message_ISO_17302" id="boilerplate-message_ISO_17302"></a>
+    All rights
+reserved. Unless otherwise specified, no part of this publication may be
+reproduced or utilized otherwise in any form or by any means, electronic or
+mechanical, including photocopying, or posting on the internet or an intranet,
+without prior written permission. Permission can be requested from either ISO
+at the address below or ISO&#x2019;s member body in the country of the requester.
+  </p>
+     
+  <p style="text-align:left;" align="left" class="zzCopyright"><a name="boilerplate-address_ISO_17302" id="boilerplate-address_ISO_17302"></a>
+    ISO copyright office<br/>
+    Ch. de Blandonnet 8 &#x2022; CP 401<br/>
+    CH-1214 Vernier, Geneva, Switzerland<br/>
+    Tel.&#xA0;&#xA0;+ 41 22 749 01 11<br/>
+    Fax&#xA0;&#xA0;+ 41 22 749 09 47<br/>
+    Email: copyright@iso.org<br/>
+    Website: www.iso.org
+  </p>
+    <p class="zzCopyright"><a name="boilerplate-place_ISO_17302" id="boilerplate-place_ISO_17302"></a>
+    Published in Switzerland
+  </p>
+</div>
+  </div></div>
+     
+     
+</div><p class="MsoNormal"><br clear="all" style="mso-special-character:line-break;page-break-before:always"/></p><div class="TOC"><a name="_" id="_"></a><p class="zzContents">Contents</p><p class="MsoToc1"><span lang="EN-GB" xml:lang="EN-GB"><span style="mso-element:field-begin"></span><span style="mso-spacerun:yes">&#xA0;</span>TOC
+  \o "1-2" \h \z \t "Heading
+  1;1;ANNEX;1;Biblio Title;1;Foreword Title;1;Intro Title;1" <span style="mso-element:field-separator"></span></span>
+<span class="MsoHyperlink"><span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc">1 Scope<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span></span></p>
+     
+<p class="MsoToc1"><span class="MsoHyperlink"><span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc">2<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span></span></p>
+     
+<p class="MsoToc1"><span class="MsoHyperlink"><span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc">3 What?<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span></span></p>
+     
+<p class="MsoToc1"><span class="MsoHyperlink"><span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc">4<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span></span></p>
+     
+<p class="MsoToc1"><span lang="EN-GB" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span><span lang="EN-GB" xml:lang="EN-GB"><o:p class="MsoNormal">&#xA0;</o:p></span></p>
+</div><p class="MsoNormal">&#xA0;</p></div>
+      <p class="MsoNormal">
+  <br clear="all" class="section"/>
+</p>
+      <div class="WordSection3">
+  <p class="zzSTDTitle1">
+    <span class="boldtitle">Dummy document</span>
+  </p>
+  <div><a name="_scope_ISO_17302" id="_scope_ISO_17302"></a>
+    <h1>1<span style="mso-tab-count:1">&#xA0; </span>Scope</h1>
+    <p class="MsoNormal"><a name="_" id="_"></a>This is a dummy document.</p>
+  </div>
+  <div><a name="E1_ISO_17302" id="E1_ISO_17302"></a>
+    <h1>2</h1>
+    <div class="MsoNormal" style="text-align:center;"><a name="_" id="_"></a>
+<pre style="page-break-after:avoid;"><a name="A1_ISO_17302" id="A1_ISO_17302"></a>
+module Metanorma
+  class Document
+    # @return [Strin]
+    attr_reader :file
 
-             <link rel=File-List href="cid:filelist.xml"/>
-             <style/>
-          </head>
-          <body lang="EN-US" link="blue" vlink="#954F72" xml:lang="EN-US">
-             <div class="WordSection1">
-                <p class="MsoNormal">Cover ISO Collection 1 </p>
-                <p class="MsoNormal"> </p>
-             </div>
-             <p class="MsoNormal">
-                <br clear="all" class="section"/>
-             </p>
-             <div class="WordSection2">
-                <p class="MsoNormal">Intro ISO Collection 1 </p>
-                <div class="authority">
-                   <div class="boilerplate-copyright">
-                      <div class="zzCopyrightContainer">
-                         <div>
-                            <a name="_" id="_"></a>
-                            <p class="zzCopyright">
-                               <a name="boilerplate-year_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-year_ISO_17301-1_2016_Amd.1_2017"/>
-                               © ISO 2017
-                            </p>
-                            <p class="zzCopyright">
-                               <a name="boilerplate-message_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-message_ISO_17301-1_2016_Amd.1_2017"/>
-                               All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.
-                            </p>
-                            <p style="text-align:left;" align="left" class="zzCopyright">
-                               <a name="boilerplate-address_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-address_ISO_17301-1_2016_Amd.1_2017"/>
-                               ISO copyright office
-                               <br/>
-                               Ch. de Blandonnet 8 • CP 401
-                               <br/>
-                               CH-1214 Vernier, Geneva, Switzerland
-                               <br/>
-                               Tel.  + 41 22 749 01 11
-                               <br/>
-                               Fax  + 41 22 749 09 47
-                               <br/>
-                               Email: copyright@iso.org
-                               <br/>
-                               Website: www.iso.org
-                            </p>
-                            <p class="zzCopyright">
-                               <a name="boilerplate-place_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-place_ISO_17301-1_2016_Amd.1_2017"/>
-                               Published in Switzerland
-                            </p>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-                <p class="MsoNormal">
-                   <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
-                </p>
-                <div class="Section3">
-                   <a name="_" id="_"/>
-                   <p class="IntroTitle">Clause</p>
-                   <p class="MsoNormal">
-                      <a name="_" id="_"/>
-                      Welcome to our collection
-                   </p>
-                </div>
-                <p class="MsoNormal"> </p>
-             </div>
-             <p class="MsoNormal">
-                <br clear="all" class="section"/>
-             </p>
-             <div class="WordSection3">
-                <div class="WordSection1">
-                   <p class="MsoNormal">Cover Document Specification and test methods — Rice 17301</p>
-                   <p class="MsoNormal"> </p>
-                </div>
-                <p class="MsoNormal">
-                   <br clear="all" class="section"/>
-                </p>
-                <div class="WordSection2">
-                   <p class="MsoNormal">Intro Document Specification and test methods — Rice 17301</p>
-                   <div class="authority">
-                      <div class="boilerplate-copyright">
-                         <div class="zzCopyrightContainer">
-                            <div>
-                               <a name="_" id="_"/>
-                               <p class="zzCopyright">
-                                  <a name="boilerplate-year_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-year_ISO_17301-1_2016_Amd.1_2017"/>
-                                  © ISO 2017
-                               </p>
-                               <p class="zzCopyright">
-                                  <a name="boilerplate-message_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-message_ISO_17301-1_2016_Amd.1_2017"/>
-                                  All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.
-                               </p>
-                               <p style="text-align:left;" align="left" class="zzCopyright">
-                                  <a name="boilerplate-address_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-address_ISO_17301-1_2016_Amd.1_2017"/>
-                                  ISO copyright office
-                                  <br/>
-                                  Ch. de Blandonnet 8 • CP 401
-                                  <br/>
-                                  CH-1214 Vernier, Geneva, Switzerland
-                                  <br/>
-                                  Tel.  + 41 22 749 01 11
-                                  <br/>
-                                  Fax  + 41 22 749 09 47
-                                  <br/>
-                                  Email: copyright@iso.org
-                                  <br/>
-                                  Website: www.iso.org
-                               </p>
-                               <p class="zzCopyright">
-                                  <a name="boilerplate-place_ISO_17301-1_2016_Amd.1_2017" id="boilerplate-place_ISO_17301-1_2016_Amd.1_2017"/>
-                                  Published in Switzerland
-                               </p>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                   <p class="MsoNormal">
-                      <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
-                   </p>
-                   <div>
-                      <a name="_" id="_"/>
-                      <p class="ForewordTitle">Foreword</p>
-                      <p class="ForewordText">
-                         <a name="_" id="_"/>
-                         ISO (the International Organization for Standardization) is a worldwide federation of national standards bodies (ISO member bodies). The work of preparing International Standards is normally carried out through ISO technical committees. Each member body interested in a subject for which a technical committee has been established has the right to be represented on that committee. International organizations, governmental and non-governmental, in liaison with ISO, also take part in the work. ISO collaborates closely with the International Electrotechnical Commission (IEC) on all matters of electrotechnical standardization.
-                      </p>
-                      <p class="ForewordText">
-                         <a name="_" id="_"/>
-                         The procedures used to develop this document and those intended for its further maintenance are described in the ISO/IEC Directives, Part 1. In particular the different approval criteria needed for the different types of ISO documents should be noted. This document was drafted in accordance with the editorial rules of the ISO/IEC Directives, Part 2 (see www.iso.org/directives).
-                      </p>
-                      <p class="ForewordText">
-                         <a name="_" id="_"/>
-                         Attention is drawn to the possibility that some of the elements of this document may be the subject of patent rights. ISO shall not be held responsible for identifying any or all such patent rights. Details of any patent rights identified during the development of the document will be in the Introduction and/or on the ISO list of patent declarations received (see www.iso.org/patents).
-                      </p>
-                      <p class="ForewordText">
-                         <a name="_" id="_"/>
-                         Any trade name used in this document is information given for the convenience of users and does not constitute an endorsement.
-                      </p>
-                      <p class="ForewordText">
-                         <a name="_" id="_"/>
-                         For an explanation on the voluntary nature of standards, the meaning of ISO specific terms and expressions related to conformity assessment, as well as information about ISO’s adherence to the World Trade Organization (WTO) principles in the Technical Barriers to Trade (TBT) see the following URL: www.iso.org/iso/foreword.html.
-                      </p>
-                      <p class="ForewordText">
-                         <a name="_" id="_"/>
-                         This document was prepared by Technical Committee ISO/{technical-committee-type} 34,
-                         <i>Food products</i>
-                         , Subcommittee SC 4,
-                         <i>Cereals and pulses</i>
-                         .
-                      </p>
-                      <p class="ForewordText">
-                         <a name="_" id="_"/>
-                         A list of all parts in the ISO 17301 series can be found on the ISO website.
-                      </p>
-                   </div>
-                   <p class="MsoNormal"> </p>
-                </div>
-                <p class="MsoNormal">
-                   <br clear="all" class="section"/>
-                </p>
-                <div class="WordSection3">
-                   <p class="zzSTDTitle1">
-                      <span class="boldtitle">Specification and test methods — </span>
-                      <span class="boldtitle">Rice</span>
-                   </p>
-                   <div>
-                      <a name="_introduction_ISO_17301-1_2016_Amd.1_2017" id="_introduction_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>Introduction</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Delete the fourth to seventh paragraphs.
-                      </p>
-                   </div>
-                   <div>
-                      <a name="_normative_references_ISO_17301-1_2016_Amd.1_2017" id="_normative_references_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>Normative references</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Replace the reference to ISO 16634:— (including the footnote) with the following:
-                      </p>
-                      <div class="Quote">
-                         <a name="_" id="_"/>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            ISO 16634-2:2016,
-                            <i>Food products — Determination of the total nitrogen content by combustion according to the Dumas principle and calculation of the crude protein content — Part 2: Cereals, pulses and milled cereal products</i>
-                         </p>
-                      </div>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Renumber subsequent footnotes.
-                      </p>
-                   </div>
-                   <div>
-                      <a name="_4_1_second_paragraph_ISO_17301-1_2016_Amd.1_2017" id="_4_1_second_paragraph_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>4.1, second paragraph</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Replace the paragraph with the following:
-                      </p>
-                      <div class="Quote">
-                         <a name="_" id="_"/>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            There shall be a procedure to identify the maximum permissible levels for additives and pesticide residues and other contaminants in the country of destination.
-                         </p>
-                      </div>
-                   </div>
-                   <div>
-                      <a name="_4_2_1_ISO_17301-1_2016_Amd.1_2017" id="_4_2_1_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>4.2.1</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Designate the existing NOTE as NOTE 1 and add the following new NOTE:
-                      </p>
-                      <div class="Quote">
-                         <a name="_" id="_"/>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            NOTE 2 For certain destinations, no differentiation is made between the organic and inorganic mass fractions of extraneous matter.
-                         </p>
-                      </div>
-                   </div>
-                   <div>
-                      <a name="_4_2_2_table_1_ISO_17301-1_2016_Amd.1_2017" id="_4_2_2_table_1_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>4.2.2, Table 1</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         In the column “in milled rice (non-glutinous)”, replace the value “0,3” for “Paddy” with the value “0,5”.
-                      </p>
-                   </div>
-                   <div>
-                      <a name="_6_3_first_paragraph_ISO_17301-1_2016_Amd.1_2017" id="_6_3_first_paragraph_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>6.3, first paragraph</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Replace the reference “ISO 16634:—, Clause 9” with “ISO 16634-2:2016, Clause 9”.
-                      </p>
-                   </div>
-                   <div>
-                      <a name="_clause_8_ISO_17301-1_2016_Amd.1_2017" id="_clause_8_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>Clause 8</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Add the following paragraph at the end of the clause:
-                      </p>
-                      <div class="Quote">
-                         <a name="_" id="_"/>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            Annex E gives recommendations relating to storage and transport conditions.
-                         </p>
-                      </div>
-                   </div>
-                   <div>
-                      <a name="_clause_9_ISO_17301-1_2016_Amd.1_2017" id="_clause_9_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>Clause 9</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Replace the text with the following:
-                      </p>
-                      <div class="Quote">
-                         <a name="_" id="_"/>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            The marking on the packages shall clearly identify the type of rice.
-                         </p>
-                      </div>
-                   </div>
-                   <div>
-                      <a name="_a_2_1_ISO_17301-1_2016_Amd.1_2017" id="_a_2_1_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>A.2.1</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Replace the text with the following:
-                      </p>
-                      <div class="Quote">
-                         <a name="_" id="_"/>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            <b>A.2.1 Sample divider</b>
-                            , consisting of a conical sample divider or multiple-slot sample divider with a distribution system, e.g. conical (Boerner-type) divider such as that shown in Figure A.1 or multiple-slot (riffle-type) divider such as that shown in Figure A.2.
-                         </p>
-                      </div>
-                   </div>
-                   <div>
-                      <a name="_figure_a_1_ISO_17301-1_2016_Amd.1_2017" id="_figure_a_1_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>Figure A.1</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Replace Figure A.1 with the following two figures:
-                      </p>
-                      <div class="MsoNormal" style="text-align:center;">
-                         <a name="fig1_ISO_17301-1_2016_Amd.1_2017" id="fig1_ISO_17301-1_2016_Amd.1_2017"/>
-                         <img src="cid:_.png" height="615" width="420"/>
-                         <div align="left" style="page-break-after:avoid;">
-                            <div class="figdl" style="page-break-after:avoid;">
-                               <table class="figdl">
-                                  <a name="_" id="_"/>
-                                  <tr>
-                                     <td valign="top" align="left">
-                                        <p align="left" style="margin-left:0pt;text-align:left;" class="MsoNormal">1</p>
-                                     </td>
-                                     <td valign="top">
-                                        <p class="MsoNormal">
-                                           <a name="_" id="_"/>
-                                           funnel
-                                        </p>
-                                     </td>
-                                  </tr>
-                                  <tr>
-                                     <td valign="top" align="left">
-                                        <p align="left" style="margin-left:0pt;text-align:left;" class="MsoNormal">2</p>
-                                     </td>
-                                     <td valign="top">
-                                        <p class="MsoNormal">
-                                           <a name="_" id="_"/>
-                                           collection boxes
-                                        </p>
-                                     </td>
-                                  </tr>
-                               </table>
-                            </div>
-                         </div>
-                         <p class="FigureTitle" style="text-align:center;">Figure 1 — Conical (Boerner-type) divider</p>
-                      </div>
-                      <div class="MsoNormal" style="text-align:center;">
-                         <a name="fig2_ISO_17301-1_2016_Amd.1_2017" id="fig2_ISO_17301-1_2016_Amd.1_2017"/>
-                         <img src="cid:_.png" height="489" width="517"/>
-                         <div align="left" style="page-break-after:avoid;">
-                            <div class="figdl" style="page-break-after:avoid;">
-                               <table class="figdl">
-                                  <a name="_" id="_"/>
-                                  <tr>
-                                     <td valign="top" align="left">
-                                        <p align="left" style="margin-left:0pt;text-align:left;" class="MsoNormal">1</p>
-                                     </td>
-                                     <td valign="top">
-                                        <p class="MsoNormal">
-                                           <a name="_" id="_"/>
-                                           slots
-                                        </p>
-                                     </td>
-                                  </tr>
-                                  <tr>
-                                     <td valign="top" align="left">
-                                        <p align="left" style="margin-left:0pt;text-align:left;" class="MsoNormal">2</p>
-                                     </td>
-                                     <td valign="top">
-                                        <p class="MsoNormal">
-                                           <a name="_" id="_"/>
-                                           collection boxes
-                                        </p>
-                                     </td>
-                                  </tr>
-                               </table>
-                            </div>
-                         </div>
-                         <p class="FigureTitle" style="text-align:center;">Figure 2 — Multiple-slot (riffle-type) divider with two collection boxes</p>
-                      </div>
-                   </div>
-                   <div>
-                      <a name="_annex_e_ISO_17301-1_2016_Amd.1_2017" id="_annex_e_ISO_17301-1_2016_Amd.1_2017"/>
-                      <h1>Annex E</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Add the following annex after Annex D, before the Bibliography.
-                      </p>
-                      <div class="Quote">
-                         <a name="_" id="_"/>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            == Recommendations relating to storage and storage and transport conditions
-                         </p>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            Containers of rice should be stored in covered premises, well protected from the sun, rain and excessive heat.
-                         </p>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            The storeroom should be dry, free from unpleasant odours and protected against entry of insects and other vermin. Ventilation should be adjusted in such a way as to give good ventilation during dry weather and to be fully closed under damp conditions. Suitable provisions should be made for fumigation of storerooms.
-                         </p>
-                         <p class="MsoNormal">
-                            <a name="_" id="_"/>
-                            Containers should be handled and transported in such a way that they are protected from the rain, sun or other sources of excessive heat, unpleasant odours and any other contamination (especially in the holds of ships).
-                         </p>
-                      </div>
-                   </div>
-                </div>
-                <br clear="all" style="page-break-before:left;mso-break-type:section-break"/>
-                <div class="colophon"/>
-                <p class="MsoNormal">
-                   <br clear="all" class="section"/>
-                </p>
-                <div class="WordSection1">
-                   <p class="MsoNormal">Cover Document Dummy document 17302</p>
-                   <p class="MsoNormal"> </p>
-                </div>
-                <p class="MsoNormal">
-                   <br clear="all" class="section"/>
-                </p>
-                <div class="WordSection2">
-                   <p class="MsoNormal">Intro Document Dummy document 17302</p>
-                   <div class="authority">
-                      <div class="boilerplate-copyright">
-                         <div class="zzCopyrightContainer">
-                            <div>
-                               <a name="_" id="_"/>
-                               <p class="zzCopyright">
-                                  <a name="boilerplate-year_ISO_17302" id="boilerplate-year_ISO_17302"/>
-                                  © ISO 2016
-                               </p>
-                               <p class="zzCopyright">
-                                  <a name="boilerplate-message_ISO_17302" id="boilerplate-message_ISO_17302"/>
-                                  All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.
-                               </p>
-                               <p style="text-align:left;" align="left" class="zzCopyright">
-                                  <a name="boilerplate-address_ISO_17302" id="boilerplate-address_ISO_17302"/>
-                                  ISO copyright office
-                                  <br/>
-                                  Ch. de Blandonnet 8 • CP 401
-                                  <br/>
-                                  CH-1214 Vernier, Geneva, Switzerland
-                                  <br/>
-                                  Tel.  + 41 22 749 01 11
-                                  <br/>
-                                  Fax  + 41 22 749 09 47
-                                  <br/>
-                                  Email: copyright@iso.org
-                                  <br/>
-                                  Website: www.iso.org
-                               </p>
-                               <p class="zzCopyright">
-                                  <a name="boilerplate-place_ISO_17302" id="boilerplate-place_ISO_17302"/>
-                                  Published in Switzerland
-                               </p>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                   <p class="MsoNormal">
-                      <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
-                   </p>
-                   <div class="TOC">
-                      <a name="_" id="_"/>
-                      <p class="zzContents">Contents</p>
-                      <p class="MsoToc1">
-                         <span lang="EN-GB" xml:lang="EN-GB">
-                            <span style="mso-element:field-begin"/>
-                            <span style="mso-spacerun:yes"> </span>
-                            TOC \o "1-2" \h \z \t "Heading 1;1;ANNEX;1;Biblio Title;1;Foreword Title;1;Intro Title;1"
-                            <span style="mso-element:field-separator"/>
-                         </span>
-                         <span class="MsoHyperlink">
-                            <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
-                               <a href="#_Toc">
-                                  1 Scope
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-tab-count:1 dotted">. </span>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-begin"/>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc \h </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-separator"/>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"/>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-end"/>
-                                  </span>
-                               </a>
-                            </span>
-                         </span>
-                      </p>
-                      <p class="MsoToc1">
-                         <span class="MsoHyperlink">
-                            <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
-                               <a href="#_Toc">
-                                  2
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-tab-count:1 dotted">. </span>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-begin"/>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc \h </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-separator"/>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"/>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-end"/>
-                                  </span>
-                               </a>
-                            </span>
-                         </span>
-                      </p>
-                      <p class="MsoToc1">
-                         <span class="MsoHyperlink">
-                            <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
-                               <a href="#_Toc">
-                                  3 What?
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-tab-count:1 dotted">. </span>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-begin"/>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc \h </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-separator"/>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"/>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-end"/>
-                                  </span>
-                               </a>
-                            </span>
-                         </span>
-                      </p>
-                      <p class="MsoToc1">
-                         <span class="MsoHyperlink">
-                            <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
-                               <a href="#_Toc">
-                                  4
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-tab-count:1 dotted">. </span>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-begin"/>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc \h </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-separator"/>
-                                  </span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"/>
-                                  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
-                                     <span style="mso-element:field-end"/>
-                                  </span>
-                               </a>
-                            </span>
-                         </span>
-                      </p>
-                      <p class="MsoToc1">
-                         <span lang="EN-GB" xml:lang="EN-GB">
-                            <span style="mso-element:field-end"/>
-                         </span>
-                         <span lang="EN-GB" xml:lang="EN-GB">
-                            <o:p class="MsoNormal"> </o:p>
-                         </span>
-                      </p>
-                   </div>
-                   <p class="MsoNormal"> </p>
-                </div>
-                <p class="MsoNormal">
-                   <br clear="all" class="section"/>
-                </p>
-                <div class="WordSection3">
-                   <p class="zzSTDTitle1">
-                      <span class="boldtitle">Dummy document</span>
-                   </p>
-                   <div>
-                      <a name="_scope_ISO_17302" id="_scope_ISO_17302"/>
-                      <h1>
-                         1
-                         <span style="mso-tab-count:1">  </span>
-                         Scope
-                      </h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         This is a dummy document.
-                      </p>
-                   </div>
-                   <div>
-                      <a name="E1_ISO_17302" id="E1_ISO_17302"/>
-                      <h1>2</h1>
-                      <div class="MsoNormal" style="text-align:center;">
-                         <a name="_" id="_"/>
-                         <pre style="page-break-after:avoid;">
-                            <a name="A1_ISO_17302" id="A1_ISO_17302"/>
-                            module Metanorma class Document # @return [Strin] attr_reader :file # @param bibitem [RelatonBib::BibliographicItem] def initialize(bibitem, file) @bibitem = bibitem @file = file end class self # @param file [String] file path # @return [Metanorma::Document] def parse_file(file) new bibitem(file), file end # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element] # @return [Metanorma::Document] def parse_xml(xml) new from_xml(xml) end private # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element] # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem] def from_xml(xml) Relaton::Cli.parse_xml xml.at("//xmlns:bibitem|//xmlns:bibdata") end # @param file [String] # @return [Symbol] file type def format(file) case file when /\.xml$/ then :xml when /.ya?ml$/ then :yaml end end # @param file [String] # @return [RelatonBib::BibliographicItem, # RelatonIso::IsoBibliographicItem] def bibitem(file) case format(file) when :xml from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8")) when :yaml yaml = File.read(file, ecoding: "UTF-8") Relaton::Cli::YAMLConvertor.convert_single_file(yaml) end end end # @param builder [Nokogiri::XML::Builder, nil] # @return [Nokogiri::XML::Builder, String] def to_xml(builder = nil) if builder render_xml builder else Nokogiri::XML::Builder.new do |b| root = render_xml b root["xmlns"] = "http://metanorma.org" end.to_xml end end # @return [String] def type @type ||= (@bibitem.docidentifier.first.type || @bibitem.docidentifier.first.id.match(/^[^\s]+/).to_s).downcase || "standoc" end private def render_xml(builder) builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true } end end end
-                         </pre>
-                         <p class="FigureTitle" style="text-align:center;">Figure 1</p>
-                      </div>
-                   </div>
-                   <div>
-                      <a name="what_ISO_17302" id="what_ISO_17302"/>
-                      <h1>
-                         3
-                         <span style="mso-tab-count:1">  </span>
-                         What?
-                      </h1>
-                      <div class="ol_wrap">
-                         <p style="mso-list:l2 level1 lfo1;" class="MsoListParagraphCxSpFirst">
-                            <a name="_" id="_"/>
-                            What?
-                         </p>
-                      </div>
-                      <div class="Note">
-                         <a name="N3_ISO_17302" id="N3_ISO_17302"/>
-                         <p class="Note">
-                            <span class="note_label">
-                               NOTE
-                               <span style="mso-tab-count:1">  </span>
-                            </span>
-                            <a href="_dummy_attachments/LICENSE1.TXT">License A</a>
-                         </p>
-                      </div>
-                   </div>
-                   <div>
-                      <a name="E2_ISO_17302" id="E2_ISO_17302"/>
-                      <h1>4</h1>
-                      <div class="MsoNormal" style="text-align:center;">
-                         <a name="A2_ISO_17302" id="A2_ISO_17302"/>
-                         <pre style="page-break-after:avoid;">
-                            <a name="_" id="_"/>
-                            module Metanorma # Metanorma collection's manifest class CollectionManifest # @return [Metanorma::Collection] attr_reader :collection # @param level [String] # @param title [String, nil] # @param docref [ArrayHash{String=String}] # @param manifest [ArrayMetanorma::CollectionManifest] def initialize(level, title = nil, docref = [], manifest = []) @level = level @title = title @docref = docref @manifest = manifest end class self # @param mnf [Nokogiri::XML::Element] # @return [Metanorma::CollectionManifest] def from_yaml(mnf) manifest = RelatonBib::HashConverter.array(mnf["manifest"]).map do |m| from_yaml m end docref = RelatonBib::HashConverter.array mnf["docref"] new(mnf["level"], mnf["title"], docref, manifest) end # @param mnf [Nokogiri::XML::Element] # @return [Metanorma::CollectionManifest] def from_xml(mnf) level = mnf.at("level").text title = mnf.at("title").text manifest = mnf.xpath("xmlns:manifest").map { |m| from_xml(m) } new(level, title, parse_docref(mnf), manifest) end private # @param mnf [Nokogiri::XML::Element] # @return [Hash{String=String}] def parse_docref(mnf) mnf.xpath("xmlns:docref").map do |dr| h = { "identifier" = dr.at("identifier").text } h["fileref"] = dr[:fileref] if dr[:fileref] h end end end # @param col [Metanorma::Collection] def collection=(col) @collection = col @manifest.each { |mnf| mnf.collection = col } end # @param dir [String] path to coolection # @return [HashString, Metanorma::Document] def documents(dir = "") docs = @docref.each_with_object({}) do |dr, m| next m unless dr["fileref"] m[dr["identifier"]] = Document.parse_file File.join(dir, dr["fileref"]) m end @manifest.reduce(docs) do |mem, mnf| mem.merge mnf.documents(dir) end end # @param builder [Nokogiri::XML::Builder] def to_xml(builder) builder.manifest do |b| b.level @level b.title @title if @title docref_to_xml b @manifest.each { |m| m.to_xml b } end end # @return [ArrayHash{String=String}] def docrefs return @docrefs if @docrefs drfs = @docref.map { |dr| dr } @manifest.reduce(drfs) { |mem, mnf| mem + mnf.docrefs } end def docref_by_id(docid) refs = docrefs dref = refs.detect { |k| k["identifier"] == docid } dref || docrefs.detect { |k| /^#{k["identifier"]}/ =~ docid } end private # @param builder [Nokogiri::XML::Builder] def docref_to_xml(builder) @docref.each do |dr| drf = builder.docref { |b| b.identifier dr["identifier"] } drf[:fileref] = dr["fileref"] if collection.directives.include?("documents-inline") id = collection.documents.find_index { |k, _| k == dr["identifier"] } drf[:id] = format("doc%index09d", index: id) end end end end end
-                         </pre>
-                         <p class="FigureTitle" style="text-align:center;">Figure 2</p>
-                      </div>
-                      <div class="MsoNormal" style="text-align:center;">
-                         <a name="fig1_ISO_17301-1_2016_ISO_17302" id="fig1_ISO_17301-1_2016_ISO_17302"/>
-                         <p class="MsoNormal" style="page-break-after:avoid;">
-                            <img src="cid:_.emf" height="632" width="448"/>
-                         </p>
-                         <p class="FigureTitle" style="text-align:center;">Figure 3</p>
-                      </div>
-                   </div>
-                </div>
-                <br clear="all" style="page-break-before:left;mso-break-type:section-break"/>
-                <div class="colophon"/>
-                <p class="MsoNormal">
-                   <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
-                </p>
-                <div class="Section3">
-                   <div>
-                      <a name="_" id="_"/>
-                      <h1>Exordium</h1>
-                      <p class="MsoNormal">
-                         <a name="_" id="_"/>
-                         Hic explicit
-                      </p>
-                   </div>
-                </div>
-             </div>
-             <br clear="all" style="page-break-before:left;mso-break-type:section-break"/>
-             <div class="colophon"/>
-             <div style="mso-element:footnote-list"/>
-          </body>
-       </html>
+    # @param bibitem [RelatonBib::BibliographicItem]
+    def initialize(bibitem, file)
+      @bibitem = bibitem
+      @file = file
+    end
+
+    class &lt;&lt; self
+      # @param file [String] file path
+      # @return [Metanorma::Document]
+      def parse_file(file)
+        new bibitem(file), file
+      end
+
+      # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
+      # @return [Metanorma::Document]
+      def parse_xml(xml)
+        new from_xml(xml)
+      end
+
+      private
+
+      # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
+      # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
+      def from_xml(xml)
+        Relaton::Cli.parse_xml xml.at("//xmlns:bibitem|//xmlns:bibdata")
+      end
+
+      # @param file [String]
+      # @return [Symbol] file type
+      def format(file)
+        case file
+        when /\.xml$/ then :xml
+        when /.ya?ml$/ then :yaml
+        end
+      end
+
+      # @param file [String]
+      # @return [RelatonBib::BibliographicItem,
+      #   RelatonIso::IsoBibliographicItem]
+      def bibitem(file)
+        case format(file)
+        when :xml
+          from_xml Nokogiri::XML(File.read(file, encoding: "UTF-8"))
+        when :yaml
+          yaml = File.read(file, ecoding: "UTF-8")
+          Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
+        end
+      end
+    end
+
+    # @param builder [Nokogiri::XML::Builder, nil]
+    # @return [Nokogiri::XML::Builder, String]
+    def to_xml(builder = nil)
+      if builder
+        render_xml builder
+      else
+        Nokogiri::XML::Builder.new do |b|
+          root = render_xml b
+          root["xmlns"] = "http://metanorma.org"
+        end.to_xml
+      end
+    end
+
+    # @return [String]
+    def type
+      @type ||= (@bibitem.docidentifier.first&amp;.type ||
+        @bibitem.docidentifier.first&amp;.id&amp;.match(/^[^\s]+/)&amp;.to_s)&amp;.downcase ||
+        "standoc"
+    end
+
+    private
+
+    def render_xml(builder)
+      builder.send(type + "-standard") { |b| @bibitem.to_xml b, bibdata: true }
+    end
+  end
+end
+</pre>
+<p class="FigureTitle" style="text-align:center;">Figure 1</p></div>
+  </div>
+  <div><a name="what_ISO_17302" id="what_ISO_17302"></a>
+    <h1>3<span style="mso-tab-count:1">&#xA0; </span>What?</h1>
+    <div class="ol_wrap">
+      
+<p style="mso-list:l2 level1 lfo1;" class="MsoListParagraphCxSpFirst"><a name="_" id="_"></a>
+What?
+</p>
+     
+    </div>
+    <div class="Note"><a name="N3_ISO_17302" id="N3_ISO_17302"></a>
+      <p class="Note">
+        <span class="note_label">NOTE<span style="mso-tab-count:1">&#xA0; </span></span>
+        <a href="_dummy_attachments/LICENSE1.TXT">License A</a>
+      </p>
+    </div>
+  </div>
+  <div><a name="E2_ISO_17302" id="E2_ISO_17302"></a>
+    <h1>4</h1>
+    <div class="MsoNormal" style="text-align:center;"><a name="A2_ISO_17302" id="A2_ISO_17302"></a>
+<pre style="page-break-after:avoid;"><a name="_" id="_"></a>
+module Metanorma
+  # Metanorma collection's manifest
+  class CollectionManifest
+    # @return [Metanorma::Collection]
+    attr_reader :collection
+
+    # @param level [String]
+    # @param title [String, nil]
+    # @param docref [Array&lt;Hash{String=&gt;String}&gt;]
+    # @param manifest [Array&lt;Metanorma::CollectionManifest&gt;]
+    def initialize(level, title = nil, docref = [], manifest = [])
+      @level = level
+      @title = title
+      @docref = docref
+      @manifest = manifest
+    end
+
+    class &lt;&lt; self
+      # @param mnf [Nokogiri::XML::Element]
+      # @return [Metanorma::CollectionManifest]
+      def from_yaml(mnf)
+        manifest = RelatonBib::HashConverter.array(mnf["manifest"]).map do |m|
+          from_yaml m
+        end
+        docref = RelatonBib::HashConverter.array mnf["docref"]
+        new(mnf["level"], mnf["title"], docref, manifest)
+      end
+
+      # @param mnf [Nokogiri::XML::Element]
+      # @return [Metanorma::CollectionManifest]
+      def from_xml(mnf)
+        level = mnf.at("level").text
+        title = mnf.at("title")&amp;.text
+        manifest = mnf.xpath("xmlns:manifest").map { |m| from_xml(m) }
+        new(level, title, parse_docref(mnf), manifest)
+      end
+
+      private
+
+      # @param mnf [Nokogiri::XML::Element]
+      # @return [Hash{String=&gt;String}]
+      def parse_docref(mnf)
+        mnf.xpath("xmlns:docref").map do |dr|
+          h = { "identifier" =&gt; dr.at("identifier").text }
+          h["fileref"] = dr[:fileref] if dr[:fileref]
+          h
+        end
+      end
+    end
+
+    # @param col [Metanorma::Collection]
+    def collection=(col)
+      @collection = col
+      @manifest.each { |mnf| mnf.collection = col }
+    end
+
+    # @param dir [String] path to coolection
+    # @return [Hash&lt;String, Metanorma::Document&gt;]
+    def documents(dir = "")
+      docs = @docref.each_with_object({}) do |dr, m|
+        next m unless dr["fileref"]
+
+        m[dr["identifier"]] = Document.parse_file File.join(dir, dr["fileref"])
+        m
+      end
+      @manifest.reduce(docs) do |mem, mnf|
+        mem.merge mnf.documents(dir)
+      end
+    end
+
+    # @param builder [Nokogiri::XML::Builder]
+    def to_xml(builder)
+      builder.manifest do |b|
+        b.level @level
+        b.title @title if @title
+        docref_to_xml b
+        @manifest.each { |m| m.to_xml b }
+      end
+    end
+
+    # @return [Array&lt;Hash{String=&gt;String}&gt;]
+    def docrefs
+      return @docrefs if @docrefs
+
+      drfs = @docref.map { |dr| dr }
+      @manifest.reduce(drfs) { |mem, mnf| mem + mnf.docrefs }
+    end
+
+    def docref_by_id(docid)
+      refs = docrefs
+      dref = refs.detect { |k| k["identifier"] == docid }
+      dref || docrefs.detect { |k| /^#{k["identifier"]}/ =~ docid }
+    end
+
+    private
+
+    # @param builder [Nokogiri::XML::Builder]
+    def docref_to_xml(builder)
+      @docref.each do |dr|
+        drf = builder.docref { |b| b.identifier dr["identifier"] }
+        drf[:fileref] = dr["fileref"]
+        if collection.directives.include?("documents-inline")
+          id = collection.documents.find_index { |k, _| k == dr["identifier"] }
+          drf[:id] = format("doc%&lt;index&gt;09d", index: id)
+        end
+      end
+    end
+  end
+end
+</pre>
+<p class="FigureTitle" style="text-align:center;">Figure 2</p></div>
+    <div class="MsoNormal" style="text-align:center;"><a name="fig1_ISO_17301-1_2016_ISO_17302" id="fig1_ISO_17301-1_2016_ISO_17302"></a>
+                  <p class="MsoNormal" style="page-break-after:avoid;"><img src="cid:_.emf" height="632" width="448"/></p><p class="FigureTitle" style="text-align:center;">Figure 3</p></div>
+  </div>
+</div>
+      <br clear="all" style="page-break-before:left;mso-break-type:section-break"/>
+      <div class="colophon"></div>
+      <p class="MsoNormal">
+        <br clear="all" style="mso-special-character:line-break;page-break-before:always"/>
+      </p>
+      <div class="Section3">
+        <div><a name="_" id="_"></a><h1>Exordium</h1>
+     
+<p class="MsoNormal"><a name="_" id="_"></a>Hic explicit</p>
+</div>
+      </div>
+    </div>
+    <br clear="all" style="page-break-before:left;mso-break-type:section-break"/>
+    <div class="colophon"></div>
+    <div style="mso-element:footnote-list"/>
+  </body>
+</html>
