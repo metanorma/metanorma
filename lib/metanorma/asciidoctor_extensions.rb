@@ -1,1 +1,0 @@
-require_relative "asciidoctor_extensions/glob_include_processor"
