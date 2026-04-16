@@ -62,49 +62,49 @@ RSpec.describe Metanorma::Collection do
     file2.xpath("//xmlns:emf").each(&:remove)
     expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
     expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
-    expect(Canon.format_xml(file2
-      .at("//xmlns:fmt-eref[@bibitemid = '#{m[1]}_A']").to_xml.sub(/ id="[^"]+"/, "")))
-      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+    expect(file2
+      .at("//xmlns:fmt-eref[@bibitemid = '#{m[1]}_A']").to_xml.sub(/ id="[^"]+"/, ""))
+      .to be_xml_equivalent_to <<~OUTPUT
         <fmt-eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
-    expect(Canon.format_xml(file2
+    expect(file2
      .at("//xmlns:note[@id = 'N1']//xmlns:fmt-eref[@bibitemid = '#{m[1]}_R1']")
-      .to_xml.sub(/ id="[^"]+"/, "")))
-      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+      .to_xml.sub(/ id="[^"]+"/, ""))
+      .to be_xml_equivalent_to <<~OUTPUT
         <fmt-eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
-    expect(Canon.format_xml(file2
+    expect(file2
      .at("//xmlns:note[@id = 'N2']//xmlns:fmt-eref[@bibitemid = '#{m[1]}_R1']")
-      .to_xml.sub(/ id="[^"]+"/, "")))
-      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+      .to_xml.sub(/ id="[^"]+"/, ""))
+      .to be_xml_equivalent_to <<~OUTPUT
         <fmt-eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
-    expect(Canon.format_xml(file2
+    expect(file2
      .at("//xmlns:note[@id = 'N3']//xmlns:fmt-link")
-      .to_xml.sub(/ id="[^"]+"/, "").sub(/ id="[^"]+"/, "")))
-      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+      .to_xml.sub(/ id="[^"]+"/, "").sub(/ id="[^"]+"/, ""))
+      .to be_xml_equivalent_to <<~OUTPUT
         <fmt-link attachment="true" target="_test_sectionsplit_attachments/LICENSE.TXT">License A</fmt-link>
       OUTPUT
     expect(file2
      .at("//xmlns:bibitem[@id = 'R1']"))
       .to be_nil
-    expect(Canon.format_xml(file2
-     .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml))
-      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+    expect(file2
+     .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml)
+      .to be_xml_equivalent_to <<~OUTPUT
         <bibitem id="#{m[1]}_A" anchor="#{m[1]}_A" type="internal">
         <docidentifier type="repository">#{m[1]}/A</docidentifier>
         </bibitem>
       OUTPUT
-    expect(Canon.format_xml(file2
-     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+    expect(file2
+     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml)
+      .to be_xml_equivalent_to <<~OUTPUT
         <bibitem id="#{m[1]}_R1" anchor="#{m[1]}_R1" type="internal">
         <docidentifier type="repository">#{m[1]}/R1</docidentifier>
         </bibitem>
       OUTPUT
-    expect(Canon.format_xml(file2
-      .at("//xmlns:svgmap[1]").to_xml.gsub(/ (source|id)="[^"]+"/, "")))
-      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+    expect(file2
+      .at("//xmlns:svgmap[1]").to_xml.gsub(/ (source|id)="[^"]+"/, ""))
+      .to be_xml_equivalent_to <<~OUTPUT
         <svgmap><figure>
         <image src="" mimetype="image/svg+xml" height="auto" width="auto">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" original-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
@@ -125,9 +125,9 @@ RSpec.describe Metanorma::Collection do
           <fmt-eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></fmt-eref>
         </target></svgmap>
       OUTPUT
-    expect(Canon.format_xml(file2
-     .at("//xmlns:svgmap[2]").to_xml.gsub(/ (source|id)="[^"]+"/, "")))
-      .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+    expect(file2
+     .at("//xmlns:svgmap[2]").to_xml.gsub(/ (source|id)="[^"]+"/, ""))
+      .to be_xml_equivalent_to <<~OUTPUT
              <svgmap><figure>
          <image src="" mimetype="image/svg+xml" height="auto" width="auto">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
@@ -143,9 +143,9 @@ RSpec.describe Metanorma::Collection do
     expect(file2.at("//xmlns:annex")).to be_nil
     expect(file2.at("//xmlns:indexsect")).to be_nil
     #     file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
-    #     expect(Canon.format_xml(file4
-    #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml))
-    #       .to be_equivalent_to Canon.format_xml(<<~OUTPUT)
+    #     expect(file4
+    #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml)
+    #       .to be_xml_equivalent_to <<~OUTPUT
     # <bibitem id="#{m[1]}_R1">
     #   <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
     #   <docidentifier>R1</docidentifier>
@@ -612,9 +612,7 @@ RSpec.describe Metanorma::Collection do
              <p id="_">
                 <a class="FootnoteRef" href="#fn:_109_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                    <sup>1)</sup>
-                </a>
-                First footnote
-             </p>
+                </a>First footnote</p>
              <a href="#fnref:1">↩</a>
           </aside>
           <a class="FootnoteRef" href="#fn:_109_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
@@ -624,9 +622,7 @@ RSpec.describe Metanorma::Collection do
              <p id="_">
                 <a class="FootnoteRef" href="#fn:_110_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                    <sup>2)</sup>
-                </a>
-                Second footnote
-             </p>
+                </a>Second footnote</p>
              <a href="#fnref:2">↩</a>
           </aside>
           <a class="FootnoteRef" href="#fn:_110_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
@@ -641,8 +637,8 @@ RSpec.describe Metanorma::Collection do
     expect(file0).not_to include("Fifth annotation")
     expect(file0).not_to include("Sixth annotation")
 
-    expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
-      .to be_equivalent_to Canon.format_xml(output)
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
+      .to be_xml_equivalent_to output
     xml = "<xml>#{xml1.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
        <xml>
@@ -656,9 +652,7 @@ RSpec.describe Metanorma::Collection do
              <p id="_">
                 <a class="FootnoteRef" href="#fn:_111_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                    <sup>3)</sup>
-                </a>
-                Third footnote
-             </p>
+                </a>Third footnote</p>
              <a href="#fnref:1">↩</a>
           </aside>
           <a class="FootnoteRef" href="#fn:_111_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
@@ -668,9 +662,7 @@ RSpec.describe Metanorma::Collection do
              <p id="_">
                 <a class="FootnoteRef" href="#fn:_112_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                    <sup>4)</sup>
-                </a>
-                Fourth footnote
-             </p>
+                </a>Fourth footnote</p>
              <a href="#fnref:2">↩</a>
           </aside>
           <a class="FootnoteRef" href="#fn:_112_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
@@ -678,8 +670,8 @@ RSpec.describe Metanorma::Collection do
           </a>
        </xml>
     OUTPUT
-    expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
-      .to be_equivalent_to Canon.format_xml(output)
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
+      .to be_xml_equivalent_to output
     expect(file1).not_to include("First annotation")
     expect(file1).not_to include("Second annotation")
     expect(file1).to include("Third annotation")
@@ -700,9 +692,7 @@ RSpec.describe Metanorma::Collection do
              <p id="_">
                 <a class="FootnoteRef" href="#fn:_113_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                    <sup>5)</sup>
-                </a>
-                Fifth footnote
-             </p>
+                </a>Fifth footnote</p>
              <a href="#fnref:1">↩</a>
           </aside>
           <a class="FootnoteRef" href="#fn:_113_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
@@ -712,9 +702,7 @@ RSpec.describe Metanorma::Collection do
              <p id="_">
                 <a class="FootnoteRef" href="#fn:_114_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                    <sup>6)</sup>
-                </a>
-                Sixth footnote
-             </p>
+                </a>Sixth footnote</p>
              <a href="#fnref:2">↩</a>
           </aside>
           <a class="FootnoteRef" href="#fn:_114_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
@@ -722,8 +710,8 @@ RSpec.describe Metanorma::Collection do
           </a>
        </xml>
     OUTPUT
-    expect(cleanup_guid(Canon.format_xml(xml)).gsub(/#{GUID}/o, ""))
-      .to be_equivalent_to Canon.format_xml(output)
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
+      .to be_xml_equivalent_to output
     expect(file2).not_to include("First annotation")
     expect(file2).not_to include("Second annotation")
     expect(file2).not_to include("Third annotation")

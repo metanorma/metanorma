@@ -25,7 +25,7 @@ RSpec.describe Metanorma::Collection do
         .gsub(/identifier: ['"]?#{GUID}['"]?[\n\r]+\s*/mo, "\\1")
         .gsub(/([\n\r]+\s+)schema_version: \S+[\n\r]+\s*/m, "\\1")
       expect(yaml_out).to be_equivalent_to <<~OUTPUT
-        ---
+       ---
        directives:
        - documents-external:
        - coverpage: collection_cover.html
@@ -132,8 +132,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(Canon.format_xml(cleanup_guid(xml))))
-        .to be_equivalent_to Canon.format_xml(cleanup_guid(xml_content))
+      expect(cleanup_id(cleanup_guid(xml)))
+        .to be_xml_equivalent_to cleanup_guid(xml_content)
     end
 
     it "YAML collection with no document identifiers" do
@@ -144,8 +144,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(Canon.format_xml(cleanup_guid(xml))))
-        .to be_equivalent_to Canon.format_xml(cleanup_guid(xml_content))
+      expect(cleanup_id(cleanup_guid(xml)))
+        .to be_xml_equivalent_to cleanup_guid(xml_content)
     end
 
     it "YAML collection with docs inline" do
@@ -156,8 +156,8 @@ RSpec.describe Metanorma::Collection do
       xml = mc.to_xml
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
-      expect(Canon.format_xml(cleanup_guid(cleanup_id(xml))))
-        .to be_equivalent_to Canon.format_xml(cleanup_guid(read_and_cleanup(xml_file)))
+      expect(cleanup_guid(cleanup_id(xml)))
+        .to be_xml_equivalent_to cleanup_guid(read_and_cleanup(xml_file))
 
       newyaml = "#{INPATH}/collection_docinline1.yml"
       File.write(newyaml, File.read("#{INPATH}/collection_docinline.yml")
@@ -165,8 +165,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse(newyaml)
       xml = mc.to_xml
       FileUtils.rm_rf newyaml
-      expect(Canon.format_xml(cleanup_guid(cleanup_id(xml))))
-        .to be_equivalent_to Canon.format_xml(cleanup_guid(read_and_cleanup(xml_file)))
+      expect(cleanup_guid(cleanup_id(xml)))
+        .to be_xml_equivalent_to cleanup_guid(read_and_cleanup(xml_file))
     end
 
     it "YAML collection with interleaved documents and manifests" do
@@ -177,8 +177,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(Canon.format_xml(cleanup_id(xml)))
-        .to be_equivalent_to Canon.format_xml(xml_content)
+      expect(cleanup_id(xml))
+        .to be_xml_equivalent_to xml_content
     end
 
     context "YAML collection with new format" do
@@ -190,8 +190,8 @@ RSpec.describe Metanorma::Collection do
 
       describe "when constructing collection manifest" do
         it "should inherit sectionsplit and have correct format" do
-          expect(Canon.format_xml(cleanup_id(ccm)))
-            .to be_equivalent_to Canon.format_xml(cleanup_id(<<~OUTPUT))
+          expect(cleanup_id(ccm))
+            .to be_xml_equivalent_to cleanup_id(<<~OUTPUT)
               <entry index="true">
                 <identifier>27b4fbb3-a76e-42c9-a519-3cf18a7ca1c5</identifier>
                 <type>collection</type>
@@ -476,8 +476,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(cleanup_id(Canon.format_xml(mc.to_xml)))
-        .to be_equivalent_to Canon.format_xml(xml)
+      expect(cleanup_id(mc.to_xml))
+        .to be_xml_equivalent_to xml
     end
 
     it "XML collection with interleaved documents and manifests" do
@@ -496,8 +496,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(Canon.format_xml(cleanup_id(mc.to_xml)))
-        .to be_equivalent_to Canon.format_xml(xml)
+      expect(cleanup_id(mc.to_xml))
+        .to be_xml_equivalent_to xml
     end
   end
 

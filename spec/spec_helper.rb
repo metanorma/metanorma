@@ -15,6 +15,8 @@ require "mn2pdf"
 require "xml-c14n"
 require_relative "support/uuid_mock"
 
+Canon::Config.instance.profile = :metanorma
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
