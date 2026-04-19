@@ -1,2 +1,1 @@
-gem "metanorma-core", git: "https://github.com/metanorma/metanorma-core", branch: "main"
 gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/metanorma-core"
