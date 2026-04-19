@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../../util/util"
+require "metanorma-core"
 
 module Metanorma
   class Collection

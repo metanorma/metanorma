@@ -5,13 +5,7 @@ class Array
 end
 
 require "metanorma/version"
-require "asciidoctor"
-require "metanorma/util/util"
-require "metanorma/config/config"
-require "metanorma/input"
-require "metanorma/registry/registry"
-require "metanorma/processor/processor"
-require "metanorma/asciidoctor_extensions"
+require "metanorma-core"
 require "metanorma/compile/compile"
 require "metanorma/collection/collection"
 require "metanorma/collection/manifest/manifest"
