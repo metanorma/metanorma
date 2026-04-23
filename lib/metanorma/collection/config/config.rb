@@ -9,10 +9,6 @@ require_relative "manifest"
 module Metanorma
   class Collection
     module Config
-      Lutaml::Model::Config.configure do |config|
-        config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
-      end
-
       class Config < ::Lutaml::Model::Serializable
         attr_accessor :path, :collection, :from_xml
 
