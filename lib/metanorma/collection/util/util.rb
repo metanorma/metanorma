@@ -156,28 +156,15 @@ module Metanorma
         #           style.gsub(%r{url\(#([^()]+)\)}, "url(#\\1_#{document_suffix})")
         #         end
 
-        class Dummy
-          def attr(_key); end
-        end
-
         def load_isodoc(flavor, presxml: false)
-          x = Asciidoctor.load nil, backend: flavor.to_sym
-          if presxml
-            x.converter.presentation_xml_converter(Dummy.new)
-          else
-            x.converter.html_converter(Dummy.new) # to obtain Isodoc class
-          end
+          Metanorma::Core::Isodoc.resolve_converter(flavor, presxml: presxml)
         end
 
         def isodoc_create(flavor, lang, script, xml, presxml: false)
-          isodoc = Util::load_isodoc(flavor, presxml: presxml)
-          isodoc.i18n_init(lang, script, nil) # read in internationalisation
-          # TODO locale?
-          isodoc.metadata_init(lang, script, nil, isodoc.i18n)
-          isodoc.xref_init(lang, script, nil, isodoc.i18n, {})
-          isodoc.xrefs.klass.meta = isodoc.meta
-          isodoc.info(xml, nil)
-          isodoc
+          conv = Metanorma::Core::Isodoc.resolve_converter(flavor,
+                                                           presxml: presxml)
+          Metanorma::Core::Isodoc.init(conv, lang: lang, script: script,
+                                             xml: xml)
         end
 
         def asciidoc_dummy_header
