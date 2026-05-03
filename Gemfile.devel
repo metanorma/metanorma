@@ -1,0 +1,5 @@
+gem "canon", git: "https://github.com/lutaml/canon", branch: "fix/133-followup-html-pretty-print-mixed-content"
+gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "fix/canon-0.2.4"
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/canon-0.2.4"
+gem "html2doc", git: "https://github.com/metanorma/html2doc", branch: "main"
+
