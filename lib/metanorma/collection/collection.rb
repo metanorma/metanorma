@@ -117,8 +117,38 @@ module Metanorma
     def content_to_xml(elm, builder)
       (cnt = send(elm)) or return
       @compile.load_flavor(Util::taste2flavor(flavor))
-      out = prefatory_parse(Util::asciidoc_dummy_header + cnt.strip)
+      out = prefatory_parse(
+        Util::asciidoc_dummy_header(
+          docidentifier: dummy_header_docidentifier,
+        ) + cnt.strip,
+      )
       builder.send("#{elm}-content") { |b| b << out }
+    end
+
+    # Pick a real docidentifier value for the prefatory dummy header so
+    # the flavor's metadata_id has something pubid-parseable to put into
+    # the bibdata, instead of falling back to its (Liquid-templated)
+    # docid_template (issue #558). Prefer the first manifest document's
+    # docidentifier (concrete, e.g. "IHO S-97"); fall back to the
+    # collection's own (which may carry suffixes like "(all parts)" that
+    # pubid won't parse). Both candidates are wrapped because the
+    # bibitem field may be a parsed Relaton BibliographicItem in some
+    # phases and a Nokogiri::XML::Document in others.
+    def dummy_header_docidentifier
+      first_doc_docid || @bibdata&.docidentifier&.first&.content
+    end
+
+    def first_doc_docid
+      bib = documents.values.first&.bibitem or return nil
+      if bib.respond_to?(:docidentifier)
+        bib.docidentifier&.first&.content
+      elsif bib.respond_to?(:at) # Nokogiri (rendering-phase shape)
+        # Use local-name() so the match works regardless of whether the
+        # rendering-phase document carries a default namespace, without
+        # tripping Nokogiri's "undefined namespace prefix" error when
+        # it doesn't.
+        bib.at("//*[local-name()='docidentifier']")&.text
+      end
     end
 
     # @param cnt [String] prefatory/final content
