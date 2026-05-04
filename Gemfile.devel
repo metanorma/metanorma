@@ -1,5 +1,7 @@
-gem "canon", git: "https://github.com/lutaml/canon", branch: "fix/133-followup-html-pretty-print-mixed-content"
+gem "canon", git: "https://github.com/lutaml/canon", branch: "fix/144-asymmetric-comments-element-structure"
 gem "isodoc", git: "https://github.com/metanorma/isodoc", branch: "fix/canon-0.2.4"
+gem "metanorma-core", git: "https://github.com/metanorma/metanorma-core", branch: "main"
 gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/canon-0.2.4"
+gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "main"
 gem "html2doc", git: "https://github.com/metanorma/html2doc", branch: "main"
 
