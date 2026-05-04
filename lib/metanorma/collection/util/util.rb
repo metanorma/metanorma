@@ -169,12 +169,18 @@ module Metanorma
                                                  xml: xml, presxml: presxml)
         end
 
-        def asciidoc_dummy_header
-          <<~DUMMY
-            = X
-            A
-
-          DUMMY
+        # Dummy asciidoc header used by the prefatory-content parse so we
+        # can run Asciidoctor against arbitrary text. If +docidentifier+
+        # is supplied, it is injected as +:docidentifier:+ so the flavor
+        # processor's metadata_id has a real value to put into the
+        # bibdata, instead of falling back to its (Liquid-templated)
+        # docid_template. This prevents the prefatory parse from feeding
+        # an unresolved Liquid template through Relaton/pubid in flavors
+        # whose relaton-* gem eagerly parses the docidentifier in
+        # content= (issue #558).
+        def asciidoc_dummy_header(docidentifier: nil)
+          attrs = docidentifier ? ":docidentifier: #{docidentifier}\n" : ""
+          "= X\nA\n#{attrs}\n"
         end
 
         def nokogiri_to_temp(xml, filename, suffix)
