@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "metanorma-standoc"
   spec.add_runtime_dependency "mn2pdf", "~> 2"
   spec.add_runtime_dependency "nokogiri"
-  spec.add_development_dependency "canon", "= 0.2.3"
+  spec.add_development_dependency "canon" #, "= 0.2.3"
   spec.add_development_dependency "metanorma-iho"
   spec.add_development_dependency "metanorma-iso"
 
