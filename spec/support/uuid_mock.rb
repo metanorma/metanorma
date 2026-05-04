@@ -7,6 +7,7 @@
 
 #require 'debug'; binding.b
 require "metanorma-standoc"
+require "metanorma-core"
 
 module UuidMock
   # Mock UUIDTools::UUID.random_create to return an incrementing counter

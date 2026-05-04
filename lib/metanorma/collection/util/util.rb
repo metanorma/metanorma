@@ -156,23 +156,31 @@ module Metanorma
         #           style.gsub(%r{url\(#([^()]+)\)}, "url(#\\1_#{document_suffix})")
         #         end
 
+        # @deprecated Call Metanorma::Core::Isodoc.resolve_converter directly.
         def load_isodoc(flavor, presxml: false)
           Metanorma::Core::Isodoc.resolve_converter(flavor, presxml: presxml)
         end
 
+        # @deprecated Call Metanorma::Core::Isodoc.create directly. Kept as
+        #   a back-compat shim so existing callers keep working unchanged
+        #   while the wrapper is retired.
         def isodoc_create(flavor, lang, script, xml, presxml: false)
-          conv = Metanorma::Core::Isodoc.resolve_converter(flavor,
-                                                           presxml: presxml)
-          Metanorma::Core::Isodoc.init(conv, lang: lang, script: script,
-                                             xml: xml)
+          Metanorma::Core::Isodoc.create(flavor, lang: lang, script: script,
+                                                 xml: xml, presxml: presxml)
         end
 
-        def asciidoc_dummy_header
-          <<~DUMMY
-            = X
-            A
-
-          DUMMY
+        # Dummy asciidoc header used by the prefatory-content parse so we
+        # can run Asciidoctor against arbitrary text. If +docidentifier+
+        # is supplied, it is injected as +:docidentifier:+ so the flavor
+        # processor's metadata_id has a real value to put into the
+        # bibdata, instead of falling back to its (Liquid-templated)
+        # docid_template. This prevents the prefatory parse from feeding
+        # an unresolved Liquid template through Relaton/pubid in flavors
+        # whose relaton-* gem eagerly parses the docidentifier in
+        # content= (issue #558).
+        def asciidoc_dummy_header(docidentifier: nil)
+          attrs = docidentifier ? ":docidentifier: #{docidentifier}\n" : ""
+          "= X\nA\n#{attrs}\n"
         end
 
         def nokogiri_to_temp(xml, filename, suffix)
