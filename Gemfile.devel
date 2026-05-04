@@ -1,0 +1,6 @@
+gem "metanorma-core", git: "https://github.com/metanorma/metanorma-core", branch: "fix/issue-558"
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/issue-558"
+gem "metanorma-generic", git: "https://github.com/metanorma/metanorma-generic", branch: "fix/issue-558"
+gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "main"
+gem "metanorma-iho", git: "https://github.com/metanorma/metanorma-iho", branch: "main"
+gem "html2doc", git: "https://github.com/metanorma/html2doc", branch: "main"
