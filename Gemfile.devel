@@ -1,4 +1,4 @@
-gem "metanorma-core", git: "https://github.com/metanorma/metanorma-core", branch: "main"
+gem "metanorma-core", git: "https://github.com/metanorma/metanorma-core", branch: "fix/cleanup-isodoc-create"
 gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "main"
 gem "metanorma-generic", git: "https://github.com/metanorma/metanorma-generic", branch: "main"
 gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso", branch: "main"
