@@ -143,8 +143,11 @@ module Metanorma
       if bib.respond_to?(:docidentifier)
         bib.docidentifier&.first&.content
       elsif bib.respond_to?(:at) # Nokogiri (rendering-phase shape)
-        node = bib.at("//xmlns:docidentifier") || bib.at("//docidentifier")
-        node&.text
+        # Use local-name() so the match works regardless of whether the
+        # rendering-phase document carries a default namespace, without
+        # tripping Nokogiri's "undefined namespace prefix" error when
+        # it doesn't.
+        bib.at("//*[local-name()='docidentifier']")&.text
       end
     end
 
