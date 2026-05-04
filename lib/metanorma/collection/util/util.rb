@@ -156,15 +156,17 @@ module Metanorma
         #           style.gsub(%r{url\(#([^()]+)\)}, "url(#\\1_#{document_suffix})")
         #         end
 
+        # @deprecated Call Metanorma::Core::Isodoc.resolve_converter directly.
         def load_isodoc(flavor, presxml: false)
           Metanorma::Core::Isodoc.resolve_converter(flavor, presxml: presxml)
         end
 
+        # @deprecated Call Metanorma::Core::Isodoc.create directly. Kept as
+        #   a back-compat shim so existing callers keep working unchanged
+        #   while the wrapper is retired.
         def isodoc_create(flavor, lang, script, xml, presxml: false)
-          conv = Metanorma::Core::Isodoc.resolve_converter(flavor,
-                                                           presxml: presxml)
-          Metanorma::Core::Isodoc.init(conv, lang: lang, script: script,
-                                             xml: xml)
+          Metanorma::Core::Isodoc.create(flavor, lang: lang, script: script,
+                                                 xml: xml, presxml: presxml)
         end
 
         def asciidoc_dummy_header
