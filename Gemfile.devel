@@ -1,0 +1,2 @@
+gem "metanorma-core", git: "https://github.com/metanorma/metanorma-core", branch: "fix/cleanup-isodoc-create"
+gem "html2doc", git: "https://github.com/metanorma/html2doc", branch: "main"
