@@ -107,6 +107,26 @@ RSpec.describe Metanorma::Compile do
     )
   end
 
+  it "generates error file" do
+      FileUtils.rm_f "xref_error.err.html"
+      File.write("xref_error.adoc", <<~CONTENT)
+        = X
+        A
+
+        == Clause
+
+        <<a,b>>
+      CONTENT
+
+      expect do
+        mock_pdf
+        Metanorma::Compile
+          .new
+          .compile("xref_error.adoc", type: "iso", install_fonts: false)
+      end.to(change { File.exist?("xref_error.err.html") }
+              .from(false).to(true))
+    end
+
   it "overrides asciidoc options in icc" do
     expect do
       Metanorma::Compile.new.compile("spec/assets/test.adoc",

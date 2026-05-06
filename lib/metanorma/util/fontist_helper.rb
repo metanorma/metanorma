@@ -15,12 +15,12 @@ module Metanorma
 
         def validate_install_fonts(processor, options)
           unless install_fonts?(options)
-            Util.log("[fontist] Skip font installation because" \
-                     " --no-install-fonts argument passed", :debug)
+            Util.log("[fontist] Skip font installation because " \
+                     "--no-install-fonts argument passed", :debug)
             return false
           end
           unless has_custom_fonts?(processor, options, options)
-            Util.log("[fontist] Skip font installation because "\
+            Util.log("[fontist] Skip font installation because " \
                      "fonts_manifest is missing", :debug)
             return false
           end
@@ -60,8 +60,8 @@ module Metanorma
               :debug,
             )
           else
-            Util.log("[fontist] Aborting without proper fonts installed," \
-                     " make sure that you have set option --agree-to-terms",
+            Util.log("[fontist] Aborting without proper fonts installed, " \
+                     "make sure that you have set option --agree-to-terms",
                      :fatal)
           end
         end
@@ -91,7 +91,12 @@ module Metanorma
         return unless validate_install_fonts(processor, options)
 
         @@updated_formulas_repo = false
-        manifest = processor.fonts_manifest.dup
+        manifest = if processor.respond_to?(:fonts_manifest) &&
+            !processor.fonts_manifest.nil?
+                     processor.fonts_manifest.dup
+                   else
+                     {}
+                   end
         append_source_fonts(manifest, options)
         agree_to_terms, can_without_fonts, no_progress = validate_options(options)
 
@@ -104,16 +109,25 @@ module Metanorma
       end
 
       def self.has_custom_fonts?(processor, options, source_attributes)
-        install_fonts?(options) \
+        (install_fonts?(options) \
           && processor.respond_to?(:fonts_manifest) \
-          && !processor.fonts_manifest.nil? \
+          && !processor.fonts_manifest.nil?) \
           || source_attributes[:fonts]
       end
 
       def self.location_manifest(processor, source_attributes)
+        base = if processor.respond_to?(:fonts_manifest) &&
+            !processor.fonts_manifest.nil?
+                 processor.fonts_manifest.dup
+               else
+                 {}
+               end
+
+        return nil if base.empty? && !source_attributes[:fonts]
+
         instance = Fontist::Manifest.from_hash(
-          append_source_fonts(processor.fonts_manifest.dup, source_attributes),
-          locations: true
+          append_source_fonts(base, source_attributes),
+          locations: true,
         )
 
         instance.to_hash unless instance.nil?

@@ -48,48 +48,63 @@ module Metanorma
 
         private
 
+        # Select the appropriate Relaton parser class for the given flavor tag.
+        # Uses the flavor's Item class (not Bibdata) because in Relaton 2.x,
+        # Bibdata.from_xml produces a generic Relaton::Bib::ItemData instance
+        # (due to BibdataShared resolving `model ItemData` in the definer's scope),
+        # while Item.from_xml correctly produces a flavor-specific ItemData instance.
+        # @param tag [String, nil] flavor tag (e.g. "iso", "ietf")
+        # @return [Class] Relaton Item parser class
         def mn2relaton_parser(tag)
           case tag
           when "bipm"
-            require "relaton_bipm" unless defined?(::RelatonBipm::XMLParser)
-            ::RelatonBipm::XMLParser
+            require "relaton/bipm" unless defined?(::Relaton::Bipm::Item)
+            ::Relaton::Bipm::Item
           when "bsi"
-            require "relaton_bsi" unless defined?(::RelatonBsi::XMLParser)
-            ::RelatonBsi::XMLParser
+            require "relaton/bsi" unless defined?(::Relaton::Bsi::Item)
+            ::Relaton::Bsi::Item
           when "ietf"
-            require "relaton_ietf" unless defined?(::RelatonIetf::XMLParser)
-            ::RelatonIetf::XMLParser
+            require "relaton/ietf" unless defined?(::Relaton::Ietf::Item)
+            ::Relaton::Ietf::Item
           when "iho"
-            require "relaton_iho" unless defined?(::RelatonIho::XMLParser)
-            ::RelatonIho::XMLParser
+            require "relaton/iho" unless defined?(::Relaton::Iho::Item)
+            ::Relaton::Iho::Item
           when "itu"
-            require "relaton_itu" unless defined?(::RelatonItu::XMLParser)
-            ::RelatonItu::XMLParser
+            require "relaton/itu" unless defined?(::Relaton::Itu::Item)
+            ::Relaton::Itu::Item
           when "iec"
-            require "relaton_iec" unless defined?(::RelatonIec::XMLParser)
-            ::RelatonIec::XMLParser
+            require "relaton/iec" unless defined?(::Relaton::Iec::Item)
+            ::Relaton::Iec::Item
           when "iso"
-            require "relaton_iso" unless defined?(::RelatonIsoBib::XMLParser)
-            ::RelatonIsoBib::XMLParser
+            require "relaton/iso" unless defined?(::Relaton::Iso::Item)
+            ::Relaton::Iso::Item
           when "nist"
-            require "relaton_nist" unless defined?(::RelatonNist::XMLParser)
-            ::RelatonNist::XMLParser
+            require "relaton/nist" unless defined?(::Relaton::Nist::Item)
+            ::Relaton::Nist::Item
           when "ogc"
-            require "relaton_ogc" unless defined?(::RelatonOgc::XMLParser)
-            ::RelatonOgc::XMLParser
+            require "relaton/ogc" unless defined?(::Relaton::Ogc::Item)
+            ::Relaton::Ogc::Item
           else
-            ::RelatonBib::XMLParser
+            ::Relaton::Bib::Item
           end
         rescue LoadError => e
-          warn "Warning: Failed to load relaton gem for '#{tag}': #{e.message}. Falling back to RelatonBib::XMLParser"
-          ::RelatonBib::XMLParser
+          warn "Warning: Failed to load relaton gem for '#{tag}': #{e.message}. Falling back to Relaton::Bib::Item"
+          ::Relaton::Bib::Item
         end
 
         # #param xml [Nokogiri::XML::Document, Nokogiri::XML::Element]
         # @return [RelatonBib::BibliographicItem,RelatonIso::IsoBibliographicItem]
         def from_xml(xml)
           b = xml.at("//xmlns:bibitem|//xmlns:bibdata")
-          r = mn2relaton_parser(xml.root["flavor"])
+          # <bibitem> elements are always flavor-independent: use the base
+          # Relaton::Bib::Bibitem regardless of collection flavor.
+          # <bibdata> elements carry flavor-specific metadata (<ext> etc.) and
+          # must be parsed with the appropriate flavor Bibdata class.
+          r = if b.name == "bibitem"
+                ::Relaton::Bib::Bibitem
+              else
+                mn2relaton_parser(xml.root["flavor"])
+              end
           # Relaton doesn't understand Pres XML tags
           b.xpath("//xmlns:fmt-identifier").each(&:remove)
           r.from_xml(b.to_xml)
@@ -137,9 +152,9 @@ module Metanorma
 
       # @return [String]
       def type
-        first = @bibitem.docidentifier.first
+        first = @bibitem.docidentifier&.first
         @type ||= (first&.type&.downcase ||
-                   first&.id&.match(/^[^\s]+/)&.to_s)&.downcase ||
+                   first&.content&.match(/^[^\s]+/)&.to_s)&.downcase ||
           "standoc"
       end
 
@@ -149,7 +164,7 @@ module Metanorma
         if @raw
           builder.parent.add_child(@bibitem.root)
         else
-          builder.send("metanorma") do |b|
+          builder.send(:metanorma) do |b|
             b << @bibitem.to_xml(bibdata: true)
           end
         end

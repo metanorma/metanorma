@@ -23,112 +23,104 @@ RSpec.describe Metanorma::Collection do
       expect(mc).to be_instance_of Metanorma::Collection
       yaml_out = mc.config.to_yaml
         .gsub(/identifier: ['"]?#{GUID}['"]?[\n\r]+\s*/mo, "\\1")
-        .gsub(/([\n\r]+\s+)schema-version: \S+[\n\r]+\s*/m, "\\1")
+        .gsub(/([\n\r]+\s+)schema_version: \S+[\n\r]+\s*/m, "\\1")
       expect(yaml_out).to be_equivalent_to <<~OUTPUT
-        ---
-        directives:
-        - documents-external:
-        - coverpage: collection_cover.html
-        - coverpage-pdf-portfolio: cover.pdf
-        - keystore-pdf-portfolio: keystore.p12
-        - keystore-password-pdf-portfolio: '123456'
-        bibdata:
-          id: ISO12345
-          title:
-          - content: ISO Collection 1
-            language:
-            - en
-            format: text/plain
-            type: title-main
-          type: collection
-          docid:
-          - id: ISO 12345
-            type: iso
-            primary: 'true'
-          date:
-          - type: created
-            value: '2020'
-          - type: issued
-            value: '2020'
-          edition:
-            content: '1'
-          copyright:
-          - owner:
-            - name:
-              - content: International Organization for Standardization
-              abbreviation:
-                content: ISO
-            from: '2020'
-        manifest:
-          type: collection
-          title: ISO Collection
-          index: true
-          entry:
-          - type: subcollection
-            title: Standards
-            index: true
-            entry:
-            - identifier: ISO 17301-1:2016
-              pdf-file: rice17301.pdf
-              index: true
-              file: rice-en.final.xml
-              bibdata:
-              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-            - identifier: ISO 17302:2016
-              url: example/url
-              index: true
-              file: dummy.xml
-              bibdata:
-              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-            - identifier: ISO 1701:1974
-              index: true
-              file: rice1-en.final.xml
-              bibdata:
-              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-            bibdata:
-            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-          - type: subcollection
-            title: Amendments
-            index: true
-            entry:
-              identifier: ISO 17301-1:2016/Amd.1:2017
-              index: true
-              file: rice-amd.final.xml
-              bibdata:
-              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-            bibdata:
-            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-          - type: attachments
-            title: Attachments
-            index: true
-            entry:
-            - identifier: action_schemaexpg1.svg
-              attachment: true
-              index: true
-              file: pics/action_schemaexpg1.svg
-              bibdata:
-              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-            - identifier: rice_image1.png
-              attachment: true
-              index: true
-              file: "../../assets/rice_image1.png"
-              bibdata:
-              sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-            bibdata:
-            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-          bibdata:
-          sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
-        format:
-        - html
-        coverpage: cover.html
-        prefatory-content: |2
-
-          == Clause
-          Welcome to our collection
-        final-content: |2
-
-          == Exordium
-          Hic explicit
+       ---
+       directives:
+       - documents-external:
+       - coverpage: collection_cover.html
+       - coverpage-pdf-portfolio: cover.pdf
+       - keystore-pdf-portfolio: keystore.p12
+       - keystore-password-pdf-portfolio: '123456'
+       bibdata:
+         id: ISO12345
+         type: collection
+         title:
+         - language: en
+           content: ISO Collection 1
+           type: title-main
+         docidentifier:
+         - content: ISO 12345
+           type: iso
+           primary: true
+         date:
+         - type: created
+           at: '2020'
+         - type: issued
+           at: '2020'
+         edition:
+           content: '1'
+         copyright:
+         - from: '2020'
+           owner:
+           - organization:
+               name:
+               - content: International Organization for Standardization
+               abbreviation:
+                 content: ISO
+         ext:
+           flavor: iso
+       manifest:
+         type: collection
+         title: ISO Collection
+         index: true
+         entry:
+         - type: subcollection
+           title: Standards
+           index: true
+           entry:
+           - identifier: ISO 17301-1:2016
+             pdf-file: rice17301.pdf
+             index: true
+             file: rice-en.final.xml
+             sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+           - identifier: ISO 17302:2016
+             url: example/url
+             index: true
+             file: dummy.xml
+             sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+           - identifier: ISO 1701:1974
+             index: true
+             file: rice1-en.final.xml
+             sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+           sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+         - type: subcollection
+           title: Amendments
+           index: true
+           entry:
+             identifier: ISO 17301-1:2016/Amd.1:2017
+             index: true
+             file: rice-amd.final.xml
+             sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+           sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+         - type: attachments
+           title: Attachments
+           index: true
+           entry:
+           - identifier: action_schemaexpg1.svg
+             attachment: true
+             index: true
+             file: pics/action_schemaexpg1.svg
+             sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+           - identifier: rice_image1.png
+             attachment: true
+             index: true
+             file: "../../assets/rice_image1.png"
+             sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+           sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+         sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+       format:
+       - html
+       coverpage: cover.html
+       prefatory-content: |2
+     
+         == Clause
+         Welcome to our collection
+       final-content: |2
+     
+         == Exordium
+         Hic explicit
+   
       OUTPUT
     end
 
@@ -140,8 +132,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(Canon.format_xml(cleanup_guid(xml))))
-        .to be_equivalent_to Canon.format_xml(cleanup_guid(xml_content))
+      expect(cleanup_id(cleanup_guid(xml)))
+        .to be_xml_equivalent_to cleanup_guid(xml_content)
     end
 
     it "YAML collection with no document identifiers" do
@@ -152,8 +144,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(cleanup_id(Canon.format_xml(cleanup_guid(xml))))
-        .to be_equivalent_to Canon.format_xml(cleanup_guid(xml_content))
+      expect(cleanup_id(cleanup_guid(xml)))
+        .to be_xml_equivalent_to cleanup_guid(xml_content)
     end
 
     it "YAML collection with docs inline" do
@@ -164,19 +156,17 @@ RSpec.describe Metanorma::Collection do
       xml = mc.to_xml
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
-      expect(Canon.format_xml(cleanup_guid(cleanup_id(xml))))
-        .to be_equivalent_to Canon.format_xml(cleanup_guid(read_and_cleanup(xml_file)))
+      expect(cleanup_guid(cleanup_id(xml)))
+        .to be_xml_equivalent_to cleanup_guid(read_and_cleanup(xml_file))
 
       newyaml = "#{INPATH}/collection_docinline1.yml"
-      File.open newyaml, "w" do |f|
-        f.write(File.read("#{INPATH}/collection_docinline.yml")
-          .sub(/- documents-inline/, ""))
-      end
+      File.write(newyaml, File.read("#{INPATH}/collection_docinline.yml")
+          .sub("- documents-inline", ""))
       mc = Metanorma::Collection.parse(newyaml)
       xml = mc.to_xml
       FileUtils.rm_rf newyaml
-      expect(Canon.format_xml(cleanup_guid(cleanup_id(xml))))
-        .to be_equivalent_to Canon.format_xml(cleanup_guid(read_and_cleanup(xml_file)))
+      expect(cleanup_guid(cleanup_id(xml)))
+        .to be_xml_equivalent_to cleanup_guid(read_and_cleanup(xml_file))
     end
 
     it "YAML collection with interleaved documents and manifests" do
@@ -187,8 +177,8 @@ RSpec.describe Metanorma::Collection do
       File.write xml_file, xml, encoding: "UTF-8" unless File.exist? xml_file
       expect(mc).to be_instance_of Metanorma::Collection
       xml_content = read_and_cleanup(xml_file)
-      expect(Canon.format_xml(cleanup_id(xml)))
-        .to be_equivalent_to Canon.format_xml(xml_content)
+      expect(cleanup_id(xml))
+        .to be_xml_equivalent_to xml_content
     end
 
     context "YAML collection with new format" do
@@ -200,8 +190,8 @@ RSpec.describe Metanorma::Collection do
 
       describe "when constructing collection manifest" do
         it "should inherit sectionsplit and have correct format" do
-          expect(Canon.format_xml(cleanup_id(ccm)))
-            .to be_equivalent_to Canon.format_xml(cleanup_id(<<~OUTPUT))
+          expect(cleanup_id(ccm))
+            .to be_xml_equivalent_to cleanup_id(<<~OUTPUT)
               <entry index="true">
                 <identifier>27b4fbb3-a76e-42c9-a519-3cf18a7ca1c5</identifier>
                 <type>collection</type>
@@ -410,6 +400,74 @@ RSpec.describe Metanorma::Collection do
           FileUtils.rm_f("tmp_document-2.presentation.xml")
         end
       end
+
+      describe "when bibdata is in 2.x YAML format" do
+        it "should parse 2.x format bibdata (docidentifier: key) via Item.from_yaml" do
+          mc = Metanorma::Collection.parse("#{INPATH}/collection_new_v2bibdata.yml")
+          expect(mc).to be_instance_of Metanorma::Collection
+          bd = mc.bibdata
+          expect(bd).not_to be_nil
+          expect(Array(bd.docidentifier).first&.content).to eq("12345")
+          expect(Array(bd.title).first&.content).to eq("bibdata - Test Title")
+          # edition is a structured Edition object in 2.x (not a plain string)
+          expect(bd.edition&.content).to eq("12")
+        end
+      end
+
+      describe "bibdata_yaml_v1_format? format detection" do
+        let(:converters_obj) do
+          Class.new { include Metanorma::Collection::Config::Converters }.new
+        end
+
+        it "detects 1.x format by top-level docid key" do
+          h = { "docid" => { "type" => "iso", "id" => "123" } }
+          expect(converters_obj.bibdata_yaml_v1_format?(h)).to be true
+        end
+
+        it "detects 1.x format by nested docid key" do
+          h = { "title" => [{ "content" => "Foo" }],
+                "relation" => [{ "bibitem" => { "docid" => { "id" => "bar" } } }] }
+          expect(converters_obj.bibdata_yaml_v1_format?(h)).to be true
+        end
+
+        it "detects 1.x format by link key" do
+          h = { "link" => [{ "type" => "src", "content" => "https://example.com" }] }
+          expect(converters_obj.bibdata_yaml_v1_format?(h)).to be true
+        end
+
+        it "detects 2.x format (docidentifier:) as not 1.x" do
+          h = { "docidentifier" => [{ "type" => "iso", "content" => "123" }] }
+          expect(converters_obj.bibdata_yaml_v1_format?(h)).to be false
+        end
+
+        it "returns false for nil" do
+          expect(converters_obj.bibdata_yaml_v1_format?(nil)).to be false
+        end
+      end
+    end
+
+    describe "flavor-specific bibdata roundtrip" do
+      it "roundtrips ISO bibdata with structuredidentifier through from_xml/to_xml" do
+        require "relaton/iso"
+        xml = <<~XML
+          <bibdata type="standard">
+            <title language="en" format="text/plain" type="main">Test document</title>
+            <docidentifier primary="true" type="ISO">ISO 17302:2016</docidentifier>
+            <ext>
+              <doctype>international-standard</doctype>
+              <structuredidentifier>
+                <project-number>ISO 17302</project-number>
+              </structuredidentifier>
+            </ext>
+          </bibdata>
+        XML
+        item = Relaton::Iso::Item.from_xml(xml)
+        expect(item).to be_a(Relaton::Iso::ItemData)
+        expect(item.ext).to be_a(Relaton::Iso::Ext)
+        output = item.to_xml(bibdata: true)
+        expect(output).to include("<structuredidentifier>")
+        expect(output).to include("<project-number>ISO 17302</project-number>")
+      end
     end
 
     it "XML collection" do
@@ -418,8 +476,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(cleanup_id(Canon.format_xml(mc.to_xml)))
-        .to be_equivalent_to Canon.format_xml(xml)
+      expect(cleanup_id(mc.to_xml))
+        .to be_xml_equivalent_to xml
     end
 
     it "XML collection with interleaved documents and manifests" do
@@ -428,7 +486,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(cleanup_id(mc.to_xml)).to be_equivalent_to xml
+      expect(Canon.format_xml(cleanup_id(mc.to_xml)))
+        .to be_equivalent_to Canon.format_xml(xml)
     end
 
     it "XML collection with docs inline" do
@@ -437,8 +496,8 @@ RSpec.describe Metanorma::Collection do
       mc = Metanorma::Collection.parse file
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
-      expect(Canon.format_xml(cleanup_id(mc.to_xml)))
-        .to be_equivalent_to Canon.format_xml(xml)
+      expect(cleanup_id(mc.to_xml))
+        .to be_xml_equivalent_to xml
     end
   end
 
@@ -514,7 +573,7 @@ RSpec.describe Metanorma::Collection do
     of = File.join(FileUtils.pwd, "../#{OUTPATH}")
     newyaml = "../#{INPATH}/collection_new1.yml"
     isostring = "ISO and IEC maintain terminology databases for use in standardization"
-    File.open(newyaml, "w") { |x| x.write(yaml) }
+    File.write(newyaml, yaml)
     col = Metanorma::Collection.parse newyaml
     col.render(
       format: %i[presentation xml],
@@ -526,10 +585,8 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{of}/collection.xml"))
       .to include(isostring)
 
-    File.open(newyaml, "w") do |x|
-      x.write(yaml.sub("  - documents-inline",
-                       "  - documents-inline\n  - flavor: standoc"))
-    end
+    File.write(newyaml, yaml.sub("  - documents-inline",
+                                 "  - documents-inline\n  - flavor: standoc"))
     col = Metanorma::Collection.parse newyaml
     col.render(
       format: %i[presentation xml],
@@ -540,11 +597,9 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{of}/collection.xml"))
       .not_to include(isostring)
 
-    File.open(newyaml, "w") do |x|
-      x.write(yaml.sub("  - documents-inline",
-                       "  - documents-inline\n  - flavor: iso")
+    File.write(newyaml, yaml.sub("  - documents-inline",
+                                 "  - documents-inline\n  - flavor: iso")
         .sub("type: iso", "type: fred"))
-    end
     # get flavor from directive not docid
     col = Metanorma::Collection.parse newyaml
     col.render(
@@ -556,11 +611,9 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{of}/collection.xml"))
       .to include(isostring)
 
-    File.open(newyaml, "w") do |x|
-      x.write(yaml.sub("  - documents-inline",
-                       "  - documents-inline\n  - flavor: oiml")
+    File.write(newyaml, yaml.sub("  - documents-inline",
+                                 "  - documents-inline\n  - flavor: oiml")
         .sub("type: iso", "type: fred"))
-    end
     # derive flavor from taste
     col = Metanorma::Collection.parse newyaml
     col.render(
@@ -572,7 +625,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{of}/collection.xml"))
       .to include(isostring)
 
-    File.open(newyaml, "w") { |x| x.write(yaml.sub("type: iso", "type: fred")) }
+    File.write(newyaml, yaml.sub("type: iso", "type: fred"))
     # ignorable flavor from docid
     col = Metanorma::Collection.parse newyaml
     col.render(
@@ -584,10 +637,8 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{of}/collection.xml"))
       .not_to include(isostring)
 
-    File.open(newyaml, "w") do |x|
-      x.write(yaml.sub("  - documents-inline",
-                       "  - documents-inline\n  - flavor: fred"))
-    end
+    File.write(newyaml, yaml.sub("  - documents-inline",
+                                 "  - documents-inline\n  - flavor: fred"))
     begin
       expect do
         Metanorma::Collection.parse newyaml
@@ -625,9 +676,9 @@ RSpec.describe Metanorma::Collection do
     allow(Metanorma::Collection::Renderer)
       .to receive(:new)
       .and_wrap_original do |orig, *args|
-        renderer = orig.call(*args)
-        allow(renderer).to receive(:pdfconv).and_call_original
-        renderer
+      renderer = orig.call(*args)
+      allow(renderer).to receive(:pdfconv).and_call_original
+      renderer
     end
 
     col.render(
@@ -642,6 +693,6 @@ RSpec.describe Metanorma::Collection do
                            mn2pdf: { font_manifest: hash_including(
                              "Mitimasu" => anything,
                              "Monoisome" => anything,
-                           )}))
+                           ) }))
   end
 end

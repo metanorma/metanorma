@@ -1,6 +1,6 @@
 require "yaml"
 require "fileutils"
-require_relative "../../util/util"
+require "metanorma-core"
 require_relative "../xrefprocess/xrefprocess"
 require_relative "collection"
 require "concurrent-ruby"
