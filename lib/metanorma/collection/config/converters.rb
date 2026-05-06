@@ -66,8 +66,8 @@ module Metanorma
 
         def bibdata_from_xml(model, node)
           node or return
-          force_primary_docidentifier_xml(node.adapter_node)
-          model.bibdata = Relaton::Cli.parse_xml(node.adapter_node)
+          force_primary_docidentifier_xml(node.adapter_node.native)
+          model.bibdata = Relaton::Cli.parse_xml(node.adapter_node.native)
         end
 
         def force_primary_docidentifier_xml(node)
