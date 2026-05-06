@@ -104,10 +104,14 @@ module Metanorma
         end
 
         def documents_to_xml?(doc)
-          ret = doc.parent.elements.detect do |x|
-            x.name == "doc-container"
-          end
-          !ret
+          # lutaml-model 0.8 hands the converter a Lutaml::Xml::CustomMethodWrapper
+          # whose @parent is exposed via current_context; XmlElement uses
+          # `children` rather than `elements`. Older shapes (Nokogiri-backed
+          # docs, or whatever lutaml-model 0.7 passed) still expose `parent`
+          # and `elements`, so support both.
+          parent = doc.respond_to?(:current_context) ? doc.current_context : doc.parent
+          siblings = parent.respond_to?(:children) ? parent.children : parent.elements
+          !siblings.detect { |x| x.name == "doc-container" }
         end
       end
     end
