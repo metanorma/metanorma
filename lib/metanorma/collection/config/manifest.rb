@@ -81,10 +81,9 @@ module Metanorma
           model.entry = Manifest.from_xml(node.node.to_xml)
         end
 
-        def entry_to_xml(model, parent, doc)
+        def entry_to_xml(model, _parent, doc)
           Array(model.entry).each do |e|
-            elem = e.to_xml
-            doc.add_element(parent, elem)
+            add_raw_xml_element(doc, e.to_xml)
           end
         end
 

@@ -190,8 +190,6 @@ module Metanorma
       end
 
       def concatenate_presentation(xml)
-        xml.sub!("<metanorma-collection>", "<metanorma-collection xmlns='http://metanorma.org'>")
-        # TODO BEING FORCED TO DO THAT BECAUSE SHALE IS NOT DEALING WITH DEFAULT NAMESPACES
         @directives.detect { |d| d.key == "bilingual" } and
           xml = Metanorma::Collection::Multilingual
             .new({ align_cross_elements: %w(p note) }).to_bilingual(xml)

@@ -89,10 +89,41 @@ module Metanorma
     def to_xml
       c = ::Metanorma::Collection::Config::Config
         .new(directive: @directives, bibdata: @bibdata,
-             manifest: @manifest.config, documents: @documents,
+             manifest: @manifest.config, documents: doc_containers,
              prefatory_content: @prefatory, final_content: @final)
       c.collection = self
-      c.to_xml # .sub("<metanorma-collection", "<metanorma-collection xmlns='http://metanorma.org'")
+      c.to_xml
+    end
+
+    # Populate the Config#documents collection with DocContainer wrappers.
+    # Only emit them when the `documents-inline` directive is set; otherwise
+    # the manifest's <entry fileref=…> already references them externally.
+    def doc_containers
+      @directives.detect { |d| d.key == "documents-inline" } or return []
+      @documents.each_with_index.map do |(_, d), idx|
+        ::Metanorma::Collection::Config::DocContainer.new(
+          id: format("doc%<index>09d", index: idx),
+          content: doccontainer1_inner(d),
+        )
+      end
+    end
+
+    # Inner XML of a single <doc-container> as a string. The body is either
+    # the document's <metanorma> presentation root (with its own xmlns) or
+    # an attachment payload.
+    def doccontainer1_inner(doc)
+      b = Nokogiri::XML::Builder.new do |xml|
+        xml.send(:wrapper) do |w|
+          if doc.attachment
+            doc.bibitem and w << doc.bibitem.root.to_xml
+            w.attachment Vectory::Utils::datauri(doc.file)
+          else
+            doc.to_xml w
+            w.parent.children.first["flavor"] = Util::taste2flavor(flavor)
+          end
+        end
+      end
+      b.parent.elements.first.children.map(&:to_xml).join
     end
 
     def render(opts)
@@ -191,27 +222,6 @@ module Metanorma
             "<owner><organization><name>SDO</name></organization></owner>"
       end
       bibdata
-    end
-
-    # @param builder [Nokogiri::XML::Builder]
-    def doccontainer(builder)
-      @directives.detect { |d| d.key == "documents-inline" } or return
-      documents.each_with_index do |(_, d), i|
-        doccontainer1(builder, d, i)
-      end
-    end
-
-    def doccontainer1(builder, doc, idx)
-      id = format("doc%<index>09d", index: idx)
-      builder.send(:"doc-container", id: id) do |b|
-        if doc.attachment
-          doc.bibitem and b << doc.bibitem.root.to_xml
-          b.attachment Vectory::Utils::datauri(doc.file)
-        else
-          doc.to_xml b
-          b.parent.children.first["flavor"] = Util::taste2flavor(flavor)
-        end
-      end
     end
 
     def flavor
