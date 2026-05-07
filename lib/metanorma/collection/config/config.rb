@@ -101,7 +101,7 @@ module Metanorma
                  else
                    b = Nokogiri::XML::Builder.new
                    model.collection.content_to_xml(type, b)
-                   b.parent.elements.first
+                   b.parent.elements.first.to_xml
                  end
           doc.add_element(parent, elem)
         end

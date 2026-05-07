@@ -100,7 +100,7 @@ module Metanorma
             end
           end
           b.parent.elements.first.elements
-            .each { |x| doc.add_element(parent, x) }
+            .each { |x| doc.add_element(parent, x.to_xml) }
         end
 
         def documents_to_xml?(doc)
