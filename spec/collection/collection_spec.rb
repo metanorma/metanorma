@@ -88,10 +88,10 @@ RSpec.describe Metanorma::Collection do
            title: Amendments
            index: true
            entry:
-             identifier: ISO 17301-1:2016/Amd.1:2017
-             index: true
-             file: rice-amd.final.xml
-             sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
+             - identifier: ISO 17301-1:2016/Amd.1:2017
+               index: true
+               file: rice-amd.final.xml
+               sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
            sectionsplit-filename: "{basename_legacy}.{sectionsplit-num}"
          - type: attachments
            title: Attachments

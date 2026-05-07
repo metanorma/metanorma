@@ -6,3 +6,5 @@ gem "html2doc", git: "https://github.com/metanorma/html2doc", branch: "fix/lutam
 gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc", branch: "fix/lutaml-model-0.8.0"
 gem "metanorma-core", git: "https://github.com/metanorma/metanorma-core", branch: "main"
 gem "metanorma-plugin-lutaml", git: "https://github.com/metanorma/metanorma-plugin-lutaml", branch: "fix/ruby-4.0"
+gem "relaton-bib", git: "https://github.com/relaton/relaton-bib", branch: "fix/ics-text-getter-bypass"
+

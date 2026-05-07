@@ -36,7 +36,6 @@ module Metanorma
       def initialize(collection, folder, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         check_options options
         @xml = Nokogiri::XML collection.to_xml # @xml is the collection manifest
-        @xml.root.default_namespace = "http://metanorma.org"
         @lang = Array(collection.bibdata.language).first || "en"
         @script = Array(collection.bibdata.script).first || "Latn"
         @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text

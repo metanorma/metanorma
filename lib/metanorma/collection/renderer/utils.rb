@@ -212,8 +212,8 @@ module Metanorma
           bibdata: YAML.safe_load(@bibdata.to_yaml,
                                   permitted_classes: [Date, Symbol]),
           docrefs: liquid_docrefs(@manifest),
-          "prefatory-content": isodoc_builder(@xml.at("//prefatory-content")),
-          "final-content": isodoc_builder(@xml.at("//final-content")),
+          "prefatory-content": isodoc_builder(@xml.at("//xmlns:prefatory-content")),
+          "final-content": isodoc_builder(@xml.at("//xmlns:final-content")),
           doctitle: Array(@bibdata.title).first&.content,
           docnumber: Array(@bibdata.docidentifier).first&.content }.each do |k, v|
           v and @isodoc.meta.set(k, v)
@@ -223,11 +223,9 @@ module Metanorma
       def isodoc_builder(node)
         node or return
 
-        # Kludging namespace back in because of Shale brain damage
-        doc = Nokogiri::XML(node.to_xml.sub(">", " xmlns='http://www.metanorma.org'>"))
         Nokogiri::HTML::Builder.new(encoding: "UTF-8") do |b|
           b.div do |div|
-            doc.root.children&.each { |n| @isodoc.parse(n, div) }
+            node.children.each { |n| @isodoc.parse(n, div) }
           end
         end.doc.root.to_html
       end
