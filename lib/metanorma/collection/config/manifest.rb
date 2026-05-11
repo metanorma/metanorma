@@ -6,6 +6,10 @@ require_relative "bibdata"
 module Metanorma
   class Collection
     module Config
+      Lutaml::Model::Config.configure do |config|
+        config.xml_adapter_type = :nokogiri
+      end
+
       class Manifest < ::Lutaml::Model::Serializable
         attribute :identifier, :string,
                   default: -> { UUIDTools::UUID.random_create.to_s }
