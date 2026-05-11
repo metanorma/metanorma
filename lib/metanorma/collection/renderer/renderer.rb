@@ -36,7 +36,6 @@ module Metanorma
       def initialize(collection, folder, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         check_options options
         @xml = Nokogiri::XML collection.to_xml # @xml is the collection manifest
-        @xml.root.default_namespace = "http://metanorma.org"
         @lang = Array(collection.bibdata.language).first || "en"
         @script = Array(collection.bibdata.script).first || "Latn"
         @locale = @xml.at("//xmlns:bibdata/xmlns:locale")&.text
@@ -190,8 +189,6 @@ module Metanorma
       end
 
       def concatenate_presentation(xml)
-        xml.sub!("<metanorma-collection>", "<metanorma-collection xmlns='http://metanorma.org'>")
-        # TODO BEING FORCED TO DO THAT BECAUSE SHALE IS NOT DEALING WITH DEFAULT NAMESPACES
         @directives.detect { |d| d.key == "bilingual" } and
           xml = Metanorma::Collection::Multilingual
             .new({ align_cross_elements: %w(p note) }).to_bilingual(xml)

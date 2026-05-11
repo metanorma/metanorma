@@ -12,7 +12,9 @@
 <name>International Organization for Standardization</name>
 <abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="publisher"/><organization>
 <name>International Organization for Standardization</name>
-<abbreviation>ISO</abbreviation></organization></contributor><version/><language>en</language><script>Latn</script><status><stage>60</stage><substage>60</substage></status><copyright><from>2025</from><owner><organization>
+<abbreviation>ISO</abbreviation></organization></contributor><version>
+
+</version><language>en</language><script>Latn</script><status><stage>60</stage><substage>60</substage></status><copyright><from>2025</from><owner><organization>
 <name>International Organization for Standardization</name>
 <abbreviation>ISO</abbreviation></organization></owner></copyright><ext><doctype>standard</doctype><flavor>iso</flavor><editorialgroup><agency>ISO</agency></editorialgroup><approvalgroup><agency>ISO</agency></approvalgroup><structuredidentifier><project-number>ISO 10303</project-number></structuredidentifier><stagename>International Standard</stagename></ext></bibdata><metanorma-extension><presentation-metadata><name>document-scheme</name><value>2024</value></presentation-metadata><presentation-metadata><name>TOC Heading Levels</name><value>2</value></presentation-metadata><presentation-metadata><name>HTML TOC Heading Levels</name><value>2</value></presentation-metadata><presentation-metadata><name>DOC TOC Heading Levels</name><value>3</value></presentation-metadata><presentation-metadata><name>PDF TOC Heading Levels</name><value>3</value></presentation-metadata><presentation-metadata><render-document-annotations>true</render-document-annotations></presentation-metadata></metanorma-extension>
 <boilerplate><copyright-statement>

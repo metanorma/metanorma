@@ -5,12 +5,14 @@ require_relative "converters"
 require_relative "bibdata"
 require_relative "directive"
 require_relative "manifest"
+require_relative "namespaces"
+require_relative "doc_container"
 
 module Metanorma
   class Collection
     module Config
       Lutaml::Model::Config.configure do |config|
-        config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
+        config.xml_adapter_type = :nokogiri
       end
 
       class Config < ::Lutaml::Model::Serializable
@@ -26,7 +28,7 @@ module Metanorma
         attribute :compile, CompileOptions
         attribute :prefatory_content, :string, raw: true
         attribute :final_content, :string, raw: true
-        attribute :documents, Bibdata, collection: true
+        attribute :documents, DocContainer, collection: true
         attribute :xmlns, :string, default: -> { "http://metanorma.org" }
 
         yaml do
@@ -48,9 +50,8 @@ module Metanorma
         end
 
         xml do
-          root "metanorma-collection"
-          # namespace "http://metanorma.org", "m"
-          # map_attribute "xmlns", to: :xmlns
+          element "metanorma-collection"
+          namespace MetanormaCollectionNamespace
           map_element "bibdata", to: :bibdata, with: { from: :bibdata_from_xml,
                                                        to: :bibdata_to_xml }
           map_element "directive", to: :directive
@@ -66,10 +67,7 @@ module Metanorma
                       to: :prefatory_content,
                       with: { from: :prefatory_from_xml,
                               to: :prefatory_to_xml }
-          map_element "doc-container",
-                      to: :documents,
-                      with: { from: :documents_from_xml,
-                              to: :documents_to_xml }
+          map_element "doc-container", to: :documents
           map_element "final-content",
                       to: :final_content,
                       with: { from: :final_from_xml,
@@ -80,9 +78,9 @@ module Metanorma
           model.manifest = Manifest.from_xml(node.to_xml)
         end
 
-        def manifest_to_xml(model, parent, doc)
+        def manifest_to_xml(model, _parent, doc)
           model.collection&.manifest&.clean_manifest(model.manifest)
-          doc.add_element(parent, model.manifest.to_xml)
+          add_raw_xml_element(doc, model.manifest.to_xml)
         end
 
         def prefatory_from_xml(model, node)
@@ -97,17 +95,17 @@ module Metanorma
           content_to_xml(model, parent, doc, "final")
         end
 
-        def content_to_xml(model, parent, doc, type)
+        def content_to_xml(model, _parent, doc, type)
           x = model.send("#{type}_content") or return
           n = Nokogiri::XML(x)
-          elem = if n.elements.size == 1
-                   "<#{type}-content>#{x}</#{type}-content>" # n.root
-                 else
-                   b = Nokogiri::XML::Builder.new
-                   model.collection.content_to_xml(type, b)
-                   b.parent.elements.first
-                 end
-          doc.add_element(parent, elem)
+          raw = if n.elements.size == 1
+                  "<#{type}-content>#{x}</#{type}-content>"
+                else
+                  b = Nokogiri::XML::Builder.new
+                  model.collection.content_to_xml(type, b)
+                  b.parent.elements.first.to_xml
+                end
+          add_raw_xml_element(doc, raw)
         end
 
         def final_from_xml(model, node)

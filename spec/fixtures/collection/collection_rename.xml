@@ -1,4 +1,4 @@
-       <metanorma-collection>
+       <metanorma-collection xmlns="http://metanorma.org">
           <bibdata type="collection">
              <title language="en" type="title-main">ISO Collection 1</title>
              <docidentifier type="iso" primary="true">ISO 12345</docidentifier>
@@ -81,8 +81,8 @@
                       </contributor>
                       <edition>2</edition>
                       <version>
-                         <revision-date>2016-05-01</revision-date>
-                      </version>
+
+</version>
                       <language>en</language>
                       <script>Latn</script>
                       <status>
@@ -197,8 +197,8 @@
                       </contributor>
                       <edition>1</edition>
                       <version>
-                         <revision-date>2016-05-01</revision-date>
-                      </version>
+
+</version>
                       <language>en</language>
                       <script>Latn</script>
                       <status>
@@ -274,7 +274,9 @@
                          </organization>
                       </contributor>
                       <edition>2</edition>
-                      <version/>
+                      <version>
+
+</version>
                       <language>en</language>
                       <script>Latn</script>
                       <status>
@@ -366,8 +368,8 @@
                    </contributor>
                    <edition>2</edition>
                    <version>
-                      <revision-date>2016-05-01</revision-date>
-                   </version>
+
+</version>
                    <language>en</language>
                    <script>Latn</script>
                    <status>
@@ -675,8 +677,8 @@
                          </contributor>
                          <edition>1</edition>
                          <version>
-                            <revision-date>2016-05-01</revision-date>
-                         </version>
+
+</version>
                          <language>en</language>
                          <script>Latn</script>
                          <status>
@@ -1333,8 +1335,8 @@
                    </contributor>
                    <edition>1</edition>
                    <version>
-                      <revision-date>2016-05-01</revision-date>
-                   </version>
+
+</version>
                    <language>en</language>
                    <script>Latn</script>
                    <status>
@@ -1470,8 +1472,8 @@
                          </contributor>
                          <edition>1</edition>
                          <version>
-                            <revision-date>2016-05-01</revision-date>
-                         </version>
+
+</version>
                          <language>en</language>
                          <script>Latn</script>
                          <status>

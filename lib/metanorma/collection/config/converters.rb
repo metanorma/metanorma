@@ -1,5 +1,6 @@
 require "relaton/bib"
 require "relaton/bib/hash_parser_v1"
+require_relative "namespaces"
 
 module Metanorma
   class Collection
@@ -66,8 +67,8 @@ module Metanorma
 
         def bibdata_from_xml(model, node)
           node or return
-          force_primary_docidentifier_xml(node.adapter_node)
-          model.bibdata = Relaton::Cli.parse_xml(node.adapter_node)
+          force_primary_docidentifier_xml(node.adapter_node.native)
+          model.bibdata = Relaton::Cli.parse_xml(node.adapter_node.native)
         end
 
         def force_primary_docidentifier_xml(node)
@@ -76,38 +77,36 @@ module Metanorma
           d["primary"] = "true"
         end
 
-        def bibdata_to_xml(model, parent, doc)
+        def bibdata_to_xml(model, _parent, doc)
           b = model.bibdata or return
-          elem = b.to_xml(bibdata: true, date_format: :full)
-          doc.add_element(parent, elem)
+          add_raw_xml_element(doc, b.to_xml(bibdata: true, date_format: :full))
         end
 
         def nop_to_yaml(model, doc); end
         def nop_to_xml(model, parent, doc); end
 
-        def documents_from_xml(model, value)
-          model.documents = value
-            .each_with_object([]) do |b, m|
-            m << b
+        # Add a single-element XML string as a child of the wrapper's current
+        # context, preserving inline namespace declarations.
+        #
+        # The custom-method `doc.add_element(parent, str)` path under
+        # lutaml-model 0.8 routes through Moxml fragment parsing, whose graft
+        # (`CustomMethodWrapper#add_fragment_children_to_parent`) discards
+        # xmlns declarations on grafted DataModel children. The
+        # `create_and_add_element` + `raw_content` path goes through the XML
+        # adapter's raw-content handler, which uses Nokogiri's native fragment
+        # parser and keeps xmlns intact. Tag the new element with
+        # MetanormaCollectionNamespace so it inherits cleanly from the
+        # metanorma-collection root rather than emitting `xmlns=""`.
+        def add_raw_xml_element(doc, raw)
+          parsed = Nokogiri::XML.fragment(raw)
+          src = parsed.elements.first or return
+          el = doc.create_and_add_element(src.name)
+          el.namespace_class = MetanormaCollectionNamespace
+          src.attribute_nodes.each do |a|
+            doc.add_attribute(el, a.name, a.value)
           end
-        end
-
-        def documents_to_xml(model, parent, doc)
-          documents_to_xml?(doc) or return
-          b = Nokogiri::XML::Builder.new do |xml|
-            xml.document do |m|
-              model.collection.doccontainer(m) or return
-            end
-          end
-          b.parent.elements.first.elements
-            .each { |x| doc.add_element(parent, x) }
-        end
-
-        def documents_to_xml?(doc)
-          ret = doc.parent.elements.detect do |x|
-            x.name == "doc-container"
-          end
-          !ret
+          el.raw_content = src.children.map(&:to_xml).join
+          el
         end
       end
     end

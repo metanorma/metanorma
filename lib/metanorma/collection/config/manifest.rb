@@ -1,5 +1,4 @@
 require "lutaml/model"
-require "lutaml/model/xml_adapter/nokogiri_adapter"
 require_relative "../../array_monkeypatch"
 require_relative "converters"
 require_relative "bibdata"
@@ -8,7 +7,7 @@ module Metanorma
   class Collection
     module Config
       Lutaml::Model::Config.configure do |config|
-        config.xml_adapter = Lutaml::Model::XmlAdapter::NokogiriAdapter
+        config.xml_adapter_type = :nokogiri
       end
 
       class Manifest < ::Lutaml::Model::Serializable
@@ -86,10 +85,9 @@ module Metanorma
           model.entry = Manifest.from_xml(node.node.to_xml)
         end
 
-        def entry_to_xml(model, parent, doc)
+        def entry_to_xml(model, _parent, doc)
           Array(model.entry).each do |e|
-            elem = e.to_xml
-            doc.add_element(parent, elem)
+            add_raw_xml_element(doc, e.to_xml)
           end
         end
 
