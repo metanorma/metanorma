@@ -1,5 +1,7 @@
 module Metanorma
   class Compile
+    NO_FONTIST_FORMATS = %i[xml presentation rxl].freeze
+
     # Generate presentation XML from semantic XML
     def generate_presentation_xml(source_file, xml, bibdata, output_paths, opt)
       process_ext(:presentation, source_file, xml, bibdata, output_paths, opt)
@@ -56,7 +58,8 @@ module Metanorma
 
     # isodoc is Raw Metanorma XML
     def gather_and_install_fonts(source_file, options, extensions)
-      Util.sort_extensions_execution(extensions).each do |ext|
+      font_exts = extensions - NO_FONTIST_FORMATS
+      Util.sort_extensions_execution(font_exts).each do |ext|
         isodoc_options = get_isodoc_options(source_file, options, ext)
         font_install(isodoc_options.merge(options))
       end

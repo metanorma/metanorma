@@ -174,6 +174,50 @@ RSpec.describe Metanorma::Compile do
                                              install_fonts: false)
   end
 
+  it "skip font install with xml-only extension" do
+    compile = Metanorma::Compile.new
+
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
+    expect(Metanorma::Util::FontistHelper).not_to receive(:fontist_install)
+
+    compile.compile("spec/assets/test.adoc", type: "iso",
+                                             extension_keys: [:xml])
+  end
+
+  it "skip font install with xml+presentation extension" do
+    compile = Metanorma::Compile.new
+
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
+    expect(Metanorma::Util::FontistHelper).not_to receive(:fontist_install)
+
+    compile.compile("spec/assets/test.adoc",
+                    type: "iso",
+                    extension_keys: %i[xml presentation])
+  end
+
+  it "skip font install with rxl-only extension" do
+    compile = Metanorma::Compile.new
+
+    allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
+    expect(Metanorma::Util::FontistHelper).not_to receive(:fontist_install)
+
+    compile.compile("spec/assets/test.adoc", type: "iso",
+                                             extension_keys: [:rxl])
+  end
+
+  it "fontist_install still called for mixed xml+html extensions" do
+    mock_pdf
+    mock_sts
+    compile = Metanorma::Compile.new
+
+    allow(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe)
+    expect(Metanorma::Util::FontistHelper).to receive(:install_fonts_safe).once
+
+    compile.compile("spec/assets/test.adoc", type: "iso",
+                                             agree_to_terms: true,
+                                             extension_keys: %i[xml html])
+  end
+
   it "exit on license error" do
     compile = Metanorma::Compile.new
 
