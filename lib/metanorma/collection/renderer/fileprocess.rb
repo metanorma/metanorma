@@ -78,7 +78,7 @@ module Metanorma
                                             "#{collection_filename}.xml")
             File.write collection_xml_path, collection_xml, encoding: "UTF-8"
             file_compile(collection_xml_path, fname, ident)
-            FileUtils.rm(collection_xml_path)
+            FileUtils.rm_f(collection_xml_path)
           end
         end
       end
