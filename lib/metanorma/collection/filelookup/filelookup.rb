@@ -45,7 +45,10 @@ module Metanorma
 
       def derive_format(entry, parent)
         entry.attachment and return
-        entry.format ||= parent.format || %w(xml presentation html)
+        if Array(entry.format).empty?
+          parent_fmt = Array(parent.format)
+          entry.format = parent_fmt.empty? ? %w(xml presentation html) : parent_fmt.dup
+        end
         entry.format |= ["xml", "presentation"]
       end
 

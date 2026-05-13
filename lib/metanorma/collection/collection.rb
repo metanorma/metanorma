@@ -53,7 +53,7 @@ module Metanorma
 
     def initialize_config(config)
       @config = config
-      @directives = config.directive || [] # feeds initialize_directives
+      @directives = (config.directive || []).dup # feeds initialize_directives
       @bibdata = config.bibdata
       @prefatory = config.prefatory_content
       @final = config.final_content
