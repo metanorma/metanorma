@@ -371,6 +371,23 @@ RSpec.describe Metanorma::Compile do
     compile.compile("spec/assets/custom_fonts.adoc", type: "iso")
   end
 
+  it "installs fonts before performing any location_manifest lookup" do
+    mock_pdf
+    mock_sts
+    compile = Metanorma::Compile.new
+
+    call_order = []
+    allow(Metanorma::Util::FontistHelper)
+      .to receive(:install_fonts_safe) { call_order << :install_fonts_safe }
+    allow(Metanorma::Util::FontistHelper)
+      .to receive(:location_manifest) { call_order << :location_manifest; {} }
+
+    compile.compile("spec/assets/custom_fonts.adoc", type: "iso",
+                                                     agree_to_terms: true)
+
+    expect(call_order.first).to eq(:install_fonts_safe)
+  end
+
   it "processes metanorma options inside Asciidoc" do
     FileUtils.rm_rf "spec/assets/test1.xml"
     FileUtils.rm_rf "spec/assets/test1.doc"

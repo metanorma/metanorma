@@ -58,11 +58,10 @@ module Metanorma
 
     # isodoc is Raw Metanorma XML
     def gather_and_install_fonts(source_file, options, extensions)
-      font_exts = extensions - NO_FONTIST_FORMATS
-      Util.sort_extensions_execution(font_exts).each do |ext|
-        isodoc_options = get_isodoc_options(source_file, options, ext)
-        font_install(isodoc_options.merge(options))
-      end
+      return if (extensions - NO_FONTIST_FORMATS).empty?
+
+      install_options = @processor.extract_options(source_file).merge(options)
+      font_install(install_options)
     end
 
     # Process a single extension (output format)
