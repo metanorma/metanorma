@@ -139,6 +139,15 @@ RSpec.describe Metanorma::Compile do
   end
 
   context "fontist integration", :fontist do
+  before(:all) do
+    require "metanorma-iso"
+    iso = Metanorma::Registry.instance.find_processor(:iso)
+    Fontist::Manifest.from_hash((iso&.fonts_manifest || {}).dup).install(
+      confirmation: "yes",
+      no_progress: true,
+    )
+  end
+
   it "fontist_install called" do
     mock_pdf
     mock_sts
