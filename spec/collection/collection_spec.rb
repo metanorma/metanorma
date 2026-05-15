@@ -685,7 +685,7 @@ RSpec.describe Metanorma::Collection do
       format: %i[pdf presentation xml],
       output_folder: of,
       coverpage: "cover-iho.html",
-      compile: { install_fonts: false },
+      compile: { install_fonts: true, agree_to_terms: true, progress: false },
     )
     expect(renderer)
       .to have_received(:pdfconv)
