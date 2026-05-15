@@ -1,0 +1,8 @@
+# Purpose: pin fontist to the fix branch for issue #465
+# (https://github.com/fontist/fontist/issues/465)
+#
+# Remove this file once a fontist gem containing the fix is released and
+# the regular Gemfile constraint picks it up.
+gem "fontist",
+    git: "https://github.com/fontist/fontist.git",
+    branch: "revert-safe-install"
