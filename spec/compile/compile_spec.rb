@@ -19,18 +19,6 @@ RSpec.describe Metanorma::Compile do
     fail "Unexpected exit encountered"
   end
 
-  # Fontist work (install_fonts, location_manifest) is the dominant cost of
-  # most Compile specs and is irrelevant to all but the `context "fontist
-  # integration", :fontist` block below. Stub it out for everything else.
-  before(:each) do |example|
-    next if example.metadata[:fontist]
-
-    allow(Metanorma::Util::FontistHelper)
-      .to receive(:install_fonts).and_return(nil)
-    allow(Metanorma::Util::FontistHelper)
-      .to receive(:location_manifest).and_return(nil)
-  end
-
   it "passes asciidoc options onto isodoc" do
     log = Metanorma::Utils::Log.new
     mock_iso_processor_output(

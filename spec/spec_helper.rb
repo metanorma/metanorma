@@ -41,6 +41,19 @@ RSpec.configure do |config|
   end
 
   config.include RSpecCommand
+
+  # Fontist's install/location work is the dominant cost of most specs that
+  # exercise Compile or the Collection renderer, and is irrelevant to all
+  # but a few tests that explicitly assert Fontist behaviour. Stub it out
+  # globally; tests that exercise Fontist opt back in via the :fontist tag.
+  config.before(:each) do |example|
+    next if example.metadata[:fontist]
+
+    allow(Metanorma::Util::FontistHelper)
+      .to receive(:install_fonts).and_return(nil)
+    allow(Metanorma::Util::FontistHelper)
+      .to receive(:location_manifest).and_return(nil)
+  end
 end
 
 ASCIIDOC_BLANK_HDR = <<~HDR
