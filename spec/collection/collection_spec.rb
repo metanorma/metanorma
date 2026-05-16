@@ -668,7 +668,7 @@ RSpec.describe Metanorma::Collection do
       .to include("S-100WG")
   end
 
-  it "extract custom fonts from collection XML for PDF" do
+  it "extract custom fonts from collection XML for PDF", :fontist do
     mock_pdf
     of = File.join(FileUtils.pwd, OUTPATH)
     col = Metanorma::Collection.parse "#{INPATH}/collection-iho.yml"
@@ -685,7 +685,7 @@ RSpec.describe Metanorma::Collection do
       format: %i[pdf presentation xml],
       output_folder: of,
       coverpage: "cover-iho.html",
-      compile: { install_fonts: false },
+      compile: { install_fonts: true, agree_to_terms: true, progress: false },
     )
     expect(renderer)
       .to have_received(:pdfconv)

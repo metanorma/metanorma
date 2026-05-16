@@ -138,6 +138,16 @@ RSpec.describe Metanorma::Compile do
     expect(xml).to include "International Color Consortium"
   end
 
+  context "fontist integration", :fontist do
+  before(:all) do
+    require "metanorma-iso"
+    iso = Metanorma::Registry.instance.find_processor(:iso)
+    Fontist::Manifest.from_hash((iso&.fonts_manifest || {}).dup).install(
+      confirmation: "yes",
+      no_progress: true,
+    )
+  end
+
   it "fontist_install called" do
     mock_pdf
     mock_sts
@@ -369,6 +379,24 @@ RSpec.describe Metanorma::Compile do
       .and_return({})
 
     compile.compile("spec/assets/custom_fonts.adoc", type: "iso")
+  end
+
+  it "installs fonts before performing any location_manifest lookup" do
+    mock_pdf
+    mock_sts
+    compile = Metanorma::Compile.new
+
+    call_order = []
+    allow(Metanorma::Util::FontistHelper)
+      .to receive(:install_fonts_safe) { call_order << :install_fonts_safe }
+    allow(Metanorma::Util::FontistHelper)
+      .to receive(:location_manifest) { call_order << :location_manifest; {} }
+
+    compile.compile("spec/assets/custom_fonts.adoc", type: "iso",
+                                                     agree_to_terms: true)
+
+    expect(call_order.first).to eq(:install_fonts_safe)
+  end
   end
 
   it "processes metanorma options inside Asciidoc" do
