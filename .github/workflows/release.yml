@@ -14,6 +14,11 @@ on:
   repository_dispatch:
     types: [ do-release ]
 
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
 jobs:
   release:
     uses: metanorma/ci/.github/workflows/rubygems-release.yml@main
