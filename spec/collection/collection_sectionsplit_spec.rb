@@ -382,7 +382,7 @@ RSpec.describe Metanorma::Collection do
       .to be true
     expect(File.exist?("#{OUTPATH}/_dummy_attachments/LICENSE1.TXT")).to be true
     rice = File.read("#{OUTPATH}/rice-en.final.xml.1.html")
-    expect(rice).to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+    expect(rice).to include %(This document is updated in <a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a>)
     expect(rice).to include %(It is not applicable to cooked rice products, which are not discussed in <a href="rice-en.final.xml.2.html#anotherclause_ISO_17301-1_2016_ISO_17301-1_2016_2_This_is_another_clause"><span class="citesec">Clause 2</span></a> or <a href="rice-en.final.xml.3.html#thirdclause_ISO_17301-1_2016_ISO_17301-1_2016_3_This_is_another_clause"><span class="citesec">Clause 3</span></a>.</p>)
     expect(rice).to include %(<div id=\"_scope_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope\">)
     # resolves SVG references to Express
@@ -391,13 +391,13 @@ RSpec.describe Metanorma::Collection do
     expect(rice).to match %r{<a xlink:href="mn://action_schema">\s+<rect x="123\.28" y="273\.93"}m
     # demonstrate that erefs are removed if they point to another document in the repository,
     # but that document is not supplied
-    expect(rice).to match %r{This document uses schemas E0/A0, <a href="dummy\.html#E1_ISO_17302">E1/A1</a> and <a href="dummy\.html#E2_ISO_17302">express-schema/E2</a> as well as express-schema/E0.}
+    expect(rice).to match %r{This document uses schemas E0/A0, <a href="dummy.html#E1_ISO_17302">E1/A1</a> and <a href="dummy.html#E2_ISO_17302">express-schema/E<span class="stddocNumber">2</span></a> as well as express-schema/E<span class="stddocNumber">0</span>}
     expect(rice).to include %(This document is also unrelated to <a href="dummy.html#what">)
     xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
     p = xml.xpath("//xmlns:sections//xmlns:p")[4]
     p.delete("id")
     expect(p.to_xml.gsub(/ (source|id|semx-id)="[^"]+"/, "")).to be_equivalent_to <<~OUTPUT
-      <p>This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope" citeas="ISO 17301-1:2016/Amd.1:2017"/><semx element="eref"><fmt-link target="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</fmt-link></semx>.</p>
+      <p>This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope" citeas="ISO 17301-1:2016/Amd.1:2017"/><semx element="eref"><fmt-link target="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</fmt-link></semx>.</p>
     OUTPUT
     FileUtils.rm_rf of
   end
@@ -523,7 +523,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{OUTPATH}/rice1-en.final.presentation.xml"))
       .to be true
     expect(File.read("#{OUTPATH}/rice-en.final.html"))
-      .to include %(This document is updated in <a href="rice-amd.final.html"><span class="stdpublisher">ISO </span><span class="stddocNumber">17301</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">2016</span>/Amd.1:2017</a>.</p>)
+      .to include %(This document is updated in <a href="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</a>)
     expect(File.read("#{OUTPATH}/rice-en.final.html"))
       .to include %(It is not applicable to cooked rice products, which are not discussed in <a href="#anotherclause_ISO_17301-1_2016"><span class="citesec">Clause 2</span></a> or <a href="#thirdclause_ISO_17301-1_2016"><span class="citesec">Clause 3</span></a>.</p>)
     # demonstrate that erefs are removed if they point to another document in the repository,
@@ -531,7 +531,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{OUTPATH}/rice-en.final.html"))
       .to include %(This document is also unrelated to <a href="dummy.xml.3.html#what">)
     expect(File.read("#{OUTPATH}/rice-en.final.html"))
-      .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what">current-metanorma-collection/ISO 17302:2016 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas <a href="#express-schema_E0_ISO_17301-1_2016">E0/A0</a>, <a href="dummy.xml.2.html#A1_ISO_17302_2016_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_2016_ISO_17302_2016_4">E2</a> as well as <a href="#express-schema_E0_ISO_17301-1_2016">metanorma-collection Missing:express-schema:E0 / current-metanorma-collection/Missing:express-schema:E0</a>.</p>}
+      .to include %{This document is also unrelated to <a href="dummy.xml.3.html#what"><span class="stdpublisher">current-metanorma-collection/ISO</span> <span class="stddocNumber">17302</span>:<span class="stdyear">2016</span> 3 What?</a>.</p><p id="_001_ISO_17301-1_2016">This document uses schemas <a href="#express-schema_E0_ISO_17301-1_2016">E0/A0</a>, <a href="dummy.xml.2.html#A1_ISO_17302_2016_ISO_17302_2016_2">E1/A1</a> and <a href="dummy.xml.4.html#E2_ISO_17302_2016_ISO_17302_2016_4">E2</a> as well as <a href="#express-schema_E0_ISO_17301-1_2016"><span class="stdpublisher">metanorma-collection</span> Missing:express-schema:E<span class="stddocNumber">0</span> / current-metanorma-collection/Missing:express-schema:E0</a>.}
     FileUtils.rm_rf of
   end
 
@@ -569,7 +569,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
       .to include %(This document is updated in <b>** Unresolved reference to document ISO 17301-1:2016/Amd.1:2017 from eref</b>.</p>)
     expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
-      .to include %(This document uses schemas E0/A0, E1/A1 and express-schema/E2 as well as express-schema/E0.)
+      .to include %(This document uses schemas E0/A0, E1/A1 and express-schema/E<span class="stddocNumber">2</span> as well as express-schema/E<span class="stddocNumber">0</span>)
     expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
       .to include %(This document is also unrelated to <a href="dummy.html#what">)
     FileUtils.rm_rf of
