@@ -121,7 +121,7 @@ module Metanorma
         # file[:url] contains full path with directory for HTML output, but XML is basename only
         xml_basename = File.basename(file[:url])
         presfile = File.join(File.dirname(@files[key][:ref]), xml_basename)
-        newkey = key("#{key.strip} #{file[:title]}")
+        newkey = entry_key("#{key.strip} #{file[:title]}")
         xml = Nokogiri::XML(File.read(presfile), &:huge)
         [presfile, newkey, xml]
       end

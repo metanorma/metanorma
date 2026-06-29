@@ -56,17 +56,18 @@ module Metanorma
         entry = file_entry(manifest, k, idx) or return
         bibdata_process(entry, i)
         bibitem_process(entry)
-        @files[key(i)] = entry
+        @files[entry_key(i)] = entry
       end
 
       def read_file_idents(manifest)
         id = manifest.identifier
-        sanitised_id = key(@isodoc.docid_prefix("", manifest.identifier.dup))
+        sanitised_id =
+          entry_key(@isodoc.docid_prefix("", manifest.identifier.dup))
         #       if manifest.bibdata and # NO, DO NOT FISH FOR THE GENUINE IDENTIFIER IN BIBDATA
         #         d = manifest.bibdata.docidentifier.detect { |x| x.primary } ||
         #           manifest.bibdata.docidentifier.first
         #         k = d.id
-        #         i = key(@isodoc.docid_prefix(d.type, d.id.dup))
+        #         i = entry_key(@isodoc.docid_prefix(d.type, d.id.dup))
         #       end
         [id, sanitised_id]
       end

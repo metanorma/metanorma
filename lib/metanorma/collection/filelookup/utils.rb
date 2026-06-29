@@ -14,7 +14,10 @@ module Metanorma
         data[:url]
       end
 
-      def key(ident)
+      # Normalise an identifier to its @files hash key: decode entities, squeeze
+      # whitespace, and strip a leading "metanorma-collection " prefix. Distinct
+      # from Util::key, which does NOT strip that prefix.
+      def entry_key(ident)
         @c.decode(ident).gsub(/(\p{Zs})+/, " ")
           .sub(/^metanorma-collection /, "")
       end
@@ -24,13 +27,13 @@ module Metanorma
       end
 
       def get(ident, attr = nil)
-        if attr then @files[key(ident)][attr]
-        else @files[key(ident)]
+        if attr then @files[entry_key(ident)][attr]
+        else @files[entry_key(ident)]
         end
       end
 
       def set(ident, attr, value)
-        @files[key(ident)][attr] = value
+        @files[entry_key(ident)][attr] = value
       end
 
       def each
