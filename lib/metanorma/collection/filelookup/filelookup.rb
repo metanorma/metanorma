@@ -3,7 +3,6 @@ require "htmlentities"
 require "metanorma-utils"
 require "marcel"
 require_relative "filelookup_sectionsplit"
-require_relative "base"
 require_relative "utils"
 
 module Metanorma
