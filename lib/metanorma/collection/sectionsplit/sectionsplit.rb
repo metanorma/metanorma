@@ -136,10 +136,8 @@ module Metanorma
 
       def sectionsplit_update_xrefs(xml)
         if c = @fileslookup&.parent
-          n = c.nested
-          c.nested = true # so unresolved erefs are not deleted
-          c.update_xrefs(xml, @ident, {})
-          c.nested = n
+          # nested mode so unresolved erefs are not deleted
+          c.with_nested { c.update_xrefs(xml, @ident, {}) }
           xml.xpath("//xmlns:svgmap").each { |x| x.name = "svgmap1" }
           # do not process svgmap until after files are split
         end

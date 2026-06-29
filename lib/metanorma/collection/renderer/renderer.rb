@@ -17,9 +17,21 @@ module Metanorma
     class Renderer
       FORMATS = %i[html xml doc pdf pdf-portfolio].freeze
 
-      attr_accessor :isodoc, :isodoc_presxml, :nested
+      attr_accessor :isodoc, :isodoc_presxml
       attr_reader :xml, :compile, :compile_options, :documents, :outdir,
                   :manifest
+
+      # Run the block with the renderer in nested mode, restoring the previous
+      # mode afterwards. Nested mode (used by sectionsplit, which re-enters this
+      # renderer's update_xrefs on the pre-split document) preserves unresolved
+      # erefs and skips the finalising reference passes.
+      def with_nested
+        saved = @nested
+        @nested = true
+        yield
+      ensure
+        @nested = saved
+      end
 
       # This is only going to render the HTML collection
       # @param xml [Metanorma::Collection] input XML collection
