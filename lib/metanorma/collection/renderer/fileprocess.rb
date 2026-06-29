@@ -183,21 +183,52 @@ module Metanorma
       def update_bibitem_prep(bib, identifier)
         docid = get_bibitem_docid(bib, identifier) or return [nil, nil]
         newbib = dup_bibitem(docid, bib)
-        url = @files.url(docid, relative: true,
-                                doc: !@files.get(docid, :attachment))
-        # Use :outputs[:html] if available (after compilation),
-        # otherwise convert :out_path to HTML (before compilation)
-        current_html = @files.get(identifier, :outputs)&.dig(:html)
-        if !current_html && (out_path = @files.get(identifier, :out_path))
-          # Convert .xml to .html, following same logic as ref_file_xml2html
-          current_html = if out_path.end_with?(".xml")
-                           out_path.sub(/\.xml$/, ".html")
-                         else
-                           "#{out_path}.html"
-                         end
-        end
+        attachment = @files.get(docid, :attachment)
+        url = @files.url(docid, relative: true, doc: !attachment)
+        current_html = referencing_html_location(identifier, attachment)
         url = make_relative_path(current_html, url) if current_html
         [newbib, url]
+      end
+
+      # Location of the HTML that will carry the cross-reference to the target,
+      # used as the base for relativising the attachment/citation URL.
+      #
+      # Normally this is the referencing document's own output (:outputs[:html]
+      # after compilation, else :out_path converted to .html before it).
+      #
+      # But when the referencing document is sectionsplit, its content is not
+      # emitted at its own out_path: it is split into section files written at
+      # the sectionsplit output location (the collection root, unless a
+      # sectionsplit_filename directory is configured). Relativising an
+      # attachment URL against the unsplit out_path then overshoots -- the
+      # ../../ climbs above the split file and the attachment link breaks
+      # (https://github.com/metanorma/iso-10303/issues/208). So for attachment
+      # targets of a sectionsplit document, base the relative path on the
+      # sectionsplit output directory instead.
+      def referencing_html_location(identifier, attachment)
+        attachment && @files.get(identifier, :sectionsplit) and
+          return sectionsplit_ref_html(identifier)
+        document_ref_html(identifier)
+      end
+
+      # The split section files sit at the sectionsplit output directory: the
+      # collection root, or the directory of a configured sectionsplit_filename.
+      def sectionsplit_ref_html(identifier)
+        d = @files.preserve_directory_structure?(identifier)
+        d ? File.join(File.dirname(d), "x.html") : "x.html"
+      end
+
+      # Use :outputs[:html] if available (after compilation), otherwise convert
+      # :out_path to HTML (before compilation), following ref_file_xml2html.
+      def document_ref_html(identifier)
+        @files.get(identifier, :outputs)&.dig(:html) ||
+          out_path_to_html(@files.get(identifier, :out_path))
+      end
+
+      def out_path_to_html(out_path)
+        out_path or return nil
+        out_path.end_with?(".xml") and return out_path.sub(/\.xml$/, ".html")
+        "#{out_path}.html"
       end
     end
   end
