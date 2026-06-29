@@ -90,21 +90,6 @@ module Metanorma
         directives_normalise_keystore_pdf_portfolio(directives)
       end
 
-      # KILL
-      def directives_normalise_coverpage_pdf_portfolio(directives)
-        directives.reject! { |d| d.key == "coverpage-pdf-portfolio" }
-        absolute_coverpage_pdf_portflio = @coverpage_pdf_portflio &&
-          Pathname.new(@coverpage_pdf_portflio).absolute?
-        @coverpage_pdf_portflio =
-          Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
-        absolute_coverpage_pdf_portflio or
-          @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
-            .relative_path_from(Pathname.new(@outdir)).to_s
-        directives << ::Metanorma::Collection::Config::Directive
-          .new(key: "coverpage-pdf-portfolio", value: @coverpage_pdf_portflio)
-        directives
-      end
-
       def directives_normalise_coverpage_pdf_portfolio(directives)
         directives_resolve_filepath(directives, "coverpage-pdf-portfolio",
                                     @coverpage_pdf_portflio)
