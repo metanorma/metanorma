@@ -82,11 +82,11 @@ module Metanorma
 
       def sectionsplit2(xml, empty, chunks, parentnode, opt)
         @pool.post do
-          output_filename = @sectionsplit_filename
-            &.gsub(/\{document-num\}/, @parent_idx.to_s)
-            &.gsub(/\{basename_legacy\}/, @base)
-            &.gsub(/\{basename\}/, File.basename(@base, ".*"))
-            &.gsub(/\{sectionsplit-num\}/, opt[:idx].to_s)
+          output_filename = Util.substitute_filename_pattern(
+            @sectionsplit_filename,
+            document_num: @parent_idx, basename: File.basename(@base, ".*"),
+            basename_legacy: @base, sectionsplit_num: opt[:idx]
+          )
           warn "Sectionsplit: #{output_filename}"
           a = sectionfile(xml, empty, output_filename, chunks,
                           parentnode)

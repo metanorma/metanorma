@@ -158,24 +158,10 @@ module Metanorma
         end
       end
 
-      # Substitute special strings in filename patterns
-      # @param pattern [String] filename pattern with placeholders
-      # @param options [Hash] substitution values
-      # @option options [Integer] :document_num document index
-      # @option options [String] :basename filename without extension
-      # @option options [String] :basename_legacy full filename with extension
-      # @option options [Integer] :sectionsplit_num sectionsplit index
+      # Substitute special strings in filename patterns.
+      # See Util.substitute_filename_pattern.
       def substitute_filename_pattern(pattern, options = {})
-        pattern or return pattern
-        result = pattern.dup
-        options[:document_num] and
-          result.gsub!(/\{document-num\}/, options[:document_num].to_s)
-        result.gsub!(/\{basename\}/, options[:basename]) if options[:basename]
-        options[:basename_legacy] and
-          result.gsub!(/\{basename_legacy\}/, options[:basename_legacy])
-        options[:sectionsplit_num] and
-          result.gsub!(/\{sectionsplit-num\}/, options[:sectionsplit_num].to_s)
-        result
+        Util.substitute_filename_pattern(pattern, options)
       end
 
       # TODO make the output file location reflect source location universally,
