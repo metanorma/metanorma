@@ -7,6 +7,22 @@ require "concurrent-ruby"
 
 module Metanorma
   class Collection
+    # Sectionsplit is a collection render nested inside a collection render:
+    # a document is split into one output file per section, and those files are
+    # then rendered as their own (sub-)collection.
+    #
+    # Two output-location invariants matter (both load-bearing -- see the
+    # collection architecture review plan and metanorma/iso-10303#208):
+    #
+    # * XML section files are always written FLAT to the split directory
+    #   (basename only). HTML output may instead carry a directory taken from
+    #   sectionsplit_filename, reattached only at HTML compile time
+    #   (preserve_directory_structure?).
+    # * A sectionsplit document's content is emitted at the sectionsplit output
+    #   location (the collection root, unless sectionsplit_filename sets a
+    #   directory), NOT at the document's own :out_path. Anything relativising a
+    #   URL for such a document (e.g. attachment/citation links) must base it on
+    #   the split location, or the ../../ overshoots.
     class Sectionsplit
       attr_accessor :filecache, :key
 
