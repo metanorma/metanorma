@@ -14,24 +14,46 @@ module Metanorma
       # @param internal_refs [Hash{String=>Hash{String=>String}] schema name to
       #   anchor to filename
       # @return [String] XML content
+      # Each pass below mutates the SAME Nokogiri tree in place; the inline
+      # comments state the post-condition each pass guarantees on exit. The
+      # contract between passes is "the tree is now in state X" -- there is no
+      # intermediate typed representation, so the ordering is load-bearing.
+      # `sso` truthy (sectionsplit_output) => `xml` is Presentation XML and the
+      # semantic-only passes are skipped; otherwise `xml` is Semantic XML.
+      # See the pipeline map in the collection architecture review plan.
       def update_xrefs(file, docid, internal_refs)
         xml, sso = update_xrefs_prep(file, docid)
+        # post: repository docidentifiers supplied on bibitems naming a
+        # collection file; `sso` resolved (Presentation vs Semantic).
         @nested || sso or
           Metanorma::Collection::XrefProcess::xref_process(xml, xml, nil, docid,
                                                            @isodoc, sso)
+        # post (semantic only): intra-doc xref/eref turned into internal erefs;
+        # repo bibitems copied; indirect bibliography inserted.
         @ncnames = {}
         @nested or update_indirect_refs_to_docs(xml, docid, internal_refs, sso)
+        # post: bibitem[@type='internal'] anchors resolved to the containing
+        # collection document.
         @files.add_document_suffix(docid, xml)
+        # post: every @id/@anchor namespaced with this doc's NCName suffix, so
+        # concatenated documents do not collide.
         @nested or update_sectionsplit_refs_to_docs(xml, docid, internal_refs,
                                                     sso)
+        # post: erefs targeting a sectionsplit document point at the specific
+        # split section file that holds the anchor.
         update_direct_refs_to_docs(xml, docid, sso)
+        # post: repo(current-metanorma-collection/x) bibitems replaced in situ
+        # with resolved bibdata + citation URI; their erefs become hyperlinks.
         ::Metanorma::Collection::Util::hide_refs(xml)
+        # post: references containers with only hidden bibitems flagged hidden.
         sso and eref2link(xml, sso)
         @nested or svgmap_resolve(xml, docid, sso)
         xml.to_xml
       end
 
-      ## sso files are Presentation XML; otherwise, Semantic XML
+      ## sso (sectionsplit_output) truthy => Presentation XML, else Semantic.
+      ## This is the single discriminator that decides which grammar `xml`
+      ## carries and therefore which passes in update_xrefs run.
       def update_xrefs_prep(file, docid)
         docxml = file.is_a?(String) ? Nokogiri::XML(file, &:huge) : file
         supply_repo_ids(docxml)

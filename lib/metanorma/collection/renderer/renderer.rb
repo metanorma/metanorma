@@ -17,9 +17,21 @@ module Metanorma
     class Renderer
       FORMATS = %i[html xml doc pdf pdf-portfolio].freeze
 
-      attr_accessor :isodoc, :isodoc_presxml, :nested
+      attr_accessor :isodoc, :isodoc_presxml
       attr_reader :xml, :compile, :compile_options, :documents, :outdir,
                   :manifest
+
+      # Run the block with the renderer in nested mode, restoring the previous
+      # mode afterwards. Nested mode (used by sectionsplit, which re-enters this
+      # renderer's update_xrefs on the pre-split document) preserves unresolved
+      # erefs and skips the finalising reference passes.
+      def with_nested
+        saved = @nested
+        @nested = true
+        yield
+      ensure
+        @nested = saved
+      end
 
       # This is only going to render the HTML collection
       # @param xml [Metanorma::Collection] input XML collection
@@ -88,21 +100,6 @@ module Metanorma
         @coverpage_pdf_portflio and
           directives = directives_normalise_coverpage_pdf_portfolio(directives)
         directives_normalise_keystore_pdf_portfolio(directives)
-      end
-
-      # KILL
-      def directives_normalise_coverpage_pdf_portfolio(directives)
-        directives.reject! { |d| d.key == "coverpage-pdf-portfolio" }
-        absolute_coverpage_pdf_portflio = @coverpage_pdf_portflio &&
-          Pathname.new(@coverpage_pdf_portflio).absolute?
-        @coverpage_pdf_portflio =
-          Util::rel_path_resolve(@dirname, @coverpage_pdf_portflio)
-        absolute_coverpage_pdf_portflio or
-          @coverpage_pdf_portflio = Pathname.new(@coverpage_pdf_portflio)
-            .relative_path_from(Pathname.new(@outdir)).to_s
-        directives << ::Metanorma::Collection::Config::Directive
-          .new(key: "coverpage-pdf-portfolio", value: @coverpage_pdf_portflio)
-        directives
       end
 
       def directives_normalise_coverpage_pdf_portfolio(directives)

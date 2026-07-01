@@ -7,6 +7,22 @@ require "concurrent-ruby"
 
 module Metanorma
   class Collection
+    # Sectionsplit is a collection render nested inside a collection render:
+    # a document is split into one output file per section, and those files are
+    # then rendered as their own (sub-)collection.
+    #
+    # Two output-location invariants matter (both load-bearing -- see the
+    # collection architecture review plan and metanorma/iso-10303#208):
+    #
+    # * XML section files are always written FLAT to the split directory
+    #   (basename only). HTML output may instead carry a directory taken from
+    #   sectionsplit_filename, reattached only at HTML compile time
+    #   (preserve_directory_structure?).
+    # * A sectionsplit document's content is emitted at the sectionsplit output
+    #   location (the collection root, unless sectionsplit_filename sets a
+    #   directory), NOT at the document's own :out_path. Anything relativising a
+    #   URL for such a document (e.g. attachment/citation links) must base it on
+    #   the split location, or the ../../ overshoots.
     class Sectionsplit
       attr_accessor :filecache, :key
 
@@ -66,11 +82,11 @@ module Metanorma
 
       def sectionsplit2(xml, empty, chunks, parentnode, opt)
         @pool.post do
-          output_filename = @sectionsplit_filename
-            &.gsub(/\{document-num\}/, @parent_idx.to_s)
-            &.gsub(/\{basename_legacy\}/, @base)
-            &.gsub(/\{basename\}/, File.basename(@base, ".*"))
-            &.gsub(/\{sectionsplit-num\}/, opt[:idx].to_s)
+          output_filename = Util.substitute_filename_pattern(
+            @sectionsplit_filename,
+            document_num: @parent_idx, basename: File.basename(@base, ".*"),
+            basename_legacy: @base, sectionsplit_num: opt[:idx]
+          )
           warn "Sectionsplit: #{output_filename}"
           a = sectionfile(xml, empty, output_filename, chunks,
                           parentnode)
@@ -120,10 +136,8 @@ module Metanorma
 
       def sectionsplit_update_xrefs(xml)
         if c = @fileslookup&.parent
-          n = c.nested
-          c.nested = true # so unresolved erefs are not deleted
-          c.update_xrefs(xml, @ident, {})
-          c.nested = n
+          # nested mode so unresolved erefs are not deleted
+          c.with_nested { c.update_xrefs(xml, @ident, {}) }
           xml.xpath("//xmlns:svgmap").each { |x| x.name = "svgmap1" }
           # do not process svgmap until after files are split
         end
