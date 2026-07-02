@@ -522,6 +522,37 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
+  it "inlines sectionsplit documents whole into the collection presentation " \
+     "XML (iso-10303#208)" do
+    # A sectionsplit document reaching the PDF/presentation concatenation must
+    # be inlined whole. Previously it degraded to a bibdata-only <metanorma> in
+    # the collection namespace (not the standoc namespace), which mn2pdf's
+    # //mn:metanorma XSLT silently drops -- so the collection PDF failed.
+    file = "#{INPATH}/collection_sectionsplit.yml"
+    of = File.join(FileUtils.pwd, OUTPATH)
+    col = Metanorma::Collection.parse file
+    col.render(
+      format: %i[presentation xml html],
+      output_folder: of,
+      coverpage: "collection_cover.html",
+      compile: { install_fonts: false },
+    )
+    pres = Nokogiri::XML(File.read("#{OUTPATH}/collection.presentation.xml"))
+    inner = pres.xpath("//*[local-name()='doc-container']" \
+                       "/*[local-name()='metanorma']")
+    expect(inner).not_to be_empty
+    # every inlined document is in the standoc namespace (not a bibdata-only
+    # stub left in the collection namespace) ...
+    inner.each do |m|
+      expect(m.namespace&.href)
+        .to eq("https://www.metanorma.org/ns/standoc")
+    end
+    # ... and at least the sectionsplit document is inlined with a real body
+    expect(inner.any? { |m| m.at_xpath(".//*[local-name()='sections']") })
+      .to be true
+    FileUtils.rm_rf of
+  end
+
   it "skips indexing of files in coverpage on request" do
     file = "#{INPATH}/collection.dup.yml"
     of = File.join(FileUtils.pwd, OUTPATH)
