@@ -258,10 +258,22 @@ module Metanorma
           .new(key: "documents-inline")
         out.bibdatas.each_key do |ident|
           id = @isodoc.docid_prefix(nil, ident.dup)
-          @files.get(id, :attachment) || @files.get(id, :outputs).nil? and next
+          @files.get(id, :attachment) and next
+          # A non-attachment document with no compiled output for THIS format
+          # cannot be inlined: leaving it in place serialises as a bibdata-only,
+          # namespace-less <metanorma> that mn2pdf silently drops. Skip loudly
+          # rather than crash on a nil path or corrupt the collection PDF.
+          # (Sectionsplit parents get a :presentation output upstream, so they
+          # inline whole for the PDF/presentation path.)
+          outputs = @files.get(id, :outputs)
+          if outputs.nil? || outputs[ext].nil?
+            warn "[metanorma] collection document '#{id}' has no compiled " \
+                 "#{ext} output to inline; skipping (its doc-container would " \
+                 "otherwise be bibdata-only)."
+            next
+          end
           out.documents[Util::key id] =
-            Metanorma::Collection::Document
-              .raw_file(@files.get(id, :outputs)[ext])
+            Metanorma::Collection::Document.raw_file(outputs[ext])
         end
         out
       end

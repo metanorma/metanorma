@@ -54,6 +54,14 @@ module Metanorma
         end
         # @files[key].delete(:ids).delete(:anchors)
         @files[key][:indirect_key] = @sectionsplit.key
+        # sectionsplit is HTML-only; hand the parent its whole Presentation XML
+        # so the collection PDF/presentation concatenation inlines the document
+        # intact (raw_file) instead of degrading to a bibdata-only, namespace-
+        # less stub. file_compile early-returns for sectionsplit, so this
+        # :outputs entry is what concatenate1 consumes.
+        # https://github.com/metanorma/iso-10303/issues/208
+        @files[key][:outputs] =
+          { presentation: @sectionsplit.whole_presentation_file }
       end
 
       def add_section_split_cover(manifest, sectionsplit_manifest, ident)

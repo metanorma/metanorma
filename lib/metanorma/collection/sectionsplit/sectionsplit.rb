@@ -8,7 +8,7 @@ require "concurrent-ruby"
 module Metanorma
   class Collection
     class Sectionsplit
-      attr_accessor :filecache, :key
+      attr_accessor :filecache, :key, :whole_presentation_file
 
       def initialize(opts)
         @input_filename = opts[:input]
@@ -40,6 +40,13 @@ module Metanorma
       # Input XML is Semantic XML
       def sectionsplit
         xml = sectionsplit_prep(File.read(@input_filename), @base, @dir)
+        # Retain the whole (un-split) Presentation XML. sectionsplit is an
+        # HTML-only mechanism, but the collection PDF/presentation path must
+        # inline each document intact; without this the sectionsplit parent
+        # reaches concatenation with no presentation output and degrades to a
+        # bibdata-only, namespace-less <metanorma> stub that mn2pdf drops.
+        # https://github.com/metanorma/iso-10303/issues/208
+        @whole_presentation_file = write_whole_presentation(xml)
         @key = Metanorma::Collection::XrefProcess::xref_preprocess(xml, @isodoc)
         empty = empty_doc(xml)
         empty1 = empty_attachments(empty)
@@ -106,6 +113,16 @@ module Metanorma
         f.close
         r.xpath("//xmlns:svgmap1").each { |x| x.name = "svgmap" }
         r
+      end
+
+      # Persist the whole, svgmap-restored Presentation XML (the in-memory doc,
+      # not the on-disk tmp which still carries the internal svgmap1 marker) so
+      # the collection PDF path can inline the document whole. Written flat to
+      # the split output directory, where the per-section files also live.
+      def write_whole_presentation(xml)
+        fname = File.join(@splitdir, "#{@base}.whole.presentation.xml")
+        File.write(fname, xml.to_xml, encoding: "UTF-8")
+        fname
       end
 
       def sectionsplit_preprocess_semxml(file, filename)
