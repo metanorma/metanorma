@@ -33,6 +33,20 @@ module Metanorma
         @nested = saved
       end
 
+      # Run the block with the renderer preserving unresolved cross-document
+      # references as stubs instead of stripping them -- for an isolated build of
+      # a collection member (compiled without the rest of its collection
+      # present). Unlike +with_nested+, the ordinary intra-document passes still
+      # run (xref_process, svgmap); only the cross-document resolve/strip is
+      # turned into preserve, so a later reinflation pass can relink the stubs.
+      def with_preserve_unresolved
+        saved = @preserve_unresolved
+        @preserve_unresolved = true
+        yield
+      ensure
+        @preserve_unresolved = saved
+      end
+
       # This is only going to render the HTML collection
       # @param xml [Metanorma::Collection] input XML collection
       # @param folder [String] input folder
@@ -83,6 +97,23 @@ module Metanorma
         # if false, this is the root instance of Renderer
         # if true, then this is not the last time Renderer will be run
         # (e.g. this is sectionsplit)
+        # Isolated/incremental build: preserve unresolved cross-document
+        # references as stubs instead of resolving or stripping them, so each
+        # member compiles independently and a later reinflation pass relinks.
+        @preserve_unresolved = options[:preserve_unresolved]
+        # Durable content-addressed store for staged artefacts (opt-in via
+        # :artifact_store_dir; the Null store is a no-op, so the default build
+        # path is unaffected).
+        @artifact_store =
+          if (dir = options[:artifact_store_dir])
+            ArtifactStore.new(dir)
+          else
+            NullArtifactStore.new
+          end
+        # Reinflation pass: the input is a stored stub-bearing Semantic XML that
+        # already has intra-doc xrefs and the document suffix applied, so run
+        # only the cross-document resolution, not the passes already done.
+        @reinflate = options[:reinflate]
 
         @coverpage = options[:coverpage] || collection.coverpage
         @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||

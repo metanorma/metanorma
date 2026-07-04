@@ -1,0 +1,29 @@
+= Toy fasteners — Terms and definitions
+:docnumber: 99000
+:partnumber: 1
+:edition: 1
+:revdate: 2024-01-01
+:copyright-year: 2024
+:language: en
+:title-intro-en: Toy fasteners
+:title-main-en: Terms and definitions
+:doctype: international-standard
+:mn-document-class: iso
+:mn-output-extensions: xml,html
+
+== Scope
+
+This part defines the terms used across the Toy fasteners collection. The terms
+are applied by the bolt specification in <<part2>>.
+
+[bibliography]
+== Normative references
+
+* [[[part2,repo:(current-metanorma-collection/toy,ISO 99000-2:2024)]]]
+
+== Terms and definitions
+
+[[fastener]]
+=== fastener
+
+device that mechanically joins two or more objects
