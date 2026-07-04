@@ -3,7 +3,6 @@ require "htmlentities"
 require "metanorma-utils"
 require "marcel"
 require_relative "filelookup_sectionsplit"
-require_relative "base"
 require_relative "utils"
 
 module Metanorma
@@ -57,17 +56,18 @@ module Metanorma
         entry = file_entry(manifest, k, idx) or return
         bibdata_process(entry, i)
         bibitem_process(entry)
-        @files[key(i)] = entry
+        @files[entry_key(i)] = entry
       end
 
       def read_file_idents(manifest)
         id = manifest.identifier
-        sanitised_id = key(@isodoc.docid_prefix("", manifest.identifier.dup))
+        sanitised_id =
+          entry_key(@isodoc.docid_prefix("", manifest.identifier.dup))
         #       if manifest.bibdata and # NO, DO NOT FISH FOR THE GENUINE IDENTIFIER IN BIBDATA
         #         d = manifest.bibdata.docidentifier.detect { |x| x.primary } ||
         #           manifest.bibdata.docidentifier.first
         #         k = d.id
-        #         i = key(@isodoc.docid_prefix(d.type, d.id.dup))
+        #         i = entry_key(@isodoc.docid_prefix(d.type, d.id.dup))
         #       end
         [id, sanitised_id]
       end
@@ -158,24 +158,10 @@ module Metanorma
         end
       end
 
-      # Substitute special strings in filename patterns
-      # @param pattern [String] filename pattern with placeholders
-      # @param options [Hash] substitution values
-      # @option options [Integer] :document_num document index
-      # @option options [String] :basename filename without extension
-      # @option options [String] :basename_legacy full filename with extension
-      # @option options [Integer] :sectionsplit_num sectionsplit index
+      # Substitute special strings in filename patterns.
+      # See Util.substitute_filename_pattern.
       def substitute_filename_pattern(pattern, options = {})
-        pattern or return pattern
-        result = pattern.dup
-        options[:document_num] and
-          result.gsub!(/\{document-num\}/, options[:document_num].to_s)
-        result.gsub!(/\{basename\}/, options[:basename]) if options[:basename]
-        options[:basename_legacy] and
-          result.gsub!(/\{basename_legacy\}/, options[:basename_legacy])
-        options[:sectionsplit_num] and
-          result.gsub!(/\{sectionsplit-num\}/, options[:sectionsplit_num].to_s)
-        result
+        Util.substitute_filename_pattern(pattern, options)
       end
 
       # TODO make the output file location reflect source location universally,

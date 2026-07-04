@@ -81,6 +81,22 @@ module Metanorma
           @c.decode(ident).gsub(/(\p{Zs})+/, " ")
         end
 
+        # Substitute special strings in filename patterns. Single source for
+        # both FileLookup#substitute_filename_pattern and sectionsplit.
+        # @param pattern [String] filename pattern with placeholders
+        # @param options [Hash] substitution values:
+        #   :document_num, :basename, :basename_legacy, :sectionsplit_num
+        def substitute_filename_pattern(pattern, options = {})
+          pattern or return pattern
+          subs = { "{document-num}" => options[:document_num],
+                   "{basename}" => options[:basename],
+                   "{basename_legacy}" => options[:basename_legacy],
+                   "{sectionsplit-num}" => options[:sectionsplit_num] }
+          subs.each_with_object(pattern.dup) do |(token, val), result|
+            val and result.gsub!(token, val.to_s)
+          end
+        end
+
         def taste2flavor(taste)
           tastes = Metanorma::TasteRegister.instance.aliases
           tastes[taste.to_sym] and taste = tastes[taste.to_sym]

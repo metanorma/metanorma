@@ -18,7 +18,6 @@ module Metanorma
         # Save the original out_path before it gets modified
         original_out_path = @files[key][:out_path]
         s, sectionsplit_manifest = sectionsplit(key)
-        # section_split_instance_threads(s, manifest, key)
         s.each_with_index do |f1, i|
           add_section_split_instance(f1, manifest, key, i)
         end
@@ -27,18 +26,6 @@ module Metanorma
         add_section_split_cover(manifest, sectionsplit_manifest, key)
         # Return the original path for cleanup
         original_out_path
-      end
-
-      def section_split_instance_threads(s, manifest, key)
-        @mutex = Mutex.new
-        pool = Concurrent::FixedThreadPool.new(4)
-        s.each_with_index do |f1, i|
-          pool.post do
-            add_section_split_instance(f1, manifest, key, i)
-          end
-        end
-        pool.shutdown
-        pool.wait_for_termination
       end
 
       def cleanup_section_split_instance(key, manifest, original_out_path)
@@ -134,7 +121,7 @@ module Metanorma
         # file[:url] contains full path with directory for HTML output, but XML is basename only
         xml_basename = File.basename(file[:url])
         presfile = File.join(File.dirname(@files[key][:ref]), xml_basename)
-        newkey = key("#{key.strip} #{file[:title]}")
+        newkey = entry_key("#{key.strip} #{file[:title]}")
         xml = Nokogiri::XML(File.read(presfile), &:huge)
         [presfile, newkey, xml]
       end

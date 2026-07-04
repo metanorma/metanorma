@@ -20,6 +20,12 @@ module Metanorma
         @config = manifest_postprocess(config)
       end
 
+      # Ordered pipeline of in-place tree-walks over the manifest; the order is
+      # load-bearing. expand_yaml must run early because it grafts nested
+      # `fileref` manifests into this tree, so every later pass sees the full
+      # entry set; bibdata sets @lang/@script used downstream; compile_adoc
+      # turns .adoc sources into .xml before filexist verifies them. Each pass
+      # recurses the manifest independently (see the architecture review plan).
       def manifest_postprocess(config)
         manifest_bibdata(config)
         manifest_expand_yaml(config, @dir)
