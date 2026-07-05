@@ -73,4 +73,20 @@ RSpec.describe "incremental collection build" do
     after = Dir[File.join(store, "*")].to_h { |f| [f, File.mtime(f)] }
     expect(after).to eq(before)
   end
+
+  # preserve_unresolved staging with no artifact_store_dir given: the store
+  # defaults to ArtifactStore::DEFAULT_DIRNAME in the working directory. Rendered
+  # in a copied fixture so the auto-created cache stays inside the tmpdir.
+  it "defaults the store to .metanorma-collection-cache when artifact_store_dir is omitted" do
+    work = File.join(@dir, "work")
+    FileUtils.cp_r(INC, work)
+    Dir.chdir(work) do
+      Metanorma::Collection.parse("collection.yml").render(
+        format: %i[xml], output_folder: "iso", preserve_unresolved: true
+      )
+    end
+    default_store =
+      File.join(work, Metanorma::Collection::ArtifactStore::DEFAULT_DIRNAME)
+    expect(Dir[File.join(default_store, "*.semantic.xml")].size).to eq 2
+  end
 end

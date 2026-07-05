@@ -101,12 +101,16 @@ module Metanorma
         # references as stubs instead of resolving or stripping them, so each
         # member compiles independently and a later reinflation pass relinks.
         @preserve_unresolved = options[:preserve_unresolved]
-        # Durable content-addressed store for staged artefacts (opt-in via
-        # :artifact_store_dir; the Null store is a no-op, so the default build
-        # path is unaffected).
+        # Durable content-addressed store for staged artefacts. Opt-in: a plain
+        # build sets neither :preserve_unresolved nor :artifact_store_dir, so it
+        # gets the no-op Null store and is unaffected. Staging (:preserve_unresolved)
+        # defaults the store directory to ArtifactStore::DEFAULT_DIRNAME when no
+        # :artifact_store_dir is given, so callers need not name it. (Reinflation
+        # reads stored stubs via the manifest, not this object, so it does not
+        # trigger the default -- that would only create an empty directory.)
         @artifact_store =
-          if (dir = options[:artifact_store_dir])
-            ArtifactStore.new(dir)
+          if (dir = options[:artifact_store_dir]) || options[:preserve_unresolved]
+            ArtifactStore.new(dir || ArtifactStore::DEFAULT_DIRNAME)
           else
             NullArtifactStore.new
           end
