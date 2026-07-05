@@ -84,13 +84,39 @@ module Metanorma
         f
       end
 
-      # SHA256 over the input closure. Each input is hashed to a fixed-width
-      # digest and the digests concatenated before the final hash, so no two
-      # distinct closures collide regardless of input content or separators. The
-      # caller assembles the closure; the store does not infer it.
+      # Remove every stored version of this document whose content hash is not
+      # +keep_hash+ -- the superseded artefacts left behind when the document's
+      # content changed. Keeps exactly one (current) version per document per
+      # stage, bounding disk to current state without losing the cache the next
+      # build resumes from.
+      def prune_superseded(docid, keep_hash)
+        STAGE_FORMATS.each do |stage, ext|
+          keep = path(docid, keep_hash, stage)
+          Dir[File.join(@dir, "#{slug(docid)}.*.#{stage}.#{ext}")].each do |f|
+            f == keep or File.delete(f)
+          end
+        end
+      end
+
+      # Wipe the entire store. The escape hatch when inputs the content hash
+      # cannot see -- imported EXPRESS schemas, templates, included files -- have
+      # changed, so the cache can no longer be trusted; the next build recompiles
+      # everything. Tracking such shared-input changes is the collection
+      # maintainer's responsibility, not the build's.
+      def clear
+        FileUtils.rm_rf(@dir)
+        FileUtils.mkdir_p(@dir)
+      end
+
+      # SHA256 over the input closure, truncated to 16 hex (64 bits -- ample for
+      # a per-collection store, and short enough to stay well inside filename
+      # length limits). Each input is hashed to a fixed-width digest and the
+      # digests concatenated before the final hash, so no two distinct closures
+      # collide on the pre-truncation digest. The caller assembles the closure;
+      # the store does not infer it.
       def self.content_hash(*inputs)
         digests = inputs.map { |i| Digest::SHA256.hexdigest(i.to_s) }
-        Digest::SHA256.hexdigest(digests.join)
+        Digest::SHA256.hexdigest(digests.join)[0, 16]
       end
 
       private
@@ -109,6 +135,8 @@ module Metanorma
       def key?(*_args) = false
       def read(*_args) = nil
       def write(*_args) = nil
+      def prune_superseded(*_args) = nil
+      def clear(*_args) = nil
     end
   end
 end

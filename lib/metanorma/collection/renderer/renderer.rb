@@ -114,6 +114,10 @@ module Metanorma
         # already has intra-doc xrefs and the document suffix applied, so run
         # only the cross-document resolution, not the passes already done.
         @reinflate = options[:reinflate]
+        # Cache retention: by default keep only each document's latest artefacts,
+        # pruning superseded content-hash versions on write; keep_cache retains
+        # every version (history / multiple states side by side).
+        @keep_cache = options[:keep_cache]
 
         @coverpage = options[:coverpage] || collection.coverpage
         @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||

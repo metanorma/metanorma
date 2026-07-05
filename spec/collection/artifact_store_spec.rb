@@ -39,6 +39,31 @@ RSpec.describe Metanorma::Collection::ArtifactStore do
     expect { store.path("x", hash, :bogus) }.to raise_error(KeyError)
   end
 
+  it "prunes superseded versions of a document, keeping only the given hash" do
+    store.write("ISO 10303-11", "aaaa", :semantic, "<old/>")
+    store.write("ISO 10303-11", "aaaa", :anchors, "{}")
+    store.write("ISO 10303-11", "bbbb", :semantic, "<new/>")
+    store.write("ISO 10303-11", "bbbb", :anchors, "{}")
+    store.write("ISO 10303-99", "cccc", :semantic, "<other/>")
+
+    store.prune_superseded("ISO 10303-11", "bbbb")
+
+    expect(store.key?("ISO 10303-11", "bbbb", :semantic)).to be true
+    expect(store.key?("ISO 10303-11", "bbbb", :anchors)).to be true
+    expect(store.key?("ISO 10303-11", "aaaa", :semantic)).to be false
+    expect(store.key?("ISO 10303-11", "aaaa", :anchors)).to be false
+    expect(store.key?("ISO 10303-99", "cccc", :semantic)).to be true
+  end
+
+  it "clear wipes the whole store but leaves it usable" do
+    store.write("ISO 10303-11", "aaaa", :semantic, "<x/>")
+    store.clear
+    expect(store.key?("ISO 10303-11", "aaaa", :semantic)).to be false
+    expect(Dir.exist?(@dir)).to be true
+    expect { store.write("ISO 10303-11", "bbbb", :semantic, "<y/>") }
+      .not_to raise_error
+  end
+
   describe ".content_hash" do
     it "is deterministic over the same inputs" do
       expect(described_class.content_hash("a", "b"))

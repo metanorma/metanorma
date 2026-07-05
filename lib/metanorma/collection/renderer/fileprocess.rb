@@ -110,6 +110,7 @@ module Metanorma
         @artifact_store.write(ident, hash, :semantic, semantic_xml)
         @artifact_store.write(ident, hash, :anchors,
                               JSON.generate(@files.get(ident, :anchors) || {}))
+        @keep_cache or @artifact_store.prune_superseded(ident, hash)
       end
 
       # gather internal bibitem references
