@@ -3,8 +3,20 @@
 inherit_from:
   - https://raw.githubusercontent.com/riboseinc/oss-guides/main/ci/rubocop.yml
 
+# Rubocop plugins enabled centrally so every metanorma-org gem picks them up
+# on cimas sync — best practice belongs at the shared-template layer, not
+# per-repo. Per ronaldtse feedback on metanorma/ci#332.
+plugins:
+  - rubocop-rspec
+  - rubocop-performance
+  - rubocop-rake
+
 # local repo-specific modifications
 # ...
 
 AllCops:
-  TargetRubyVersion: 3.4
+  # 3.3 matches the org-wide minimum being pushed via #274 (Raise minimum
+  # Ruby version to 3.3 due to EOL of 3.2 on 2026-03-31). Was 3.4 before
+  # this commit — 3.4 was above the org's stated minimum and would have
+  # applied Rubocop rules that fail-close on gems still targeting 3.3.
+  TargetRubyVersion: 3.3
