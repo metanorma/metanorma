@@ -4,6 +4,8 @@ require "isodoc"
 require "metanorma-utils"
 require_relative "fileparse"
 require_relative "filelocation"
+require_relative "../artifact_store"
+require "json"
 
 module Metanorma
   class Collection
@@ -67,8 +69,11 @@ module Metanorma
           if @files.get(ident, :attachment) then copy_file_to_dest(ident)
           else
             file, fname = @files.targetfile_id(ident, read: true)
+            @preserve_unresolved && member_stored?(ident, file) and next
             warn "\n\n\n\n\nProcess #{fname}: #{DateTime.now.strftime('%H:%M:%S')}"
             collection_xml = update_xrefs(file, ident, internal_refs)
+            @preserve_unresolved and
+              store_member_artefacts(ident, file, collection_xml)
             # Strip .xml or .html extension, but NOT section numbers like .0
             fname_base = File.basename(fname)
             collection_filename = fname_base
@@ -81,6 +86,31 @@ module Metanorma
             FileUtils.rm_f(collection_xml_path)
           end
         end
+      end
+
+      # Persist an isolated member's stub-bearing Semantic XML and its anchor
+      # contribution to the content-addressed store, so a later reinflation pass
+      # can relink the stubs and a re-run can resume without recompiling.
+      # Within-campaign content key for a member. (Cross-build soundness needs
+      # the full input closure -- source + includes + templates + schemas +
+      # versions; see the plan gotcha. Here the source bytes + tool version
+      # suffice because inputs are frozen across a single build campaign.)
+      def member_content_hash(source)
+        ArtifactStore.content_hash(source, ::Metanorma::VERSION)
+      end
+
+      # Resume predicate: is this member already compiled and stored for its
+      # current input content? If so the isolated compile can skip it.
+      def member_stored?(ident, source)
+        @artifact_store.key?(ident, member_content_hash(source), :semantic)
+      end
+
+      def store_member_artefacts(ident, source, semantic_xml)
+        hash = member_content_hash(source)
+        @artifact_store.write(ident, hash, :semantic, semantic_xml)
+        @artifact_store.write(ident, hash, :anchors,
+                              JSON.generate(@files.get(ident, :anchors) || {}))
+        @keep_cache or @artifact_store.prune_superseded(ident, hash)
       end
 
       # gather internal bibitem references

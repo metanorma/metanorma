@@ -1,0 +1,9 @@
+# metanorma build byproducts written beside the sources when the specs render
+# this fixture; only the .adoc sources and collection.yml are tracked.
+*.xml
+*.html
+*.err.html
+*.asciidoc.log.txt
+*.presentation.xml
+*.rxl
+_*/

@@ -1,0 +1,25 @@
+= Toy fasteners — Bolts
+:docnumber: 99000
+:partnumber: 2
+:edition: 1
+:revdate: 2024-01-01
+:copyright-year: 2024
+:language: en
+:title-intro-en: Toy fasteners
+:title-main-en: Bolts
+:doctype: international-standard
+:mn-document-class: iso
+:mn-output-extensions: xml,html
+
+== Scope
+
+This part specifies bolts. The terms it relies on are defined in <<part1>>.
+
+[bibliography]
+== Normative references
+
+* [[[part1,repo:(current-metanorma-collection/toy,ISO 99000-1:2024)]]]
+
+== Bolt requirements
+
+A bolt is a threaded fastener, as defined in <<part1>>.

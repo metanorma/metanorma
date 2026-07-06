@@ -25,7 +25,7 @@ module Metanorma
         xml, sso = update_xrefs_prep(file, docid)
         # post: repository docidentifiers supplied on bibitems naming a
         # collection file; `sso` resolved (Presentation vs Semantic).
-        @nested || sso or
+        @nested || sso || @reinflate or
           Metanorma::Collection::XrefProcess::xref_process(xml, xml, nil, docid,
                                                            @isodoc, sso)
         # post (semantic only): intra-doc xref/eref turned into internal erefs;
@@ -34,7 +34,7 @@ module Metanorma
         @nested or update_indirect_refs_to_docs(xml, docid, internal_refs, sso)
         # post: bibitem[@type='internal'] anchors resolved to the containing
         # collection document.
-        @files.add_document_suffix(docid, xml)
+        @reinflate or @files.add_document_suffix(docid, xml)
         # post: every @id/@anchor namespaced with this doc's NCName suffix, so
         # concatenated documents do not collide.
         @nested or update_sectionsplit_refs_to_docs(xml, docid, internal_refs,
@@ -47,7 +47,7 @@ module Metanorma
         ::Metanorma::Collection::Util::hide_refs(xml)
         # post: references containers with only hidden bibitems flagged hidden.
         sso and eref2link(xml, sso)
-        @nested or svgmap_resolve(xml, docid, sso)
+        @nested || @reinflate or svgmap_resolve(xml, docid, sso)
         xml.to_xml
       end
 
@@ -143,8 +143,13 @@ presxml)
       # Do not do this if this is a sectionsplit collection or a nested manifest.
       # Return false if bibitem is not to be further processed
       def strip_unresolved_repo_erefs(_document_id, bib_docid, erefs, bibitem)
-        %r{^current-metanorma-collection/(?!Missing:)}.match?(bib_docid.text) and
+        if %r{^current-metanorma-collection/(?!Missing:)}.match?(bib_docid.text)
+          # Isolated build: keep the cross-document ref as a stub (its bibitemid
+          # and repository docidentifier intact) for a later reinflation pass to
+          # relink, rather than resolving it now against an absent target.
+          @preserve_unresolved and return false
           return true
+        end
         @nested and return false
         erefs[bibitem["id"]]&.each { |x| x.parent and strip_eref(x) }
         false

@@ -33,6 +33,20 @@ module Metanorma
         @nested = saved
       end
 
+      # Run the block with the renderer preserving unresolved cross-document
+      # references as stubs instead of stripping them -- for an isolated build of
+      # a collection member (compiled without the rest of its collection
+      # present). Unlike +with_nested+, the ordinary intra-document passes still
+      # run (xref_process, svgmap); only the cross-document resolve/strip is
+      # turned into preserve, so a later reinflation pass can relink the stubs.
+      def with_preserve_unresolved
+        saved = @preserve_unresolved
+        @preserve_unresolved = true
+        yield
+      ensure
+        @preserve_unresolved = saved
+      end
+
       # This is only going to render the HTML collection
       # @param xml [Metanorma::Collection] input XML collection
       # @param folder [String] input folder
@@ -83,6 +97,31 @@ module Metanorma
         # if false, this is the root instance of Renderer
         # if true, then this is not the last time Renderer will be run
         # (e.g. this is sectionsplit)
+        # Isolated/incremental build: preserve unresolved cross-document
+        # references as stubs instead of resolving or stripping them, so each
+        # member compiles independently and a later reinflation pass relinks.
+        @preserve_unresolved = options[:preserve_unresolved]
+        # Durable content-addressed store for staged artefacts. Opt-in: a plain
+        # build sets neither :preserve_unresolved nor :artifact_store_dir, so it
+        # gets the no-op Null store and is unaffected. Staging (:preserve_unresolved)
+        # defaults the store directory to ArtifactStore::DEFAULT_DIRNAME when no
+        # :artifact_store_dir is given, so callers need not name it. (Reinflation
+        # reads stored stubs via the manifest, not this object, so it does not
+        # trigger the default -- that would only create an empty directory.)
+        @artifact_store =
+          if (dir = options[:artifact_store_dir]) || options[:preserve_unresolved]
+            ArtifactStore.new(dir || ArtifactStore::DEFAULT_DIRNAME)
+          else
+            NullArtifactStore.new
+          end
+        # Reinflation pass: the input is a stored stub-bearing Semantic XML that
+        # already has intra-doc xrefs and the document suffix applied, so run
+        # only the cross-document resolution, not the passes already done.
+        @reinflate = options[:reinflate]
+        # Cache retention: by default keep only each document's latest artefacts,
+        # pruning superseded content-hash versions on write; keep_cache retains
+        # every version (history / multiple states side by side).
+        @keep_cache = options[:keep_cache]
 
         @coverpage = options[:coverpage] || collection.coverpage
         @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||

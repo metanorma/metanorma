@@ -1,0 +1,27 @@
+directives:
+  - documents-inline
+bibdata:
+  title:
+    type: title-main
+    language: en
+    content: Toy fasteners collection
+  type: collection
+  docid:
+    type: iso
+    id: ISO 99000 (all parts)
+  copyright:
+    owner:
+      name: Toy Standards Organization
+      abbreviation: TSO
+    from: "2024"
+manifest:
+  level: collection
+  title: Toy fasteners
+  manifest:
+    - level: subcollection
+      title: Parts
+      docref:
+        - fileref: documents/part1-terms.adoc
+          identifier: ISO 99000-1:2024
+        - fileref: documents/part2-bolts.adoc
+          identifier: ISO 99000-2:2024
