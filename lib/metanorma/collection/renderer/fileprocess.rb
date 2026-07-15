@@ -198,7 +198,7 @@ module Metanorma
       end
 
       def update_bibitem(bib, identifier)
-        newbib, url = update_bibitem_prep(bib, identifier)
+        newbib, url, attachment = update_bibitem_prep(bib, identifier)
         newbib or return
         dest = begin
           newbib.at("./docidentifier") || newbib.at(ns("./docidentifier"))
@@ -206,18 +206,22 @@ module Metanorma
           nil
         end
         dest or dest = newbib.elements[-1]
+        # An attachment carries both a <uri type="attachment"> (which drives
+        # isodoc's fmt-link attachment="true") and the citation uri; the
+        # attachment uri goes first. metanorma/iso-10303#208.
+        attachment and dest.previous = "<uri type='attachment'>#{url}</uri>"
         dest.previous = "<uri type='citation'>#{url}</uri>"
         bib.replace(newbib)
       end
 
       def update_bibitem_prep(bib, identifier)
-        docid = get_bibitem_docid(bib, identifier) or return [nil, nil]
+        docid = get_bibitem_docid(bib, identifier) or return [nil, nil, nil]
         newbib = dup_bibitem(docid, bib)
         attachment = @files.get(docid, :attachment)
         url = @files.url(docid, relative: true, doc: !attachment)
         current_html = referencing_html_location(identifier, attachment)
         url = make_relative_path(current_html, url) if current_html
-        [newbib, url]
+        [newbib, url, attachment]
       end
 
       # Location of the HTML that will carry the cross-reference to the target,
