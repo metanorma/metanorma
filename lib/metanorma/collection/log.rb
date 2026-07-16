@@ -11,6 +11,13 @@ module Metanorma
       "METANORMA_3": { category: "Cross-References",
                        error: "<strong>** Unresolved reference to document %s from eref</strong>",
                        severity: 2 },
+      "METANORMA_4": { category: "Rendering",
+                       error: "Collection member %s: expected output " \
+                              "file not generated: %s",
+                       severity: 0 },
+      "METANORMA_5": { category: "Rendering",
+                       error: "Collection member %s: rendering error: %s",
+                       severity: 0 },
     }.freeze
     # rubocop:enable Naming/VariableNumber
   end

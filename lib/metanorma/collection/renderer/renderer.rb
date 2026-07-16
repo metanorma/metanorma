@@ -19,7 +19,7 @@ module Metanorma
 
       attr_accessor :isodoc, :isodoc_presxml
       attr_reader :xml, :compile, :compile_options, :documents, :outdir,
-                  :manifest
+                  :manifest, :fatal_errors
 
       # Run the block with the renderer in nested mode, restoring the previous
       # mode afterwards. Nested mode (used by sectionsplit, which re-enters this
@@ -93,6 +93,10 @@ module Metanorma
         @final = collection.final
         @c = HTMLEntities.new
         @files_to_delete = []
+        # Per-member rendering failures (missing outputs, pooled compile
+        # errors), accumulated by file_compile_verify; Collection#render
+        # aborts on them once every member has rendered (#586).
+        @fatal_errors = []
         @nested = options[:nested]
         # if false, this is the root instance of Renderer
         # if true, then this is not the last time Renderer will be run
@@ -302,7 +306,10 @@ module Metanorma
           # (Sectionsplit parents get a :presentation output upstream, so they
           # inline whole for the PDF/presentation path.)
           outputs = @files.get(id, :outputs)
-          if outputs.nil? || outputs[ext].nil?
+          # The registered path may exist without the file: a member whose
+          # rendering failed registers its intended outputs but writes
+          # nothing (#586), so check the disk, not just the registration.
+          if outputs.nil? || outputs[ext].nil? || !File.exist?(outputs[ext])
             warn "[metanorma] collection document '#{id}' has no compiled " \
                  "#{ext} output to inline; skipping (its doc-container would " \
                  "otherwise be bibdata-only)."

@@ -26,12 +26,16 @@ module Metanorma
         end
       end
 
-      # Move file to new output filename if specified
+      # Move file to new output filename if specified. A member that
+      # failed to render has nothing to move: keep the original name
+      # registered so output verification reports it as missing, rather
+      # than crashing the whole collection on the mv (#586).
       def handle_new_output_filename(output_fname, new_output_fname)
         return output_fname unless new_output_fname
 
-        FileUtils.mv(File.join(@outdir, output_fname),
-                     File.join(@outdir, new_output_fname))
+        src = File.join(@outdir, output_fname)
+        File.exist?(src) or return output_fname
+        FileUtils.mv(src, File.join(@outdir, new_output_fname))
         new_output_fname
       end
 

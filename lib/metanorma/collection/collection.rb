@@ -11,6 +11,9 @@ module Metanorma
 
   class AdocFileNotFoundException < StandardError; end
 
+  # One or more collection members failed to render (#586)
+  class RenderFailureException < StandardError; end
+
   # Metanorma collection of documents
   class Collection
     attr_reader :file, :prefatory, :final
@@ -132,8 +135,24 @@ module Metanorma
       opts[:log] = @log
       opts[:flavor] = @flavor
       output_folder(opts)
-      ::Metanorma::Collection::Renderer.render self, opts
+      cr = ::Metanorma::Collection::Renderer.render self, opts
       clean_exit
+      render_failures_abort(cr)
+      cr
+    end
+
+    # A member whose rendering fails no longer lets the collection
+    # report success with the document missing from the output (#586).
+    # Every member is rendered before aborting, so one run reports all
+    # failures; the raise makes callers (CLI, suma) exit non-zero. Runs
+    # after clean_exit so the failures are in the written log.
+    def render_failures_abort(renderer)
+      f = renderer.fatal_errors
+      f.empty? and return
+      raise RenderFailureException.new(
+        "Collection render failed for #{f.size} document(s):\n" +
+        f.join("\n"),
+      )
     end
 
     def output_folder(opts)

@@ -522,6 +522,51 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf of
   end
 
+  it "renders all members, then aborts naming members whose rendering " \
+     "failed (#586)" do
+    # A member whose compile produces no outputs (e.g. presentation
+    # rendering raised) must not let the collection exit 0 with the
+    # document silently missing from the output. The collection renders
+    # every remaining member first, then Collection#render raises,
+    # attributing the pooled compile errors to the failed member.
+    file = "#{INPATH}/collection.dup.yml"
+    of = File.join(FileUtils.pwd, OUTPATH)
+    col = Metanorma::Collection.parse file
+    allow_any_instance_of(Metanorma::Compile).to receive(:compile)
+      .and_wrap_original do |m, f, opts|
+      if /dummy\.1/.match?(f)
+        m.receiver.errors <<
+          "Encoding::UndefinedConversionError: \"\\xFF\" to UTF-8"
+        nil
+      else
+        m.call(f, opts)
+      end
+    end
+    err = nil
+    begin
+      col.render(
+        format: %i[presentation xml html],
+        output_folder: of,
+        coverpage: "collection_cover.html",
+        compile: { install_fonts: false },
+      )
+    rescue Metanorma::RenderFailureException => e
+      err = e
+    end
+    expect(err).not_to be_nil
+    expect(err.message).to include("ISO 44002")
+    expect(err.message).to include("expected output not generated")
+    expect(err.message)
+      .to include("Encoding::UndefinedConversionError: \"\\xFF\" to UTF-8")
+    expect(err.message).not_to include("ISO 44001")
+    expect(err.message).not_to include("ISO 44003")
+    # the failure did not stop the remaining members from rendering
+    expect(File.exist?("#{OUTPATH}/dummy.html")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.2.html")).to be true
+    expect(File.exist?("#{OUTPATH}/dummy.1.html")).to be false
+    FileUtils.rm_rf of
+  end
+
   it "inlines sectionsplit documents whole into the collection presentation " \
      "XML (iso-10303#208)" do
     # A sectionsplit document reaching the PDF/presentation concatenation must
