@@ -726,7 +726,7 @@ RSpec.describe Metanorma::Compile do
     c = Metanorma::Compile.new
     c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:pdf])
 
-    expect(c.errors).to include(exception_msg)
+    expect(c.errors).to include("RuntimeError: #{exception_msg}")
   end
 
   it "don't skip Presentation XML errors" do
@@ -736,8 +736,8 @@ RSpec.describe Metanorma::Compile do
     c = Metanorma::Compile.new
     c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html],
                                         strict: true)
-    expect(c.errors).not_to include("Anything")
-    expect(c.errors).to include("Something")
+    expect(c.errors).not_to include("RuntimeError: Anything")
+    expect(c.errors).to include("RuntimeError: Something")
 
     allow_any_instance_of(IsoDoc::Iso::PresentationXMLConvert)
       .to receive(:convert)
@@ -745,8 +745,9 @@ RSpec.describe Metanorma::Compile do
     c = Metanorma::Compile.new
     c.compile("spec/assets/test2.adoc", type: "iso", extension_keys: [:html],
                                         strict: true)
-    expect(c.errors).to include("Anything")
-    expect(c.errors).not_to include("Something") # never runs HTML
+    expect(c.errors).to include("RuntimeError: Anything")
+    # never runs HTML
+    expect(c.errors).not_to include("RuntimeError: Something")
   end
 
   it "use threads number from METANORMA_PARALLEL" do
@@ -1176,6 +1177,31 @@ RSpec.describe Metanorma::Compile do
         :presentation,
         hash,
       ).at_least :once
+  end
+
+  context "isodoc_error_process (#586)" do
+    it "prints exception class and message adjacent to the backtrace, " \
+       "and pools class and message on the strict path" do
+      c = Metanorma::Compile.new
+      err = Encoding::UndefinedConversionError.new("from ASCII-8BIT to UTF-8")
+      err.set_backtrace(["lib/somewhere.rb:1:in 'decode'"])
+      expect { c.send(:isodoc_error_process, err, true, false) }
+        .to output(
+          %r{UndefinedConversionError: from ASCII-8BIT to UTF-8\nlib/somewhere},
+        ).to_stdout
+      expect(c.errors)
+        .to include("Encoding::UndefinedConversionError: " \
+                    "from ASCII-8BIT to UTF-8")
+    end
+
+    it "prints but does not pool on the non-strict path" do
+      c = Metanorma::Compile.new
+      err = RuntimeError.new("non-fatal problem")
+      err.set_backtrace(["lib/somewhere.rb:1"])
+      expect { c.send(:isodoc_error_process, err, false, false) }
+        .to output(/RuntimeError: non-fatal problem/).to_stdout
+      expect(c.errors).to be_empty
+    end
   end
 
   # Mock process_input_adoc_hdr to add :sectionsplit: true attribute

@@ -18,9 +18,54 @@ module Metanorma
         opts = compile_options_base(identifier)
           .merge(compile_options_update(identifier))
 
+        err_count = @compile.errors.size
         @compile.compile file, opts
         @files.set(identifier, :outputs, {})
         file_compile_formats(filename, identifier, opts)
+        file_compile_verify(identifier, @compile.errors[err_count..] || [])
+      end
+
+      # A member whose rendering raised produces no output file, but the
+      # collection build used to continue, exit 0, and link the absent
+      # document from index.html -- silent data loss (#586). Two
+      # complementary checks close that hole. (1) Compile pools rescued
+      # error messages in @compile.errors for its caller to surface; the
+      # standalone CLI does, but the collection pipeline never read the
+      # pool. The pool is shared across members and never reset, so the
+      # slice appended during this member's compile is this member's
+      # errors -- sound while members compile sequentially (the current
+      # design; @compile's own format-level parallelism is joined before
+      # compile returns). (2) Independently of whether anything was
+      # pooled, verify the outputs registered for the member exist on
+      # disk. Failures are reported here and accumulated; the collection
+      # renders every remaining member before Collection#render aborts,
+      # so one run reports all failed members.
+      def file_compile_verify(identifier, errors)
+        missing = (@files.get(identifier, :outputs) || {})
+          .reject { |_fmt, path| File.exist?(path) }
+        errors.empty? && missing.empty? and return
+        file_compile_failure_log(identifier, errors, missing)
+        msg = file_compile_failure_msg(identifier, errors, missing)
+        ::Metanorma::Util.log("[metanorma] Error: #{msg}", :error)
+        fatal_errors << msg
+      end
+
+      def file_compile_failure_log(identifier, errors, missing)
+        missing.each_value do |path|
+          @log&.add("METANORMA_4", nil, params: [identifier, path])
+        end
+        errors.each do |e|
+          @log&.add("METANORMA_5", nil, params: [identifier, e])
+        end
+      end
+
+      def file_compile_failure_msg(identifier, errors, missing)
+        ret = []
+        missing.empty? or
+          ret << "expected output not generated: " \
+                 "#{missing.values.join(', ')}"
+        ret += errors
+        "Failed to render collection member #{identifier}: #{ret.join('; ')}"
       end
 
       def compile_options_base(identifier)

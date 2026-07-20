@@ -135,8 +135,7 @@ module Metanorma
                         output_paths[:out], ext, isodoc_options)
       wrap_html(options, output_paths[:ext], output_paths[:out])
     rescue StandardError => e
-      strict = ext == :presentation || isodoc_options[:strict] == true
-      isodoc_error_process(e, strict, false)
+      isodoc_error_process(e, strict_error?(ext, isodoc_options), false)
     end
 
     # Process format directly from semantic XML
@@ -145,8 +144,7 @@ module Metanorma
                         ext, isodoc_options)
       true # Return as Thread equivalent
     rescue StandardError => e
-      strict = ext == :presentation || isodoc_options[:strict] == "true"
-      isodoc_error_process(e, strict, true)
+      isodoc_error_process(e, strict_error?(ext, isodoc_options), true)
       ext != :presentation
     end
 
@@ -168,12 +166,29 @@ module Metanorma
 
     private
 
+    # A presentation failure is always strict: every downstream format
+    # needs the presentation XML. The :strict option arrives as a
+    # boolean from the CLI but as a string from document attributes, so
+    # accept both (the two rescue sites previously each checked only
+    # one form).
+    def strict_error?(ext, isodoc_options)
+      ext == :presentation ||
+        [true, "true"].include?(isodoc_options[:strict])
+    end
+
+    # On the strict path the message is pooled into @errors for the
+    # caller to surface (the standalone CLI reports the pool and
+    # aborts; the collection renderer attributes it to the failed
+    # member, #586). The class+message line is also printed here in all
+    # cases, so it sits adjacent to its backtrace in the build log: a
+    # pooled message surfaces only at end of run, and a bare backtrace
+    # mid-log is undiagnosable. The exception class is retained because
+    # for errors like Encoding::UndefinedConversionError it carries
+    # half the diagnosis.
     def isodoc_error_process(err, strict, must_abort)
-      if strict || err.message.include?("Fatal:")
-        @errors << err.message
-      else
-        puts err.message
-      end
+      msg = "#{err.class}: #{err.message}"
+      strict || err.message.include?("Fatal:") and @errors << msg
+      puts msg
       puts err.backtrace.join("\n")
       must_abort and 1
     end
