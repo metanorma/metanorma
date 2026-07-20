@@ -41,6 +41,13 @@ module Metanorma
       # renders every remaining member before Collection#render aborts,
       # so one run reports all failed members.
       def file_compile_verify(identifier, errors)
+        # Section-split parts (marked with :parentid) register format
+        # slots they never produce -- their :xml slot in particular is
+        # never written, and under filename renaming it aliases to the
+        # parent's name -- so verifying them is a false positive. #586
+        # was scoped to the non-sectionsplit path; parts are excluded
+        # like their parents (which return early above).
+        @files.get(identifier, :parentid) and return
         missing = (@files.get(identifier, :outputs) || {})
           .reject { |_fmt, path| File.exist?(path) }
         errors.empty? && missing.empty? and return
