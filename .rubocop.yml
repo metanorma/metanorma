@@ -2,6 +2,15 @@
 # See https://github.com/metanorma/cimas
 inherit_from:
   - https://raw.githubusercontent.com/riboseinc/oss-guides/main/ci/rubocop.yml
+  # .rubocop_todo.yml MUST be the last entry. inherit_from is last-wins:
+  # if listed before oss-guides, the shared config's stricter Metrics/
+  # (MethodLength, BlockLength, etc.) rules override the todo's per-file
+  # grandfathering, and the todo becomes inert on those cops. Empirically
+  # verified on suma 2026-07-06: with todo listed first, 34 Metrics/* offenses
+  # remained; moved last, cleared. Every gem in the metanorma-org fleet
+  # already ships a `.rubocop_todo.yml` on its live tree (audited 2026-07-06,
+  # 54/54 have it), so this reference is safe to emit unconditionally.
+  - .rubocop_todo.yml
 
 # Rubocop plugins enabled centrally so every metanorma-org gem picks them up
 # on cimas sync — best practice belongs at the shared-template layer, not
