@@ -20,18 +20,25 @@ RSpec.describe "Metanorma::Compile taste-aware output selection" do
     end
   end
 
-  let(:register) { Metanorma::TasteRegister.instance }
-
+  # Stand-in for the per-taste hook metanorma-taste provides once released
+  # (metanorma-taste#188): define the class method the compile helpers call, so
+  # this spec is self-contained and passes on the released taste gem too.
   around do |example|
-    hooks = register.instance_variable_get(:@transformer_hooks)&.dup
-    specs = register.instance_variable_get(:@transformer_specs)&.dup
-    register.register_document_transformers(:widget) do
+    klass = Metanorma::TasteRegister.singleton_class
+    had = Metanorma::TasteRegister.respond_to?(:document_transformers_for)
+    orig = klass.instance_method(:document_transformers_for) if had
+    klass.send(:define_method, :document_transformers_for) do |taste|
+      next {} unless taste.to_sym == :widget
+
       { widgetsts: { suffix: "widget.sts.xml", presentation: true } }
     end
     example.run
   ensure
-    register.instance_variable_set(:@transformer_hooks, hooks)
-    register.instance_variable_set(:@transformer_specs, specs)
+    if had
+      klass.send(:define_method, :document_transformers_for, orig)
+    else
+      klass.send(:remove_method, :document_transformers_for)
+    end
   end
 
   it "merges a taste's format suffix into the effective output formats" do
@@ -45,12 +52,15 @@ RSpec.describe "Metanorma::Compile taste-aware output selection" do
   end
 
   it "offers no taste format when no taste is active" do
-    expect(compile.send(:effective_output_formats, {})).not_to have_key(:widgetsts)
+    expect(compile.send(:effective_output_formats, {}))
+      .not_to have_key(:widgetsts)
   end
 
   it "picks the presentation leg from the taste spec's :presentation flag" do
-    expect(compile.send(:uses_presentation_xml?, :widgetsts, supplied_type: :widget))
-      .to be(true)
+    leg = compile.send(
+      :uses_presentation_xml?, :widgetsts, supplied_type: :widget
+    )
+    expect(leg).to be(true)
   end
 
   it "carries :supplied_type into isodoc options" do
