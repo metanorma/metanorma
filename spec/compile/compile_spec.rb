@@ -50,6 +50,7 @@ RSpec.describe Metanorma::Compile do
           presentation: "presentation.xml",
         },
         log: an_instance_of(Metanorma::Utils::Log),
+        supplied_type: :iso,
       },
     )
 
@@ -70,6 +71,7 @@ RSpec.describe Metanorma::Compile do
       tocexamples: true,
       agree_to_terms: true,
       i18nyaml: "spec/assets/i.yaml",
+      supplied_type: :iso,
       relatonrenderconfig: "spec/assets/j.yaml",
       fonts: "Source Serif Pro",
       log: log,
