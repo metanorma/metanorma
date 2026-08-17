@@ -62,10 +62,39 @@ module Metanorma
                                              options_in_file[:sourcecode])
       end
 
+      # Document-model transformer specs contributed by the active taste
+      # (+options[:supplied_type]+), or +{}+. Lets a taste (e.g. OIML) make its
+      # own output format selectable and choose its presentation/semantic leg,
+      # via the taste-aware metanorma-core Processor (metanorma-core#12).
+      def taste_transformers(options)
+        taste = options[:supplied_type]
+        return {} unless taste && defined?(Metanorma::TasteRegister) &&
+          Metanorma::TasteRegister.respond_to?(:document_transformers_for)
+
+        Metanorma::TasteRegister.document_transformers_for(taste) || {}
+      end
+
+      # The processor's output formats merged with the suffixes of any
+      # taste-contributed document-model formats, so those formats pass
+      # extension validation and get an output suffix.
+      def effective_output_formats(options)
+        @processor.output_formats.merge(
+          taste_transformers(options)
+            .transform_values { |spec| spec[:suffix] }.compact,
+        )
+      end
+
+      # Whether +ext+ is generated from presentation XML, honouring both the
+      # processor's own answer and a taste transformer's +:presentation+ flag.
+      def uses_presentation_xml?(ext, options)
+        @processor.use_presentation_xml(ext) ||
+          (taste_transformers(options)[ext] || {})[:presentation] == true
+      end
+
       def get_extensions(options)
         ext = extract_extensions(options)
         !ext.include?(:presentation) && ext.any? do |e|
-          @processor.use_presentation_xml(e)
+          uses_presentation_xml?(e, options)
         end and ext << :presentation
         !ext.include?(:rxl) && options[:site_generate] and
           ext << :rxl
@@ -73,10 +102,11 @@ module Metanorma
       end
 
       def extract_extensions(options)
+        formats = effective_output_formats(options)
         options[:extension_keys] ||=
-          @processor.output_formats.reduce([]) { |memo, (k, _)| memo << k }
+          formats.reduce([]) { |memo, (k, _)| memo << k }
         options[:extension_keys].reduce([]) do |memo, e|
-          if @processor.output_formats[e] then memo << e
+          if formats[e] then memo << e
           else
             unsupported_format_error(e)
             memo
@@ -123,6 +153,9 @@ module Metanorma
       def copy_isodoc_options_attrs(options, ret)
         ret[:datauriimage] = true if options[:datauriimage]
         ret[:sourcefilename] = options[:filename]
+        # Carry the active taste through to Processor#output, so its taste-aware
+        # document_transformers resolve there (metanorma-core#12).
+        ret[:supplied_type] = options[:supplied_type]
         %i(bare sectionsplit sectionsplit_filename install_fonts baseassetpath
            aligncrosselements tocfigures toctables tocrecommendations tocexamples
            strict fonts)

@@ -67,7 +67,7 @@ module Metanorma
     # Process a single extension (output format)
     def process_ext(ext, source_file, semantic_xml, bibdata, output_paths,
                     options)
-      output_paths[:ext] = @processor.output_formats[ext]
+      output_paths[:ext] = effective_output_formats(options)[ext]
       output_paths[:out] = @output_filename.for_format(ext) ||
         output_paths[:xml].sub(/\.[^.]+$/, ".#{output_paths[:ext]}")
       isodoc_options = get_isodoc_options(source_file, options, ext)
@@ -78,7 +78,7 @@ module Metanorma
       )
 
       # Otherwise, determine if it uses presentation XML
-      if @processor.use_presentation_xml(ext)
+      if uses_presentation_xml?(ext, options)
         # Format requires presentation XML first, then convert to final format
         process_via_presentation_xml(ext, output_paths, options, isodoc_options)
       else
