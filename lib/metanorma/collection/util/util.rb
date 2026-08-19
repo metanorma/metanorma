@@ -98,9 +98,7 @@ module Metanorma
         end
 
         def taste2flavor(taste)
-          tastes = Metanorma::TasteRegister.instance.aliases
-          tastes[taste.to_sym] and taste = tastes[taste.to_sym]
-          taste
+          ::Metanorma::Core::FlavorLoader.taste2flavor(taste)
         end
 
         def taste2isodoc_attrs(taste, format)
