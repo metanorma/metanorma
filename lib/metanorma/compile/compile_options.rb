@@ -40,6 +40,10 @@ module Metanorma
 
       def options_in_file(filename)
         content = read_file(filename)
+        # XML inputs carry no AsciiDoc header options; booting the adoc
+        # pipeline for them only drags every plugin into the compile.
+        return extract_xml_options(content) if filename.end_with?(".xml")
+
         Metanorma::Input::Asciidoc.new.extract_metanorma_options(content)
           .merge(extract_xml_options(content))
       end
@@ -74,20 +78,28 @@ module Metanorma
         Metanorma::TasteRegister.document_transformers_for(taste) || {}
       end
 
-      # The processor's output formats merged with the suffixes of any
-      # taste-contributed document-model formats, so those formats pass
-      # extension validation and get an output suffix.
+      # Harness formats available to every flavor, regardless of the
+      # processor's own list. MKO (metanorma-document) is resolved via
+      # Core::Flavors, so it needs nothing from the flavor gems.
+      HARNESS_OUTPUT_FORMATS = { mko: "mko" }.freeze
+
+      # The processor's output formats merged with the harness formats and
+      # the suffixes of any taste-contributed document-model formats, so
+      # those formats pass extension validation and get an output suffix.
       def effective_output_formats(options)
-        @processor.output_formats.merge(
-          taste_transformers(options)
-            .transform_values { |spec| spec[:suffix] }.compact,
-        )
+        @processor.output_formats
+                  .merge(HARNESS_OUTPUT_FORMATS)
+                  .merge(
+                    taste_transformers(options)
+                      .transform_values { |spec| spec[:suffix] }.compact,
+                  )
       end
 
       # Whether +ext+ is generated from presentation XML, honouring both the
       # processor's own answer and a taste transformer's +:presentation+ flag.
       def uses_presentation_xml?(ext, options)
-        @processor.use_presentation_xml(ext) ||
+        ext == :mko || # unit numbering comes from the presentation model
+          @processor.use_presentation_xml(ext) ||
           (taste_transformers(options)[ext] || {})[:presentation] == true
       end
 
