@@ -39,6 +39,8 @@ module Metanorma
       end
 
       def options_in_file(filename)
+        # the adoc preprocessing path re-extracts options from a Tempfile
+        filename = filename.path if filename.is_a?(Tempfile)
         content = read_file(filename)
         # XML inputs carry no AsciiDoc header options; booting the adoc
         # pipeline for them only drags every plugin into the compile.
