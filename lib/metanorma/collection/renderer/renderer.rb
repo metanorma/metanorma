@@ -161,11 +161,30 @@ module Metanorma
         abs = Pathname.new(val).absolute?
         directives.reject! { |d| d.key == name }
         val = Util::rel_path_resolve(@dirname, val)
-        abs or
-          val = Pathname.new(val).relative_path_from(Pathname.new(@outdir)).to_s
+        val =
+          if abs then directives_host_materialise(val)
+          else Pathname.new(val).relative_path_from(Pathname.new(@outdir)).to_s
+          end
         directives << ::Metanorma::Collection::Config::Directive
           .new(key: name, value: val)
         directives
+      end
+
+      # An absolute directive value can point inside a gem payload (e.g. a
+      # taste's data/ file from Util.taste2coverpage_pdf_portfolio). A
+      # spawned child process that is not this Ruby (mn2pdf/java) may be
+      # unable to read such a path (a packaged virtual filesystem mount,
+      # e.g. tebako on Windows). Copy the file into the output folder —
+      # the child already reads the collection XML from there — and point
+      # the directive at the copy. A missing file keeps its value: the
+      # child reports that as it always has.
+      def directives_host_materialise(val)
+        File.exist?(val) or return val
+        dst = File.expand_path(File.join(@outdir, File.basename(val)))
+        dst == File.expand_path(val) and return val
+        FileUtils.mkdir_p(@outdir)
+        FileUtils.cp(val, dst)
+        dst
       end
 
       def flush_files
