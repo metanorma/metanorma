@@ -2,6 +2,7 @@
 
 require_relative "../spec_helper"
 require "stringio"
+require "tmpdir"
 
 def capture_stdout
   old = $stdout
@@ -723,6 +724,110 @@ RSpec.describe Metanorma::Collection do
     end
 
     FileUtils.rm_rf of
+  end
+
+  it "materialises an absolute coverpage-pdf-portfolio path into the " \
+     "output folder for child processes that cannot read gem-internal " \
+     "paths" do
+    Dir.mktmpdir do |src|
+      newyaml = "#{INPATH}/collection_abs_portfolio.yml"
+      of = File.join(FileUtils.pwd, OUTPATH)
+      begin
+        pdf = File.join(src, "pdfportfolio_default_page.pdf")
+        File.binwrite(pdf, "%PDF-1.4\nfake portfolio bytes\n")
+        File.write(newyaml,
+                   File.read("#{INPATH}/collection_solo.yml")
+                     .sub("  - documents-inline",
+                          "  - documents-inline\n" \
+                          "  - coverpage-pdf-portfolio: #{pdf}"))
+        col = Metanorma::Collection.parse newyaml
+        col.render(
+          format: %i[presentation xml],
+          output_folder: of,
+          coverpage: "collection_cover.html",
+          compile: { install_fonts: false },
+        )
+        directive = col.directives
+          .find { |d| d.key == "coverpage-pdf-portfolio" }
+        expect(Pathname.new(directive.value).absolute?).to be true
+        expect(File.expand_path(directive.value))
+          .to eq File.expand_path(
+            File.join(of, "pdfportfolio_default_page.pdf")
+          )
+        expect(File.binread(directive.value)).to eq File.binread(pdf)
+        # the presentation XML is what mn2pdf XPath-reads the directive from
+        pres = Nokogiri::XML(
+          File.read("#{OUTPATH}/collection.presentation.xml")
+        )
+        xval = pres.at_xpath("//*[local-name()='directive']" \
+                             "[*[local-name()='key']=" \
+                             "'coverpage-pdf-portfolio']" \
+                             "/*[local-name()='value']")
+        expect(xval&.text).to eq directive.value
+      ensure
+        FileUtils.rm_f newyaml
+        FileUtils.rm_rf of
+      end
+    end
+  end
+
+  it "materialises an absolute keystore-pdf-portfolio path the same way" do
+    Dir.mktmpdir do |src|
+      newyaml = "#{INPATH}/collection_abs_keystore.yml"
+      of = File.join(FileUtils.pwd, OUTPATH)
+      begin
+        ks = File.join(src, "portfolio.p12")
+        File.binwrite(ks, "fake keystore bytes")
+        File.write(newyaml,
+                   File.read("#{INPATH}/collection_solo.yml")
+                     .sub("  - documents-inline",
+                          "  - documents-inline\n" \
+                          "  - keystore-pdf-portfolio: #{ks}"))
+        col = Metanorma::Collection.parse newyaml
+        col.render(
+          format: %i[presentation xml],
+          output_folder: of,
+          coverpage: "collection_cover.html",
+          compile: { install_fonts: false },
+        )
+        directive = col.directives
+          .find { |d| d.key == "keystore-pdf-portfolio" }
+        expect(Pathname.new(directive.value).absolute?).to be true
+        expect(File.expand_path(directive.value))
+          .to eq File.expand_path(File.join(of, "portfolio.p12"))
+        expect(File.binread(directive.value)).to eq File.binread(ks)
+      ensure
+        FileUtils.rm_f newyaml
+        FileUtils.rm_rf of
+      end
+    end
+  end
+
+  it "keeps a relative coverpage-pdf-portfolio relative to the output " \
+     "folder without copying it" do
+    newyaml = "#{INPATH}/collection_rel_portfolio.yml"
+    of = File.join(FileUtils.pwd, OUTPATH)
+    begin
+      File.write(newyaml,
+                 File.read("#{INPATH}/collection_solo.yml")
+                   .sub("  - documents-inline",
+                        "  - documents-inline\n" \
+                        "  - coverpage-pdf-portfolio: cover.pdf"))
+      col = Metanorma::Collection.parse newyaml
+      col.render(
+        format: %i[presentation xml],
+        output_folder: of,
+        coverpage: "collection_cover.html",
+        compile: { install_fonts: false },
+      )
+      directive = col.directives
+        .find { |d| d.key == "coverpage-pdf-portfolio" }
+      expect(Pathname.new(directive.value).relative?).to be true
+      expect(File.exist?(File.join(of, "cover.pdf"))).to be false
+    ensure
+      FileUtils.rm_f newyaml
+      FileUtils.rm_rf of
+    end
   end
 
   it "uses local bibdata, preface in prefatory content if needed" do
