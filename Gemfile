@@ -8,6 +8,7 @@ gemspec
 
 # TEMPORARY cross-PR pin (metanorma-core#18): Compile resolves via Core::Flavors
 gem "metanorma-core", github: "metanorma/metanorma-core", branch: "feat/flavor-table"
+gem "metanorma-mko" # mko output specs; pulls metanorma-document
 
 begin
   eval_gemfile("Gemfile.devel")
