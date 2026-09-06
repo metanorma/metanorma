@@ -130,11 +130,11 @@ module Metanorma
     def export_mko_bundle(output_paths)
       require "metanorma/document"
       require "metanorma/mko"
-      # Under an output_dir only the presentation XML is copied out; the
-      # semantic XML stays at the input location (same fallback as the
-      # presentation passthrough).
-      semantic_path = [output_paths[:orig_filename], output_paths[:xml]]
-                       .find { |p1| p1 && File.exist?(p1) }
+      # :xml is the freshly written semantic XML; orig_filename is the
+      # adoc SOURCE and is only right when an output_dir kept the
+      # semantic XML at the input location.
+      semantic_path = [output_paths[:xml], output_paths[:orig_filename]]
+                       .find { |p1| p1 && File.exist?(p1) && File.extname(p1) != ".adoc" }
       presentation = if File.exist?(output_paths[:presentationxml])
                        File.read(output_paths[:presentationxml])
                      end

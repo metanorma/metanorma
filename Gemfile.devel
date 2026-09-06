@@ -1,0 +1,10 @@
+# Local development pins (eval'd by Gemfile; not committed workflow state)
+gem "metanorma-document", github: "metanorma/metanorma-document", branch: "feat/model-validation-l1-declarations"
+gem "metanorma-standoc", github: "metanorma/metanorma-standoc", branch: "feat/move-standard-document"
+gem "metanorma-iso", github: "metanorma/metanorma-iso", branch: "feat/model-validation-migration"
+gem "isodoc", github: "metanorma/isodoc", branch: "main"
+gem "pubid", ">= 2.0.0.pre.alpha.9"
+gem "relaton-cli", ">= 3.0.0.pre.alpha.1"
+gem "glossarist", "~> 2.13"
+gem "lutaml-model", "~> 0.8.0", "< 0.8.20"
+gem "metanorma-plugin-glossarist", "0.3.9"
