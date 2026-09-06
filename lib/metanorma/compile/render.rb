@@ -142,9 +142,11 @@ module Metanorma
                             to: File.dirname(output_paths[:out]),
                             presentation_xml: presentation)
     rescue LoadError => e
-      @log.add("LoadError", "Metanorma::Compile",
-               "the mko output format requires the metanorma-document " \
-               "gem: #{e.message}")
+      @log.add_msg("MKO_OUTPUT" => { category: "MKO Output",
+                                     error: "the mko output format requires " \
+                                            "the metanorma-document gem: %s",
+                                     severity: 0 })
+      @log.add("MKO_OUTPUT", nil, params: [e.message])
       nil
     end
 
