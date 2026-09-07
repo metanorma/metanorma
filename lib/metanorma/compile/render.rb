@@ -1,6 +1,6 @@
 module Metanorma
   class Compile
-    NO_FONTIST_FORMATS = %i[xml presentation rxl].freeze
+    NO_FONTIST_FORMATS = %i[xml presentation rxl mko].freeze
 
     # Generate presentation XML from semantic XML
     def generate_presentation_xml(source_file, xml, bibdata, output_paths, opt)
@@ -109,6 +109,10 @@ module Metanorma
             end
         FileUtils.cp f, output_paths[:presentationxml]
         true
+      elsif ext == :mko
+        # Harness format: export the MKO bundle from the typed model
+        export_mko_bundle(output_paths)
+        true
       elsif ext == :html && options[:sectionsplit]
         # Special case: Split HTML into sections
         sectionsplit_convert(
@@ -118,6 +122,32 @@ module Metanorma
       else
         false
       end
+    end
+
+    # Export the MKO machine serialization (metanorma-document). The
+    # semantic and presentation XML are already on disk by the time this
+    # runs; Mko resolves the flavor model via the Core::Flavors registry.
+    def export_mko_bundle(output_paths)
+      require "metanorma/document"
+      require "metanorma/mko"
+      # :xml is the freshly written semantic XML; orig_filename is the
+      # adoc SOURCE and is only right when an output_dir kept the
+      # semantic XML at the input location.
+      semantic_path = [output_paths[:xml], output_paths[:orig_filename]]
+                       .find { |p1| p1 && File.exist?(p1) && File.extname(p1) != ".adoc" }
+      presentation = if File.exist?(output_paths[:presentationxml])
+                       File.read(output_paths[:presentationxml])
+                     end
+      Metanorma::Mko.export(File.read(semantic_path),
+                            to: File.dirname(output_paths[:out]),
+                            presentation_xml: presentation)
+    rescue LoadError => e
+      @log.add_msg("MKO_OUTPUT" => { category: "MKO Output",
+                                     error: "the mko output format requires " \
+                                            "the metanorma-document gem: %s",
+                                     severity: 0 })
+      @log.add("MKO_OUTPUT", nil, params: [e.message])
+      nil
     end
 
     # Process format that requires presentation XML
