@@ -85,16 +85,22 @@ module Metanorma
       # Core::Flavors, so it needs nothing from the flavor gems.
       HARNESS_OUTPUT_FORMATS = { mko: "mko" }.freeze
 
-      # The processor's output formats merged with the harness formats and
-      # the suffixes of any taste-contributed document-model formats, so
-      # those formats pass extension validation and get an output suffix.
-      def effective_output_formats(options)
+      # Formats a flavor offers by default: its own list plus
+      # taste-contributed document-model formats. The harness formats
+      # (mko) are deliberately absent — they are opt-in via
+      # --extensions, never a surprise default output.
+      def default_output_formats(options)
         @processor.output_formats
-                  .merge(HARNESS_OUTPUT_FORMATS)
                   .merge(
                     taste_transformers(options)
                       .transform_values { |spec| spec[:suffix] }.compact,
                   )
+      end
+
+      # The default formats merged with the harness formats, so those
+      # pass extension validation and get an output suffix.
+      def effective_output_formats(options)
+        default_output_formats(options).merge(HARNESS_OUTPUT_FORMATS)
       end
 
       # Whether +ext+ is generated from presentation XML, honouring both the
@@ -118,7 +124,7 @@ module Metanorma
       def extract_extensions(options)
         formats = effective_output_formats(options)
         options[:extension_keys] ||=
-          formats.reduce([]) { |memo, (k, _)| memo << k }
+          default_output_formats(options).reduce([]) { |memo, (k, _)| memo << k }
         options[:extension_keys].reduce([]) do |memo, e|
           if formats[e] then memo << e
           else
