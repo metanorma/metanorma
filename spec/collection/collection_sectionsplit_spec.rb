@@ -115,7 +115,7 @@ RSpec.describe Metanorma::Collection do
           </image>
           <target href="B">
           <eref bibitemid="R1" citeas="R1"/><semx element="eref">
-            <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref></semx>
+            <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R<span class="stddocNumber">1</span><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref></semx>
           </target>
         </figure>
         <target href="A">
@@ -391,7 +391,7 @@ RSpec.describe Metanorma::Collection do
     expect(rice).to match %r{<a xlink:href="mn://action_schema">\s+<rect x="123\.28" y="273\.93"}m
     # demonstrate that erefs are removed if they point to another document in the repository,
     # but that document is not supplied
-    expect(rice).to match %r{This document uses schemas E0/A0, <a href="dummy.html#E1_ISO_17302">E1/A1</a> and <a href="dummy.html#E2_ISO_17302">express-schema/E<span class="stddocNumber">2</span></a> as well as express-schema/E<span class="stddocNumber">0</span>}
+    expect(rice).to match %r{This document uses schemas E0/A0, <a href="dummy.html#E1_ISO_17302">E1/A1</a> and <a href="dummy.html#E2_ISO_17302">express-schema/E2</a> as well as express-schema/E0}
     expect(rice).to include %(This document is also unrelated to <a href="dummy.html#what">)
     xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
     p = xml.xpath("//xmlns:sections//xmlns:p")[4]
@@ -569,7 +569,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
       .to include %(This document is updated in <b>** Unresolved reference to document ISO 17301-1:2016/Amd.1:2017 from eref</b>.</p>)
     expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
-      .to include %(This document uses schemas E0/A0, E1/A1 and express-schema/E<span class="stddocNumber">2</span> as well as express-schema/E<span class="stddocNumber">0</span>)
+      .to include %(This document uses schemas E0/A0, E1/A1 and express-schema/E2 as well as express-schema/E0)
     expect(File.read("#{OUTPATH}/rice-en.final.xml.1.html"))
       .to include %(This document is also unrelated to <a href="dummy.html#what">)
     FileUtils.rm_rf of
