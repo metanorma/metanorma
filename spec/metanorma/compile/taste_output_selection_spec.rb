@@ -68,4 +68,41 @@ RSpec.describe "Metanorma::Compile taste-aware output selection" do
     compile.send(:copy_isodoc_options_attrs, { supplied_type: :widget }, ret)
     expect(ret[:supplied_type]).to eq(:widget)
   end
+
+  it "back-fills :presentation into extension_keys when html is requested" do
+    # Compile#get_extensions implicitly adds :presentation whenever any
+    # requested format renders from presentation XML, and mirrors that into
+    # options[:extension_keys] — get_isodoc_options filters output_formats by
+    # that key, so without the mirror :presentation is silently stripped.
+    options = { extension_keys: %i[html] }
+    keys = compile.send(:get_extensions, options)
+    expect(keys).to include(:presentation)
+    expect(options[:extension_keys]).to include(:presentation)
+  end
+
+  it "get_isodoc_options does not mutate its output_formats source" do
+    # The processor's formats table is the shared configuration.hash by default
+    # (generic, iala taste). select! there would permanently drop :presentation
+    # for every subsequent html/doc build.
+    shared = {
+      html: "html", doc: "doc", xml: "xml", presentation: "presentation.xml",
+    }
+    processor = Class.new do
+      define_method(:output_formats) { shared }
+      def extract_options(_file) = { output_formats: {
+        html: "html", doc: "doc", xml: "xml", presentation: "presentation.xml",
+      } }
+    end.new
+    c = Metanorma::Compile.allocate.tap do |x|
+      x.instance_variable_set(:@processor, processor)
+    end
+    original = shared.dup
+    ret = c.send(
+      :get_isodoc_options, "spec/assets/test.adoc",
+      { extension_keys: %i[html], filename: "spec/assets/test.adoc" },
+      :html,
+    )
+    expect(ret[:output_formats][:presentation]).to be_nil
+    expect(shared).to eq(original)
+  end
 end
