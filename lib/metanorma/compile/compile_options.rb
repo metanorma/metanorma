@@ -118,6 +118,12 @@ module Metanorma
         end and ext << :presentation
         !ext.include?(:rxl) && options[:site_generate] and
           ext << :rxl
+        # Keep options[:extension_keys] in sync: get_isodoc_options filters
+        # output_formats by extension_keys, and presentation is an implicit
+        # dependency of html/doc/pdf — if it is only on the local +ext+ array,
+        # the filter strips it from the formats table (and, when the processor
+        # hands out a live hash, permanently from the flavor config).
+        options[:extension_keys] = ext
         ext
       end
 
@@ -154,8 +160,14 @@ module Metanorma
         get_isodoc_fileparams(options, ret)
         copy_isodoc_options_attrs(options, ret)
         font_manifest_mn2pdf(options, ret, ext)
-        ret[:output_formats]&.select! do |k, _|
-          options[:extension_keys].include?(k)
+        # Filter a COPY — never select! the processor's live formats table.
+        # Generic (and any flavor that returns configuration.formats directly)
+        # would otherwise permanently lose :presentation after the first
+        # html/doc request that did not list presentation in extension_keys.
+        if ret[:output_formats]
+          keys = options[:extension_keys] || []
+          ret[:output_formats] = ret[:output_formats]
+            .select { |k, _| keys.include?(k) }
         end
         ret[:log] = @log
         ret
