@@ -145,6 +145,12 @@ module Metanorma
       end
 
       def update_filepaths(entry, prefix)
+        # `manifest_expand_yaml_entry` hands us the loaded sub-manifest's
+        # `entry` collection directly, which is an Array of entries.
+        if entry.is_a?(Array)
+          entry.each { |e| update_filepaths(e, prefix) }
+          return
+        end
         entry.file && !(Pathname.new entry.file).absolute? and
           entry.file = File.join(prefix, entry.file)
         entry&.entry&.each do |f|
