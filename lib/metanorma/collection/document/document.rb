@@ -107,6 +107,10 @@ module Metanorma
               end
           # Relaton doesn't understand Pres XML tags
           b.xpath("//xmlns:fmt-identifier").each(&:remove)
+          # Relaton models a single <edition>; flavors emit a language-neutral
+          # edition plus localized variants (<edition language="en">first
+          # edition</edition>). Keep the language-neutral one for bibdata.
+          b.xpath("//xmlns:edition[@language != '']").each(&:remove)
           r.from_xml(b.to_xml)
         end
 
