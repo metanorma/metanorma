@@ -115,7 +115,7 @@ RSpec.describe Metanorma::Collection do
           </image>
           <target href="B">
           <eref bibitemid="R1" citeas="R1"/><semx element="eref">
-            <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R<span class="stddocNumber">1</span><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref></semx>
+            <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1"><span class="stddocNumber">R1</span><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref></semx>
           </target>
         </figure>
         <target href="A">
