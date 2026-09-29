@@ -56,6 +56,11 @@ module Metanorma
       # Step 2: Prepare output paths
       xml = Nokogiri::XML(semantic_xml, &:huge)
       bibdata = extract_relaton_metadata(xml)
+      # bibdata is a Node of the full-document DOM: keeping it pins the
+      # whole DOM (gigabytes for large documents) for the entire output
+      # phase. Re-root the fragment into its own tiny document so the
+      # full DOM is collectable once this parse goes out of scope.
+      bibdata = reroot_bibdata(bibdata)
       output_paths = prepare_output_paths(filename, bibdata, options)
 
       # Step 3: Determine which output formats to generate
@@ -66,7 +71,11 @@ module Metanorma
       # Step 4: Extract information from Semantic XML if requested
       extract_information(semantic_xml, bibdata, options)
 
-      # Step 5: Generate output formats from Semantic XML
+      # Step 5: Generate output formats from Semantic XML. The output
+      # converters each build their own DOMs of the semantic XML;
+      # collect this phase's temporaries first so they stack on the
+      # live set, not on the converter phase's high-water mark.
+      GC.start
       generate_outputs(
         source_file, semantic_xml, bibdata, extensions, output_paths,
         options

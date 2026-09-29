@@ -47,6 +47,19 @@ module Metanorma
       xml.at("//bibdata") || xml.at("//xmlns:bibdata")
     end
 
+    # Re-root a bibdata Node into a document of its own. The returned
+    # node answers the same metadata reads downstream (filename
+    # templates, relaton export), but no longer pins the full-document
+    # DOM it was parsed from — for large documents that DOM is the
+    # bulk of the compile's retained memory through the output phase.
+    def reroot_bibdata(bibdata)
+      return bibdata unless bibdata.is_a?(Nokogiri::XML::Node)
+
+      doc = Nokogiri::XML(bibdata.to_xml)
+      doc.at("//bibdata") || doc.at("//xmlns:bibdata") ||
+        doc.root || bibdata
+    end
+
     def wrap_html(options, file_extension, outfilename)
       if options[:wrapper] && /html$/.match(file_extension)
         outfilename = outfilename.sub(/\.html$/, "")
@@ -164,6 +177,9 @@ module Metanorma
       @processor.output(nil, output_paths[:presentationxml],
                         output_paths[:out], ext, isodoc_options)
       wrap_html(options, output_paths[:ext], output_paths[:out])
+      # Each extension converter leaves a full DOM of the presentation XML
+      # behind; collect it before the next extension stacks its own.
+      GC.start
     rescue StandardError => e
       isodoc_error_process(e, strict_error?(ext, isodoc_options), false)
     end
@@ -172,6 +188,7 @@ module Metanorma
     def process_from_semantic_xml(ext, output_paths, sem_xml, isodoc_options)
       @processor.output(sem_xml, output_paths[:xml], output_paths[:out],
                         ext, isodoc_options)
+      GC.start
       true # Return as Thread equivalent
     rescue StandardError => e
       isodoc_error_process(e, strict_error?(ext, isodoc_options), true)
