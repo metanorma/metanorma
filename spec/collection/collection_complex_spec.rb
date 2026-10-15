@@ -546,6 +546,13 @@ RSpec.describe Metanorma::Collection do
       expect(output).to include "Content-Type: image/png"
       output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
         .sub!(%r{<style>.+</style>}m, "<style/>")
+        # the Word head is MS markup, not XML; compare the body
+        output.sub!(%r{<head>.*?</head>}m, "<head/>")
+        expected.sub!(%r{<head>.*?</head>}m, "<head/>")
+      # the Word head is MS markup (undeclared prefixes, unquoted
+      # attributes), not XML; the comparison's content is the body
+      output.sub!(%r{<head>.*?</head>}m, "<head/>")
+      expected.sub!(%r{<head>.*?</head>}m, "<head/>")
       expect(cleanup_guid(cleanup_id(output)))
         .to be_xml_equivalent_to cleanup_guid(expected)
       expect(File.exist?("#{OUTPATH}/dummy.pdf")).to be false
@@ -570,6 +577,9 @@ RSpec.describe Metanorma::Collection do
       expected = File.read("#{INPATH}/collection1.doc")
       output.sub!(%r{</html>.*$}m, "</html>").sub!(%r{^.*<html }m, "<html ")
         .sub!(%r{<style>.+</style>}m, "<style/>")
+        # the Word head is MS markup, not XML; compare the body
+        output.sub!(%r{<head>.*?</head>}m, "<head/>")
+        expected.sub!(%r{<head>.*?</head>}m, "<head/>")
       expect(cleanup_guid(cleanup_id(output)))
         .to be_xml_equivalent_to cleanup_guid(expected)
       expect(File.exist?("#{OUTPATH}/dummy.doc")).to be true
