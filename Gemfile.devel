@@ -1,10 +1,20 @@
 # Local development pins (eval'd by Gemfile; not committed workflow state)
-gem "metanorma-document", github: "metanorma/metanorma-document", branch: "feat/model-validation-l1-declarations"
-gem "metanorma-standoc", github: "metanorma/metanorma-standoc", branch: "feat/move-standard-document"
-gem "metanorma-iso", github: "metanorma/metanorma-iso", branch: "feat/model-validation-migration"
+gem "metanorma-document", github: "metanorma/metanorma-document", branch: "main"
+gem "metanorma-standoc", github: "metanorma/metanorma-standoc", branch: "main"
+gem "metanorma-iso", github: "metanorma/metanorma-iso", branch: "main"
 gem "isodoc", github: "metanorma/isodoc", branch: "main"
-gem "pubid", ">= 2.0.0.pre.alpha.9"
-gem "relaton-cli", ">= 3.0.0.pre.alpha.1"
+# released metanorma-iho 1.4.0 still carries lib/relaton/render/general.rb,
+# which shadows relaton-render's iso690 autoload by load-path name; iho
+# main relocated its render files
+gem "metanorma-iho", github: "metanorma/metanorma-iho", branch: "main"
+gem "pubid", "~> 2.0.0.pre.alpha"
+# leptris 1.9.359 drops Leptris::XML::Declaration#to_xml (leptris#1733)
+gem "leptris", "1.9.356.0"
+gem "relaton-cli", "~> 3.0.0.pre.alpha"
 gem "glossarist", "~> 2.13"
-gem "lutaml-model", "~> 0.8.0", "< 0.8.20"
-gem "metanorma-plugin-glossarist", "0.3.9"
+gem "lutaml-model", "~> 0.8.107"
+gem "metanorma-plugin-glossarist", "~> 0.5"
+# moxml 0.5.138's leptris adapter references Leptris::XML::Declaration,
+# which only exists in leptris 1.9.359 (the to_xml regression pair,
+# leptris#1733); pin the coherent 1.9.356-era moxml line
+gem "moxml", "~> 0.5.84", "< 0.5.138"
