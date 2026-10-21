@@ -123,9 +123,16 @@ module Metanorma
         # not processed already by add_suffix_to_attrs
         def url_in_css_styles(doc, ids, document_suffix)
           update_ids_css(doc.root, ids, document_suffix)
-          doc.xpath("//i:svg", "i" => SVG_NS).each do |s|
+          # svgmap SVGs are owned by Vectory::SvgMapping, which applies the
+          # same suffix itself; suffixing them here would double it. Only
+          # standalone SVGs need the suffix from this pass.
+          doc.xpath("//i:svg[not(ancestor::*[local-name()='svgmap'])]",
+                    "i" => SVG_NS).each do |s|
             svg = Vectory::SvgDocument.new(s.to_xml)
             svg.suffix_ids(document_suffix)
+            # suffix_ids mutates SvgDocument's own parse; write the
+            # suffixed SVG back into the tree, or the suffix is lost
+            s.replace(svg.content)
           end
         end
 
