@@ -210,7 +210,13 @@ module Metanorma
             # external_bibitems[x.sub(/^#{key}_/, "")]
           end.each do |x|
             ins << if b = internal_bibitems[x.sub(/^#{key}_/, "")]
-                     b.dup.tap { |m| m["id"] = x }
+                     b.dup.tap do |m|
+                       m["id"] = x
+                       # The anchor belongs to the original bibitem: the
+                       # hidden copy is referenced by its new id, and a
+                       # duplicated anchor fails id-uniqueness validation.
+                       m.delete("anchor")
+                     end
                    else new_indirect_bibitem(x, key)
                    end
           end
