@@ -8,13 +8,13 @@ gem "isodoc", github: "metanorma/isodoc", branch: "main"
 # main relocated its render files
 gem "metanorma-iho", github: "metanorma/metanorma-iho", branch: "main"
 gem "pubid", "~> 2.0.0.pre.alpha"
-# leptris 1.9.359 drops Leptris::XML::Declaration#to_xml (leptris#1733)
-gem "leptris", "1.9.356.0"
+# The 1.9.356/0.5.13x pin pair worked around the leptris#1733 to_xml
+# regression; retired — the fleet line is leptris 1.9.376 + moxml 0.5.149
+# (all suites green), and the exact pin now deadlocks against vectory's
+# leptris >= 1.9.361.1 floor.
+gem "leptris", "~> 1.9"
 gem "relaton-cli", "~> 3.0.0.pre.alpha"
 gem "glossarist", "~> 2.13"
 gem "lutaml-model", "~> 0.8.107"
 gem "metanorma-plugin-glossarist", "~> 0.5"
-# moxml 0.5.138's leptris adapter references Leptris::XML::Declaration,
-# which only exists in leptris 1.9.359 (the to_xml regression pair,
-# leptris#1733); pin the coherent 1.9.356-era moxml line
-gem "moxml", "~> 0.5.84", "< 0.5.138"
+gem "moxml", "~> 0.5"
