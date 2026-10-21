@@ -7,7 +7,7 @@ RSpec.describe Metanorma::Collection::XrefProcess do
   describe ".insert_indirect_biblio" do
     it "drops the anchor on hidden copies of internal bibitems" do
       xml = Nokogiri::XML(<<~XML)
-        <metanorma>
+        <metanorma xmlns="https://www.metanorma.org/ns/standard">
           <bibliography>
             <references normative="true">
               <bibitem id="ref8601" anchor="ISO 8601" type="standard">
@@ -34,7 +34,7 @@ RSpec.describe Metanorma::Collection::XrefProcess do
 
     it "creates plain indirect entries when no internal bibitem matches" do
       xml = Nokogiri::XML(<<~XML)
-        <metanorma>
+        <metanorma xmlns="https://www.metanorma.org/ns/standard">
           <bibliography/>
         </metanorma>
       XML
