@@ -36,11 +36,15 @@ module Metanorma
         # Stage 3: Process with Vectory
         # Pass document suffix to Vectory as id_suffix for proper SVG ID disambiguation.
         # Vectory handles both id_suffix (document-level) and index suffix internally.
+        # It parses its own copy and returns the processed document, so the
+        # result must be adopted here or none of its work reaches the tree.
         doc_suffix = @files.get(docid, :document_suffix)
-        Vectory::SvgMapping.new(docxml, "", id_suffix: doc_suffix).call
+        mapped = Vectory::SvgMapping.new(docxml, "", id_suffix: doc_suffix).call
+        docxml = Nokogiri::XML(mapped.to_xml, &:huge)
 
         # Stage 4: Extract processed SVG content
         extract_svgmap_content(docxml, isodoc)
+        docxml
       end
 
       # Prepares document and context for svgmap resolution

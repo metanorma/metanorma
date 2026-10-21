@@ -47,7 +47,8 @@ module Metanorma
         ::Metanorma::Collection::Util::hide_refs(xml)
         # post: references containers with only hidden bibitems flagged hidden.
         sso and eref2link(xml, sso)
-        @nested || @reinflate or svgmap_resolve(xml, docid, sso)
+        # svgmap_resolve hands back the tree Vectory rebuilt; keep it.
+        xml = svgmap_resolve(xml, docid, sso) unless @nested || @reinflate
         xml.to_xml
       end
 
