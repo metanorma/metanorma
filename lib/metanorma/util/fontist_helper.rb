@@ -36,8 +36,25 @@ module Metanorma
           Util.log("[fontist] '#{e.font}' font is not supported. " \
                    "Please report this issue at " \
                    "https://github.com/metanorma/metanorma/issues", log_level)
+        rescue *size_limit_errors => e
+          log_level = continue ? :warning : :fatal
+          Util.log("[fontist] #{e.message}. " \
+                   "Please report this issue at " \
+                   "https://github.com/metanorma/metanorma/issues", log_level)
         rescue Fontist::Errors::FormulaIndexNotFoundError
           fontist_update_repo(manifest, agree, continue, no_progress)
+        end
+
+        # fontist 3 rejects formulas above its size limit (Fontist::Errors::
+        # SizeLimitError); fontist 2.x, which metanorma still supports, does
+        # not define the class, so rescue on an empty list rather than raise
+        # the dependency floor.
+        def size_limit_errors
+          if defined?(Fontist::Errors::SizeLimitError)
+            [Fontist::Errors::SizeLimitError]
+          else
+            []
+          end
         end
 
         def fontist_install(manifest, agree, no_progress)
