@@ -293,6 +293,33 @@ RSpec.describe Metanorma::Compile do
                                              continue_without_fonts: true)
   end
 
+  if defined?(Fontist::Errors::SizeLimitError)
+    it "exit on formula size limit" do
+      compile = Metanorma::Compile.new
+
+      allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
+        .and_raise(Fontist::Errors::SizeLimitError.new("Formulas above 300 MB"))
+      expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).once
+
+      expect do
+        compile.compile("spec/assets/test.adoc", type: "iso")
+      end.to raise_error SystemExit
+    end
+
+    it "handle formula size limit" do
+      mock_pdf
+      mock_sts
+      compile = Metanorma::Compile.new
+
+      allow(Metanorma::Util::FontistHelper).to receive(:fontist_install)
+        .and_raise(Fontist::Errors::SizeLimitError.new("Formulas above 300 MB"))
+      expect(Metanorma::Util::FontistHelper).to receive(:fontist_install).once
+
+      compile.compile("spec/assets/test.adoc", type: "iso",
+                                               continue_without_fonts: true)
+    end
+  end
+
   it "handle missing fontist index" do
     mock_pdf
     mock_sts
