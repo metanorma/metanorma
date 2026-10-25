@@ -228,8 +228,15 @@ module Metanorma
       x.xpath("//xmlns:clause").each { |n| n["unnumbered"] = true }
       b = x.at("//xmlns:bibdata")
       prefatory_parse_fix_bibdata(b)
+      # The collection bibdata fills the chunk's missing fields, but its
+      # edition is stripped first: the collection's edition belongs to
+      # the collection document and must never enter the chunk — merging
+      # it in produced bibitems with two <edition> elements that abort
+      # relaton re-parses (relaton/relaton-db#149).
+      collection_bib = Nokogiri::XML(@bibdata.to_xml(bibdata: true))
+      collection_bib.xpath("//*[local-name()='edition']").each(&:remove)
       b.children = ::Metanorma::Standoc::Cleanup::MergeBibitems
-        .new(b.to_xml, @bibdata.to_xml(bibdata: true)).merge.to_noko.children
+        .new(b.to_xml, collection_bib.root.to_xml).merge.to_noko.children
       x
     end
 

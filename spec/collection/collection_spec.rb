@@ -876,4 +876,24 @@ RSpec.describe Metanorma::Collection do
                              "Monoisome" => anything,
                            ) }))
   end
+
+  it "prefatory bibdata carries exactly one <edition>, the collection's own" do
+    mock_pdf
+    mc = Metanorma::Collection.parse "#{INPATH}/collection1.yml"
+    xml = mc.prefatory_parse_semantic(<<~CONTENT)
+      = Standard
+      :edition: 4
+
+      == Clause
+      Welcome to our collection
+    CONTENT
+    bd = xml.at("//xmlns:bibdata")
+    editions = bd.xpath("//xmlns:edition")
+    # A bibitem has exactly one edition; fusing the collection's edition
+    # into the chunk's own produced two and aborted relaton re-parses
+    # (relaton/relaton-db#149). The chunk's own edition survives; the
+    # collection's is stripped before the merge.
+    expect(editions.size).to eq(1)
+    expect(editions.first.text).to eq("4")
+  end
 end
