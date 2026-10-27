@@ -39,4 +39,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "metanorma-iso"
 
   # relaton-cli is required by Metanorma::Collection
-  spec.add_dependency "relaton-cli", ">= 3.0.0.pre.alpha"end
+  spec.add_dependency "relaton-cli", ">= 3.0.0"end
