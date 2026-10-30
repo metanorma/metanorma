@@ -26,8 +26,8 @@ module Metanorma
         attribute :format, :string, collection: true, default: -> { [:html] }
         attribute :output_folder, :string
         attribute :compile, CompileOptions
-        attribute :prefatory_content, :string, raw: true
-        attribute :final_content, :string, raw: true
+        attribute :prefatory_content, :string
+        attribute :final_content, :string
         attribute :documents, DocContainer, collection: true
         attribute :xmlns, :string, default: -> { "http://metanorma.org" }
 
@@ -65,11 +65,13 @@ module Metanorma
           map_element "compile", to: :compile, render_default: true
           map_element "prefatory-content",
                       to: :prefatory_content,
+                      raw: :content,
                       with: { from: :prefatory_from_xml,
                               to: :prefatory_to_xml }
           map_element "doc-container", to: :documents
           map_element "final-content",
                       to: :final_content,
+                      raw: :content,
                       with: { from: :final_from_xml,
                               to: :final_to_xml }
         end
