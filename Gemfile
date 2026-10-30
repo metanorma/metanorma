@@ -6,8 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}" }
 
 gemspec
 
-# TEMPORARY cross-PR pin (metanorma-core#18): Compile resolves via Core::Flavors
-gem "metanorma-core", github: "metanorma/metanorma-core", branch: "feat/flavor-table"
+gem "metanorma-core", ">= 0.2.5"
 
 # fontist's formulas setup calls Git::Repository#branches, removed in the
 # git 6.0.0 gem — CI font setup aborts before any spec runs on main.
