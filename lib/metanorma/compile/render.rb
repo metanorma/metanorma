@@ -124,12 +124,13 @@ module Metanorma
       end
     end
 
-    # Export the MKO machine serialization (metanorma-document). The
+    # Export the MKO machine serialization (metanorma-mko). The
     # semantic and presentation XML are already on disk by the time this
     # runs; Mko resolves the flavor model via the Core::Flavors registry.
     def export_mko_bundle(output_paths)
-      require "metanorma/document"
       require "metanorma/mko"
+      # model side: the projection walk + export entry points
+      require "metanorma/mko/model"
       # :xml is the freshly written semantic XML; orig_filename is the
       # adoc SOURCE and is only right when an output_dir kept the
       # semantic XML at the input location.
@@ -144,7 +145,7 @@ module Metanorma
     rescue LoadError => e
       @log.add_msg("MKO_OUTPUT" => { category: "MKO Output",
                                      error: "the mko output format requires " \
-                                            "the metanorma-document gem: %s",
+                                            "the metanorma-mko gem: %s",
                                      severity: 0 })
       @log.add("MKO_OUTPUT", nil, params: [e.message])
       nil
