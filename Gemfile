@@ -9,6 +9,10 @@ gemspec
 # TEMPORARY cross-PR pin (metanorma-core#18): Compile resolves via Core::Flavors
 gem "metanorma-core", github: "metanorma/metanorma-core", branch: "feat/flavor-table"
 
+# fontist's formulas setup calls Git::Repository#branches, removed in the
+# git 6.0.0 gem — CI font setup aborts before any spec runs on main.
+gem "git", "< 6"
+
 begin
   eval_gemfile("Gemfile.devel")
 rescue StandardError
