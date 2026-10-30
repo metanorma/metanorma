@@ -8,10 +8,6 @@ gemspec
 
 gem "metanorma-core", ">= 0.2.5"
 
-# fontist's formulas setup calls Git::Repository#branches, removed in the
-# git 6.0.0 gem — CI font setup aborts before any spec runs on main.
-gem "git", "< 6"
-
 begin
   eval_gemfile("Gemfile.devel")
 rescue StandardError
