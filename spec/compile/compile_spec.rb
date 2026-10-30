@@ -902,8 +902,11 @@ RSpec.describe Metanorma::Compile do
         .to receive(:require_libraries).and_return(true)
       allow_any_instance_of(Metanorma::Compile)
         .to receive(:extract_relaton_metadata).and_return(bibdata)
+      # compile.rb re-roots the bibdata fragment into its own document
+      # before use, so the node identity differs from the stub's return;
+      # assert on behavior (filename from drop content), not identity
       allow(Metanorma::Compile::RelatonDrop)
-        .to receive(:new).with(bibdata).and_return(relaton_drop)
+        .to receive(:new).and_return(relaton_drop)
       allow(relaton_drop).to receive(:to_liquid).and_return(
         {
           "docidentifier" => "ISO/IEC FDIS 10118-3",
