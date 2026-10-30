@@ -1171,6 +1171,8 @@ RSpec.describe Metanorma::Compile do
       allow(taste_register).to receive(:available_tastes).and_return([:iso]) # Use existing flavor
       allow(taste_register).to receive(:aliases).and_return({})
       allow(taste_register).to receive(:get).with(:iso).and_return(taste_instance)
+      allow(taste_register).to receive(:get_config).and_return(nil) # iso has no taste
+      allow(taste_register).to receive(:document_transformers_for).and_return({})
       allow(Metanorma::TasteRegister).to receive(:instance).and_return(taste_register)
 
       # Mock flavor loading to avoid the missing gem error
