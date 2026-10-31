@@ -1,7 +1,8 @@
-# This file contains a helper method to mock UUIDTools::UUID.random_create
-# to return an incrementing number (1, 2, 3, 4, etc.) 
+# This file contains a helper method to mock random identifier generation
+# (UUIDTools::UUID.random_create and Metanorma::Utils.random_uuid)
+# to return an incrementing number (1, 2, 3, 4, etc.)
 # each time it's called within a test.
-# It also overrides the contenthash generation, 
+# It also overrides the contenthash generation,
 # so that the tracked GUIDs can be seen as they are used
 # in generated ids and cross-references
 
@@ -10,26 +11,24 @@ require "metanorma-standoc"
 require "metanorma-core"
 
 module UuidMock
-  # Mock UUIDTools::UUID.random_create to return an incrementing counter
-  # @return [Object] A mock UUID object with a to_s method that returns the counter value
+  # Mock random identifier generation to return an incrementing counter
+  # @return [String] the counter value
   def mock_uuid_increment
     counter = 0
 
-    # Create a mock UUID class that responds to to_s with the counter value
-    uuid_double = double("UUID")
-    allow(uuid_double).to receive(:to_s) do
+    # isodoc identifiers are generated through this seam
+    # (metanorma-utils)
+    allow(Metanorma::Utils).to receive(:random_uuid) do
+      counter += 1
       counter.to_s
     end
 
-    # Allow the mock UUID to be used in string interpolation
-    allow(uuid_double).to receive(:to_str) do
-      counter.to_s
-    end
-
-    # Mock the random_create method to increment counter and return the mock UUID
+    # UUIDTools is still called directly by this gem's own lib code
+    # (manifest config and filelookup defaults); both call sites do
+    # `.random_create.to_s`, so a String return is compatible
     allow(UUIDTools::UUID).to receive(:random_create) do
       counter += 1
-      uuid_double
+      counter.to_s
     end
 
     # Mock content hashing, preserving these GUIDs instead
