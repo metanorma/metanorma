@@ -189,8 +189,13 @@ module Metanorma
       c.process_input_adoc_overrides(attrs, options)
     end
 
-    def process_input_adoc_includes(file, filename)
+    def process_input_adoc_includes(file, filename, base_dir = nil)
       dir = File.dirname(filename)
+      # With an explicit asset anchor (base_dir), Asciidoctor resolves
+      # include targets against that anchor rather than the working
+      # directory, so the docfile-directory prefix must be absolute for
+      # includes to stay docfile-anchored from any working directory.
+      base_dir and dir = File.expand_path(dir)
       dir != "." and
         file = file.gsub(/^include::/, "include::#{dir}/")
           .gsub(/^embed::/, "embed::#{dir}/")
@@ -201,7 +206,7 @@ module Metanorma
       Util.log("[metanorma] Processing: AsciiDoc input.", :info)
       file = read_file(filename)
       file = process_input_adoc_hdr(file, options)
-      file = process_input_adoc_includes(file, filename)
+      file = process_input_adoc_includes(file, filename, options[:base_dir])
       update_options_after_preprocessing(file, options)
       [file, @processor.input_to_isodoc(file, filename, options)]
     end
