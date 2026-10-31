@@ -758,6 +758,65 @@ RSpec.describe Metanorma::Compile do
     expect(c.errors).to include("RuntimeError: #{exception_msg}")
   end
 
+  it "pools a non-Fatal exception raised by a pooled output stage (#601)" do
+    require "metanorma-standoc"
+    # A real processor whose PDF output stage fails the way #601
+    # reports it: Mn2pdf's spawn dies with Errno::ENOENT inside the
+    # worker-pool thread. No stubbing: the raise crosses the pool for
+    # real.
+    failing_processor = Class.new(Metanorma::Processor) do
+      # rubocop:disable Lint/MissingSuper -- Processor#initialize
+      # raises; the class is abstract and has no state to chain
+      def initialize
+        @short = :metanorma601
+        @input_format = :asciidoc
+        @asciidoctor_backend = :standoc
+      end
+      # rubocop:enable Lint/MissingSuper
+
+      def output_formats
+        super.merge(pdf: "pdf")
+      end
+
+      def output(isodoc_node, inname, outname, format, options = {})
+        if format == :pdf
+          raise Errno::ENOENT, "posix_spawn /bin/sh"
+        end
+
+        super
+      end
+    end
+    Metanorma::Registry.instance.register(failing_processor)
+
+    begin
+      File.write("metanorma601.adoc", <<~ADOC)
+        = Document title
+        Author
+        :nodoc:
+        :novalid:
+
+        Content
+      ADOC
+      c = Metanorma::Compile.new
+      c.compile("metanorma601.adoc", type: "metanorma601",
+                                     extension_keys: [:pdf],
+                                     agree_to_terms: true)
+
+      # The failure must reach the compile result: the standalone CLI
+      # reads this pool and aborts, so a missing PDF can never pair
+      # with exit code 0.
+      expect(c.errors).to include(a_string_matching(/Errno::ENOENT/))
+        .and include(a_string_matching(/posix_spawn/))
+      expect(File.exist?("metanorma601.pdf")).to be false
+      # The sibling output stage still ran: the pool stays parallel,
+      # one failed format does not stall the others.
+      expect(File.exist?("metanorma601.presentation.xml")).to be true
+    ensure
+      Metanorma::Registry.instance.processors.delete(:metanorma601)
+      FileUtils.rm_f("metanorma601.adoc")
+    end
+  end
+
   it "don't skip Presentation XML errors" do
     require "metanorma-iso"
     allow_any_instance_of(IsoDoc::Iso::HtmlConvert).to receive(:convert)
@@ -1215,11 +1274,11 @@ RSpec.describe Metanorma::Compile do
 
   context "isodoc_error_process (#586)" do
     it "prints exception class and message adjacent to the backtrace, " \
-       "and pools class and message on the strict path" do
+       "and pools class and message" do
       c = Metanorma::Compile.new
       err = Encoding::UndefinedConversionError.new("from ASCII-8BIT to UTF-8")
       err.set_backtrace(["lib/somewhere.rb:1:in 'decode'"])
-      expect { c.send(:isodoc_error_process, err, true, false) }
+      expect { c.send(:isodoc_error_process, err) }
         .to output(
           %r{UndefinedConversionError: from ASCII-8BIT to UTF-8\nlib/somewhere},
         ).to_stdout
@@ -1228,13 +1287,13 @@ RSpec.describe Metanorma::Compile do
                     "from ASCII-8BIT to UTF-8")
     end
 
-    it "prints but does not pool on the non-strict path" do
+    it "prints and pools on the non-strict path (#601)" do
       c = Metanorma::Compile.new
       err = RuntimeError.new("non-fatal problem")
       err.set_backtrace(["lib/somewhere.rb:1"])
-      expect { c.send(:isodoc_error_process, err, false, false) }
+      expect { c.send(:isodoc_error_process, err) }
         .to output(/RuntimeError: non-fatal problem/).to_stdout
-      expect(c.errors).to be_empty
+      expect(c.errors).to include("RuntimeError: non-fatal problem")
     end
   end
 
