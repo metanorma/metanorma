@@ -102,6 +102,25 @@ module Metanorma
           @@updated_formulas_repo = true
           install_fonts_safe(manifest, agree, continue, no_progress)
         end
+
+        # Fontist raises MissingFontError for any manifest font that is not
+        # installed locally, even after install_fonts_safe has honoured
+        # --continue-without-fonts for the install itself (#595): the flag's
+        # promise would be defeated one call later. Drop the missing font
+        # from the manifest with a warning, so mn2pdf renders with
+        # substituted fonts; without the flag the error stays fatal.
+        def locate_manifest(manifest, continue_without_fonts)
+          instance = Fontist::Manifest.from_hash(manifest, locations: true)
+          instance&.to_hash
+        rescue Fontist::Errors::MissingFontError => e
+          raise unless continue_without_fonts
+
+          Util.log("[fontist] '#{e.font}' font is missing. " \
+                   "Continuing without it (--continue-without-fonts).",
+                   :warning)
+          rest = manifest.reject { |name, _| name == e.font }
+          rest.empty? ? {} : locate_manifest(rest, continue_without_fonts)
+        end
       end
 
       def self.install_fonts(processor, options)
@@ -132,7 +151,8 @@ module Metanorma
           || source_attributes[:fonts]
       end
 
-      def self.location_manifest(processor, source_attributes)
+      def self.location_manifest(processor, source_attributes,
+                                 continue_without_fonts: false)
         base = if processor.respond_to?(:fonts_manifest) &&
             !processor.fonts_manifest.nil?
                  processor.fonts_manifest.dup
@@ -142,12 +162,8 @@ module Metanorma
 
         return nil if base.empty? && !source_attributes[:fonts]
 
-        instance = Fontist::Manifest.from_hash(
-          append_source_fonts(base, source_attributes),
-          locations: true,
-        )
-
-        instance.to_hash unless instance.nil?
+        locate_manifest(append_source_fonts(base, source_attributes),
+                        continue_without_fonts)
       end
 
       def self.append_source_fonts(manifest, source_attributes)
