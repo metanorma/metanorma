@@ -8,6 +8,16 @@ gemspec
 
 gem "metanorma-core", ">= 0.2.5"
 
+# taste stack the compile specs exercise: the oiml taste registers the
+# flavor and lazily requires metanorma-oiml (OIML STS transformers,
+# unreleased); mko main carries the model-side export entry.
+# Lives here, not in Gemfile.devel: consumer workflows may rewrite the
+# devel overlay (fontist CI appends its path pin to it), and the repo's
+# own compile specs must not depend on its survival.
+gem "metanorma-taste", "~> 1.1"
+gem "metanorma-oiml", github: "metanorma/metanorma-oiml", branch: "main"
+gem "metanorma-mko", github: "metanorma/metanorma-mko", branch: "main"
+
 begin
   eval_gemfile("Gemfile.devel")
 rescue StandardError

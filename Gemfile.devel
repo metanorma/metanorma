@@ -18,9 +18,3 @@ gem "glossarist", "~> 2.13"
 gem "lutaml-model", "~> 0.8.107"
 gem "metanorma-plugin-glossarist", "~> 0.5"
 gem "moxml", "~> 0.5"
-# taste stack the compile specs exercise: the oiml taste registers the
-# flavor and lazily requires metanorma-oiml (OIML STS transformers,
-# unreleased); mko main carries the model-side export entry
-gem "metanorma-taste", "~> 1.1"
-gem "metanorma-oiml", github: "metanorma/metanorma-oiml", branch: "main"
-gem "metanorma-mko", github: "metanorma/metanorma-mko", branch: "main"
