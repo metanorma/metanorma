@@ -276,8 +276,10 @@ module Metanorma
                                                          font_options)
 
           mn2pdf = {
-            font_manifest: ::Metanorma::Util::FontistHelper
-              .location_manifest(@compile.processor, { fonts: fonts }),
+            font_manifest: ::Metanorma::Util::FontistHelper.location_manifest(
+              @compile.processor, { fonts: fonts },
+              continue_without_fonts: @compile_options[:continue_without_fonts],
+            ),
           }
         end
         [pres, { fonts: fonts, mn2pdf: mn2pdf }.compact]
