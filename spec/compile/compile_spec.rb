@@ -406,7 +406,7 @@ RSpec.describe Metanorma::Compile do
       .and_return(nil)
 
     allow(Metanorma::Util::FontistHelper).to receive(:location_manifest)
-      .with(anything, anything)
+      .with(anything, anything, continue_without_fonts: anything)
       .and_return({})
 
     compile.compile("spec/assets/custom_fonts.adoc", type: "iso")
