@@ -182,7 +182,7 @@ module Metanorma
       # behind; collect it before the next extension stacks its own.
       GC.start
     rescue StandardError => e
-      isodoc_error_process(e, strict_error?(ext, isodoc_options), false)
+      isodoc_error_process(e)
     end
 
     # Process format directly from semantic XML
@@ -192,7 +192,7 @@ module Metanorma
       GC.start
       true # Return as Thread equivalent
     rescue StandardError => e
-      isodoc_error_process(e, strict_error?(ext, isodoc_options), true)
+      isodoc_error_process(e)
       ext != :presentation
     end
 
@@ -214,31 +214,22 @@ module Metanorma
 
     private
 
-    # A presentation failure is always strict: every downstream format
-    # needs the presentation XML. The :strict option arrives as a
-    # boolean from the CLI but as a string from document attributes, so
-    # accept both (the two rescue sites previously each checked only
-    # one form).
-    def strict_error?(ext, isodoc_options)
-      ext == :presentation ||
-        [true, "true"].include?(isodoc_options[:strict])
-    end
-
-    # On the strict path the message is pooled into @errors for the
-    # caller to surface (the standalone CLI reports the pool and
-    # aborts; the collection renderer attributes it to the failed
-    # member, #586). The class+message line is also printed here in all
-    # cases, so it sits adjacent to its backtrace in the build log: a
-    # pooled message surfaces only at end of run, and a bare backtrace
-    # mid-log is undiagnosable. The exception class is retained because
-    # for errors like Encoding::UndefinedConversionError it carries
-    # half the diagnosis.
-    def isodoc_error_process(err, strict, must_abort)
+    # An output stage that raises has not produced its artifact, so the
+    # failure must reach the caller however Compile is consumed: the
+    # message is pooled into @errors unconditionally (#601) — the
+    # standalone CLI reports the pool and aborts, so a missing artifact
+    # can never pair with exit code 0; the collection renderer
+    # attributes it to the failed member (#586). The class+message line
+    # is also printed here in all cases, so it sits adjacent to its
+    # backtrace in the build log: a pooled message surfaces only at end
+    # of run, and a bare backtrace mid-log is undiagnosable. The
+    # exception class is retained because for errors like
+    # Encoding::UndefinedConversionError it carries half the diagnosis.
+    def isodoc_error_process(err)
       msg = "#{err.class}: #{err.message}"
-      strict || err.message.include?("Fatal:") and @errors << msg
+      @errors << msg
       puts msg
       puts err.backtrace.join("\n")
-      must_abort and 1
     end
   end
 end
