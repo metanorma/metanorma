@@ -190,7 +190,10 @@ module Metanorma
           p = Metanorma::Registry.instance.find_processor(Util::taste2flavor(flavor))
           if ::Metanorma::Util::FontistHelper.has_custom_fonts?(p, options, {})
             @fonts_manifest =
-              ::Metanorma::Util::FontistHelper.location_manifest(p, options)
+              ::Metanorma::Util::FontistHelper.location_manifest(
+                p, options,
+                continue_without_fonts: options[:continue_without_fonts],
+              )
           end
           @options = options
         end
