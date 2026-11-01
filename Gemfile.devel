@@ -26,3 +26,8 @@ gem "moxml", "~> 0.5"
 # regressions. 1.3.114 is pubid's own floor and the last alias-accepting
 # compiler. Drop this pin when pubid ships edition-2 artifacts.
 gem "parsanol", "1.3.114"
+
+# Bridge: svg_conform 0.2.5 was pushed with a compact-index checksum
+# mismatch (Bundler::APIResponseMismatchError on every download); pin
+# 0.2.4 until a corrected push lands.
+gem "svg_conform", "0.2.4"
