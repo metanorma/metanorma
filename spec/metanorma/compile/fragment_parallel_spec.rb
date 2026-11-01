@@ -148,16 +148,16 @@ RSpec.describe Metanorma::Compile::FragmentParallel do
       header = ["= Doc", ":attr: x"]
       instance.send(:mega_fragments, fragments, header, segment,
                     instance.send(:data2text_mega, segment))
-      # chunk count is capped at workers * 4 but never exceeds the
-      # entry count: 10 entries yield 10 single-entry chunks
-      expect(fragments.size).to eq(10)
+      # chunk count is capped at the worker count and never exceeds the
+      # entry count: 10 entries with 4 workers yield 4 chunks of 2-3
+      expect(fragments.size).to eq(4)
       src = File.read(fragments.first[:path])
       expect(src).to start_with("= Doc\n:attr: x\n== Terms and definitions")
       expect(src).to include("[yaml2text,.test.frag-0.data.yaml,groups]")
       expect(src).to include("=== {{ group.title }}")
       data = YAML.load_file(File.join(dir, ".test.frag-0.data.yaml"))
       expect(data).to be_an(Array)
-      expect(data.size).to eq(1)
+      expect(data.size).to eq(3)
     end
   end
 

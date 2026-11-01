@@ -274,7 +274,9 @@ module Metanorma
       end
 
       def mega_fragments(fragments, header, seg, mega)
-        chunks = [mega[:entries].size, @workers * 4].min
+        # one chunk per worker: each child re-loads the glossarist
+        # dataset, so more chunks mostly re-pay that fixed cost
+        chunks = [mega[:entries].size, @workers].min
         size = (mega[:entries].size / chunks.to_f).ceil
         head = header + seg[:lines][0...mega[:attr_i]]
         base_idx = fragments.size
