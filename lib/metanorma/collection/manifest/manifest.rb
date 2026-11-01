@@ -184,15 +184,31 @@ module Metanorma
       # param filepath [String]
       # @raise [AdocFileNotFoundException]
       def compile_adoc_file(file)
+        warn "BASEDIR-PROBE " + base_dir_options.inspect
         f = (Pathname.new file).absolute? ? file : File.join(@dir, file)
         File.exist?(f) or raise AdocFileNotFoundException.new "#{f} not found!"
         compile_adoc_file?(file) or return
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...", :warning)
         ::Metanorma::Compile.new
-          .compile(f, agree_to_terms: true, install_fonts: false,
-                      extension_keys: [:xml])
+          .compile(f, { agree_to_terms: true, install_fonts: false,
+                        extension_keys: [:xml] }.merge(base_dir_options))
         ::Metanorma::Util.log("[metanorma] Info: Compiling #{f}...done!",
                               :warning)
+      end
+
+      # Opt-in collection directive `base-dir: collection`: anchor the
+      # AsciiDoc include jail at the collection directory instead of the
+      # process working directory, so members compile identically from
+      # any working directory (metanorma#627). The anchor spans the whole
+      # collection, so member includes reaching above the member
+      # directory (../../../templates) stay inside the jail. The default
+      # (no directive) keeps today's working-directory anchoring, so
+      # existing builds stay byte-identical.
+      def base_dir_options
+        @collection.directives.detect do |d|
+          d.key == "base-dir" && d.value == "collection"
+        end or return {}
+        { base_dir: @collection.dirname }
       end
 
       def compile_adoc_file?(file)

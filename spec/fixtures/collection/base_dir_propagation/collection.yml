@@ -1,0 +1,26 @@
+directives:
+  - documents-inline
+  - base-dir: collection
+bibdata:
+  title:
+    type: title-main
+    language: en
+    content: Include escape collection
+  type: collection
+  docid:
+    type: iso
+    id: ISO 99001 (all parts)
+  copyright:
+    owner:
+      name: Toy Standards Organization
+      abbreviation: TSO
+    from: "2024"
+manifest:
+  level: collection
+  title: Include escape
+  manifest:
+    - level: subcollection
+      title: Members
+      docref:
+        - fileref: member/doc.adoc
+          identifier: ISO 99001-1:2024
