@@ -1,0 +1,1 @@
+Shared template content lives above the member directory.

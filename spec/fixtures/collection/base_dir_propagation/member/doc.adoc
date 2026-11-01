@@ -1,0 +1,15 @@
+= Member document
+:docnumber: 99001
+:partnumber: 1
+:edition: 1
+:revdate: 2024-01-01
+:copyright-year: 2024
+:language: en
+:title-intro-en: Include escape
+:title-main-en: Member document
+:doctype: international-standard
+:docreference: ISO 99001-1
+:mn-document-class: iso
+:mn-output-extensions: xml
+
+include::../templates/common.adoc[]
