@@ -39,11 +39,14 @@ module Metanorma
     # presentation run as today); bibitem pruning that keys on citations
     # sees only the owning fragment's citations; shorthand `<<bibitem>>`
     # references to bibitems declared in another fragment degrade to
-    # xref (standoc resolves erefs only within the compiling document);
-    # generated element ids differ between any two compiles, so stitched
-    # output is canon-equivalent to a serial compile (identical modulo
-    # generated ids and whitespace-only text at splice points), not
-    # byte-identical.
+    # xref; glossarist <concept> cross-references to terms owned by
+    # another fragment degrade to <errormsg> unless the reference is
+    # unqualified and the repair pass can reconstruct it (domain-qualified
+    # concept resolution needs the glossarist dataset, which no fragment
+    # holds for the whole document); generated element ids differ between
+    # any two compiles, so stitched output is canon-equivalent to a serial
+    # compile (identical modulo generated ids and whitespace-only text at
+    # splice points), not byte-identical.
     class FragmentParallel
       HEADING1 = /^==(?!=)/.freeze
       STYLE_ATTR = /^(\[\[.+?\]\]|\[[^\[\]]+\])$/.freeze
@@ -352,7 +355,48 @@ module Metanorma
           stitch_fragment_root(base, parse(p), ns)
         end
         reorder_root(base)
+        repair_concept_refs(base, ns)
         base.to_xml
+      end
+
+      # Concept cross-references whose target term lives in another
+      # fragment fail resolution inside that fragment and come back as
+      # <errormsg> payloads carrying the reference texts verbatim. This
+      # pass repairs the unqualified subset: when the referenced id (or
+      # its glossarist "term-" prefixed anchor) names a term in the
+      # assembled document, the resolved refterm/renderterm/xref form is
+      # reconstructed. Domain-qualified references (the bulk in the
+      # iso-10303-2 corpus) resolve through the glossarist dataset, which
+      # the stitched document does not carry -- those remain errormsg and
+      # are the spike's principal known gap.
+      def repair_concept_refs(base, ns)
+        terms = base.root.xpath(".//xmlns:term[@anchor]", xmlns: ns)
+                     .each_with_object({}) { |t, m| m[t["anchor"]] = t }
+        repaired = 0
+        base.root.xpath(".//xmlns:concept/xmlns:errormsg", xmlns: ns)
+            .each do |err|
+          tts = err.xpath(".//xmlns:tt", xmlns: ns).map(&:text)
+          next unless tts.size == 3
+
+          # the error payload carries the raw concept id; the rendered
+          # anchor carries the glossarist "term-" prefix
+          id = tts[2]
+          id = "term-#{id}" unless terms.key?(id)
+          next unless terms.key?(id)
+
+          refterm = base.document.create_element("refterm")
+          refterm.content = tts[0]
+          renderterm = base.document.create_element("renderterm")
+          renderterm.content = tts[1]
+          xref = base.document.create_element("xref")
+          xref["target"] = id
+          err.replace(refterm)
+          refterm.next = renderterm
+          renderterm.next = xref
+          repaired += 1
+        end
+        warn "[fragment-parallel] repaired #{repaired} cross-fragment" \
+             " concept references" if repaired.positive?
       end
 
       # Merge one fragment's root into +base+. Layout note: standoc emits
