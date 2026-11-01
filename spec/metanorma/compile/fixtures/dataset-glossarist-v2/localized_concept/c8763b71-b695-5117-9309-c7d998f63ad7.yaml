@@ -1,0 +1,27 @@
+data:
+  terms:
+  - type: expression
+    normative_status: preferred
+    designation: material entity
+  definition:
+  - content: "{{urn:iso:std:iso:14812:3.1.1.1,entity}} that occupies three-dimensional
+      space"
+  notes:
+  - content: All material entities have certain characteristics that can be described
+      (see <<ISO_11179-1>>) and therefore this concept is important for ontology purposes.
+  examples: []
+  language_code: eng
+  entry_status: valid
+  sources:
+  - type: authoritative
+    origin:
+      ref:
+        source: ISO 11179-1
+  - type: authoritative
+    origin:
+      ref:
+        source: ISO/TS 14812:2022
+      locality:
+        type: clause
+        reference_from: 3.1.1.3
+      link: https://www.iso.org/standard/79779.html

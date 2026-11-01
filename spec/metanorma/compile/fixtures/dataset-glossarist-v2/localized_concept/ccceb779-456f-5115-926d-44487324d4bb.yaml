@@ -1,0 +1,30 @@
+data:
+  terms:
+  - type: expression
+    normative_status: preferred
+    designation: entity
+  - type: expression
+    normative_status: admitted
+    designation: E
+  definition:
+  - content: concrete or abstract thing that exists, did exist, or can possibly exist,
+      including associations among these things
+  notes: []
+  examples:
+  - content: "{{urn:iso:std:iso:14812:3.1.1.6,person,Person}}, object, event, idea,
+      process, etc."
+  language_code: eng
+  entry_status: valid
+  sources:
+  - type: authoritative
+    origin:
+      ref:
+        source: ISO/TS 14812:2022
+      locality:
+        type: clause
+        reference_from: 3.1.1.1
+      link: https://www.iso.org/standard/79779.html
+  - type: lineage
+    origin:
+      ref:
+        source: ''

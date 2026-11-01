@@ -269,4 +269,165 @@ RSpec.describe Metanorma::Compile::FragmentParallel do
       expect(annexes.map { |a| a["anchor"] }).to eq(%w[annex-a annex-b])
     end
   end
+
+  describe "forked-worker compilation" do
+    let(:workers) { 2 }
+
+    let(:klass) do
+      Class.new(described_class) do
+        # The scheduler, forking, log capture and stitching run for real;
+        # only the per-fragment metanorma compile is replaced, by
+        # inheritance, with a write of a minimal fragment XML.
+        def compile_fragment(f)
+          anchor = File.basename(f[:path], ".adoc")
+          File.write(f[:path].sub(/\.adoc$/, ".xml"), <<~XML)
+            <?xml version="1.0" encoding="UTF-8"?>
+            <metanorma xmlns="#{NS}" type="semantic" flavor="iso">
+            <bibdata type="standard"><docidentifier>ISO 1</docidentifier></bibdata>
+            <sections><clause anchor="#{anchor}"><title>T</title></clause></sections>
+            </metanorma>
+          XML
+        end
+      end
+    end
+
+    let(:docfile) do
+      path = File.join(dir, "document.adoc")
+      File.write(path, <<~SRC)
+        = Doc
+        :mn-document-class: iso
+
+        == Scope
+
+        Alpha.
+
+        == Terms and definitions
+
+        Beta.
+      SRC
+      path
+    end
+
+    it "compiles every fragment in a forked worker and stitches the result" do
+      xml = klass.new(docfile, {}, workers).run
+      out = Nokogiri::XML(xml, &:huge)
+      clauses = out.root.xpath(".//xmlns:clause", xmlns: NS)
+      expect(clauses.map { |c| c["anchor"] })
+        .to contain_exactly(".document.frag-0", ".document.frag-1")
+    end
+
+    it "reports a fragment whose child exits nonzero" do
+      failing = Class.new(described_class) do
+        def compile_fragment(_f)
+          warn "child boom"
+          raise "child boom"
+        end
+      end
+      expect { failing.new(docfile, {}, workers).run }
+        .to raise_error(/fragment compile failed/)
+    end
+
+    it "records each child's output in its fragment log" do
+      logging = Class.new(described_class) do
+        def compile_fragment(f)
+          warn "logged from #{File.basename(f[:path])}"
+          File.write(f[:path].sub(/\.adoc$/, ".xml"),
+                     "<metanorma xmlns=\"#{NS}\" type=\"semantic\"/>")
+        end
+      end
+      ENV["METANORMA_PARALLEL_KEEP"] = "1"
+      logging.new(docfile, {}, workers).run
+      logs = Dir.glob("#{dir}/.document.frag-*.adoc.log")
+      expect(logs.size).to eq(2)
+      logs.each do |log|
+        expect(File.read(log))
+          .to include("logged from #{File.basename(log, '.log')}")
+      end
+    ensure
+      ENV.delete("METANORMA_PARALLEL_KEEP")
+    end
+  end
+
+  describe "glossarist dataset preload" do
+    let(:klass) do
+      Class.new(described_class) do
+        def compile_fragment(f)
+          File.write(f[:path].sub(/\.adoc$/, ".xml"),
+                     "<metanorma xmlns=\"#{NS}\" type=\"semantic\"/>")
+        end
+      end
+    end
+
+    let(:fixture) do
+      File.expand_path("fixtures/dataset-glossarist-v2", __dir__)
+    end
+
+    let(:docfile_with_dataset) do
+      FileUtils.cp_r(fixture, File.join(dir, "dataset-v2"))
+      path = File.join(dir, "document.adoc")
+      File.write(path, <<~SRC)
+        = Doc
+        :mn-document-class: iso
+        :glossarist-dataset: ds:dataset-v2
+
+        == Terms and definitions
+      SRC
+      path
+    end
+
+    after do
+      ENV.delete(Metanorma::Compile::FragmentParallel::SHARED_DATASETS_ENV)
+      if defined?(Metanorma::Plugin::Glossarist::DatasetRegistry) &&
+         Metanorma::Plugin::Glossarist::DatasetRegistry
+         .respond_to?(:clear_shared_stores)
+        Metanorma::Plugin::Glossarist::DatasetRegistry.clear_shared_stores
+      end
+    end
+
+    let(:plugin) do
+      require "metanorma-plugin-glossarist"
+      Metanorma::Plugin::Glossarist::DatasetRegistry
+    end
+
+    it "leaves the store gate alone when the plugin predates sharing" do
+      skip "plugin carries the shared store cache" unless
+        plugin.respond_to?(:shared_store_for)
+
+      klass.new(docfile_with_dataset, {}, 2).run
+      expect(ENV[Metanorma::Compile::FragmentParallel::SHARED_DATASETS_ENV])
+        .to eq("1")
+      # workers are forked from fragments under the real-pathed docdir,
+      # so their registry lookups key on the real path
+      entry = plugin.shared_store_for(
+        File.realpath(File.join(dir, "dataset-v2")),
+      ) { raise "dataset was not preloaded by the parent" }
+      expect(entry.concepts.map(&:id).size).to eq(4)
+    end
+
+    it "skips the preload when the plugin lacks the shared store" do
+      klass.new(docfile_with_dataset, {}, 2).run
+      if plugin.respond_to?(:shared_store_for)
+        expect(ENV[Metanorma::Compile::FragmentParallel::SHARED_DATASETS_ENV])
+          .to eq("1")
+      else
+        expect(ENV[Metanorma::Compile::FragmentParallel::SHARED_DATASETS_ENV])
+          .to be_nil
+      end
+    end
+
+    it "honours an explicit shared-store opt-out" do
+      skip "plugin carries the shared store cache" unless
+        plugin.respond_to?(:shared_store_for)
+
+      ENV[Metanorma::Compile::FragmentParallel::SHARED_DATASETS_ENV] = "0"
+      klass.new(docfile_with_dataset, {}, 2).run
+
+      expect(ENV[Metanorma::Compile::FragmentParallel::SHARED_DATASETS_ENV])
+        .to eq("0")
+      # the gate is off, so nothing may have been preloaded
+      expect(plugin.shared_store_for(
+        File.realpath(File.join(dir, "dataset-v2")),
+      ) { raise "unexpected load under a disabled gate" }).to be_nil
+    end
+  end
 end

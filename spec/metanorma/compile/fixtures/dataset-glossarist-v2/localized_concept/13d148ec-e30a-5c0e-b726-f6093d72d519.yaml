@@ -1,0 +1,21 @@
+data:
+  terms:
+  - type: expression
+    normative_status: preferred
+    designation: biological entity
+  definition:
+  - content: "{{material entity}} that was or is a living
+      organism"
+  notes: []
+  examples: []
+  language_code: eng
+  entry_status: valid
+  sources:
+  - type: authoritative
+    origin:
+      ref:
+        source: ISO/TS 14812:2023
+      locality:
+        type: clause
+        reference_from: 3.1.1.5
+      link: https://www.iso.org/standard/79779.html
