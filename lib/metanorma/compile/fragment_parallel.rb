@@ -125,7 +125,6 @@ module Metanorma
         path = File.join(@dir, "#{@prefix}-#{i}.adoc")
         File.write(path, (header + body_lines).join("\n").concat("\n"),
                    encoding: "UTF-8")
-        @created << path
         { path: path, lines: header + body_lines }
       end
 
@@ -284,7 +283,6 @@ module Metanorma
           data_name = "#{@prefix}-#{idx}.data.yaml"
           data_path = File.join(@dir, data_name)
           File.write(data_path, YAML.dump(slice), encoding: "UTF-8")
-          @created << data_path
           directive = if mega[:kind] == "data2text"
                         "[data2text,#{mega[:var]}=#{data_name}]"
                       else
@@ -296,7 +294,6 @@ module Metanorma
             directive,
             mega[:delim], mega[:template], mega[:delim],
           ].flatten.join("\n").concat("\n"), encoding: "UTF-8")
-          @created << path
           fragments << { path: path, mega: true }
         end
       end
@@ -338,7 +335,6 @@ module Metanorma
         out, err, status = Open3.capture3(env, RbConfig.ruby, "-e",
                                           CHILD_SCRIPT, path, chdir: @dir)
         File.write("#{path}.log", [out, err].join, encoding: "UTF-8")
-        @created << "#{path}.log"
         return if status.success?
 
         raise "fragment compile failed (#{status.exitstatus}): #{path}," \
@@ -493,7 +489,7 @@ module Metanorma
       end
 
       def cleanup
-        return if ENV["METANORMA_PARALLEL_KEEP"]
+        return if ENV["METANORMA_PARALLEL_KEEP"] == "1"
 
         # every artifact of this run carries the run prefix (fragment
         # sources, chunk data files, fragment XML, child logs, the
