@@ -7,6 +7,7 @@ require "yaml"
 require "fontist"
 require "fontist/manifest"
 require "metanorma-taste"
+require "metanorma/plugin/lutaml"
 require_relative "writeable"
 require_relative "validator"
 require_relative "compile_options"
@@ -54,6 +55,10 @@ module Metanorma
       # Step 1: Generate Semantic XML
       semantic_result = generate_semantic_xml(filename, options) or return nil
       source_file, semantic_xml = semantic_result
+      # All lutaml macros have expanded by the end of conversion; the
+      # plugin's retained XMI graphs (LRU-bounded, gigabytes for large
+      # models) are dead weight for every later phase. Flush them.
+      Metanorma::Plugin::Lutaml::CacheRegistry.clear_all
 
       # Step 2: Prepare output paths
       xml = Nokogiri::XML(semantic_xml, &:huge)

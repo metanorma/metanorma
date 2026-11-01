@@ -26,12 +26,16 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "asciidoctor"
   spec.add_runtime_dependency "concurrent-ruby"
-  spec.add_runtime_dependency "fontist", ">= 2.1.2"
+  spec.add_runtime_dependency "fontist", "~> 3.0"
   spec.add_runtime_dependency "htmlentities"
-  spec.add_runtime_dependency "isodoc", ">= 3.5.0"
+  spec.add_runtime_dependency "isodoc", "~> 3.5"
   spec.add_runtime_dependency "marcel"
   spec.add_runtime_dependency "metanorma-core"
-  spec.add_runtime_dependency "metanorma-standoc", ">= 3.5.0"
+  # metanorma-plugin-lutaml is required by Metanorma::Compile: the XMI
+  # macro caches are flushed at the conversion/output phase boundary
+  # (CacheRegistry shipped in 0.7.46)
+  spec.add_runtime_dependency "metanorma-plugin-lutaml", "~> 0.7.46"
+  spec.add_runtime_dependency "metanorma-standoc", "~> 3.5"
   spec.add_runtime_dependency "mn2pdf", "~> 2"
   spec.add_runtime_dependency "nokogiri"
   spec.add_development_dependency "canon" #, "= 0.2.3"
