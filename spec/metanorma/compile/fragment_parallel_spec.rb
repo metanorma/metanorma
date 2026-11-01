@@ -91,7 +91,8 @@ RSpec.describe Metanorma::Compile::FragmentParallel do
         Concept.
       SRC
       expect(segs.size).to eq(1)
-      expect(segs[0][:lines].join("\n")).to include("=== Terms related to EXPRESS")
+      expect(segs[0][:lines].join("\n"))
+        .to include("=== Terms related to EXPRESS")
     end
 
     it "keeps a style line followed by a frame title and heading together" do
