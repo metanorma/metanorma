@@ -28,6 +28,8 @@ module Metanorma
     include Flavor
     include Writeable
 
+    autoload :FragmentParallel, "metanorma/compile/fragment_parallel"
+
     DEFAULT_NUM_WORKERS = 3
 
     # @return [Array<String>]
@@ -198,6 +200,15 @@ module Metanorma
     end
 
     def process_input_adoc(filename, options)
+      if (w = ENV["METANORMA_PARALLEL_CLAUSES"].to_i) >= 2
+        # Fragment-based parallel semantic compile (spike, #620): split,
+        # compile the fragments in worker processes, stitch. The stitched
+        # semantic XML rejoins the ordinary output pipeline below.
+        Util.log("[metanorma] Processing: AsciiDoc input" \
+                 " (fragment-parallel, #{w} workers).", :info)
+        return [read_file(filename),
+                FragmentParallel.new(filename, options, w).run]
+      end
       Util.log("[metanorma] Processing: AsciiDoc input.", :info)
       file = read_file(filename)
       file = process_input_adoc_hdr(file, options)
