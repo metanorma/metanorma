@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "fileutils"
-require "open3"
 require "yaml"
 
 module Metanorma
@@ -10,10 +9,18 @@ module Metanorma
     #
     # Opt in with METANORMA_PARALLEL_CLAUSES=<N> (N >= 2; default off). The
     # AsciiDoc source is split into clause fragments, each fragment is
-    # compiled to semantic XML by its own metanorma process (isolating the
-    # Asciidoctor/glossarist global state), and the fragment XMLs are
-    # stitched back into one semantic document that the ordinary output
-    # pipeline consumes as today.
+    # compiled to semantic XML by a worker forked off this process, and
+    # the fragment XMLs are stitched back into one semantic document that
+    # the ordinary output pipeline consumes as today.
+    #
+    # Forking over spawning: a fresh interpreter per fragment re-pays the
+    # flavor boot and -- fatally for vocabulary corpora -- the glossarist
+    # dataset load (tens of seconds per fragment). A forked worker
+    # inherits everything the parent already loaded. Before the first
+    # fork, the parent preloads the document's glossarist datasets once
+    # (opt-in plugin store cache, METANORMA_GLOSSARIST_SHARED_DATASETS),
+    # so the workers read the loaded models copy-on-write instead of
+    # re-parsing them.
     #
     # Split rules:
     # - includes are resolved inline, recursively;
@@ -56,6 +63,14 @@ module Metanorma
       DATA2TEXT = /\[(yaml2text|data2text),(.+?)\]\s*$/.freeze
       MAX_INCLUDE_DEPTH = 8
 
+      # Mirrors the plugin's DatasetPreprocessor header directive.
+      DATASET_ATTR = /^:glossarist-dataset:\s*(.*)$/.freeze
+
+      # The metanorma-plugin-glossarist store-cache gate (its
+      # DatasetRegistry::SHARED_STORE_ENV; spelled out here because the
+      # plugin may be absent entirely).
+      SHARED_DATASETS_ENV = "METANORMA_GLOSSARIST_SHARED_DATASETS"
+
       SKIP_ROOT = %w[bibdata boilerplate].freeze
       MERGE_ROOT = %w[preface sections bibliography
                       metanorma-extension].freeze
@@ -67,33 +82,22 @@ module Metanorma
       ROOT_ORDER = %w[bibdata metanorma-extension boilerplate preface
                       sections annex indexsect colophon bibliography].freeze
 
-      CHILD_SCRIPT = <<~RUBY.freeze
-        require "metanorma"
-        (ENV["METANORMA_PARALLEL_CHILD_REQUIRES"] || "")
-          .split(",").each { |g| require g }
-        Metanorma::Compile.new.compile(
-          ARGV[0], format: :asciidoc, extension_keys: [:xml],
-          novalid: true, agree_to_terms: true
-        )
-      RUBY
-
-      def initialize(filename, options, workers)
+      def initialize(filename, _options, workers)
         @filename = filename
         @workers = workers
         @dir = File.realpath(File.dirname(File.expand_path(filename)))
         @base = File.basename(filename, ".*")
         @prefix = ".#{@base}.frag"
-        @requires = [options[:type] && "metanorma-#{options[:type]}"]
-        if (r = ENV["METANORMA_PARALLEL_CHILD_REQUIRES"])
-          @requires = r.split(",")
-        end
-        @requires.compact!
       end
 
       def run
-        fragments = build_fragments
+        text = resolve_includes(
+          File.read(@filename, encoding: "utf-8"), 0
+        )
+        fragments = build_fragments(text)
         warn "[fragment-parallel] #{@filename}: #{fragments.size} fragments," \
              " #{@workers} workers"
+        warm_shared_datasets(text)
         compile_fragments(fragments)
         t = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         xml = stitch(fragments.map { |f| f[:path].sub(/\.adoc$/, ".xml") })
@@ -108,10 +112,8 @@ module Metanorma
 
       # -- splitting
 
-      def build_fragments
-        lines = resolve_includes(
-          File.read(@filename, encoding: "utf-8"), 0
-        ).split("\n")
+      def build_fragments(text)
+        lines = text.split("\n")
         header, segments = segmentize(lines)
         fragments = []
         segments.each do |seg|
@@ -277,8 +279,8 @@ module Metanorma
       end
 
       def mega_fragments(fragments, header, seg, mega)
-        # one chunk per worker: each child re-loads the glossarist
-        # dataset, so more chunks mostly re-pay that fixed cost
+        # one chunk per worker: the chunks left over after the first wave
+        # land on workers that just finished, keeping every worker fed
         chunks = [mega[:entries].size, @workers].min
         size = (mega[:entries].size / chunks.to_f).ceil
         head = header + seg[:lines][0...mega[:attr_i]]
@@ -303,47 +305,134 @@ module Metanorma
         end
       end
 
-      # -- compilation
+      # -- dataset preload
 
-      def compile_fragments(fragments)
-        pool = ::Metanorma::Util::WorkersPool.new(@workers)
-        lock = Mutex.new
-        done = 0
-        failures = []
-        fragments.each_with_index do |f, i|
-          pool.schedule do
-            t = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-            begin
-              child_compile(f[:path])
-            rescue StandardError => e
-              # a raise here would kill the pool thread and deadlock
-              # WorkersPool#shutdown; surface it after the pool drains
-              lock.synchronize { failures << e }
-            end
-            dt = Process.clock_gettime(Process::CLOCK_MONOTONIC) - t
-            lock.synchronize do
-              done += 1
-              warn format("[fragment-parallel] [%d/%d] %s %.1fs",
-                          done, fragments.size, File.basename(f[:path]), dt)
-            end
-          end
-        end
-        pool.shutdown
-        raise failures.first unless failures.empty?
+      # Load the document's glossarist datasets once, in this process,
+      # before any worker is forked. The plugin's opt-in store cache
+      # (METANORMA_GLOSSARIST_SHARED_DATASETS) memoizes the parsed
+      # datasets process-wide; the forked workers then answer their own
+      # registry lookups from the shared, copy-on-write models instead of
+      # re-parsing tens of thousands of YAML files per fragment.
+      #
+      # Skipped without the plugin, or when the datasets cannot be
+      # resolved: the fragments then behave exactly as on the spike --
+      # each loads what it needs, in its own fork.
+      def warm_shared_datasets(text)
+        return unless defined?(Metanorma::Plugin::Glossarist::DatasetRegistry)
+        return unless Metanorma::Plugin::Glossarist::DatasetRegistry
+                      .respond_to?(:shared_store_for)
+
+        paths = glossarist_dataset_paths(text)
+        return if paths.empty?
+
+        # An explicit "0" is a user opt-out: leave the plugin gate off
+        # and skip the preload -- the workers re-load per fork, as before.
+        gate = ENV.fetch(SHARED_DATASETS_ENV, nil)
+        gate = ENV[SHARED_DATASETS_ENV] = "1" if gate.nil? || gate.empty?
+        return if gate == "0"
+
+        registry = Metanorma::Plugin::Glossarist::DatasetRegistry.new
+        t = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        paths.each { |p| registry.concepts_at(p) }
+        # Give the workers a compacted, shared heap to fork from.
+        GC.start
+        warn format("[fragment-parallel] preloaded %d glossarist dataset(s)" \
+                    " in %.1fs; workers share them copy-on-write",
+                    paths.size,
+                    Process.clock_gettime(Process::CLOCK_MONOTONIC) - t)
+      rescue StandardError => e
+        warn "[fragment-parallel] glossarist dataset preload skipped:" \
+             " #{e.message}"
       end
 
-      def child_compile(path)
-        env = {
-          "METANORMA_PARALLEL_CLAUSES" => nil,
-          "METANORMA_PARALLEL_CHILD_REQUIRES" => @requires.join(","),
-        }
-        out, err, status = Open3.capture3(env, RbConfig.ruby, "-e",
-                                          CHILD_SCRIPT, path, chdir: @dir)
-        File.write("#{path}.log", [out, err].join, encoding: "UTF-8")
-        return if status.success?
+      # Registered dataset paths in document-header order, resolved
+      # against the docfile directory the same way the plugin resolves
+      # them for a fragment (:glossarist-dataset: name:path;name:path).
+      def glossarist_dataset_paths(text)
+        text.scan(DATASET_ATTR)
+            .flat_map { |(contexts)| contexts.split(";") }
+            .filter_map do |entry|
+              _, rel = entry.split(":", 2)&.map(&:strip)
+              next unless rel && !rel.empty?
 
-        raise "fragment compile failed (#{status.exitstatus}): #{path}," \
-              " see #{path}.log"
+              path = File.expand_path(rel, @dir)
+              File.directory?(path) ? path : nil
+            end.uniq
+      end
+
+      # -- compilation
+
+      # Bounded fork scheduler: keep @workers children alive until the
+      # fragments run out, reap any exited child, then raise the first
+      # failure after all scheduled work has drained.
+      def compile_fragments(fragments)
+        queue = fragments.dup
+        running = {}
+        failure = nil
+        until queue.empty? && running.empty?
+          until queue.empty? || running.size >= @workers
+            f = queue.shift
+            begin
+              t = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+              running[spawn_fragment(f)] = [f, t]
+            rescue StandardError => e
+              failure ||= e.message
+            end
+          end
+          break if running.empty?
+
+          pid, status = Process.waitpid2(-1, 0)
+          f, t = running.delete(pid)
+          next unless f
+
+          warn format("[fragment-parallel] [%d/%d] %s %.1fs",
+                      fragments.size - queue.size - running.size,
+                      fragments.size, File.basename(f[:path]),
+                      Process.clock_gettime(Process::CLOCK_MONOTONIC) - t)
+          unless status.success?
+            failure ||= "fragment compile failed" \
+                        " (#{status.exitstatus || "signal #{status.termsig}"}):" \
+                        " #{f[:path]}, see #{f[:path]}.log"
+          end
+        end
+        raise failure if failure
+      end
+
+      # Fork one worker for +f+. The child rebinds stdout/stderr to the
+      # fragment log, drops this env var so the nested compile does not
+      # recurse into fragment-parallel again, and exits without running
+      # the parent's at-exit handlers: the parent owns the run's
+      # lifecycle.
+      def spawn_fragment(f)
+        log = File.open("#{f[:path]}.log", "w:UTF-8")
+        if (pid = Process.fork).nil?
+          $stdout.reopen(log)
+          $stderr.reopen(log)
+          log.close
+          ENV["METANORMA_PARALLEL_CLAUSES"] = nil
+          begin
+            compile_fragment(f)
+            $stdout.flush
+            $stderr.flush
+            exit!(0)
+          rescue StandardError => e
+            warn e.full_message
+            exit!(1)
+          end
+        end
+        log.close
+        pid
+      end
+
+      # The child-side body of one fragment compile. Runs in a forked copy
+      # of this process: the flavor libraries, the metanorma registry and
+      # the preloaded glossarist datasets are all inherited, so the
+      # fragment pays only its own expansion and conversion.
+      def compile_fragment(f)
+        Metanorma::Compile.new.compile(
+          f[:path], format: :asciidoc, extension_keys: [:xml],
+          novalid: true, agree_to_terms: true
+        )
       end
 
       # -- stitching
