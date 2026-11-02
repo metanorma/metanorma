@@ -419,7 +419,10 @@ module Metanorma
               $stdout.flush
               $stderr.flush
             rescue StandardError => e
-              failure = e
+              failure = StandardError.new(
+                "fragment compile failed: #{f[:path]}: #{e.message}",
+              )
+              failure.set_backtrace(e.backtrace)
             end
           end
           $stdout.reopen(out)
