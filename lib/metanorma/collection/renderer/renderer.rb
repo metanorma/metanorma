@@ -101,6 +101,10 @@ module Metanorma
         # if false, this is the root instance of Renderer
         # if true, then this is not the last time Renderer will be run
         # (e.g. this is sectionsplit)
+        # Distributed reinflation: restrict the rendered members to these
+        # identifiers. The manifest still carries every member, so the
+        # anchors and cross-reference passes see the whole collection.
+        @only_members = options[:only_members]
         # Isolated/incremental build: preserve unresolved cross-document
         # references as stubs instead of resolving or stripping them, so each
         # member compiles independently and a later reinflation pass relinks.
