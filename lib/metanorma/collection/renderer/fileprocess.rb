@@ -120,6 +120,12 @@ module Metanorma
             @compile_options.merge!(bare: true)
           if @files.get(ident, :attachment) then copy_file_to_dest(ident)
           else
+            # Distributed reinflation: the manifest carries every member
+            # (their stored files feed the anchors and cross-reference
+            # passes) but this run renders only the selected slice; the
+            # other members' sections are rendered by sibling runs over
+            # the same store.
+            @only_members and !@only_members.include?(ident) and next
             file, fname = @files.targetfile_id(ident, read: true)
             @preserve_unresolved && member_stored?(ident, file) and next
             warn "\n\n\n\n\nProcess #{fname}: #{DateTime.now.strftime('%H:%M:%S')}"
