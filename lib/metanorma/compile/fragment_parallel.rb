@@ -366,6 +366,8 @@ module Metanorma
       # fragments run out, reap any exited child, then raise the first
       # failure after all scheduled work has drained.
       def compile_fragments(fragments)
+        return compile_fragments_in_process(fragments) unless fork?
+
         queue = fragments.dup
         running = {}
         failure = nil
@@ -396,6 +398,45 @@ module Metanorma
           end
         end
         raise failure if failure
+      end
+
+      # No fork on this platform (Windows): compile serially in-process,
+      # capturing each fragment's output in its log like a forked child's.
+      # Slower, same artifacts and failure semantics.
+      def compile_fragments_in_process(fragments)
+        clauses_env = ENV["METANORMA_PARALLEL_CLAUSES"]
+        ENV["METANORMA_PARALLEL_CLAUSES"] = nil
+        out = $stdout.dup
+        err = $stderr.dup
+        fragments.each_with_index do |f, i|
+          t = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+          failure = nil
+          File.open("#{f[:path]}.log", "w:UTF-8") do |log|
+            $stdout.reopen(log)
+            $stderr.reopen(log)
+            begin
+              compile_fragment(f)
+              $stdout.flush
+              $stderr.flush
+            rescue StandardError => e
+              failure = e
+            end
+          end
+          $stdout.reopen(out)
+          $stderr.reopen(err)
+          warn format("[fragment-parallel] [%d/%d] %s %.1fs",
+                      i + 1, fragments.size, File.basename(f[:path]),
+                      Process.clock_gettime(Process::CLOCK_MONOTONIC) - t)
+          raise failure if failure
+        end
+      ensure
+        ENV["METANORMA_PARALLEL_CLAUSES"] = clauses_env
+        $stdout.reopen(out)
+        $stderr.reopen(err)
+      end
+
+      def fork?
+        Process.respond_to?(:fork)
       end
 
       # Fork one worker for +f+. The child rebinds stdout/stderr to the
@@ -631,6 +672,9 @@ module Metanorma
         # glossarist per-document log)
         Dir.glob("#{@dir}/#{@prefix}-*").each do |p|
           File.unlink(p) if File.file?(p)
+        rescue Errno::EACCES
+          # Windows can hold a just-closed file briefly (indexer/AV);
+          # a leftover temp artifact is harmless
         end
       end
     end
