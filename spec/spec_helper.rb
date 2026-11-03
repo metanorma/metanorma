@@ -8,7 +8,7 @@ end
 require "bundler/setup"
 require "metanorma"
 require "rspec/matchers"
-require "equivalent-xml"
+require "canon/rspec_matchers"
 require "rspec-command"
 require "mnconvert"
 require "mn2pdf"

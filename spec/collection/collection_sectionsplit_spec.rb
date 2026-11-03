@@ -158,7 +158,7 @@ RSpec.describe Metanorma::Collection do
     expect(file6.at("//xmlns:annex")).not_to be_nil
     expect(file6.at("//xmlns:indexsect")).to be_nil
     expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
-      .to be_equivalent_to <<~OUTPUT
+      .to be_xml_equivalent_to <<~OUTPUT
         ---
         directives:
         - presentation-xml
@@ -396,7 +396,7 @@ RSpec.describe Metanorma::Collection do
     xml = Nokogiri::XML(File.read("#{OUTPATH}/rice-en.final.xml.1.presentation.xml"))
     p = xml.xpath("//xmlns:sections//xmlns:p")[4]
     p.delete("id")
-    expect(p.to_xml.gsub(/ (source|id|semx-id)="[^"]+"/, "")).to be_equivalent_to <<~OUTPUT
+    expect(p.to_xml.gsub(/ (source|id|semx-id)="[^"]+"/, "")).to be_xml_equivalent_to <<~OUTPUT
       <p>This document is updated in <eref type="inline" bibitemid="RiceAmd_ISO_17301-1_2016_ISO_17301-1_2016_1_Scope" citeas="ISO 17301-1:2016/Amd.1:2017"/><semx element="eref"><fmt-link target="rice-amd.final.html">ISO 17301-1:2016/Amd.1:2017</fmt-link></semx>.</p>
     OUTPUT
     FileUtils.rm_rf of
