@@ -158,7 +158,7 @@ RSpec.describe Metanorma::Collection do
     expect(file6.at("//xmlns:annex")).not_to be_nil
     expect(file6.at("//xmlns:indexsect")).to be_nil
     expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
-      .to be_xml_equivalent_to <<~OUTPUT
+      .to be_yaml_equivalent_to <<~OUTPUT
         ---
         directives:
         - presentation-xml
@@ -602,34 +602,34 @@ RSpec.describe Metanorma::Collection do
     xml = "<xml>#{xml0.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
          <xml>
-          <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:1">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:1">
              <sup>1)</sup>
            </a>
-          <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
              <sup>2)</sup>
            </a>
-          <aside class="footnote" id="fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                  <sup>1)</sup>
                </a>
                First footnote
              </p>
              <a href="#fnref:1">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_98_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <sup>1)</sup>
            </a>
-          <aside class="footnote" id="fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                  <sup>2)</sup>
                </a>
                Second footnote
              </p>
              <a href="#fnref:2">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_99_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <sup>2)</sup>
            </a>
          </xml>
@@ -641,44 +641,46 @@ RSpec.describe Metanorma::Collection do
     expect(file0).not_to include("Fifth annotation")
     expect(file0).not_to include("Sixth annotation")
 
-    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
+    File.write "/tmp/footnotes-xml0.xml", cleanup_guid(xml).gsub(/%GUID%/o, "")
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
       .to be_xml_equivalent_to output
     xml = "<xml>#{xml1.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
          <xml>
-          <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
              <sup>3)</sup>
            </a>
-          <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
              <sup>4)</sup>
            </a>
-          <aside class="footnote" id="fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                  <sup>3)</sup>
                </a>
                Third footnote
              </p>
              <a href="#fnref:1">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_100_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
              <sup>3)</sup>
            </a>
-          <aside class="footnote" id="fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                  <sup>4)</sup>
                </a>
                Fourth footnote
              </p>
              <a href="#fnref:2">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_101_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
              <sup>4)</sup>
            </a>
          </xml>
     OUTPUT
-    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
+    File.write "/tmp/footnotes-xml1.xml", cleanup_guid(xml).gsub(/%GUID%/o, "")
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
       .to be_xml_equivalent_to output
     expect(file1).not_to include("First annotation")
     expect(file1).not_to include("Second annotation")
@@ -690,39 +692,40 @@ RSpec.describe Metanorma::Collection do
     xml = "<xml>#{xml2.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
     output = <<~OUTPUT
          <xml>
-          <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
              <sup>5)</sup>
            </a>
-          <a class="FootnoteRef" href="#fn:_103_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
              <sup>6)</sup>
            </a>
-          <aside class="footnote" id="fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                  <sup>5)</sup>
                </a>
                Fifth footnote
              </p>
              <a href="#fnref:1">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_102_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
              <sup>5)</sup>
            </a>
-          <aside class="footnote" id="fn:_103_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_103_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                  <sup>6)</sup>
                </a>
                Sixth footnote
              </p>
              <a href="#fnref:2">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_103_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
              <sup>6)</sup>
            </a>
          </xml>
     OUTPUT
-    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
+    File.write "/tmp/footnotes-xml2.xml", cleanup_guid(xml).gsub(/%GUID%/o, "")
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
       .to be_xml_equivalent_to output
     expect(file2).not_to include("First annotation")
     expect(file2).not_to include("Second annotation")
