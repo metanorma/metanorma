@@ -139,6 +139,20 @@ module Metanorma
         # list of files in the collection
         @files = Metanorma::Collection::FileLookup.new(folder, self)
         @files.add_section_split
+        # only_members carries the manifest's docref identifiers, but the
+        # file lookup keys entries by their resolved document identifiers
+        # (and section-split instances by "<docid> <title>"), so the
+        # selection must be translated into key space before the render
+        # loop - raw identifiers match nothing and the render skips every
+        # member while exiting zero (iso-10303#811's hollow artifact).
+        @only_member_keys =
+          if @only_members
+            aliases = collection.manifest.identifier_aliases || {}
+            @only_members.flat_map do |m|
+              resolved = aliases[m] || m
+              [resolved, @files.entry_key(resolved)]
+            end.compact.uniq
+          end
         isodoc_populate
         create_non_existing_directory(@outdir)
       end

@@ -163,8 +163,8 @@ module Metanorma
       # parent is selected, or a sliced reinflate ships index pages whose
       # section pages are missing (iso-10303#811).
       def render_member?(ident)
-        @only_members.include?(ident) ||
-          @only_members.include?(@files.get(ident, :parentid))
+        @only_member_keys.include?(ident) ||
+          @only_member_keys.include?(@files.get(ident, :parentid))
       end
 
       # Resume predicate: is this member already compiled and stored for its

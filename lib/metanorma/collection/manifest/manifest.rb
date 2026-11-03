@@ -7,6 +7,11 @@ module Metanorma
     class Manifest
       # @return [Metanorma::Collection]
       attr_reader :collection, :config, :lang, :script
+      # docref identifier replacements made during postprocessing: the
+      # original raw identifier (typically a GUID placeholder assigned to
+      # docrefs that declared none) mapped to the resolved identifier
+      # callers actually see (and that the file lookup keys entries by).
+      attr_reader :identifier_aliases
 
       # @param level [String]
       # @param dir [String]
@@ -17,6 +22,7 @@ module Metanorma
         @collection = collection
         @dir = dir
         @disambig = ::Metanorma::Collection::Util::DisambigFiles.new
+        @identifier_aliases = {}
         @config = manifest_postprocess(config)
       end
 
@@ -57,6 +63,9 @@ module Metanorma
       end
 
       def manifest_identifier(config)
+        # capture before populate_id_from_doc: it replaces GUID identifiers
+        # in place, and the alias must map that original raw value.
+        original = config.identifier
         no_id = populate_id_from_doc(config)
         config.identifier =
           if no_id && config.file # make file name be id
@@ -64,6 +73,9 @@ module Metanorma
           else
             @collection.class.resolve_identifier(config.identifier)
           end
+        if original && original != config.identifier
+          @identifier_aliases[original] = config.identifier
+        end
         Array(config.entry).each do |f|
           manifest_identifier(f)
         end
