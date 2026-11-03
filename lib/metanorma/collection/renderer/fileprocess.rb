@@ -125,7 +125,7 @@ module Metanorma
             # passes) but this run renders only the selected slice; the
             # other members' sections are rendered by sibling runs over
             # the same store.
-            @only_members and !@only_members.include?(ident) and next
+            @only_members and !render_member?(ident) and next
             file, fname = @files.targetfile_id(ident, read: true)
             @preserve_unresolved && member_stored?(ident, file) and next
             warn "\n\n\n\n\nProcess #{fname}: #{DateTime.now.strftime('%H:%M:%S')}"
@@ -155,6 +155,16 @@ module Metanorma
       # suffice because inputs are frozen across a single build campaign.)
       def member_content_hash(source)
         ArtifactStore.content_hash(source, ::Metanorma::VERSION)
+      end
+
+      # Only-members selects docref identifiers; section-split outputs are
+      # derivative entries added at renderer init under their own keys,
+      # each carrying :parentid. A split output renders whenever its
+      # parent is selected, or a sliced reinflate ships index pages whose
+      # section pages are missing (iso-10303#811).
+      def render_member?(ident)
+        @only_members.include?(ident) ||
+          @only_members.include?(@files.get(ident, :parentid))
       end
 
       # Resume predicate: is this member already compiled and stored for its
