@@ -26,6 +26,8 @@ end
 
 gem "debug"
 gem "canon", "~> 0.3.122"
+# lutaml-store 0.3.10 shipped conflict markers (lutaml-store#31); 0.3.11 fixes
+gem "lutaml-store", "~> 0.3.11"
 #gem "metanorma-iho"
 #gem "metanorma-iso", ">= 3.2.0"
 gem "mnconvert"
