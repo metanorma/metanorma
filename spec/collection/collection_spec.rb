@@ -25,7 +25,7 @@ RSpec.describe Metanorma::Collection do
       yaml_out = mc.config.to_yaml
         .gsub(/identifier: ['"]?#{GUID}['"]?[\n\r]+\s*/mo, "\\1")
         .gsub(/([\n\r]+\s+)schema_version: \S+[\n\r]+\s*/m, "\\1")
-      expect(yaml_out).to be_equivalent_to <<~OUTPUT
+      expect(yaml_out).to be_xml_equivalent_to <<~OUTPUT
        ---
        directives:
        - documents-external:
@@ -488,7 +488,7 @@ RSpec.describe Metanorma::Collection do
       expect(mc).to be_instance_of Metanorma::Collection
       xml = cleanup_id File.read(file, encoding: "UTF-8")
       expect(Canon.format_xml(cleanup_id(mc.to_xml)))
-        .to be_equivalent_to Canon.format_xml(xml)
+        .to be_xml_equivalent_to Canon.format_xml(xml)
     end
 
     it "XML collection with docs inline" do

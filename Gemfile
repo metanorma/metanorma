@@ -25,7 +25,7 @@ rescue StandardError
 end
 
 gem "debug"
-gem "equivalent-xml"
+gem "canon", "~> 0.3.122"
 #gem "metanorma-iho"
 #gem "metanorma-iso", ">= 3.2.0"
 gem "mnconvert"

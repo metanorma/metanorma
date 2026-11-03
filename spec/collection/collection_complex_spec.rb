@@ -152,7 +152,7 @@ RSpec.describe Metanorma::Collection do
             "type" => "collection" },
         )
       expect(cr.isodoc.meta.get[:docrefs])
-        .to be_equivalent_to [
+        .to be_xml_equivalent_to [
           { "identifier" => "ISO 17301-1:2016", "file" => "rice-en.final.html",
             "title" => "Cereals and pulses — Specifications and test methods — Rice (Final)",
             "level" => nil },
@@ -174,7 +174,7 @@ RSpec.describe Metanorma::Collection do
             "title" => nil, "level" => nil },
         ]
       expect(cr.isodoc.meta.get[:navigation])
-        .to be_equivalent_to <<~OUTPUT
+        .to be_xml_equivalent_to <<~OUTPUT
           <ul><li>ISO Collection<ul>
           <li>Standards<ul>
           <li><a href="rice-en.final.html">ISO&nbsp;17301-1:2016</a></li>
@@ -193,7 +193,7 @@ RSpec.describe Metanorma::Collection do
           </li></ul>
         OUTPUT
       expect(strip_guid(cr.isodoc.meta.get[:"prefatory-content"]))
-        .to be_equivalent_to <<~OUTPUT
+        .to be_xml_equivalent_to <<~OUTPUT
           <div>
           <div id="_">
           <h1>Clause</h1>
@@ -203,7 +203,7 @@ RSpec.describe Metanorma::Collection do
           </div>
       OUTPUT
       expect(strip_guid(cr.isodoc.meta.get[:"final-content"]))
-        .to be_equivalent_to <<~OUTPUT
+        .to be_xml_equivalent_to <<~OUTPUT
            <div>
           <div id="_">
           <h1>Exordium</h1>
@@ -213,7 +213,7 @@ RSpec.describe Metanorma::Collection do
           </div>
       OUTPUT
       expect(cr.isodoc.meta.get[:nav_object])
-        .to be_equivalent_to (
+        .to be_xml_equivalent_to (
           { title: "ISO Collection", level: "collection",
             children: [
               { title: "Standards",
@@ -247,7 +247,7 @@ RSpec.describe Metanorma::Collection do
       expect(File.exist?("#{OUTPATH}/dummy.xml")).to be true
       expect(File.exist?("#{OUTPATH}/dummy.presentation.xml")).to be true
       expect(File.read("#{OUTPATH}/dummy.xml"))
-        .to be_equivalent_to File.read("#{OUTPATH}/dummy.presentation.xml")
+        .to be_xml_equivalent_to File.read("#{OUTPATH}/dummy.presentation.xml")
       expect(File.exist?("#{OUTPATH}/index.html")).to be true
       expect(File.read("#{OUTPATH}/index.html", encoding: "utf-8"))
         .to include "1701<sup>x</sup>"
