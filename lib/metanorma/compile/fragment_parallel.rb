@@ -116,14 +116,68 @@ module Metanorma
         lines = text.split("\n")
         header, segments = segmentize(lines)
         fragments = []
+        packer = fragment_packer(fragments, header)
         segments.each do |seg|
           if (mega = data2text_mega(seg))
+            packer.flush
             mega_fragments(fragments, header, seg, mega)
           else
-            fragments << new_fragment(fragments.size, header, seg[:lines])
+            packer.feed(seg[:lines])
           end
         end
+        packer.flush
         fragments
+      end
+
+      # Pack consecutive segments into fragments of at least
+      # MIN_FRAG_BYTES source bytes: one fragment per clause multiplies
+      # the per-fragment fixed cost (relaton init, boilerplate, YAML
+      # loads — measured ~4s floor) by the clause count, which is a
+      # large LOSS on clause-dense documents with cheap clauses
+      # (jis-z-8301: 52 fragments, 2x slower than serial). Packing
+      # targets fragments substantial enough to amortise the fixed
+      # cost over workers x 2-3 fragments; documents whose clauses are
+      # already large are unaffected (one segment per fragment).
+      MIN_FRAG_BYTES = 40_000
+
+      # Accumulates consecutive whole segments across clause boundaries
+      # and emits fragments of at least MIN_FRAG_BYTES source bytes.
+      # Segments are never split: a boundary inside a clause separates
+      # the clause's heading from its subsections, and both halves then
+      # compile into morphed structures that lose their nested content.
+      class FragmentPacker
+        def initialize(min_bytes, &emit)
+          @min_bytes = min_bytes
+          @emit = emit
+          @buf = []
+          @bytes = 0
+        end
+
+        def feed(seg_lines)
+          seg_bytes = seg_lines.sum { |l| l.bytesize + 1 }
+          if @bytes.positive? && @bytes >= @min_bytes
+            flush
+          end
+          @buf.concat(seg_lines)
+          @bytes += seg_bytes
+          if @bytes >= @min_bytes
+            flush
+          end
+        end
+
+        def flush
+          return if @buf.empty?
+
+          @emit.call(@buf.dup)
+          @buf = []
+          @bytes = 0
+        end
+      end
+
+      def fragment_packer(fragments, header, min_bytes: MIN_FRAG_BYTES)
+        FragmentPacker.new(min_bytes) do |body_lines|
+          fragments << new_fragment(fragments.size, header, body_lines)
+        end
       end
 
       def new_fragment(i, header, body_lines)

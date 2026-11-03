@@ -309,11 +309,63 @@ RSpec.describe Metanorma::Compile::FragmentParallel do
     end
 
     it "compiles every fragment in a forked worker and stitches the result" do
+      # the docfile's clauses are tiny: they pack into ONE fragment
       xml = klass.new(docfile, {}, workers).run
       out = Nokogiri::XML(xml, &:huge)
       clauses = out.root.xpath(".//xmlns:clause", xmlns: NS)
       expect(clauses.map { |c| c["anchor"] })
-        .to contain_exactly(".document.frag-0", ".document.frag-1")
+        .to contain_exactly(".document.frag-0")
+    end
+
+    it "keeps large clauses as separate fragments" do
+      path = File.join(dir, "large.adoc")
+      File.write(path, <<~SRC)
+        = Doc
+        :mn-document-class: iso
+
+        == Scope
+
+        #{'Alpha. ' * 6000}
+
+        == Terms and definitions
+
+        #{'Beta. ' * 6000}
+      SRC
+      xml = klass.new(path, {}, workers).run
+      out = Nokogiri::XML(xml, &:huge)
+      clauses = out.root.xpath(".//xmlns:clause", xmlns: NS)
+      expect(clauses.map { |c| c["anchor"] })
+        .to contain_exactly(".large.frag-0", ".large.frag-1")
+    end
+
+    it "packs consecutive cheap clauses into one fragment (#620 perf)" do
+      # source whose clauses are each tiny: without packing, one
+      # fragment per clause multiplies the per-fragment fixed cost
+      # (measured ~4s floor) by the clause count
+      path = File.join(dir, "packed.adoc")
+      File.write(path, <<~SRC)
+        = Doc
+        :mn-document-class: iso
+
+        == Scope
+
+        #{'Alpha text. ' * 50}
+
+        == Terms
+
+        #{'Beta text. ' * 50}
+
+        == Third
+
+        #{'Gamma text. ' * 50}
+
+        == Fourth
+
+        #{'Delta text. ' * 50}
+      SRC
+      inst = klass.new(path, {}, 2)
+      frags = inst.send(:build_fragments, File.read(path))
+      expect(frags.length).to be <= 3
     end
 
     it "reports a fragment whose child exits nonzero" do
@@ -338,7 +390,7 @@ RSpec.describe Metanorma::Compile::FragmentParallel do
       ENV["METANORMA_PARALLEL_KEEP"] = "1"
       logging.new(docfile, {}, workers).run
       logs = Dir.glob("#{dir}/.document.frag-*.adoc.log")
-      expect(logs.size).to eq(2)
+      expect(logs.size).to eq(1)
       logs.each do |log|
         expect(File.read(log))
           .to include("logged from #{File.basename(log, '.log')}")
