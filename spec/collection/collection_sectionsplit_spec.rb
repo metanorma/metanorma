@@ -641,7 +641,6 @@ RSpec.describe Metanorma::Collection do
     expect(file0).not_to include("Fifth annotation")
     expect(file0).not_to include("Sixth annotation")
 
-    File.write "/tmp/footnotes-xml0.xml", cleanup_guid(xml).gsub(/%GUID%/o, "")
     expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
       .to be_xml_equivalent_to output
     xml = "<xml>#{xml1.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
@@ -679,7 +678,6 @@ RSpec.describe Metanorma::Collection do
            </a>
          </xml>
     OUTPUT
-    File.write "/tmp/footnotes-xml1.xml", cleanup_guid(xml).gsub(/%GUID%/o, "")
     expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
       .to be_xml_equivalent_to output
     expect(file1).not_to include("First annotation")
@@ -724,7 +722,6 @@ RSpec.describe Metanorma::Collection do
            </a>
          </xml>
     OUTPUT
-    File.write "/tmp/footnotes-xml2.xml", cleanup_guid(xml).gsub(/%GUID%/o, "")
     expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
       .to be_xml_equivalent_to output
     expect(file2).not_to include("First annotation")
