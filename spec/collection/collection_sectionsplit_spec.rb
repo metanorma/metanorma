@@ -600,36 +600,37 @@ RSpec.describe Metanorma::Collection do
     xml1 = Nokogiri::XML(file1)
     xml2 = Nokogiri::XML(file2)
     xml = "<xml>#{xml0.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
+    xml, base0 = normalize_footnote_anchor_nums(xml)
     output = <<~OUTPUT
          <xml>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:1">
+          <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:1">
              <sup>1)</sup>
            </a>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
+          <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1" id="fnref:2">
              <sup>2)</sup>
            </a>
-          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <aside class="footnote" id="fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+              <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                  <sup>1)</sup>
                </a>
                First footnote
              </p>
              <a href="#fnref:1">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <sup>1)</sup>
            </a>
-          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <aside class="footnote" id="fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+              <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
                  <sup>2)</sup>
                </a>
                Second footnote
              </p>
              <a href="#fnref:2">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
+          <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_1_Clause_1">
              <sup>2)</sup>
            </a>
          </xml>
@@ -641,45 +642,47 @@ RSpec.describe Metanorma::Collection do
     expect(file0).not_to include("Fifth annotation")
     expect(file0).not_to include("Sixth annotation")
 
-    expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
       .to be_xml_equivalent_to output
     xml = "<xml>#{xml1.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
+    xml, base1 = normalize_footnote_anchor_nums(xml)
     output = <<~OUTPUT
          <xml>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
+          <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:1">
              <sup>3)</sup>
            </a>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
+          <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2" id="fnref:2">
              <sup>4)</sup>
            </a>
-          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+          <aside class="footnote" id="fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+              <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                  <sup>3)</sup>
                </a>
                Third footnote
              </p>
              <a href="#fnref:1">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+          <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
              <sup>3)</sup>
            </a>
-          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+          <aside class="footnote" id="fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+              <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
                  <sup>4)</sup>
                </a>
                Fourth footnote
              </p>
              <a href="#fnref:2">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
+          <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_2_Clause_2">
              <sup>4)</sup>
            </a>
          </xml>
     OUTPUT
-    expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
       .to be_xml_equivalent_to output
+    expect(base1).to be > base0
     expect(file1).not_to include("First annotation")
     expect(file1).not_to include("Second annotation")
     expect(file1).to include("Third annotation")
@@ -688,42 +691,44 @@ RSpec.describe Metanorma::Collection do
     expect(file1).not_to include("Sixth annotation")
 
     xml = "<xml>#{xml2.xpath('//a[@class = "FootnoteRef"] | //aside').to_xml}</xml>"
+    xml, base2 = normalize_footnote_anchor_nums(xml)
     output = <<~OUTPUT
          <xml>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
+          <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:1">
              <sup>5)</sup>
            </a>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
+          <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3" id="fnref:2">
              <sup>6)</sup>
            </a>
-          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+          <aside class="footnote" id="fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+              <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                  <sup>5)</sup>
                </a>
                Fifth footnote
              </p>
              <a href="#fnref:1">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+          <a class="FootnoteRef" href="#fn:_FN1_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
              <sup>5)</sup>
            </a>
-          <aside class="footnote" id="fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+          <aside class="footnote" id="fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
              <p id="_">
-              <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+              <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
                  <sup>6)</sup>
                </a>
                Sixth footnote
              </p>
              <a href="#fnref:2">↩</a>
            </aside>
-          <a class="FootnoteRef" href="#fn:_N_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
+          <a class="FootnoteRef" href="#fn:_FN2_ISO_17301-1_2016_ISO_17301-1_2016_3_Clause_3">
              <sup>6)</sup>
            </a>
          </xml>
     OUTPUT
-    expect(cleanup_guid(xml).gsub(/#{GUID}/o, "").gsub(/fn:_\d+_ISO/o, "fn:_N_ISO"))
+    expect(cleanup_guid(xml).gsub(/#{GUID}/o, ""))
       .to be_xml_equivalent_to output
+    expect(base2).to be > base1
     expect(file2).not_to include("First annotation")
     expect(file2).not_to include("Second annotation")
     expect(file2).not_to include("Third annotation")
@@ -733,6 +738,28 @@ RSpec.describe Metanorma::Collection do
   end
 
   private
+
+  # Section-split footnote body anchors are "fn:_<num>_<docid>_<docid>_<n>
+  # _Clause_<n>": <num> is the value of the sequential identifier counter
+  # when isodoc assigned the footnote body id. That counter value is not
+  # stable across run contexts or gem versions: the same working tree
+  # yields _98 when this example runs alone and _93 when the whole file
+  # runs, because the number of identifier draws upstream of the footnote
+  # assignment (FileLookup#read_anchors UUID keys for label-less anchors,
+  # generated clause/TOC ids) shifts with warmed process state
+  # (metanorma#644). What IS stable, and what this spec pins: exactly two
+  # anchors per split file, numbered consecutively in footnote order, and
+  # strictly increasing across the split files. Normalize the volatile
+  # numbers to positional tokens (FN1, FN2) and return the file's first
+  # number for the cross-file monotonicity check.
+  def normalize_footnote_anchor_nums(xml)
+    nums = xml.scan(/fn:_(\d+)_/).flatten.map(&:to_i).uniq.sort
+    expect(nums.size).to eq(2)
+    expect(nums.last).to eq(nums.first + 1)
+    subs = nums.each_with_index.to_h { |n, i| [n, "FN#{i + 1}"] }
+    [xml.gsub(/fn:_(\d+)_/) { "fn:_#{subs[Regexp.last_match[1].to_i]}_" },
+     nums.first]
+  end
 
   def mock_render
     original_add = Metanorma::Collection::Renderer.method(:render)
