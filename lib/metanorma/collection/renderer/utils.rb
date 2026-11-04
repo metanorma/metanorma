@@ -153,15 +153,63 @@ module Metanorma
         ::Metanorma::Util.log(error, :warning)
       end
 
+      # Image relocation for collection rendering, in three ordered passes:
+      # anchor every image target at the document that emitted it, then
+      # inline SVGs, then encode what remains as data URIs.
       def datauri_encode(docxml, directory)
+        anchor_image_targets(docxml, directory)
+        inline_svg_images(docxml, directory)
+        datauri_images(docxml, directory)
+        docxml
+      end
+
+      # Image targets are emitted relative to the document that carries them
+      # (metanorma#646). Each target must be anchored at the emitting
+      # document's directory BEFORE it is resolved: Vectory's datauri
+      # fallback tries the process working directory first, so a relative
+      # target was resolved against wherever the build happened to run --
+      # picking a same-named file from the wrong tree, or missing both
+      # bases and failing the render. Data URIs, remote URLs and absolute
+      # paths carry their own base and pass through; a target that anchors
+      # to an existing file is pinned to that absolute path, so only the
+      # file's bytes reach the output and the output is build-directory
+      # independent. A target that anchors to nothing keeps its emitted
+      # form, so a missing image stays a build-independent dangling
+      # reference.
+      def anchor_image_targets(docxml, directory)
+        docxml.xpath(ns("//image")).each do |i|
+          anchor_image_target(i, directory)
+        end
+      end
+
+      def inline_svg_images(docxml, directory)
         docxml.xpath(ns("//image")).each do |i|
           read_in_if_svg(i, directory.sub(%r{(?<!=/)$}, "/"))
         end
-        docxml.xpath(ns("//image")).each do |i| # rubocop:disable Style/CombinableLoops
+      end
+
+      def datauri_images(docxml, directory)
+        docxml.xpath(ns("//image")).each do |i|
           (i["src"] && !i["src"].empty?) or next
           i["src"] = Vectory::Utils::datauri(i["src"], directory)
         end
-        docxml
+      end
+
+      def anchor_image_target(img, directory)
+        src = img["src"]
+        anchorable_base?(src) or return
+        path = File.expand_path(src, directory)
+        File.file?(path) or return
+        img["src"] = path
+      end
+
+      # A target whose base is already determined cannot be re-anchored.
+      def anchorable_base?(src)
+        return false if src.nil? || src.empty?
+
+        !(Vectory::Utils.datauri?(src) ||
+          Vectory::Utils.url?(src) ||
+          Vectory::Utils.absolute_path?(src))
       end
 
       def read_in_if_svg(img, localdir)
