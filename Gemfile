@@ -30,6 +30,10 @@ gem "canon", "~> 0.3.122"
 gem "lutaml-store", "~> 0.3.11"
 #gem "metanorma-iho"
 #gem "metanorma-iso", ">= 3.2.0"
+# Floor fontist at the variable-font indexing fix (fontist#531/#532):
+# anything below 3.0.31 misses freshly installed variable fonts on
+# locations lookups ("Fira Code" MissingFontError, metanorma-iho#563).
+gem "fontist", "~> 3.0.32"
 gem "mnconvert"
 gem "pry"
 gem "rake", "~> 13.0"
