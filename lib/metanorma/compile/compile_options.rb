@@ -7,14 +7,28 @@ module Metanorma
         options&.dig(:require)&.each { |r| require r }
       end
 
+      OUTPUT_EXTENSIONS_XPATH =
+        "/*/*[local-name()='metanorma-extension']/" \
+        "*[local-name()='presentation-metadata']/" \
+        "*[local-name()='output-extensions']".freeze
+
       def extract_xml_options(file)
         xml = Nokogiri::XML(file, &:huge)
-        if xml.root
-          @registry.root_tags.each do |k, v|
-            return { type: k } if v == xml.root.name
-          end
-        end
-        {}
+        xml.root or return {}
+        # Keys are set only when present: options_in_file merges this hash
+        # over the AsciiDoc header options, and an absent key must not
+        # clear them.
+        { type: xml_root_type(xml), extensions: xml_output_extensions(xml) }
+          .compact
+      end
+
+      def xml_root_type(xml)
+        @registry.root_tags.find { |_, v| v == xml.root.name }&.first
+      end
+
+      def xml_output_extensions(xml)
+        ext = xml.at(OUTPUT_EXTENSIONS_XPATH)&.text&.strip
+        ext unless ext.nil? || ext.empty?
       end
 
       def extract_options(filename, options)
