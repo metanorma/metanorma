@@ -164,7 +164,8 @@ module Metanorma
         idx = hotspot_anchor_index
         docxml.xpath(ns("//svgmap/target/xref")).each do |x|
           ids&.key?(x["target"]) and next
-          rec = idx[hotspot_anchor_base(x["target"], docid)] or next
+          t = x["target"]
+          rec = idx[t] || idx[hotspot_anchor_base(t, docid)] or next
           href = hotspot_target_href(rec, docid) or next
           x.name = "link"
           x["target"] = href
@@ -193,7 +194,7 @@ module Metanorma
           base = hotspot_anchor_base(frag, docid)
           next if svg_ids.key?(base) ||
             svg_ids.any? { |i, _| i.start_with?("#{base}_") }
-          rec = idx[base] or next
+          rec = idx[frag] || idx[base] or next
           href = hotspot_target_href(rec, docid) or next
           href = "#{page}#{href}" if page && rec[:key] == docid
           a[attr] = href unless href == a[attr]
@@ -228,12 +229,18 @@ module Metanorma
 
       # NCName suffixes that link anchors in this render may carry, longest
       # first: the keys of the collection's members and split outputs, which
-      # compose the render's suffix chains.
+      # compose the render's suffix chains, plus the suffix the staging
+      # build stamped the stored documents with (captured before the
+      # reinflate suffix swap re-keys the ids; the SVG hotspot hrefs are not
+      # ids and so keep the stored flavour).
       def hotspot_anchor_suffixes
-        @hotspot_anchor_suffixes ||= @files.keys
-          .reject { |k| @files.get(k, :attachment) }
-          .map { |k| Metanorma::Utils::to_ncname(k) }
-          .sort_by(&:length).reverse
+        @hotspot_anchor_suffixes ||= begin
+          keys = @files.keys
+            .reject { |k| @files.get(k, :attachment) }
+            .map { |k| Metanorma::Utils::to_ncname(k) }
+          keys << @svgmap_stored_suffix if @svgmap_stored_suffix
+          keys.uniq.sort_by(&:length).reverse
+        end
       end
 
       # base anchor id => { key, id, url } for every member of the

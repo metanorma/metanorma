@@ -126,7 +126,15 @@ RSpec.describe "reinflate sectionsplit anchor agreement" do
     rice_html = parts.map { |f| File.read(f) }.join("\n")
     chain = %r{href="rice\.xml\.[^"]*\.html#[^"]*_ISO_17301-1_ISO_17301-1_}
     expect(rice_html).to match(chain)
-    expect(rice_html).not_to include("rice-stage")
+    # No stage-flavoured LINK TARGETS on anchors (HTML anchors and SVG
+    # hotspots alike — the reader-facing links this render re-keys).
+    # Vectory's id disambiguation inside the SVGs still carries the
+    # stored suffix on clip-path/use self-references, which are
+    # self-consistent and reader-invisible; this pins anchor hrefs only.
+    # This was green upstream of metanorma#656 only because the figures
+    # were absent.
+    anchors = Nokogiri::HTML(rice_html).xpath("//a[@href]").map { |a| a["href"] }
+    expect(anchors.grep(/rice-stage/)).to be_empty
   ensure
     FileUtils.rm_rf(@site)
   end

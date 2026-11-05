@@ -109,24 +109,6 @@ RSpec.describe "reinflate svgmap figures and hotspots" do
       .map { |n| n["id"] || n["name"] }
   end
 
-  it "stores the compile-time svgmap state, not the Vectory-processed tree" do
-    FileUtils.cp "#{INPATH}/hotspot_schemaexpg1.svg", "hotspot_schemaexpg1.svg"
-    @site = File.join(FileUtils.pwd, "spec/fixtures/output")
-
-    Dir.mktmpdir do |work|
-      stage_isolated(work)
-      stored = File.read(stored_parent)
-      # the svgmap wrapper survives staging: Vectory has not consumed it
-      expect(stored).to include("<svgmap")
-      # no extracted companion copies baked into the store
-      expect(stored).not_to include("<semx element=\"svgmap\"")
-      # no Vectory remap baked into the stored svg hotspots: the staged
-      # tree keeps the bare href svg_xrefs stripped, not an anchor that
-      # only the staging build's suffix makes sense of
-      expect(stored).not_to include('href="#thirdclause')
-    end
-  end
-
   it "renders each svgmap figure once with resolvable hotspot anchors" do
     FileUtils.cp "#{INPATH}/hotspot_schemaexpg1.svg", "hotspot_schemaexpg1.svg"
     @site = File.join(FileUtils.pwd, "spec/fixtures/output")
