@@ -6,6 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}" }
 
 gemspec
 
+gem "relaton", "~> 3.0"
 gem "metanorma-core", ">= 0.2.5"
 
 # taste stack the compile specs exercise: the oiml taste registers the
