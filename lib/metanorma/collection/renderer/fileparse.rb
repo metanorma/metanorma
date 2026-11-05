@@ -61,7 +61,20 @@ module Metanorma
         # post: references containers with only hidden bibitems flagged hidden.
         sso and eref2link(xml, sso)
         # svgmap_resolve hands back the tree Vectory rebuilt; keep it.
-        xml = svgmap_resolve(xml, docid, sso) unless @nested || @reinflate
+        # Skipped under @nested (the split sections run it instead) and under
+        # @preserve_unresolved (whose output is persisted to the artefact
+        # store for a later reinflation render; storing the Vectory-processed
+        # tree there would bake this build's id suffixing and the semx
+        # companion copies of svgmap figures into the stored svgmaps, and the
+        # reinflate render would then process already-processed svgmaps:
+        # figures render twice -- the stored semx companion next to its
+        # simplified original -- and svg hotspot hrefs carry dead,
+        # stale-suffix anchors. The stored tree keeps the compile-time svgmap
+        # state, which is exactly the state a plain build's render consumes).
+        # The reinflate render itself runs the resolution, on section output
+        # as in a plain build.
+        xml = svgmap_resolve(xml, docid, sso) unless @nested ||
+          @preserve_unresolved
         xml.to_xml
       end
 
