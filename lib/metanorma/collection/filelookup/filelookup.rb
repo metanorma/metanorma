@@ -232,6 +232,39 @@ module Metanorma
         doc.root["document_suffix"] += document_suffix
       end
 
+      # Re-key a stored document's ids from the suffix it was stored under
+      # to this render's own suffix. Reinflation renders stored Semantic
+      # XMLs whose ids were keyed by the staging build's identifier; a
+      # sectionsplit render splits them into pages whose ids must equal
+      # the anchors the cross-reference passes compose from this render's
+      # identifiers. Mirror of add_document_suffix with the same
+      # attribute, CSS and SVG coverage, replacing the stored suffix
+      # instead of appending one. The stored file itself is never written.
+      def swap_document_suffix(identifier, doc)
+        stored = doc.root["document_suffix"]
+        if stored.nil? || stored.empty?
+          return add_document_suffix(identifier, doc)
+        end
+
+        suffix = Metanorma::Utils::to_ncname(identifier)
+        stored == suffix and return
+
+        swap_document_suffix_ids(doc, stored, suffix)
+        doc.root["document_suffix"] = suffix
+      end
+
+      def swap_document_suffix_ids(doc, stored, suffix)
+        base_ids = doc.xpath("./@id | .//@id")
+          .map { |a| a.value.sub(/_#{Regexp.escape(stored)}\z/, "") }
+          .uniq.to_h { |i| [i, true] }
+        Util::anchor_id_attributes.each do |(tag_name, attr_name)|
+          Util::swap_suffix_to_attrs(doc, [stored, suffix], tag_name,
+                                     attr_name, @isodoc)
+        end
+        Util::swap_ids_css(doc, base_ids, stored, suffix)
+        Util::swap_svg_ids(doc, base_ids, stored, suffix)
+      end
+
       # return citation url for file
       # @param doc [Boolean] I am a Metanorma document,
       # so my URL should end with html or pdf or whatever

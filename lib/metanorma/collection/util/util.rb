@@ -55,6 +55,92 @@ module Metanorma
           end
         end
 
+        # Re-key an attribute value from one document suffix to another:
+        # a value ending "_#{from}" keeps its base and ends "_#{to}"
+        # instead, and a value carrying neither suffix gets "_#{to}".
+        # Mirror of add_suffix_to_attrs for documents whose ids were keyed
+        # by a previous build's suffix.
+        def swap_suffix_to_attrs(doc, suffixes, tag, attr, isodoc)
+          from, to = suffixes
+          suffix_swap?(from, to) or return
+          doc.xpath(isodoc.ns("//#{tag}[@#{attr}]" \
+                              "[not(ancestor-or-self::*[local-name()='svg'])]"))
+            .each do |elem|
+            a = elem.attributes[attr].value
+            elem.attributes[attr].value = swap_suffix_value(a, from, to)
+          end
+        end
+
+        def swap_suffix_value(value, from, to)
+          value = value.sub(/_#{Regexp.escape(from)}\z/, "")
+          /_#{Regexp.escape(to)}$/.match?(value) or value = "#{value}_#{to}"
+          value
+        end
+
+        # Re-key id references in CSS (style attributes and style elements,
+        # outside SVGs) from one document suffix to another. Mirror of
+        # update_ids_css for documents keyed by a previous build's suffix.
+        def swap_ids_css(document, ids, from, to)
+          suffix_swap?(from, to) or return
+          document.xpath(".//m:style[not(ancestor::i:svg)]",
+                         "m" => SVG_NS, "i" => SVG_NS).each do |s|
+            s.children = swap_ids_css_string(s.children.to_xml, ids, from, to)
+          end
+          document.xpath(".//*[@style][not(ancestor::i:svg)]",
+                         "i" => SVG_NS).each do |s|
+            s["style"] = swap_ids_css_string(s["style"], ids, from, to)
+          end
+        end
+
+        # Re-key id references inside a string: every "<id>_#{from}" token
+        # whose base is a known id (in "#id" url references, "[id='…']"
+        # selectors, or bare attribute values) becomes "<id>_#{to}".
+        # Single pass over the string; `ids` maps base ids to true.
+        def swap_ids_css_string(style, ids, from, to)
+          return style unless style.include?("_#{from}")
+
+          from_re = Regexp.escape(from)
+          style.gsub(%r(\b([\w.:-]+)_#{from_re}\b)) do
+            base = Regexp.last_match(1)
+            ids.include?(base) or next Regexp.last_match(0)
+            "#{base}_#{to}"
+          end
+        end
+
+        # Re-key standalone SVG ids and their internal CSS from one
+        # document suffix to another. Mirror of the Vectory leg of
+        # url_in_css_styles for documents keyed by a previous build.
+        def swap_svg_ids(doc, ids, from, to)
+          suffix_swap?(from, to) or return
+          doc.xpath("//i:svg[not(ancestor::*[local-name()='svgmap'])]",
+                    "i" => SVG_NS).each do |svg|
+            swap_svg_ids1(svg, ids, from, to)
+          end
+        end
+
+        def swap_svg_ids1(svg, ids, from, to)
+          svg.xpath(". | .//*[@*]").each do |n|
+            n.attribute_nodes.each do |x|
+              x.value = swap_ids_css_string(x.value, ids, from, to)
+            end
+          end
+          swap_svg_css(svg, ids, from, to)
+        end
+
+        def swap_svg_css(svg, ids, from, to)
+          svg.xpath(".//m:style", "m" => SVG_NS).each do |st|
+            st.children = swap_ids_css_string(st.children.to_xml, ids,
+                                              from, to)
+          end
+          svg.xpath(".//*[@style]").each do |n|
+            n["style"] = swap_ids_css_string(n["style"], ids, from, to)
+          end
+        end
+
+        def suffix_swap?(from, to)
+          !(from.nil? || from.empty? || from == to)
+        end
+
         def hash_key_detect(directives, key, variable)
           c = directives.detect { |x| x.key == key } or
             return variable
