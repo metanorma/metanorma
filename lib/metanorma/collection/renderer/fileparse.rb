@@ -46,6 +46,12 @@ module Metanorma
           # ids untouched. (@nested is the pre-split sectionsplit pass;
           # the render loop's own pass over a sectionsplit parent is
           # discarded, so it needs no suffix handling.)
+          #
+          # The svg hotspot hrefs inside SVGs are not ids, so the swap does
+          # not cover them; capture the stored suffix here so the svgmap
+          # stages (svg.rb) can strip it from those hrefs too.
+          s = xml.root["document_suffix"]
+          @svgmap_stored_suffix = s && !s.empty? ? s : nil
           @files.swap_document_suffix(docid, xml)
         end
         # post: every @id/@anchor namespaced with this doc's NCName suffix, so
@@ -61,20 +67,20 @@ module Metanorma
         # post: references containers with only hidden bibitems flagged hidden.
         sso and eref2link(xml, sso)
         # svgmap_resolve hands back the tree Vectory rebuilt; keep it.
-        # Skipped under @nested (the split sections run it instead) and under
-        # @preserve_unresolved (whose output is persisted to the artefact
-        # store for a later reinflation render; storing the Vectory-processed
-        # tree there would bake this build's id suffixing and the semx
-        # companion copies of svgmap figures into the stored svgmaps, and the
-        # reinflate render would then process already-processed svgmaps:
-        # figures render twice -- the stored semx companion next to its
-        # simplified original -- and svg hotspot hrefs carry dead,
-        # stale-suffix anchors. The stored tree keeps the compile-time svgmap
-        # state, which is exactly the state a plain build's render consumes).
-        # The reinflate render itself runs the resolution, on section output
-        # as in a plain build.
-        xml = svgmap_resolve(xml, docid, sso) unless @nested ||
-          @preserve_unresolved
+        #
+        # Skipped only under @nested (the split sections run it in their own
+        # render). It runs on EVERY other pass -- staging (which stores the
+        # Vectory-processed tree, the contract the incremental and
+        # anchor-agreement specs pin) and reinflate alike: skipping it under
+        # reinflate is metanorma#656 (42 of 43 annex pages lost their
+        # EXPRESS-G figures; 3,692 section-to-section fragment links dead).
+        # Processing an already-processed stored tree at reinflate would
+        # double-render extracted copies and remap hotspots onto dead semx
+        # companions; the svg.rb stages handle both (unresolved semx
+        # companions are dropped so the bare semantic target survives, and
+        # Stage 1b/5 re-key targets and hotspot hrefs onto the member pages
+        # carrying the declarations).
+        xml = svgmap_resolve(xml, docid, sso) unless @nested
         xml.to_xml
       end
 
