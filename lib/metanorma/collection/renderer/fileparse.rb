@@ -34,7 +34,20 @@ module Metanorma
         @nested or update_indirect_refs_to_docs(xml, docid, internal_refs, sso)
         # post: bibitem[@type='internal'] anchors resolved to the containing
         # collection document.
-        @reinflate or @files.add_document_suffix(docid, xml)
+        if sso || !@reinflate
+          @files.add_document_suffix(docid, xml)
+        elsif @nested
+          # Reinflated sectionsplit: the split's Presentation XML was
+          # generated from stored XMLs whose ids carry the staging build's
+          # suffix, while this render's cross-reference passes compose
+          # anchors from this render's identifiers. Re-key the split
+          # documents to this render's suffix, so section-page ids equal
+          # the link anchors; non-split stored members keep their stored
+          # ids untouched. (@nested is the pre-split sectionsplit pass;
+          # the render loop's own pass over a sectionsplit parent is
+          # discarded, so it needs no suffix handling.)
+          @files.swap_document_suffix(docid, xml)
+        end
         # post: every @id/@anchor namespaced with this doc's NCName suffix, so
         # concatenated documents do not collide.
         @nested or update_sectionsplit_refs_to_docs(xml, docid, internal_refs,
