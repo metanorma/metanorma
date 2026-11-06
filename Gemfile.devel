@@ -13,7 +13,6 @@ gem "pubid", "~> 2.0.0.pre.alpha"
 # fixes; 0.6.0 removed the Opal surface, lutaml/moxml#516), which
 # floors leptris >= 1.9.386 at load.
 gem "leptris", "~> 1.9"
-gem "relaton-cli", "~> 3.0.0.pre.alpha"
 gem "glossarist", "~> 2.13"
 gem "lutaml-model", "~> 0.8.107"
 gem "metanorma-plugin-glossarist", "~> 0.5"
