@@ -4,6 +4,24 @@ module Metanorma
       SVG_NS = "http://www.w3.org/2000/svg".freeze
       XLINK_NS = "http://www.w3.org/1999/xlink".freeze
 
+      class << self
+        # Reference-type svgmap targets (eref[@bibitemid]) resolve to the
+        # reference list. Where a flavor's references are ALSO declared as
+        # page anchors, the flavor registers a resolver mapping its
+        # reference identity to an anchor record; the registry is empty in
+        # core, which carries no domain knowledge. A resolver receives
+        # (reference_name, lookup) and returns an anchor record
+        # ({ key:, id:, url: }) or nil; lookup maps a plain anchor base to
+        # a record, edition-suffix chains included.
+        def reference_anchor_resolvers
+          @reference_anchor_resolvers ||= []
+        end
+
+        def register_reference_anchor_resolver(&resolver)
+          reference_anchor_resolvers << resolver
+        end
+      end
+
       # Converts SVG images to data URIs for inline embedding
       def svg_datauri(docxml, docid)
         rel = @files.get(docid, :rel_path)
@@ -170,6 +188,22 @@ module Metanorma
           x.name = "link"
           x["target"] = href
         end
+        # Reference-type targets (eref[@bibitemid]) resolve to the reference
+        # list. Where a domain's references are ALSO declared as page
+        # anchors, that domain registers a resolver mapping the reference
+        # identity to an anchor record; core registers none and carries no
+        # domain knowledge. Resolvers receive (reference_name, lookup),
+        # where lookup maps a plain anchor base to a record.
+        lookup = ->(base) { hotspot_prefix_lookup(idx, base) }
+        docxml.xpath(ns("//svgmap/target/eref[@bibitemid]")).each do |e|
+          rec = self.class.reference_anchor_resolvers.lazy.map do |resolver|
+            resolver.call(e["bibitemid"], lookup)
+          end.find(&:itself) or next
+          href = hotspot_target_href(rec, docid) or next
+          e.name = "link"
+          e["target"] = href
+          e.attribute_nodes.each { |at| at.remove unless at.name == "target" }
+        end
       end
 
       # Rewrites the fragment hrefs of SVG hotspot anchors that do not
@@ -190,11 +224,31 @@ module Metanorma
           split = hotspot_split_href(a[attr])
           next unless split
           page, frag = split
-          next if page.nil? && page_ids.key?(frag)
+          if page.nil? && page_ids.key?(frag)
+            # The id exists on this page, but Vectory left the href as a
+            # bare relative name (no #): re-point it as the in-page anchor.
+            a[attr] = "##{frag}" unless a[attr].start_with?("#")
+            next
+          end
           base = hotspot_anchor_base(frag, docid)
-          next if svg_ids.key?(base) ||
-            svg_ids.any? { |i, _| i.start_with?("#{base}_") }
-          rec = idx[frag] || idx[base] or next
+          # An SVG element id in this document: anchor the hotspot in-page.
+          in_page = if svg_ids.key?(frag)
+            frag
+          else
+            svg_ids.keys.find { |i| i.start_with?("#{base}_") }
+          end
+          if in_page
+            a[attr] = "##{in_page}"
+            next
+          end
+          rec = idx[frag] || idx[base] ||
+            hotspot_prefix_lookup(idx, base)
+          unless rec
+            # Unresolvable bare name: a dead link (relative file or
+            # dangling fragment) is worse than no link; drop the href.
+            a.remove_attribute(attr)
+            next
+          end
           href = hotspot_target_href(rec, docid) or next
           href = "#{page}#{href}" if page && rec[:key] == docid
           a[attr] = href unless href == a[attr]
@@ -308,6 +362,22 @@ module Metanorma
         rec[:key] == docid and return "##{rec[:id]}"
         rec[:url] or return nil
         "#{hotspot_relative_url(rec[:url], docid)}##{rec[:id]}"
+      end
+
+      # Exact base first, then a unique prefix match: a declaration id
+      # carries the owning member's edition suffix chain behind the plain
+      # name (geometry_schema.cartesian_point_ISO_10303-42_2025_...), so
+      # the plain name resolves by prefix. Multiple equal-length matches
+      # are ambiguous and refuse, as do differing ids at the same key.
+      def hotspot_prefix_lookup(idx, prefix)
+        return idx[prefix] if idx[prefix]
+
+        candidates = idx.select { |k, r| r && k.start_with?("#{prefix}_") }
+        return nil if candidates.empty?
+
+        shortest = candidates.min_by { |k, _| k.length }
+        ties = candidates.count { |k, _| k.length == shortest[0].length }
+        ties == 1 ? shortest[1] : nil
       end
     end
   end
