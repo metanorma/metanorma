@@ -17,7 +17,7 @@ require "vectory"
 # Unrenderable marker its render_all rescue raises (the same break
 # isodoc#882/#883 fixed on the isodoc side); load the full entry so the
 # constant exists for every consumer of this library.
-require "relaton-render"
+require "relaton/render"
 
 # Metanorma module
 module Metanorma

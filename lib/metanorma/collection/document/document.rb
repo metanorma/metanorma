@@ -1,4 +1,6 @@
-require "relaton-cli"
+require "relaton"
+require "relaton/bib"
+require "relaton/cli"
 
 module Metanorma
   class Collection
