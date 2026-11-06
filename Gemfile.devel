@@ -19,13 +19,7 @@ gem "lutaml-model", "~> 0.8.107"
 gem "metanorma-plugin-glossarist", "~> 0.5"
 gem "moxml", "~> 0.6.0"
 
-# Bridge: pubid 2.0.1 (and git main, until the PARG edition-2 migration
-# lands) bakes grammars with the parsanol `mode` header alias, which
-# parsanol 1.3.113+ removed; pubid main's own floor (>= 1.3.114) admits
-# the breaking 1.3.120, so collection specs fail with 13 rendering
-# regressions. 1.3.114 is pubid's own floor and the last alias-accepting
-# compiler. Drop this pin when pubid ships edition-2 artifacts.
-gem "parsanol", "1.3.114"
+gem "parsanol", "~> 1.3.129" # relaton 3.1 floor; pubid edition-2 grammar era
 
 # Bridge: svg_conform 0.2.5 was pushed with a compact-index checksum
 # mismatch (Bundler::APIResponseMismatchError on every download); pin
