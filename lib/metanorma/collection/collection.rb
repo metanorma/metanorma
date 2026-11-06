@@ -1,4 +1,6 @@
-require "relaton-cli"
+require "relaton"
+require "relaton/bib"
+require "relaton/cli"
 require "metanorma-utils"
 require_relative "util/util"
 require_relative "util/disambig_files"

@@ -42,5 +42,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "metanorma-iho"
   spec.add_development_dependency "metanorma-iso"
 
-  # relaton-cli is required by Metanorma::Collection
-  spec.add_dependency "relaton", "~> 3.0"end
+  # Metanorma::Collection uses Relaton::Cli.parse_xml, shipped in relaton >= 3.1
+  spec.add_dependency "relaton", "~> 3.1"
+end

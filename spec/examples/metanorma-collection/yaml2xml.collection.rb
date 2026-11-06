@@ -1,4 +1,4 @@
-require "relaton-cli"
+require "relaton/cli"
 require "yaml"
 require "tempfile"
 require "relaton"
