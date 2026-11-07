@@ -63,18 +63,24 @@ RSpec.describe "reinflate svgmap figures and hotspots" do
       .first
   end
 
-  def reinflate(work)
+  def reinflate(work, extra_members: [])
     reinf = File.join(work, "reinf")
     FileUtils.mkdir_p(reinf)
     FileUtils.cp(stored_parent, File.join(reinf, "rice_hotspot.xml"))
     # the svgmap image src resolves against the render's member directory
     FileUtils.cp("#{INPATH}/hotspot_schemaexpg1.svg",
                  File.join(reinf, "hotspot_schemaexpg1.svg"))
-    File.write(File.join(reinf, "reinflate.yml"), manifest_with_docref(
-      "fileref" => "rice_hotspot.xml",
-      "identifier" => "ISO 17301-1",
-      "sectionsplit" => true,
-    ).to_yaml)
+    extra_members.each do |src, name|
+      FileUtils.cp(src, File.join(reinf, name))
+    end
+    docrefs = [{ "fileref" => "rice_hotspot.xml",
+                 "identifier" => "ISO 17301-1",
+                 "sectionsplit" => true }] + extra_members.map do |_, name|
+      { "fileref" => name, "identifier" => "ISO 17301-2",
+        "sectionsplit" => true }
+    end
+    File.write(File.join(reinf, "reinflate.yml"),
+               manifest_with_docrefs(*docrefs).to_yaml)
 
     Dir.chdir(reinf) do
       Metanorma::Collection.parse("reinflate.yml").render(
@@ -88,6 +94,13 @@ RSpec.describe "reinflate svgmap figures and hotspots" do
     man = YAML.load_file("#{INPATH}/collection_sectionsplit.yml")
     man["manifest"]["manifest"] =
       [{ "level" => "subcollection", "title" => "S", "docref" => [docref] }]
+    man
+  end
+
+  def manifest_with_docrefs(*docrefs)
+    man = YAML.load_file("#{INPATH}/collection_sectionsplit.yml")
+    man["manifest"]["manifest"] =
+      [{ "level" => "subcollection", "title" => "S", "docref" => docrefs }]
     man
   end
 
@@ -153,5 +166,48 @@ RSpec.describe "reinflate svgmap figures and hotspots" do
     target = page ? File.expand_path(page, @site) : @site
     expect(File.exist?(target)).to be true
     expect(fragment_ids(target)).to include(frag)
+  end
+
+  # The corpus shape (iso-10303): two members embed the same figure. The
+  # second member's svgmap erefs bind CROSS-MEMBER to the first member's
+  # page, with locality anchors naming the original SVG ids - while the
+  # stored ids on the figure page carry Vectory's disambiguation index.
+  # The hotspot anchor index must resolve the original form to the
+  # assigned id on the target page (iso-10303 run 42346461599: 15 such
+  # fragments broken).
+  it "resolves cross-member svgmap hotspot anchors to assigned ids" do
+    FileUtils.cp "#{INPATH}/hotspot_schemaexpg1.svg", "hotspot_schemaexpg1.svg"
+    @site = File.join(FileUtils.pwd, "spec/fixtures/output")
+
+    Dir.mktmpdir do |work|
+      stage_isolated(work)
+      reinflate(work, extra_members: [
+        ["#{INPATH}/rice2_hotspot.final.xml", "rice2_hotspot.xml"],
+      ])
+    end
+
+    rice2_pages = Dir[File.join(@site, "rice2_hotspot.xml.*.html")]
+      .reject { |f| f.include?(".err.") }
+    expect(rice2_pages).not_to be_empty
+
+    # every cross-member hotspot href on rice2 aims at rice's page; its
+    # anchor must exist there
+    rice_page_ids = rice_pages.flat_map { |f| fragment_ids(f) }
+    checked = 0
+    rice2_pages.each do |f|
+      doc = Nokogiri::HTML(File.read(f))
+      doc.xpath("//*[local-name()='svg']//*[local-name()='a'][@href]")
+        .each do |a|
+        href = a["href"]
+        next unless href.start_with?("rice_hotspot")
+
+        page, anchor = href.split("#", 2)
+        target = File.join(@site, page)
+        expect(File).to exist(target)
+        expect(fragment_ids(target)).to include(anchor)
+        checked += 1
+      end
+    end
+    expect(checked).to be > 0
   end
 end
