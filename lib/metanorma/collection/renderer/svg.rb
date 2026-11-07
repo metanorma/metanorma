@@ -49,7 +49,7 @@ module Metanorma
         ids, docxml, isodoc, tag = svgmap_resolve_prep(docxml, docid, presxml)
 
         # Stage 1: Resolve EREF references to their targets
-        resolve_svgmap_erefs(docxml, tag, isodoc, ids, presxml)
+        resolve_svgmap_erefs(docxml, tag, isodoc, ids, presxml, docid)
 
         # Stage 1b: Re-key the svgmap xref targets that a reinflated render
         # carries from the staging build: they name anchors in the compile-
@@ -100,9 +100,9 @@ module Metanorma
       private
 
       # Resolves EREF elements within svgmap to their actual link targets
-      def resolve_svgmap_erefs(docxml, tag, isodoc, ids, presxml)
+      def resolve_svgmap_erefs(docxml, tag, isodoc, ids, presxml, docid)
         docxml.xpath(ns("//svgmap//#{tag}")).each do |e|
-          svgmap_resolve_eref(e, isodoc, docxml, ids, presxml)
+          svgmap_resolve_eref(e, isodoc, docxml, ids, presxml, docid)
         end
       end
 
@@ -160,14 +160,33 @@ module Metanorma
       end
 
       # Resolves a single EREF element to its target link
-      def svgmap_resolve_eref(eref, isodoc, _docxml, ids, presxml)
+      def svgmap_resolve_eref(eref, isodoc, _docxml, ids, presxml, docid)
         href = isodoc.eref_target(eref) or return
         href = href[:link]
         href == "##{eref['bibitemid']}" ||
           (href =~ /^#/ && !ids[href.sub(/^#/, "")]) and return
+        href = remap_cross_member_hotspot(href, docid)
         eref["target"] = href.strip
         eref.name = presxml ? "fmt-link" : "link"
         eref.elements&.remove
+      end
+
+      # A cross-member svgmap target composes its anchor as authored
+      # (<hotspot>_<doc-stamp>), while the target page's SVG ids carry
+      # Vectory's disambiguation index (<hotspot>_<counter>) - the two
+      # conventions disagree exactly when the members render separately
+      # under staging (iso-10303 run 42346461599: 15 fragments broken).
+      # Re-key the anchor through the hotspot anchor index: exact, then the
+      # anchor with a known member-suffix stripped. Only same-file
+      # re-keys are taken; anything else is left untouched.
+      def remap_cross_member_hotspot(href, docid)
+        href =~ /\A([^#]+\.html)#(.+)\z/ or return href
+        file, anchor = Regexp.last_match(1), Regexp.last_match(2)
+        rec = hotspot_anchor_index[anchor] ||
+              hotspot_anchor_index[hotspot_anchor_base(anchor, docid)] or
+          return href
+        target = hotspot_target_href(rec, docid) or return href
+        target.start_with?("#{file}#") ? target : href
       end
 
       # Re-key svgmap xref targets whose anchor lives outside the current
@@ -337,14 +356,28 @@ module Metanorma
             else
               id
             end
-            if !idx.key?(base)
-              idx[base] = { key: key, id: final, url: url }
-            elsif idx[base] && idx[base][:id] != final
-              idx[base] = nil
-            end
+            register_hotspot_base(idx, base, key: key, id: final, url: url)
+            # SVG ids additionally carry Vectory's disambiguation index
+            # (<orig>_<counter>): the stored id is the assigned form, while
+            # cross-member svgmap links compose the anchor from the authored
+            # original. Register the original as a second base candidate;
+            # the ambiguity guard still nils true collisions.
+            stripped = base.sub(/_\d+\z/, "")
+            register_hotspot_base(idx, stripped, key: key, id: final,
+                                          url: url) if stripped != base
           end
         end
         idx
+      end
+
+      def register_hotspot_base(idx, base, record)
+        return if base.empty?
+
+        if !idx.key?(base)
+          idx[base] = record
+        elsif idx[base] && idx[base][:id] != record[:id]
+          idx[base] = nil
+        end
       end
 
       # The member page's URL relative to the page being rendered; the index
