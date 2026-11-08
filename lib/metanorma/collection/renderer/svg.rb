@@ -214,9 +214,15 @@ module Metanorma
         # domain knowledge. Resolvers receive (reference_name, lookup),
         # where lookup maps a plain anchor base to a record.
         lookup = ->(base) { hotspot_prefix_lookup(idx, base) }
-        docxml.xpath(ns("//svgmap/target/eref[@bibitemid]")).each do |e|
+        targets = docxml.xpath(ns("//svgmap/target/eref[@bibitemid]"))
+        warn "[svgmap-trace] doc=#{docid.inspect} targets=#{targets.size} " \
+             "resolvers=#{self.class.reference_anchor_resolvers.size} " \
+             "idx_keys=#{idx.keys.size}"
+        targets.each do |e|
           rec = self.class.reference_anchor_resolvers.lazy.map do |resolver|
-            resolver.call(e["bibitemid"], lookup)
+            r = resolver.call(e["bibitemid"], lookup)
+            warn "[svgmap-trace] bibitemid=#{e['bibitemid'].inspect} -> #{r ? r[:key] : 'NIL'}" unless r
+            r
           end.find(&:itself) or next
           href = hotspot_target_href(rec, docid) or next
           e.name = "link"
