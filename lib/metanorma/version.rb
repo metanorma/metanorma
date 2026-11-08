@@ -1,3 +1,3 @@
 module Metanorma
-  VERSION = "2.5.17".freeze
+  VERSION = "2.5.18".freeze
 end
