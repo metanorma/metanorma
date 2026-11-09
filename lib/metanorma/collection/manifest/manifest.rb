@@ -196,7 +196,6 @@ module Metanorma
       # param filepath [String]
       # @raise [AdocFileNotFoundException]
       def compile_adoc_file(file)
-        warn "BASEDIR-PROBE " + base_dir_options.inspect
         f = (Pathname.new file).absolute? ? file : File.join(@dir, file)
         File.exist?(f) or raise AdocFileNotFoundException.new "#{f} not found!"
         compile_adoc_file?(file) or return
