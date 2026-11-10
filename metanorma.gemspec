@@ -44,4 +44,9 @@ Gem::Specification.new do |spec|
 
   # Metanorma::Collection uses Relaton::Cli.parse_xml, shipped in relaton >= 3.1
   spec.add_dependency "relaton", "~> 3.1.1"
+
+  # Bundled-gem successor required directly by lib code: compile_options.rb
+  # uses csv. Ruby 4 warns on undeclared bundled gems and pruned bundles
+  # would fail (epic metanorma/metanorma#669).
+  spec.add_dependency "csv"
 end
