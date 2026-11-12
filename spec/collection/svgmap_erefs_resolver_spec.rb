@@ -97,7 +97,9 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
       compile: { install_fonts: false },
     )
 
-    xml = File.read(File.join(outpath, "member.xml"))
+    member = Dir[File.join(outpath, "**", "rice-en.final.norepo.xml")].first ||
+      raise("no rice member xml produced under #{outpath}")
+    xml = File.read(member)
     expect(xml).to include("resolver-bound-anchor")
     expect(xml).to include('target="#resolver-bound-anchor"')
   end
