@@ -41,7 +41,7 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
         <figure id='fig-repro'>
           <image src='hotspot_schemaexpg1.svg' mimetype='image/svg+xml'/>
         </figure>
-        <target href='mn://repro'>
+        <target href='mn://action_schema'>
           <eref bibitemid='express_repro_target'>repro</eref>
         </target>
       </svgmap>
@@ -99,12 +99,15 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
       compile: { install_fonts: false },
     )
 
-    member = Dir[File.join(outpath, "**", "rice-en.final.norepo.xml")].first ||
-      raise("no rice member xml produced under #{outpath}")
+    member = Dir[File.join(outpath, "**",
+      "rice-en.final.norepo.presentation.xml")].first ||
+      raise("no rice member presentation xml under #{outpath}")
     xml = File.read(member)
     expect(xml).to include("resolver-bound-anchor")
-    # The record's key differs from the rendering docid, so the target is
-    # page-qualified; the binding contract is the anchor fragment.
-    expect(xml).to match(%r{target="[^"]*#resolver-bound-anchor"})
+    # The svgmap target binds the mn:// anchor whose value matches: the
+    # wrapper is consumed at extraction, and the binding survives as the
+    # SVG hotspot's href (page-qualified, since the record's key differs
+    # from the rendering docid).
+    expect(xml).to match(%r{xlink:href="[^"]*#resolver-bound-anchor"})
   end
 end
