@@ -416,15 +416,35 @@ module Metanorma
       # name (geometry_schema.cartesian_point_ISO_10303-42_2025_...), so
       # the plain name resolves by prefix. Multiple equal-length matches
       # are ambiguous and refuse, as do differing ids at the same key.
+      # Memoized per prefix: the index is immutable once built, and a
+      # mega-member's svgmap erefs hit this per stage pass (the linear
+      # scan showed up at 24%+ of a 104-style render's wall).
       def hotspot_prefix_lookup(idx, prefix)
-        return idx[prefix] if idx[prefix]
+        @hotspot_prefix_memo ||= {}
+        @hotspot_prefix_memo.fetch(prefix) do
+          @hotspot_prefix_memo[prefix] =
+            idx[prefix] || prefix_lookup_scan(idx, prefix)
+        end
+      end
 
-        candidates = idx.select { |k, r| r && k.start_with?("#{prefix}_") }
+      # Candidate keys sharing the prefix, by binary search over the
+      # sorted index keys: keys with the stem prefix are contiguous in
+      # sort order, so the slice between the lower bound and the first
+      # non-matching key is the entire candidate set.
+      def prefix_lookup_scan(idx, prefix)
+        stem = "#{prefix}_"
+        keys = hotspot_sorted_keys(idx)
+        lo = keys.bsearch_index { |k| k >= stem } or return nil
+        candidates = keys[lo..].take_while { |k| k.start_with?(stem) }
         return nil if candidates.empty?
 
-        shortest = candidates.min_by { |k, _| k.length }
-        ties = candidates.count { |k, _| k.length == shortest[0].length }
-        ties == 1 ? shortest[1] : nil
+        shortest = candidates.min_by(&:length)
+        ties = candidates.count { |k| k.length == shortest.length }
+        ties == 1 ? idx[shortest] : nil
+      end
+
+      def hotspot_sorted_keys(idx)
+        @hotspot_sorted_keys ||= idx.keys.select { |k| idx[k] }.sort
       end
     end
   end
