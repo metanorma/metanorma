@@ -73,8 +73,10 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
   end
 
   def register_resolver
+    # The tree hands resolvers the document-suffixed bibitemid; real
+    # resolvers normalize it themselves (plugin-lutaml's stamp trim).
     resolver = ->(bibitemid, _lookup) {
-      next unless bibitemid == "express_repro_target"
+      next unless bibitemid.start_with?("express_repro_target")
 
       { key: "repro-doc", url: "member.html",
         id: "resolver-bound-anchor" }
@@ -101,6 +103,8 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
       raise("no rice member xml produced under #{outpath}")
     xml = File.read(member)
     expect(xml).to include("resolver-bound-anchor")
-    expect(xml).to include('target="#resolver-bound-anchor"')
+    # The record's key differs from the rendering docid, so the target is
+    # page-qualified; the binding contract is the anchor fragment.
+    expect(xml).to match(%r{target="[^"]*#resolver-bound-anchor"})
   end
 end
