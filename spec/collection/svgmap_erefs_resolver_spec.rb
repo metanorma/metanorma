@@ -14,8 +14,6 @@ require "nokogiri"
 # (iso-10303#844).
 RSpec.describe "svgmap erefs bind through resolvers at every stage" do
   let(:doc_fixture) { "spec/fixtures/collection/rice-en.final.norepo.xml" }
-  let(:base_manifest) { "spec/fixtures/collection/collection1.norepo.yml" }
-  let(:svg_fixture) { "spec/fixtures/collection/hotspot_schemaexpg1.svg" }
   let(:outpath) { File.join(@work, "out") }
 
   around do |ex|
@@ -31,6 +29,11 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
     end
   end
 
+  # The spec_helper around-hook mirrors spec/fixtures into a per-example
+  # temp tree and runs the example with cwd at its root, so the manifest
+  # parses by its relative path and its filerefs resolve inside the
+  # mirror. The injected svgmap replaces the rice fixture in place; no
+  # manifest rewrite needed.
   def build_work_collection
     xml = File.read(doc_fixture)
     svgmap = <<~XML
@@ -43,14 +46,30 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
         </target>
       </svgmap>
     XML
-    injected = xml.sub("</iso-standard>",
+    # The svgmap eref names a bibliography bibitem, not a page anchor, so
+    # Stage 1 leaves it for the resolver pass; the bibitem must exist for
+    # the references render to succeed.
+    bibitem = <<~XML
+      <bibitem id='express_repro_target' type='standard'>
+        <title format='text/plain' language='en' script='Latn'>Resolver target</title>
+        <docidentifier type='metanorma'>repro</docidentifier>
+        <docnumber>1</docnumber>
+        <date type='published'><on>2026</on></date>
+        <contributor>
+          <role type='publisher'/>
+          <organization><name>ISO</name><abbreviation>ISO</abbreviation></organization>
+        </contributor>
+        <language>en</language>
+        <script>Latn</script>
+      </bibitem>
+    XML
+    injected = xml.sub("</references>", "#{bibitem}</references>")
+                  .sub("</metanorma>",
                        "<p id='resolver-bound-anchor'>repro</p>" \
-                       "#{svgmap}</iso-standard>")
-    # Same fixture filename: the checked-in manifest's fileref resolves
-    # against the work directory, so the injected copy shadows the
-    # original without a manifest rewrite.
-    File.write(File.join(@work, "rice-en.final.norepo.xml"), injected)
-    FileUtils.cp(svg_fixture, File.join(@work, "hotspot_schemaexpg1.svg"))
+                       "#{svgmap}</metanorma>")
+    raise "svgmap injection no-op" if xml == injected
+
+    File.write(doc_fixture, injected)
   end
 
   def register_resolver
@@ -71,13 +90,12 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
     build_work_collection
     register_resolver
 
-    Dir.chdir(@work) do
-      Metanorma::Collection.parse(File.expand_path(base_manifest,
-        File.join(Dir.pwd, ".."))).render(
-        format: %i[presentation xml], output_folder: outpath,
-        compile: { install_fonts: false },
-      )
-    end
+    Metanorma::Collection.parse(
+      "spec/fixtures/collection/collection1.norepo.yml"
+    ).render(
+      format: %i[presentation xml], output_folder: outpath,
+      compile: { install_fonts: false },
+    )
 
     xml = File.read(File.join(outpath, "member.xml"))
     expect(xml).to include("resolver-bound-anchor")
