@@ -51,6 +51,14 @@ module Metanorma
         # Stage 1: Resolve EREF references to their targets
         resolve_svgmap_erefs(docxml, tag, isodoc, ids, presxml, docid)
 
+        # Stage 1a: svgmap erefs bind through the reference-anchor
+        # resolvers at EVERY stage — schema-doc pages carry synthesized
+        # svgmap items (expressir 2.4.64+ formats the __expressg remark
+        # with its item list) and render outside the reinflate; without
+        # this pass their hotspots emit as bare unbound links
+        # (iso-10303#844).
+        resolve_svgmap_erefs_via_resolvers(docxml, docid, ids)
+
         # Stage 1b: Re-key the svgmap xref targets that a reinflated render
         # carries from the staging build: they name anchors in the compile-
         # time document shape, which on a sectionsplit page sit behind this
@@ -207,12 +215,18 @@ module Metanorma
           x.name = "link"
           x["target"] = href
         end
-        # Reference-type targets (eref[@bibitemid]) resolve to the reference
-        # list. Where a domain's references are ALSO declared as page
-        # anchors, that domain registers a resolver mapping the reference
-        # identity to an anchor record; core registers none and carries no
-        # domain knowledge. Resolvers receive (reference_name, lookup),
-        # where lookup maps a plain anchor base to a record.
+        resolve_svgmap_erefs_via_resolvers(docxml, docid, ids)
+      end
+
+      # Binds svgmap erefs through the registered reference-anchor
+      # resolvers. Where a domain's references are ALSO declared as page
+      # anchors, that domain registers a resolver mapping the reference
+      # identity to an anchor record; core registers none and carries no
+      # domain knowledge. Resolvers receive (reference_name, lookup),
+      # where lookup maps a plain anchor base to a record. Unresolvable
+      # erefs are left untouched.
+      def resolve_svgmap_erefs_via_resolvers(docxml, docid, _ids)
+        idx = hotspot_anchor_index
         lookup = ->(base) { hotspot_prefix_lookup(idx, base) }
         docxml.xpath(ns("//svgmap/target/eref[@bibitemid]")).each do |e|
           rec = self.class.reference_anchor_resolvers.lazy.map do |resolver|
