@@ -46,13 +46,11 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
     injected = xml.sub("</iso-standard>",
                        "<p id='resolver-bound-anchor'>repro</p>" \
                        "#{svgmap}</iso-standard>")
-    File.write(File.join(@work, "member.xml"), injected)
+    # Same fixture filename: the checked-in manifest's fileref resolves
+    # against the work directory, so the injected copy shadows the
+    # original without a manifest rewrite.
+    File.write(File.join(@work, "rice-en.final.norepo.xml"), injected)
     FileUtils.cp(svg_fixture, File.join(@work, "hotspot_schemaexpg1.svg"))
-
-    man = YAML.load_file(base_manifest)
-    man["manifest"]["docref"] =
-      [{ "fileref" => "member.xml", "identifier" => "ISO 17301-1" }]
-    File.write(File.join(@work, "manifest.yml"), man.to_yaml)
   end
 
   def register_resolver
@@ -74,7 +72,8 @@ RSpec.describe "svgmap erefs bind through resolvers at every stage" do
     register_resolver
 
     Dir.chdir(@work) do
-      Metanorma::Collection.parse("manifest.yml").render(
+      Metanorma::Collection.parse(File.expand_path(base_manifest,
+        File.join(Dir.pwd, ".."))).render(
         format: %i[presentation xml], output_folder: outpath,
         compile: { install_fonts: false },
       )
