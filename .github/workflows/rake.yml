@@ -15,7 +15,6 @@ jobs:
   rake:
     uses: metanorma/ci/.github/workflows/generic-rake.yml@main
     with:
-      setup-tools: ghostscript
       submodules: true
       choco-cache: true
       private-fonts: true
