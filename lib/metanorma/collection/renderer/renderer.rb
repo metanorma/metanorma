@@ -17,6 +17,9 @@ module Metanorma
     class Renderer
       FORMATS = %i[html xml doc pdf pdf-portfolio].freeze
 
+      # Worker count for the member render pool (metanorma#705).
+      DEFAULT_MEMBER_POOL_SIZE = 4
+
       attr_accessor :isodoc, :isodoc_presxml
       attr_reader :xml, :compile, :compile_options, :documents, :outdir,
                   :manifest, :fatal_errors
@@ -94,9 +97,12 @@ module Metanorma
         @c = HTMLEntities.new
         @files_to_delete = []
         # Per-member rendering failures (missing outputs, pooled compile
-        # errors), accumulated by file_compile_verify; Collection#render
-        # aborts on them once every member has rendered (#586).
+        # errors, raised exceptions), buffered by file_compile_verify and
+        # flushed in manifest order once the member pool joins; Collection
+        # #render aborts on them after every member has rendered (#586).
         @fatal_errors = []
+        @failures_mutex = Mutex.new
+        @member_failures = []
         @nested = options[:nested]
         # if false, this is the root instance of Renderer
         # if true, then this is not the last time Renderer will be run
@@ -130,6 +136,8 @@ module Metanorma
         # pruning superseded content-hash versions on write; keep_cache retains
         # every version (history / multiple states side by side).
         @keep_cache = options[:keep_cache]
+        @member_pool_size = options[:member_pool_size] ||
+          DEFAULT_MEMBER_POOL_SIZE
 
         @coverpage = options[:coverpage] || collection.coverpage
         @coverpage_pdf_portflio = options[:coverpage_pdf_portfolio] ||
@@ -155,6 +163,11 @@ module Metanorma
           end
         isodoc_populate
         create_non_existing_directory(@outdir)
+      end
+
+      # Worker count for the member render pool (see DEFAULT_MEMBER_POOL_SIZE).
+      def member_pool_size
+        @member_pool_size
       end
 
       def directives_normalise(directives)

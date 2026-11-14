@@ -1,0 +1,26 @@
+directives:
+  - documents-inline
+bibdata:
+  title:
+    type: title-main
+    language: en
+    content: Collection1
+  type: collection
+  docid:
+    type: iso
+    id: 4400x
+manifest:
+  level: collection
+  title: BSI Collection
+  docref:
+    - fileref: dummy.xml
+      identifier: ISO 44001
+      index: true
+    - fileref: dummy.1.xml
+      identifier: ISO 44002
+      format:
+        - bogus
+    - fileref: dummy.xml
+      identifier: ISO 44003
+      format:
+        - bogus
