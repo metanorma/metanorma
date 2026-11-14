@@ -54,7 +54,10 @@ module Metanorma
           },
           manifest: {
             level: "collection", title: "Collection",
-            docref: files.sort_by { |f| f[:order] }.each.map do |f|
+            # [order, idx]: tasks complete out of order under the section
+            # split pool, and Ruby sorts are not guaranteed stable, so the
+            # split idx breaks displayorder ties deterministically.
+            docref: files.sort_by { |f| [f[:order], f[:idx]] }.each.map do |f|
               # XML files are always stored flat, so fileref is always the basename
               # f[:url] may include directory for HTML output, but XML is basename only
               fileref = File.basename(f[:url])
