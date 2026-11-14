@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# TRUNCATION-PROBE (metanorma#706): must load before every other
+# require so its at_exit hook is registered first; inert unless
+# MN_TRUNCATION_PROBE=1.
+require_relative "support/truncation_probe"
+
 require "simplecov"
 SimpleCov.start do
   add_filter "/spec/"
@@ -18,6 +23,9 @@ require_relative "support/uuid_mock"
 Canon::Config.instance.profile = :metanorma
 
 RSpec.configure do |config|
+  # TRUNCATION-PROBE (metanorma#706): no-op unless MN_TRUNCATION_PROBE=1.
+  Metanorma::TruncationProbe.configure_rspec(config)
+
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 
