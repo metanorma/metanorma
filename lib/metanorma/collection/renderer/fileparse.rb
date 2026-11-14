@@ -29,8 +29,11 @@ module Metanorma
           Metanorma::Collection::XrefProcess::xref_process(xml, xml, nil, docid,
                                                            @isodoc, sso)
         # post (semantic only): intra-doc xref/eref turned into internal erefs;
-        # repo bibitems copied; indirect bibliography inserted.
-        @ncnames = {}
+        # repo bibitems copied; indirect bibliography inserted. The
+        # indirect-reference state is a per-member memo (not renderer
+        # instance state): members run concurrently on the render pool, and
+        # a shared memo would let one member's reset drop another member's
+        # already-updated-anchor guards mid-pass.
         @nested or update_indirect_refs_to_docs(xml, docid, internal_refs, sso)
         # post: bibitem[@type='internal'] anchors resolved to the containing
         # collection document.
@@ -191,58 +194,72 @@ presxml)
       # Resolve erefs to a container of ids in another doc,
       # to an anchor eref (direct link)
       def update_indirect_refs_to_docs(docxml, _docid, internal_refs, presxml)
-        bib, erefs, doc_suffix, doc_type, f = update_indirect_refs_prep(docxml,
-                                                                        presxml)
+        f, memo = update_indirect_refs_prep(docxml, presxml)
         internal_refs.each do |schema, ids|
-          add_suffix = doc_suffix && doc_type && doc_type != schema
+          add_suffix = memo[:doc_suffix] && memo[:doc_type] &&
+          memo[:doc_type] != schema
           ids.each do |id, file|
             f[file] ||= { url: @files.url?(file),
                           parentid: @files.get(file) && @files.get(file,
                                                                    :parentid) }
-            k = indirect_ref_key(schema, id, doc_suffix, add_suffix)
-            update_indirect_refs_to_docs1(f[file], k, file, bib, erefs)
+            k = indirect_ref_key(memo, schema, id, add_suffix)
+            update_indirect_refs_to_docs1(f[file], k, file, memo)
           end
         end
       end
 
+      # Prepares the per-member indirect-reference pass: the file container
+      # plus a memo hash carrying the pre-gathered bibitems and erefs, the
+      # document suffix/type, the schema/id key cache, and the
+      # already-updated-anchor guards. The memo is a local rather than
+      # renderer instance state, so members on the render pool cannot reset
+      # each other's state mid-pass.
       def update_indirect_refs_prep(docxml, presxml)
-        @updated_anchors = {}
-        @indirect_keys = {}
-        [Util::gather_bibitems(docxml), Util::gather_bibitemids(docxml, presxml),
-         docxml.root["document_suffix"], docxml.root["type"], {}]
+        memo = { updated_anchors: {}, indirect_keys: {},
+                 bibitems: Util::gather_bibitems(docxml),
+                 erefs: Util::gather_bibitemids(docxml, presxml),
+                 doc_suffix: docxml.root["document_suffix"],
+                 doc_type: docxml.root["type"] }
+        [{}, memo]
       end
 
-      def indirect_ref_key(schema, id, doc_suffix, add_suffix)
+      def indirect_ref_key(memo, schema, id, add_suffix)
         /^#{schema}_/.match?(id) and return id
-        x = @indirect_keys.dig(schema, id) and return x
-        @indirect_keys[schema] ||= {}
-        @indirect_keys[schema][id] = if add_suffix
-                                       "#{schema}_#{id}_#{doc_suffix}"
-                                     else
-                                       "#{schema}_#{id}"
-                                     end
+        keys = memo[:indirect_keys]
+        x = keys.dig(schema, id) and return x
+        keys[schema] ||= {}
+        keys[schema][id] = if add_suffix
+                             "#{schema}_#{id}_#{memo[:doc_suffix]}"
+                           else
+                             "#{schema}_#{id}"
+                           end
       end
 
-      def update_indirect_refs_to_docs1(filec, key, file, bibitems, erefs)
-        erefs[key]&.each do |e|
+      def update_indirect_refs_to_docs1(filec, key, file, memo)
+        memo[:erefs][key]&.each do |e|
           e["citeas"] = file
           update_indirect_refs_to_docs_anchor(e, file, filec[:url],
-                                              filec[:parentid])
+                                              filec[:parentid], memo)
         end
-        update_indirect_refs_to_docs_docid(bibitems[key], file)
+        update_indirect_refs_to_docs_docid(memo[:bibitems][key], file)
       end
 
-      def update_indirect_refs_to_docs_anchor(eref, file, url, parentid)
+      def update_indirect_refs_to_docs_anchor(eref, file, url, parentid, memo)
         a = eref.at(".//#{ANCHOR_XPATH}") or return
         parentid and file = "#{parentid}_#{file}"
         existing = a.text
         anchor = if url then existing
-                 else
-                   @indirect_keys[existing] ||= {}
-                   @indirect_keys[existing][file] ||= Metanorma::Utils::to_ncname("#{existing}_#{file}")
+                 else indirect_ncname(memo, existing, file)
                  end
-        @updated_anchors[existing] or a.children = anchor
-        @updated_anchors[anchor] = true
+        memo[:updated_anchors][existing] or a.children = anchor
+        memo[:updated_anchors][anchor] = true
+      end
+
+      # The NCName anchor binding an eref's existing anchor text to its
+      # target file, memoised in the member pass's key cache.
+      def indirect_ncname(memo, existing, file)
+        keys = memo[:indirect_keys][existing] ||= {}
+        keys[file] ||= Metanorma::Utils::to_ncname("#{existing}_#{file}")
       end
 
       def update_indirect_refs_to_docs_docid(bib, file)
@@ -256,32 +273,26 @@ presxml)
       def update_anchors(bib, docid, erefs, erefs_no_anchor, erefs_anchors)
         @files.get(docid) or error_anchor(erefs, docid)
         has_anchors, url, ncn_docid = update_anchors_prep(docid)
+        concat = {} # per-member memo, as with the indirect-reference pass
         erefs_no_anchor.each do |e|
           update_anchor_create_loc(bib, e, docid)
         end
         !url && has_anchors or return
         erefs_anchors.each do |e|
-          update_anchors1(docid, ncn_docid, e)
+          update_anchors1(concat, docid, ncn_docid, e)
         end
       end
 
-      def update_anchors1(docid, ncn_docid, anchor)
-        @concat_anchors[anchor.text] ||= "#{ncn_docid}_#{anchor.text}"
-        if @files.get(docid).dig(:anchors_lookup, @concat_anchors[anchor.text])
-          anchor.content = @concat_anchors[anchor.text]
+      def update_anchors1(concat, docid, ncn_docid, anchor)
+        concat[anchor.text] ||= "#{ncn_docid}_#{anchor.text}"
+        if @files.get(docid).dig(:anchors_lookup, concat[anchor.text])
+          anchor.content = concat[anchor.text]
         end
       end
 
       def update_anchors_prep(docid)
-        @concat_anchors = {}
         [@files.get(docid)&.key?(:anchors_lookup), @files.url?(docid),
          Metanorma::Utils::to_ncname(docid)]
-      end
-
-      # encode both prefix and suffix to NCName
-      def suffix_anchor_indirect(prefix, suffix)
-        k = "#{prefix}_#{suffix}"
-        @ncnames[k] ||= Metanorma::Utils::to_ncname(k)
       end
 
       # if there is a crossref to another document, with no anchor, retrieve the
