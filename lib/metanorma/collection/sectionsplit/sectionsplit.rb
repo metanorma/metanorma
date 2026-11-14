@@ -67,8 +67,13 @@ module Metanorma
         empty = empty_doc(xml)
         empty1 = empty_attachments(empty)
         @mutex = Mutex.new
-        # @pool = Concurrent::FixedThreadPool.new(4)
-        @pool = Concurrent::FixedThreadPool.new(1)
+        # Per-section work mutates only its own xml.dup and the per-section
+        # hidden-ref container; the shared document is read-only once
+        # xref_preprocess has run serially above, and the manifest consumer
+        # re-sorts the results by [displayorder, split idx], so completion
+        # order is unobservable. Throttled to 1 during the isodoc#641
+        # fmt-xref refactor (92bd93a) and never restored. metanorma#703.
+        @pool = Concurrent::FixedThreadPool.new(4)
         sectionsplit1(xml, empty, empty1, 0)
       end
 
@@ -96,7 +101,7 @@ module Metanorma
           )
           warn "Sectionsplit: #{output_filename}"
           a = sectionfile(xml, empty, output_filename, chunks,
-                          parentnode)
+                          parentnode).merge(idx: opt[:idx])
           @mutex.synchronize { opt[:acc] << a }
         end
       end
