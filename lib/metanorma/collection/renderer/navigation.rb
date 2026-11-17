@@ -23,6 +23,9 @@ module Metanorma
         builder.ul { |b| docrefs(mnf, b) }
       end
 
+      # A document entry can carry nested entries of its own (publication >
+      # part > section, metanorma-cli#496); the block, if given, renders
+      # them inside the document's list item.
       def docrefs(mnf, builder)
         ident = docref_ident(mnf)
         builder.li do |li|
@@ -31,12 +34,24 @@ module Metanorma
               /[<>&]/.match?(x) ? x : @c.encode(x, :hexadecimal)
             end.join
           end
+          yield li if block_given?
         end
       end
 
       def docref_ident(docref)
         ident = docref.identifier.dup
         @c.decode(@isodoc.docid_prefix(nil, ident))
+      end
+
+      # nested entries of a document entry, as a sublist of its list item;
+      # all: list them regardless of their index flag
+      def nested_docrefs(mnf, builder, all: true)
+        kids = Array(mnf.entry)
+        all or kids = kids.select { |e| index?(e) }
+        kids.empty? and return
+        builder.ul do |u|
+          kids.each { |e| u << indexfile1(e, all:) }
+        end
       end
 
       # Check if file has a recognized MIME type (other than XML)
@@ -72,19 +87,23 @@ module Metanorma
         mnf.entry&.detect { |e| index?(e) }
       end
 
-      def indexfile1(mnf)
-        index?(mnf) or return ""
-        cleanup_indexfile1(build_indexfile1(mnf))
+      # all: list the entry regardless of its index flag
+      def indexfile1(mnf, all: false)
+        all || index?(mnf) or return ""
+        cleanup_indexfile1(build_indexfile1(mnf, all:))
       end
 
-      def build_indexfile1(mnf)
+      def build_indexfile1(mnf, all: false)
         Nokogiri::HTML::Builder.new do |b|
-          if mnf.file then docrefs(mnf, b)
+          if mnf.file
+            docrefs(mnf, b) do |li|
+              nested_docrefs(mnf, li, all:)
+            end
           else
             b.li do |l|
               l << indexfile_title(mnf)
               l.ul do |u|
-                Array(mnf.entry).each { |e| u << indexfile1(e) }
+                Array(mnf.entry).each { |e| u << indexfile1(e, all:) }
               end
             end
           end
@@ -125,7 +144,7 @@ module Metanorma
         files.empty? and return nil
         r = Nokogiri::HTML::Builder.new do |b|
           b.ul do |u|
-            files.each { |f| docrefs(f, u) }
+            files.each { |f| docrefs(f, u) { |li| nested_docrefs(f, li) } }
           end
         end
         r.doc.root&.to_html&.tr("\n", " ")
@@ -137,9 +156,9 @@ module Metanorma
             ident = @c.decode(@isodoc.docid_prefix(nil, d.identifier.dup))
             m << { "identifier" => ident, "file" => index_link(d, ident),
                    "title" => indexfile_title(d), "level" => d.type }
-          else
-            liquid_docrefs(d.entry).each { |m1| m << m1 }
           end
+          # entries nested under a document follow it (metanorma-cli#496)
+          liquid_docrefs(d.entry).each { |m1| m << m1 }
         end
       end
     end
