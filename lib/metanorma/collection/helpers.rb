@@ -64,7 +64,8 @@ module Metanorma
         end
       end
 
-      def parse(file)
+      # @param opts [Hash] passed to #initialize, e.g. changed_since: REF
+      def parse(file, **opts)
         # need @dirname initialised before collection object initialisation
         @dirname = File.expand_path(File.dirname(file))
         config = case file
@@ -75,7 +76,7 @@ module Metanorma
                    pre_parse_model(y)
                    ::Metanorma::Collection::Config::Config.from_yaml(y.to_yaml)
                  end
-        new(file: file, config: config)
+        new(file: file, config: config, **opts)
       end
     end
   end
