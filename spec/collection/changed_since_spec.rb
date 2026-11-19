@@ -79,6 +79,52 @@ RSpec.describe "collection changed_since" do
       )
     end
 
+    # Loose-leaf units (metanorma-cli#495): standoc reads the update
+    # register into the document, so a register change alone counts.
+    context "with update registers" do
+      let(:root) { File.realpath(@dir) }
+
+      def put(name, text)
+        FileUtils.mkdir_p(File.dirname(File.join(root, name)))
+        File.write(File.join(root, name), text)
+      end
+
+      before do
+        put("part.adoc", "= Part\n:update-records: units/doc.yaml\n\n" \
+                         "include::units/u1/en.adoc[]\n")
+        put("units/u1/en.adoc", "[#U1,update-unit=U1," \
+                                "update-records=\"units/u1/updates.yaml\"]\n")
+        put("units/u1/updates.yaml", "U1: []\n")
+        put("units/doc.yaml", "{}\n")
+        put("other.adoc", "= Other\n:update-records: {regs}/x.yaml\n")
+        git(root, "add", ".")
+        git(root, "commit", "-q", "-m", "registers")
+        git(root, "tag", "-f", "base")
+      end
+
+      it "counts a change in a register named on an included block" do
+        put("units/u1/updates.yaml", "U1: [{}]\n")
+        expect(change_set.changed?("part.adoc")).to be true
+      end
+
+      it "does not count a register path built from an attribute" do
+        put("units/u1/updates.yaml", "U1: [{}]\n")
+        expect(change_set.changed?("other.adoc")).to be false
+      end
+
+      it "counts a change in the register named by the document attribute" do
+        put("units/doc.yaml", "U2: []\n")
+        expect(change_set.changed?("part.adoc")).to be true
+      end
+
+      it "lists the registers among the member's sources" do
+        expect(change_set.sources(File.join(root, "part.adoc"))).to include(
+          File.join(root, "units/u1/updates.yaml"),
+          File.join(root, "units/doc.yaml"),
+        )
+      end
+    end
+
     it "raises on an unknown ref" do
       expect { described_class.new("nope", @dir) }
         .to raise_error(ArgumentError, /unknown git ref nope/)

@@ -15,11 +15,17 @@ module Metanorma
     # staged and unstaged edits all count, as do untracked files. A
     # member's sources are its file, the AsciiDoc file it is compiled from
     # (for an XML member with an .adoc sibling), and everything those
-    # include, transitively. Include targets built from attribute
-    # references cannot be resolved without compiling, so they are not
-    # followed.
+    # include, transitively, plus the update registers they name
+    # (`update-records=` on a block, or the `:update-records:` document
+    # attribute): standoc reads those into the document, so a register
+    # change alone changes the output. Like standoc, a register path is
+    # resolved against the member's own folder. Include targets and
+    # register paths built from attribute references cannot be resolved
+    # without compiling, so they are not followed.
     class ChangeSet
       INCLUDE = /^include::([^\[\n]+)\[/
+      REGISTER = /^:update-records:[ \t]*(\S[^\n]*?)[ \t]*$|
+                  update-records=(?:"([^"\n]+)"|'([^'\n]+)'|([^,\]\s]+))/x
 
       attr_reader :ref
 
@@ -68,7 +74,9 @@ module Metanorma
         roots = [file]
         adoc = file.sub(/\.xml\z/, ".adoc")
         adoc != file && File.exist?(adoc) and roots << adoc
-        roots.each_with_object(Set.new) { |r, seen| includes(r, seen) }
+        roots.each_with_object(Set.new) do |r, seen|
+          includes(r, seen, File.dirname(r))
+        end
       end
 
       private
@@ -82,15 +90,31 @@ module Metanorma
         end
       end
 
-      def includes(file, seen)
+      # base: the member's folder, against which standoc resolves
+      # register paths (in the member and in the files it includes).
+      def includes(file, seen, base)
         seen.include?(file) and return seen
         seen << file
         file.end_with?(".adoc") && File.file?(file) or return seen
-        File.read(file, encoding: "UTF-8").scan(INCLUDE).flatten.each do |t|
-          t.include?("{") and next
-          includes(norm(File.expand_path(t.strip, File.dirname(file))), seen)
-        end
+        text = File.read(file, encoding: "UTF-8")
+        registers(text, base, seen)
+        included(text, file).each { |t| includes(t, seen, base) }
         seen
+      end
+
+      def included(text, file)
+        text.scan(INCLUDE).flatten.filter_map do |t|
+          t.include?("{") and next
+          norm(File.expand_path(t.strip, File.dirname(file)))
+        end
+      end
+
+      def registers(text, base, seen)
+        text.scan(REGISTER) do |match|
+          path = match.compact.first.strip
+          path.include?("{") and next
+          seen << norm(File.expand_path(path, base))
+        end
       end
 
       # Resolve symlinks the same way for the top level and member paths.
