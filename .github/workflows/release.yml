@@ -35,19 +35,28 @@ on:
         default: 'skip'
   repository_dispatch:
     types: [ do-release ]
+    types: [ do-release ]
+  # The publish leg: when the release PR (head branch release/v*) merges,
+  # metanorma/ci tags the merge commit and publishes (metanorma/ci#515).
+  # Ordinary PR closes are skipped inside the reusable workflow.
+  pull_request:
+    types:
+      - closed
 
 # Least-privilege ceiling for the called rubygems-release.yml: its release job
 # needs contents:write (git tag push) and id-token:write (OIDC Trusted Publishing).
 permissions:
   contents: write
   id-token: write
+  pull-requests: write
 
 jobs:
   release:
     uses: metanorma/ci/.github/workflows/rubygems-release.yml@main
     with:
       next_version: ${{ github.event.inputs.next_version }}
-      release_command: rake release
+      # release_command removed: the PR-based flow publishes via the generic build+push (metanorma/ci#515)
+
       bundler_cache: false
       post_install: gem install bundler rake rspec
       # Opt out of the auto-generated GitHub Release notes floor added in
