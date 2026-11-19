@@ -1,6 +1,6 @@
 require "relaton"
 require "relaton/bib"
-require "relaton/cli"
+require_relative "../config/bibdata_parser"
 
 module Metanorma
   class Collection
@@ -136,8 +136,9 @@ module Metanorma
               from_xml (Nokogiri::XML(File.read(file, encoding: "UTF-8"),
                                       &:huge))
             when :yaml
-              yaml = File.read(file, encoding: "UTF-8")
-              Relaton::Cli::YAMLConvertor.convert_single_file(yaml)
+              Config::BibdataParser.from_yaml(
+                YAML.safe_load_file(file, permitted_classes: [Date, Symbol]),
+              )
             end
           end
         end

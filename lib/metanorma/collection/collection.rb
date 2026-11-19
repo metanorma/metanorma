@@ -1,10 +1,10 @@
 require "relaton"
 require "relaton/bib"
-require "relaton/cli"
 require "metanorma-utils"
 require_relative "util/util"
 require_relative "change_set"
 require_relative "util/disambig_files"
+require_relative "config/bibdata_parser"
 require_relative "config/config"
 require_relative "config/manifest"
 require_relative "helpers"
@@ -98,6 +98,13 @@ module Metanorma
                            "#{File.basename(@file, '.*')}.err.html"))
     end
 
+    # Serialize under the Nokogiri XML adapter that Config pins at load.
+    # Other gems can replace lutaml-model's process-global adapter after
+    # that (uniword 1.7.10 re-asserts :leptris on every Uniword.load), and
+    # the leptris writer re-indents the raw prefatory/final content, which
+    # puts whitespace into the rendered titles. The scope is thread-local,
+    # so it does not touch other members rendering in the worker pool.
+    #
     # @return [String] XML
     def to_xml
       c = ::Metanorma::Collection::Config::Config
@@ -105,7 +112,7 @@ module Metanorma
              manifest: @manifest.config, documents: doc_containers,
              prefatory_content: @prefatory, final_content: @final)
       c.collection = self
-      c.to_xml
+      ::Lutaml::Model::Config.with_adapter(xml: :nokogiri) { c.to_xml }
     end
 
     # Populate the Config#documents collection with DocContainer wrappers.
