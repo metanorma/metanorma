@@ -35,7 +35,6 @@ on:
         default: 'skip'
   repository_dispatch:
     types: [ do-release ]
-    types: [ do-release ]
   # The publish leg: when the release PR (head branch release/v*) merges,
   # metanorma/ci tags the merge commit and publishes (metanorma/ci#515).
   # Ordinary PR closes are skipped inside the reusable workflow.
