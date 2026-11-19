@@ -101,7 +101,7 @@ RSpec.describe "collection changed_since" do
 
     before do
       manifest = File.read(File.join(fixtures, "collection_member_fail.yml"))
-        .sub(/  docref:.*\z/m, <<~YAML)
+        .sub(/^  docref:.*\z/m, <<~YAML.gsub(/^/, "  "))
           docref:
             - fileref: dummy.xml
               identifier: ISO 44001
