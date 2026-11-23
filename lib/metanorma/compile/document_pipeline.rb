@@ -28,13 +28,14 @@ module Metanorma
         end
         semantic_xml = semantic.to_xml if extensions.include?(:xml)
         presentation = presenter.call(semantic, flavor: options[:type],
-                                               options: options)
+                                                options: options)
         verify_model!(presentation, root_class, "presentation transform")
         unless presentation.respond_to?(:type) && presentation.type == "presentation"
           raise UnavailableStageError,
                 "Native presentation transform must return a presentation model"
         end
-        outputs = render_outputs(presentation, semantic_xml, extensions, options)
+        outputs = render_outputs(presentation, semantic_xml, extensions,
+                                 options)
         paths = write_outputs(filename, outputs, options)
         Result.new(semantic_model: semantic, presentation_model: presentation,
                    outputs: paths)
@@ -64,7 +65,8 @@ module Metanorma
         root = Metanorma::Core::Flavors.table.canonical(flavor)&.model_root_class
         return root if root
 
-        raise UnavailableStageError, "No native document model registered for #{flavor}"
+        raise UnavailableStageError,
+              "No native document model registered for #{flavor}"
       end
 
       def native_presenter(flavor)
@@ -72,9 +74,9 @@ module Metanorma
 
         require "metanorma/iso/presentation/transformer"
         Metanorma::Iso::Presentation::Transformer.new
-      rescue LoadError => error
+      rescue LoadError => e
         raise UnavailableStageError,
-              "Native ISO presentation provider is unavailable: #{error.message}"
+              "Native ISO presentation provider is unavailable: #{e.message}"
       end
 
       def native_labeler(flavor)
@@ -83,8 +85,9 @@ module Metanorma
         require "metanorma/ladl"
         require "metanorma/ladl/document_adapter"
         engine = Metanorma::Ladl::Engine.new(profile: Metanorma::Ladl::Profile.iso_iec)
-        lambda do |model, flavor:, options:|
-          engine.call(model, adapter: Metanorma::Ladl::DocumentAdapter.new(mode: :presentation))
+        lambda do |model, **_context|
+          engine.call(model,
+                      adapter: Metanorma::Ladl::DocumentAdapter.new(mode: :presentation))
         end
       end
 
@@ -92,7 +95,7 @@ module Metanorma
         require "coridoc/metanorma"
         Coridoc::Metanorma::Builder.parse(
           File.read(filename, encoding: "UTF-8"), format: options.fetch(:format),
-                                                root_class: root_class
+                                                  root_class: root_class
         )
       end
 
@@ -123,7 +126,9 @@ module Metanorma
           raise UnavailableStageError,
                 "No native HTML renderer registered for #{options[:type]} and #{model.class}"
         end
-        render_options = options.reject { |key, _value| %i[pipeline document_presenter document_labeler].include?(key) }
+        render_options = options.reject do |key, _value|
+          %i[pipeline document_presenter document_labeler].include?(key)
+        end
         renderer.new.generate_full_document(model, **render_options)
       end
 
@@ -141,12 +146,15 @@ module Metanorma
     def compile_document(filename, options)
       require_libraries(options)
       options[:type] = options[:type]&.to_sym
-      raise ArgumentError, "Native compile requires an explicit type" unless options[:type]
+      raise ArgumentError,
+            "Native compile requires an explicit type" unless options[:type]
 
       options[:format] ||= File.extname(filename).downcase == ".md" ? :markdown : :asciidoc
       unless %i[asciidoc markdown].include?(options[:format])
-        raise ArgumentError, "Native compile source format must be asciidoc or markdown"
+        raise ArgumentError,
+              "Native compile source format must be asciidoc or markdown"
       end
+
       @log.save_to(filename, options[:output_dir])
       options[:log] = @log
       DocumentPipeline.new.compile(filename, options)
@@ -157,7 +165,8 @@ module Metanorma
       pipeline = pipeline.to_sym if pipeline.is_a?(String)
       return pipeline if %i[legacy document].include?(pipeline)
 
-      raise ArgumentError, "Unknown compile pipeline #{pipeline.inspect}; expected legacy or document"
+      raise ArgumentError,
+            "Unknown compile pipeline #{pipeline.inspect}; expected legacy or document"
     end
   end
 end

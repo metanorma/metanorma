@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if ENV['METANORMA_DOCUMENT_PIPELINE_TEST'] == '1'
+if ENV["METANORMA_DOCUMENT_PIPELINE_TEST"] == "1"
   require "metanorma"
   require "tmpdir"
 
@@ -15,26 +15,35 @@ if ENV['METANORMA_DOCUMENT_PIPELINE_TEST'] == '1'
     end
 
     it "routes the normal compiler entrypoint to native source validation" do
-      expect { compiler.compile("input.adoc", pipeline: :document, novalid: true) }
+      expect do
+        compiler.compile("input.adoc", pipeline: :document, novalid: true)
+      end
         .to raise_error(ArgumentError, /explicit type/)
-      expect { compiler.compile("input.adoc", pipeline: :document, type: :iso,
-                                            format: :unknown, novalid: true) }
+      expect do
+        compiler.compile("input.adoc", pipeline: :document, type: :iso,
+                                       format: :unknown, novalid: true)
+      end
         .to raise_error(ArgumentError, /source format/)
     end
 
     it "rejects unsupported outputs and legacy-only features before reading a source" do
-      expect { described_class.new.compile("input.adoc", type: :iso,
-                                                         extension_keys: [:pdf]) }
+      expect do
+        described_class.new.compile("input.adoc", type: :iso,
+                                                  extension_keys: [:pdf])
+      end
         .to raise_error(ArgumentError, /output formats.*pdf/)
-      expect { described_class.new.compile("input.adoc", type: :iso,
-                                                         sectionsplit: true) }
+      expect do
+        described_class.new.compile("input.adoc", type: :iso,
+                                                  sectionsplit: true)
+      end
         .to raise_error(ArgumentError, /sectionsplit/)
     end
 
     it "runs real source through the native ISO presenter, shared LADL and registered renderer" do
       Dir.mktmpdir do |dir|
         source = File.join(dir, "document.adoc")
-        File.write(source, "= Example\n:language: en\n\n[[scope]]\n== Scope\n\nSee <<method>> and *rich body*.\n\n[[method]]\n== Method\n\nRetained body.\n")
+        File.write(source,
+                   "= Example\n:language: en\n\n[[scope]]\n== Scope\n\nSee <<method>> and *rich body*.\n\n[[method]]\n== Method\n\nRetained body.\n")
         allow(compiler).to receive(:generate_semantic_xml).and_call_original
         result = compiler.compile(source, pipeline: :document, type: :iso,
                                           extension_keys: [:html], novalid: true)
@@ -80,9 +89,12 @@ if ENV['METANORMA_DOCUMENT_PIPELINE_TEST'] == '1'
       Dir.mktmpdir do |dir|
         adoc = File.join(dir, "adoc.adoc")
         markdown = File.join(dir, "markdown.md")
-        File.write(adoc, "= Example\n:language: en\n\n== Scope\n\nRetained *body*.\n")
-        File.write(markdown, "---\nlanguage: en\n---\n\n# Example\n\n## Scope\n\nRetained **body**.\n")
-        options = { pipeline: :document, type: :iso, extension_keys: [:html], novalid: true }
+        File.write(adoc,
+                   "= Example\n:language: en\n\n== Scope\n\nRetained *body*.\n")
+        File.write(markdown,
+                   "---\nlanguage: en\n---\n\n# Example\n\n## Scope\n\nRetained **body**.\n")
+        options = { pipeline: :document, type: :iso, extension_keys: [:html],
+                    novalid: true }
         first = compiler.compile(adoc, options.dup)
         second = compiler.compile(markdown, options.dup)
         expect(second.semantic_model.to_xml).to eq(first.semantic_model.to_xml)
