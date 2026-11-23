@@ -72,7 +72,7 @@ stakeholders of multiple standards.
 == Native document compile (opt in)
 
 `Metanorma::Compile.new.compile(path, pipeline: :document, type: :iso,
-extension_keys: [:html])` parses AsciiDoc (or Markdown for `.md` input) through
+extension_keys: [:html], novalid: true)` parses AsciiDoc (or Markdown for `.md` input) through
 Coridoc into the registered native ISO semantic model. The native ISO presenter
 clones that model, applies the shared LADL profile and renders HTML directly from
 the presentation model. This path does not write structural intermediate XML.
@@ -92,7 +92,8 @@ formats raise errors. Terms, requirements, math, footnotes, external references
 and bibliography are outside the presenter's current envelope. PDF, DOCX,
 section splitting, extraction, site generation, Relaton output and filename
 templates remain on the legacy pipeline. Required metadata is taken from source;
-this path does not invent metadata or claim schema validation of incomplete input.
+this path does not invent metadata. Native validation is not yet integrated, so
+this pipeline requires an explicit `novalid: true`; omitting it raises an error.
 
 Request `extension_keys: [:html, :xml, :presentation]` to write semantic XML and
 presentation XML explicitly as interchange artifacts. XML serialization is not

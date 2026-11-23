@@ -39,6 +39,13 @@ if ENV["METANORMA_DOCUMENT_PIPELINE_TEST"] == "1"
         .to raise_error(ArgumentError, /sectionsplit/)
     end
 
+    it "requires an explicit validation waiver until native validation is integrated" do
+      expect do
+        compiler.compile("input.adoc", pipeline: :document, type: :iso)
+      end.to raise_error(described_class::UnavailableStageError,
+                         /explicitly set novalid: true/)
+    end
+
     it "runs real source through the native ISO presenter, shared LADL and registered renderer" do
       Dir.mktmpdir do |dir|
         source = File.join(dir, "document.adoc")

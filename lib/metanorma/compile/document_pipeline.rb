@@ -16,6 +16,10 @@ module Metanorma
 
       def compile(filename, options)
         extensions = extensions(options)
+        unless options[:novalid] == true
+          raise UnavailableStageError,
+                "Native validation is not integrated; explicitly set novalid: true"
+        end
         root_class = model_root(options.fetch(:type))
         semantic = source_model(filename, options, root_class)
         verify_model!(semantic, root_class, "source builder")
