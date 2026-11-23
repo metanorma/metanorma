@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+# Opt-in native compile stack; the ordinary consumer bundle remains unchanged.
+gem "metanorma", path: ".."
+
+gem "coridoc", git: "https://github.com/coridoc/coridoc.git",
+    ref: "19ad0ebae998d7894662b545b94305e201240ea2"
+gem "coridoc-adoc", git: "https://github.com/coridoc/coridoc.git",
+    ref: "19ad0ebae998d7894662b545b94305e201240ea2"
+gem "coridoc-markdown", git: "https://github.com/coridoc/coridoc.git",
+    ref: "19ad0ebae998d7894662b545b94305e201240ea2"
+gem "metanorma-core", git: "https://github.com/metanorma/metanorma-core.git",
+    ref: "231ea6e236a6ccb199ff236df675b6a1edc0240a"
+gem "metanorma-document", git: "https://github.com/metanorma/metanorma-document.git",
+    ref: "3911acbb4ce9d8497a94579610a42d663b8a78cd"
+gem "metanorma-iso", git: "https://github.com/metanorma/metanorma-iso.git",
+    ref: "1c21c36e935c8a7d0681214aa821b5497877d9cf"
+gem "metanorma-ladl", git: "https://github.com/metanorma/metanorma-ladl.git",
+    ref: "361b29106e7dd7ffa753e0e35b097cd0cbf622f5"
+gem "metanorma-standoc", git: "https://github.com/metanorma/metanorma-standoc.git",
+    ref: "38133f98ab62f5bcbc93851b6b06792f49239c71"
+gem "metanorma-taste", git: "https://github.com/metanorma/metanorma-taste.git",
+    ref: "d0c26613f78bf44fb10c07290b38b7e87aeaf544"
+
+gem "amath", "= 0.2.0"
+gem "bigdecimal", "= 3.3.1"
+gem "lutaml-lml", "= 0.3.6"
+gem "mml", "= 2.4.8"
+gem "parsanol", "= 1.3.151"
+gem "rspec", "~> 3.13"
+gem "sts", "= 0.6.15"

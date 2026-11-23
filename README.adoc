@@ -68,3 +68,34 @@ virtue (_veritas_), but a practical reality on the ground (_verum_), that can be
 stakeholders of multiple standards.
 
 
+
+== Native document compile (opt in)
+
+`Metanorma::Compile.new.compile(path, pipeline: :document, type: :iso,
+extension_keys: [:html])` parses AsciiDoc (or Markdown for `.md` input) through
+Coridoc into the registered native ISO semantic model. The native ISO presenter
+clones that model, applies the shared LADL profile and renders HTML directly from
+the presentation model. This path does not write structural intermediate XML.
+The return value exposes `semantic_model`, `presentation_model` and `outputs`.
+The default pipeline remains `:legacy`.
+
+Install the optional development stack with
+`BUNDLE_GEMFILE=gemfiles/document_pipeline.gemfile bundle install`.
+The dedicated CI lane runs the actual native compile regression specs with
+`METANORMA_DOCUMENT_PIPELINE_TEST=1`; the ordinary bundle does not require this
+SDK stack.
+
+The first supported native slice covers ordinary clauses, rich paragraphs,
+cross references, lists, tables and captions supported by the ISO presenter.
+Unsupported source constructs, absent flavor presenters and unsupported output
+formats raise errors. Terms, requirements, math, footnotes, external references
+and bibliography are outside the presenter's current envelope. PDF, DOCX,
+section splitting, extraction, site generation, Relaton output and filename
+templates remain on the legacy pipeline. Required metadata is taken from source;
+this path does not invent metadata or claim schema validation of incomplete input.
+
+Request `extension_keys: [:html, :xml, :presentation]` to write semantic XML and
+presentation XML explicitly as interchange artifacts. XML serialization is not
+used as an internal stage. Source inputs for this pipeline are AsciiDoc and
+Markdown; native XML input remains outside this first slice. `document_presenter`
+and `document_labeler` options accept explicit flavor-provider callables.

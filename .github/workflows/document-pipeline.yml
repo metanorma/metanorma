@@ -1,0 +1,34 @@
+name: document-pipeline
+on:
+  pull_request:
+    paths:
+      - 'lib/metanorma/compile/**'
+      - 'spec/compile/document_pipeline_spec.rb'
+      - 'gemfiles/document_pipeline.gemfile*'
+      - '.github/workflows/document-pipeline.yml'
+  push:
+    branches: [main, master]
+permissions:
+  contents: read
+jobs:
+  native-compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['3.3', '4.0']
+    env:
+      BUNDLE_GEMFILE: gemfiles/document_pipeline.gemfile
+      METANORMA_DOCUMENT_PIPELINE_TEST: '1'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Resolved native runtime
+        run: |
+          bundle exec ruby -rjson -e 'puts JSON.pretty_generate(Gem.loaded_specs.select { |n, _| n.start_with?("metanorma", "coridoc") || %w[amath parsanol lutaml-model lutaml-lml].include?(n) }.transform_values { |s| s.version.to_s })'
+      - name: Native source to ISO presentation and HTML
+        run: bundle exec rspec --options /dev/null -Ilib spec/compile/document_pipeline_spec.rb

@@ -21,6 +21,7 @@ require_relative "output_filename_config"
 require_relative "flavor"
 require_relative "relaton_drop"
 require_relative "render"
+require_relative "document_pipeline"
 
 module Metanorma
   class Compile
@@ -48,6 +49,8 @@ module Metanorma
     # @param filename [String] path to the input file
     # @param options [Hash] compilation options
     def compile(filename, options = {})
+      return compile_document(filename, options) if compile_pipeline(options) == :document
+
       process_options!(filename, options)
       @processor = @registry.find_processor(options[:type].to_sym)
 
