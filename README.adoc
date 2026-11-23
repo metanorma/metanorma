@@ -72,11 +72,12 @@ stakeholders of multiple standards.
 == Native document compile (opt in)
 
 `Metanorma::Compile.new.compile(path, pipeline: :document, type: :iso,
-extension_keys: [:html], novalid: true)` parses AsciiDoc (or Markdown for `.md` input) through
+extension_keys: [:html])` parses AsciiDoc (or Markdown for `.md` input) through
 Coridoc into the registered native ISO semantic model. The native ISO presenter
 clones that model, applies the shared LADL profile and renders HTML directly from
 the presentation model. This path does not write structural intermediate XML.
-The return value exposes `semantic_model`, `presentation_model` and `outputs`.
+The return value exposes `semantic_model`, `presentation_model`, `outputs` and
+`validation` (including the actual validation report and shared grammar errors).
 The default pipeline remains `:legacy`.
 
 Install the optional development stack with
@@ -92,11 +93,17 @@ formats raise errors. Terms, requirements, math, footnotes, external references
 and bibliography are outside the presenter's current envelope. PDF, DOCX,
 section splitting, extraction, site generation, Relaton output and filename
 templates remain on the legacy pipeline. Required metadata is taken from source;
-this path does not invent metadata. Native validation is not yet integrated, so
-this pipeline requires an explicit `novalid: true`; omitting it raises an error.
+this path does not invent metadata. Native validation runs the explicit ISO
+shared grammar and the actual ISO rule registry on the semantic model before
+presentation. Its schema projection stays in memory. Findings use the compiler
+log and remain available in `result.validation`; ordinary findings retain the
+legacy logging policy, while severity-zero findings stop compilation. Set
+`document_validation_profile: :strict` to also stop on error or warning findings.
+`novalid: true` explicitly skips validation and returns `validation: nil`.
 
 Request `extension_keys: [:html, :xml, :presentation]` to write semantic XML and
 presentation XML explicitly as interchange artifacts. XML serialization is not
 used as an internal stage. Source inputs for this pipeline are AsciiDoc and
-Markdown; native XML input remains outside this first slice. `document_presenter`
-and `document_labeler` options accept explicit flavor-provider callables.
+Markdown; native XML input remains outside this first slice.
+`document_presenter`, `document_labeler` and `document_validator` options accept explicit
+flavor-provider callables.

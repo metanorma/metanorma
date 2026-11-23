@@ -7,6 +7,10 @@ if ENV["METANORMA_DOCUMENT_PIPELINE_TEST"] == "1"
   RSpec.describe Metanorma::Compile::DocumentPipeline do
     let(:compiler) { Metanorma::Compile.new }
 
+    def canonical_xml(text)
+      Nokogiri::XML(text) { |config| config.strict.nonet }.canonicalize
+    end
+
     it "keeps legacy as the default and rejects unknown pipeline selections" do
       expect(compiler.compile_pipeline({})).to eq(:legacy)
       expect(compiler.compile_pipeline(pipeline: "document")).to eq(:document)
@@ -39,13 +43,15 @@ if ENV["METANORMA_DOCUMENT_PIPELINE_TEST"] == "1"
         .to raise_error(ArgumentError, /sectionsplit/)
     end
 
-    it "requires an explicit validation waiver until native validation is integrated" do
+    it "rejects an invalid native validation provider before presentation" do
       Dir.mktmpdir do |dir|
+        source = File.join(dir, "input.adoc")
+        File.write(source, "= Example\n\n== Scope\n\nBody.\n")
         expect do
-          compiler.compile(File.join(dir, "input.adoc"), pipeline: :document,
-                                                        type: :iso)
+          compiler.compile(source, pipeline: :document, type: :iso,
+                                   document_validator: Object.new)
         end.to raise_error(described_class::UnavailableStageError,
-                           /explicitly set novalid: true/)
+                           /document validator must be callable/)
       end
     end
 
@@ -83,7 +89,7 @@ if ENV["METANORMA_DOCUMENT_PIPELINE_TEST"] == "1"
     it "writes semantic and presentation XML only as explicitly requested interchange" do
       Dir.mktmpdir do |dir|
         source = File.join(dir, "document.adoc")
-        File.write(source, "= Example\n:language: en\n\n== Scope\n\nBody.\n")
+        File.write(source, File.read(File.join(__dir__, "fixtures/native-document/source.adoc")))
         result = compiler.compile(source, pipeline: :document, type: :iso,
                                           extension_keys: %i[html xml presentation], novalid: true)
         expect(result.outputs.keys).to eq(%i[html xml presentation])
@@ -91,6 +97,8 @@ if ENV["METANORMA_DOCUMENT_PIPELINE_TEST"] == "1"
         presentation = Metanorma::Iso::Document::Root.from_xml(File.read(result.outputs.fetch(:presentation)))
         expect(semantic.type).to eq("semantic")
         expect(presentation.type).to eq("presentation")
+        expect(canonical_xml(semantic.to_xml)).to eq(canonical_xml(File.read(result.outputs.fetch(:xml))))
+        expect(canonical_xml(presentation.to_xml)).to eq(canonical_xml(File.read(result.outputs.fetch(:presentation))))
         expect(File.read(result.outputs.fetch(:presentation))).to include("fmt-ladl-label-data")
       end
     end

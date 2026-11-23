@@ -7,7 +7,16 @@ module Metanorma
     class DocumentPipeline
       class UnavailableStageError < ArgumentError; end
 
-      Result = Struct.new(:semantic_model, :presentation_model, :outputs,
+      class ValidationError < ArgumentError
+        attr_reader :validation
+
+        def initialize(validation)
+          @validation = validation
+          super("Native document validation failed: #{validation.fatal_messages.join('; ')}")
+        end
+      end
+
+      Result = Struct.new(:semantic_model, :presentation_model, :outputs, :validation,
                           keyword_init: true)
       FORMATS = { html: "html", xml: "xml",
                   presentation: "presentation.xml" }.freeze
@@ -16,13 +25,10 @@ module Metanorma
 
       def compile(filename, options)
         extensions = extensions(options)
-        unless options[:novalid] == true
-          raise UnavailableStageError,
-                "Native validation is not integrated; explicitly set novalid: true"
-        end
         root_class = model_root(options.fetch(:type))
         semantic = source_model(filename, options, root_class)
         verify_model!(semantic, root_class, "source builder")
+        validation = validate(semantic, filename, options)
         presenter = options[:document_presenter] || native_presenter(options.fetch(:type))
         options[:document_labeler] ||= native_labeler(options.fetch(:type))
         unless presenter.respond_to?(:call)
@@ -42,10 +48,28 @@ module Metanorma
                                  options)
         paths = write_outputs(filename, outputs, options)
         Result.new(semantic_model: semantic, presentation_model: presentation,
-                   outputs: paths)
+                   outputs: paths, validation: validation)
       end
 
       private
+
+      def validate(semantic, filename, options)
+        return nil if options[:novalid] == true
+
+        require_relative "document_validation"
+        validator = options[:document_validator] || DocumentValidation.new
+        unless validator.respond_to?(:call)
+          raise UnavailableStageError, "Native document validator must be callable"
+        end
+        result = validator.call(semantic, flavor: options.fetch(:type),
+                                          options: options.merge(source_filename: filename))
+        unless %i[report schema_errors fatal_messages valid?].all? { |name| result.respond_to?(name) }
+          raise UnavailableStageError, "Native document validator returned an invalid result"
+        end
+        raise ValidationError, result unless result.fatal_messages.empty?
+
+        result
+      end
 
       def extensions(options)
         unsupported = UNSUPPORTED_OPTIONS.select { |name| options[name] }

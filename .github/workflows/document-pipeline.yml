@@ -3,7 +3,8 @@ on:
   pull_request:
     paths:
       - 'lib/metanorma/compile/**'
-      - 'spec/compile/document_pipeline_spec.rb'
+      - 'spec/compile/document*_spec.rb'
+      - 'spec/compile/fixtures/native-document/**'
       - 'gemfiles/document_pipeline.gemfile*'
       - '.github/workflows/document-pipeline.yml'
   push:
@@ -31,4 +32,6 @@ jobs:
         run: |
           bundle exec ruby -rjson -e 'puts JSON.pretty_generate(Gem.loaded_specs.select { |n, _| n.start_with?("metanorma", "coridoc") || %w[amath parsanol lutaml-model lutaml-lml].include?(n) }.transform_values { |s| s.version.to_s })'
       - name: Native source to ISO presentation and HTML
-        run: bundle exec rspec --options /dev/null -Ilib spec/compile/document_pipeline_spec.rb
+        run: |
+          bundle exec rspec --options /dev/null -Ilib spec/compile/document_pipeline_spec.rb spec/compile/document_validation_spec.rb --format progress --format json --out native-results.json
+          ruby -rjson -e 's = JSON.parse(File.read("native-results.json")).fetch("summary"); abort "Native examples must execute without skips" unless s.fetch("example_count") >= 12 && s.fetch("failure_count").zero? && s.fetch("pending_count").zero?'

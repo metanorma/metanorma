@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/coridoc/coridoc.git
-  revision: 19ad0ebae998d7894662b545b94305e201240ea2
-  ref: 19ad0ebae998d7894662b545b94305e201240ea2
+  revision: 310d175df618522eea377bac7bc4c261158f928d
+  ref: 310d175df618522eea377bac7bc4c261158f928d
   specs:
     coridoc (2.0.31)
       lutaml-model (~> 0.8.0)
@@ -29,8 +29,8 @@ GIT
 
 GIT
   remote: https://github.com/metanorma/metanorma-document.git
-  revision: 3911acbb4ce9d8497a94579610a42d663b8a78cd
-  ref: 3911acbb4ce9d8497a94579610a42d663b8a78cd
+  revision: 328e45559a98fab536e1955ed0fc960b6d0390cf
+  ref: 328e45559a98fab536e1955ed0fc960b6d0390cf
   specs:
     metanorma-document (0.5.11)
       base64
@@ -49,8 +49,8 @@ GIT
 
 GIT
   remote: https://github.com/metanorma/metanorma-iso.git
-  revision: 1c21c36e935c8a7d0681214aa821b5497877d9cf
-  ref: 1c21c36e935c8a7d0681214aa821b5497877d9cf
+  revision: 61f4da151214a50f47fe061fd778624311a90f21
+  ref: 61f4da151214a50f47fe061fd778624311a90f21
   specs:
     metanorma-iso (3.5.30)
       base64
@@ -65,8 +65,8 @@ GIT
 
 GIT
   remote: https://github.com/metanorma/metanorma-ladl.git
-  revision: 361b29106e7dd7ffa753e0e35b097cd0cbf622f5
-  ref: 361b29106e7dd7ffa753e0e35b097cd0cbf622f5
+  revision: 137ab75f9cf840b51c0ea192a76ef430959153cb
+  ref: 137ab75f9cf840b51c0ea192a76ef430959153cb
   specs:
     metanorma-ladl (0.1.0)
       lutaml-lml (>= 0.3.6, < 0.3.7)
@@ -74,8 +74,8 @@ GIT
 
 GIT
   remote: https://github.com/metanorma/metanorma-standoc.git
-  revision: 38133f98ab62f5bcbc93851b6b06792f49239c71
-  ref: 38133f98ab62f5bcbc93851b6b06792f49239c71
+  revision: 734d190f7b6c483fb6f2ffe5ab400311dc41cb0b
+  ref: 734d190f7b6c483fb6f2ffe5ab400311dc41cb0b
   specs:
     metanorma-standoc (3.5.24)
       addressable (~> 2.8)
