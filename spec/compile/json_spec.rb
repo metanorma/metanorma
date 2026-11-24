@@ -99,4 +99,22 @@ RSpec.describe Metanorma::Compile do
     expect(log).to match(/POOLED: \[.*cannot serialize the generic document/)
     expect(Dir[File.join(out, "*.json")]).to be_empty
   end
+
+  it "names the flavor by the last short of a processor with aliases" do
+    require "metanorma/mirror"
+    compile = described_class.new
+    compile.instance_variable_set(:@processor,
+                                  instance_double(Metanorma::Processor,
+                                                  short: %i[csd cc]))
+    compile.instance_variable_set(:@errors, [])
+    pipeline = instance_double(Metanorma::Mirror::Output::Pipeline,
+                               process: Struct.new(:content).new(nil))
+    allow(Metanorma::Mirror::Output::Pipeline).to receive(:new)
+      .and_return(pipeline)
+
+    compile.send(:export_json, "<metanorma/>", { out: File.join(out, "x.json") })
+
+    expect(Metanorma::Mirror::Output::Pipeline)
+      .to have_received(:new).with(hash_including(flavor: "cc"))
+  end
 end

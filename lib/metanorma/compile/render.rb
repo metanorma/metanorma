@@ -183,7 +183,9 @@ module Metanorma
       Tempfile.create(%w(mn-json .xml)) do |f|
         f.write(sem_xml.to_s)
         f.close
-        flavor = @processor.short.to_s
+        # A processor's short is a symbol, or a list of aliases whose last
+        # entry is the flavor gem's name (cc: %i[csd cc]).
+        flavor = Array(@processor.short).last.to_s
         guide = Metanorma::Mirror::Output::Pipeline
           .new(xml_path: f.path, flavor: flavor).process
         # Mirror yields no content for a model it cannot transform: say so
