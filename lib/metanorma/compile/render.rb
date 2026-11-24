@@ -1,6 +1,6 @@
 module Metanorma
   class Compile
-    NO_FONTIST_FORMATS = %i[xml presentation rxl mko].freeze
+    NO_FONTIST_FORMATS = %i[xml presentation rxl mko json].freeze
 
     # Generate presentation XML from semantic XML
     def generate_presentation_xml(source_file, xml, bibdata, output_paths, opt)
@@ -126,6 +126,10 @@ module Metanorma
         # Harness format: export the MKO bundle from the typed model
         export_mko_bundle(output_paths)
         true
+      elsif ext == :json
+        # Harness format: Metanorma JSON, the serialized document model
+        export_json(output_paths)
+        true
       elsif ext == :html && options[:sectionsplit]
         # Special case: Split HTML into sections
         sectionsplit_convert(
@@ -147,8 +151,7 @@ module Metanorma
       # :xml is the freshly written semantic XML; orig_filename is the
       # adoc SOURCE and is only right when an output_dir kept the
       # semantic XML at the input location.
-      semantic_path = [output_paths[:xml], output_paths[:orig_filename]]
-                       .find { |p1| p1 && File.exist?(p1) && File.extname(p1) != ".adoc" }
+      semantic_path = semantic_xml_path(output_paths)
       presentation = if File.exist?(output_paths[:presentationxml])
                        File.read(output_paths[:presentationxml])
                      end
@@ -162,6 +165,36 @@ module Metanorma
                                  severity: 0 })
       @log.add("MKO_OUTPUT", nil, params: [e.message])
       nil
+    end
+
+    # Export Metanorma JSON: the semantic XML parsed into the flavor's
+    # metanorma-document model and serialized through the Mirror model
+    # (metanorma-mirror, a dependency of metanorma-document), never a
+    # hand-built hash. The flavor comes from the processor.
+    def export_json(output_paths)
+      require "metanorma/document"
+      require "metanorma/mirror"
+      guide = Metanorma::Mirror::Output::Pipeline
+        .new(xml_path: semantic_xml_path(output_paths),
+             flavor: @processor.short.to_s).process
+      File.write(output_paths[:out],
+                 Metanorma::Mirror::Serialization::JsonSerializer
+                   .serialize_pretty(guide.content))
+    rescue LoadError => e
+      @log.add_msg(JSON_OUTPUT: { category: "JSON Output",
+                                  error: "the json output format requires " \
+                                         "the metanorma-document gem: %s",
+                                  severity: 0 })
+      @log.add("JSON_OUTPUT", nil, params: [e.message])
+      nil
+    end
+
+    # :xml is the freshly written semantic XML; orig_filename is the
+    # adoc SOURCE and is only right when an output_dir kept the
+    # semantic XML at the input location.
+    def semantic_xml_path(output_paths)
+      [output_paths[:xml], output_paths[:orig_filename]]
+        .find { |p1| p1 && File.exist?(p1) && File.extname(p1) != ".adoc" }
     end
 
     # Process format that requires presentation XML

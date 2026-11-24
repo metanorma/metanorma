@@ -95,13 +95,14 @@ module Metanorma
       end
 
       # Harness formats available to every flavor, regardless of the
-      # processor's own list. MKO (metanorma-document) is resolved via
-      # Core::Flavors, so it needs nothing from the flavor gems.
-      HARNESS_OUTPUT_FORMATS = { mko: "mko" }.freeze
+      # processor's own list. MKO and JSON (metanorma-document) are
+      # resolved via Core::Flavors, so they need nothing from the flavor
+      # gems.
+      HARNESS_OUTPUT_FORMATS = { mko: "mko", json: "json" }.freeze
 
       # Formats a flavor offers by default: its own list plus
       # taste-contributed document-model formats. The harness formats
-      # (mko) are deliberately absent — they are opt-in via
+      # (mko, json) are deliberately absent — they are opt-in via
       # --extensions, never a surprise default output.
       def default_output_formats(options)
         @processor.output_formats
