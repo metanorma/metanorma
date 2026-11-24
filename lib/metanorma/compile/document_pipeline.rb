@@ -17,7 +17,7 @@ module Metanorma
       end
 
       Result = Struct.new(:semantic_model, :presentation_model, :outputs, :validation,
-                          keyword_init: true)
+                          :contents, keyword_init: true)
       FORMATS = { html: "html", xml: "xml",
                   presentation: "presentation.xml" }.freeze
       UNSUPPORTED_OPTIONS = %i[sectionsplit extract relaton site_generate
@@ -46,9 +46,11 @@ module Metanorma
         end
         outputs = render_outputs(presentation, semantic_xml, extensions,
                                  options)
-        paths = write_outputs(filename, outputs, options)
+        # in_memory: true keeps every output in the result; nothing is written.
+        paths = options[:in_memory] ? {} : write_outputs(filename, outputs, options)
         Result.new(semantic_model: semantic, presentation_model: presentation,
-                   outputs: paths, validation: validation)
+                   outputs: paths, validation: validation,
+                   contents: options[:in_memory] ? outputs : nil)
       end
 
       private
@@ -98,13 +100,17 @@ module Metanorma
       end
 
       def native_presenter(flavor)
-        return nil unless Metanorma::Core::FlavorLoader.taste2flavor(flavor) == :iso
+        base = Metanorma::Core::FlavorLoader.taste2flavor(flavor)
+        path = "metanorma/#{base}/presentation/transformer"
+        begin
+          require path
+        rescue LoadError => e
+          raise UnavailableStageError, "Native ISO presentation provider is unavailable: #{e.message}" if base == :iso
+          raise unless e.path == path
 
-        require "metanorma/iso/presentation/transformer"
-        Metanorma::Iso::Presentation::Transformer.new
-      rescue LoadError => e
-        raise UnavailableStageError,
-              "Native ISO presentation provider is unavailable: #{e.message}"
+          return nil
+        end
+        Metanorma.const_get(base.to_s.capitalize)::Presentation::Transformer.new
       end
 
       def native_labeler(flavor)
