@@ -174,6 +174,9 @@ module Metanorma
     # XML is not necessarily on disk (only when :xml is requested), so it
     # is taken from memory.
     def export_json(sem_xml, output_paths)
+      # A JSON left by an earlier run would misrepresent this input if
+      # serialization fails below.
+      FileUtils.rm_f(output_paths[:out])
       require "tempfile"
       require "metanorma/document"
       require "metanorma/mirror"
@@ -195,6 +198,12 @@ module Metanorma
     rescue LoadError => e
       json_output_error("the json output format requires the " \
                         "metanorma-document gem: %s", e.message)
+    rescue StandardError => e
+      # Mirror (ArgumentError) or the write (Errno::EACCES) failed: record
+      # the artifact as failed rather than raise with an empty @errors.
+      FileUtils.rm_f(output_paths[:out])
+      json_output_error("the json output failed: %s",
+                        "#{e.class}: #{e.message}")
     end
 
     # No JSON was written, so the failure joins @errors like any missing

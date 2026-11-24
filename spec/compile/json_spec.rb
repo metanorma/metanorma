@@ -13,8 +13,14 @@ RSpec.describe Metanorma::Compile do
     script = <<~RUBY
       require "metanorma"
       c = Metanorma::Compile.new
-      c.compile(ARGV[0], type: ARGV[2], extension_keys: [:json],
-                output_dir: ARGV[1], no_install_fonts: true)
+      begin
+        c.compile(ARGV[0], type: ARGV[2], extension_keys: [:json],
+                  output_dir: ARGV[1], no_install_fonts: true)
+      rescue StandardError => e
+        puts "RAISED: \#{e.class}"
+        exit 2
+      end
+      puts "POOLED: \#{c.errors.inspect}"
       exit(c.errors.empty? ? 0 : 1)
     RUBY
     Open3.capture2e(RbConfig.ruby, "-e", script, input, out, type)
@@ -83,10 +89,14 @@ RSpec.describe Metanorma::Compile do
     adoc = File.join(out, "generic.adoc")
     File.write(adoc, "= Sample\n:docnumber: 1\n:novalid:\n\n== Scope\n\nHi.\n")
 
+    stale = File.join(out, "generic.json")
+    File.write(stale, "{\"stale\":true}")
+
     log, status = run_compile(adoc, "generic")
 
-    expect(status.success?).to be(false)
-    expect(log).to include("cannot serialize the generic document model")
+    expect(log).not_to include("RAISED")
+    expect(status.exitstatus).to eq(1)
+    expect(log).to match(/POOLED: \[.*cannot serialize the generic document/)
     expect(Dir[File.join(out, "*.json")]).to be_empty
   end
 end
