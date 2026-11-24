@@ -174,6 +174,7 @@ module Metanorma
     # XML is not necessarily on disk (only when :xml is requested), so it
     # is taken from memory.
     def export_json(sem_xml, output_paths)
+      require "tempfile"
       require "metanorma/document"
       require "metanorma/mirror"
       Tempfile.create(%w(mn-json .xml)) do |f|
