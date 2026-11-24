@@ -180,18 +180,30 @@ module Metanorma
       Tempfile.create(%w(mn-json .xml)) do |f|
         f.write(sem_xml.to_s)
         f.close
+        flavor = @processor.short.to_s
         guide = Metanorma::Mirror::Output::Pipeline
-          .new(xml_path: f.path, flavor: @processor.short.to_s).process
+          .new(xml_path: f.path, flavor: flavor).process
+        # Mirror yields no content for a model it cannot transform: say so
+        # rather than write a "null" document.
+        guide.content or
+          return json_output_error("metanorma-mirror cannot serialize the " \
+                                   "%s document model", flavor)
         File.write(output_paths[:out],
                    Metanorma::Mirror::Serialization::JsonSerializer
                      .serialize_pretty(guide.content))
       end
     rescue LoadError => e
-      @log.add_msg(JSON_OUTPUT: { category: "JSON Output",
-                                  error: "the json output format requires " \
-                                         "the metanorma-document gem: %s",
+      json_output_error("the json output format requires the " \
+                        "metanorma-document gem: %s", e.message)
+    end
+
+    # No JSON was written, so the failure joins @errors like any missing
+    # artifact (#601) and the CLI exits non-zero.
+    def json_output_error(message, param)
+      @errors << format(message, param)
+      @log.add_msg(JSON_OUTPUT: { category: "JSON Output", error: message,
                                   severity: 0 })
-      @log.add("JSON_OUTPUT", nil, params: [e.message])
+      @log.add("JSON_OUTPUT", nil, params: [param])
       nil
     end
 

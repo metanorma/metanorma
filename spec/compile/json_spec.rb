@@ -9,16 +9,20 @@ RSpec.describe Metanorma::Compile do
   after { FileUtils.remove_entry(out) }
 
   # A subprocess keeps the flavor-gem load single-shot (see mko_spec).
-  def compile_json(input)
+  def run_compile(input, type)
     script = <<~RUBY
       require "metanorma"
       c = Metanorma::Compile.new
-      c.compile(ARGV[0], type: "iso", extension_keys: [:json],
+      c.compile(ARGV[0], type: ARGV[2], extension_keys: [:json],
                 output_dir: ARGV[1], no_install_fonts: true)
       exit(c.errors.empty? ? 0 : 1)
     RUBY
-    ok, status = Open3.capture2e(RbConfig.ruby, "-e", script, input, out)
-    expect(status.success?).to be(true), ok
+    Open3.capture2e(RbConfig.ruby, "-e", script, input, out, type)
+  end
+
+  def compile_json(input, type: "iso")
+    log, status = run_compile(input, type)
+    expect(status.success?).to be(true), log
     JSON.parse(File.read(Dir[File.join(out, "*.json")].first))
   end
 
@@ -73,5 +77,16 @@ RSpec.describe Metanorma::Compile do
     doc = compile_json(adoc)
 
     expect(clause_titles(doc)).to include("Scope", "General")
+  end
+
+  it "reports a model Mirror cannot serialize instead of writing null" do
+    adoc = File.join(out, "generic.adoc")
+    File.write(adoc, "= Sample\n:docnumber: 1\n:novalid:\n\n== Scope\n\nHi.\n")
+
+    log, status = run_compile(adoc, "generic")
+
+    expect(status.success?).to be(false)
+    expect(log).to include("cannot serialize the generic document model")
+    expect(Dir[File.join(out, "*.json")]).to be_empty
   end
 end
