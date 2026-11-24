@@ -89,4 +89,34 @@ RSpec.describe "incremental collection build" do
       File.join(work, Metanorma::Collection::ArtifactStore::DEFAULT_DIRNAME)
     expect(Dir[File.join(default_store, "*.semantic.xml")].size).to eq 2
   end
+
+  # Control for the svgmap fixture itself: the non-staged render must bind the
+  # svgmap's shape to the cross-document eref target, proving the fixture
+  # exercises the feature the staged examples assert on.
+  it "binds svgmap hotspots on the direct collection render" do
+    work = File.join(@dir, "direct")
+    FileUtils.cp_r(INC, work)
+    Dir.chdir(work) do
+      Metanorma::Collection.parse("collection.yml").render(
+        format: %i[html], output_folder: "_site"
+      )
+    end
+    expect(File.read(File.join(work, "_site", "documents", "part1-terms.html")))
+      .to include('<a href="part2-bolts.html">')
+  end
+
+  # iso-10303#876: svgmap resolution runs only in the collection renderer's
+  # update_xrefs, and the reinflate mode skipped it on the assumption that
+  # isolation had already applied it. Isolation is a single-document compile;
+  # the collection-only pass never runs anywhere in the staged pipeline, so
+  # every staged delivery shipped figures with dead hotspots (no bound <a>
+  # in the SVG, no image map) — TRThurman hit it on part 41 figure D.59.
+  # The invariant: after reinflate, a source svgmap must survive as a bound
+  # hotspot, exactly as the direct render produces.
+  it "binds svgmap hotspots after isolate and reinflate" do
+    compile_isolated(store, File.join(@dir, "iso"))
+    site = reinflate(store, File.join(@dir, "reinf"))
+    expect(File.read(File.join(site, "part1.html")))
+      .to include('<a href="part2.html">')
+  end
 end
