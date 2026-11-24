@@ -37,8 +37,9 @@ module Metanorma
       # references as stubs instead of stripping them -- for an isolated build of
       # a collection member (compiled without the rest of its collection
       # present). Unlike +with_nested+, the ordinary intra-document passes still
-      # run (xref_process, svgmap); only the cross-document resolve/strip is
-      # turned into preserve, so a later reinflation pass can relink the stubs.
+      # run (xref_process); svgmap resolution is deferred with the rest of the
+      # cross-document work, so the stored member keeps pending svgmap erefs
+      # that a later reinflation pass binds against the final anchor suffixes.
       def with_preserve_unresolved
         saved = @preserve_unresolved
         @preserve_unresolved = true

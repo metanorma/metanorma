@@ -25,7 +25,25 @@ module Metanorma
       # @param docid [String] Document identifier for retrieving suffix
       # @param presxml [Boolean, nil] Whether this is presentation XML
       def svgmap_resolve(docxml, docid, presxml)
-        ids, docxml, isodoc, tag = svgmap_resolve_prep(docxml, docid, presxml)
+        # Preserve mode stores an isolated member for later reinflation.
+        # Resolving an svgmap eref now would bake THIS render's anchor
+        # suffixes into the stored stub, and reinflation re-derives the
+        # ids with its own suffixes -- every hotspot would point at an
+        # anchor that no longer exists (iso-10303#875: part 41 figure
+        # hotspots dead in the SRL delivery). Defer the whole pass; the
+        # reinflate render binds the pending erefs against final anchors.
+        return docxml if @preserve_unresolved
+
+        tag = presxml ? "fmt-eref" : "eref"
+        if @reinflate && docxml.xpath(ns("//svgmap//#{tag}")).empty?
+          # Reinflation binds only svgmaps still carrying unresolved
+          # erefs (the preserve-mode stores). Already-bound svgmaps keep
+          # their baked targets: re-extracting them would drop the
+          # targets without rebinding.
+          return docxml
+        end
+
+        ids, docxml, isodoc, _tag = svgmap_resolve_prep(docxml, docid, presxml)
 
         # Stage 1: Resolve EREF references to their targets
         resolve_svgmap_erefs(docxml, tag, isodoc, ids, presxml)

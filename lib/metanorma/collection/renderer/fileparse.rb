@@ -48,7 +48,11 @@ module Metanorma
         # post: references containers with only hidden bibitems flagged hidden.
         sso and eref2link(xml, sso)
         # svgmap_resolve hands back the tree Vectory rebuilt; keep it.
-        xml = svgmap_resolve(xml, docid, sso) unless @nested || @reinflate
+        # Runs during reinflation too: the preserve-mode store keeps
+        # pending svgmap erefs (deferring here would leave every hotspot
+        # pointing at the stage render's anchor suffixes), and this is
+        # the pass that binds them against the final anchors.
+        xml = svgmap_resolve(xml, docid, sso) unless @nested
         xml.to_xml
       end
 

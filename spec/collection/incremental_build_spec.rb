@@ -58,6 +58,27 @@ RSpec.describe "incremental collection build" do
     expect(Dir[File.join(store, "*.anchors.json")].size).to eq 2
   end
 
+  # iso-10303#875: svgmap erefs must stay PENDING in the preserve-mode
+  # store. Resolving them at stage time bakes that render's anchor
+  # suffixes into the stored stub, and reinflation re-derives the ids
+  # with its own suffixes -- the bound hotspots then point at anchors
+  # that no longer exist, which is how every SRL delivery shipped dead
+  # figure hotspots. The reinflate example below asserts the other half
+  # of the contract: the pending erefs bind against the final anchors.
+  it "keeps svgmap erefs pending in the preserve-mode store" do
+    compile_isolated(store, File.join(@dir, "iso"))
+    part1 = Dir[File.join(store, "*.semantic.xml")]
+      .find { |f| f.include?("ISO-99000-1") }
+    xml = Nokogiri::XML(File.read(part1), &:huge)
+    pending_targets = xml
+      .xpath("//*[local-name() = 'svgmap']//*[local-name() = 'target']")
+    expect(pending_targets).not_to be_empty
+    expect(pending_targets
+      .xpath(".//*[local-name() = 'eref']")).not_to be_empty
+    expect(pending_targets
+      .xpath(".//*[local-name() = 'link']")).to be_empty
+  end
+
   it "reinflates the stored stubs into resolved cross-document links" do
     compile_isolated(store, File.join(@dir, "iso"))
     site = reinflate(store, File.join(@dir, "reinf"))
