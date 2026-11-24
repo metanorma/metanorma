@@ -128,7 +128,7 @@ module Metanorma
         true
       elsif ext == :json
         # Harness format: Metanorma JSON, the serialized document model
-        export_json(output_paths)
+        export_json(sem_xml, output_paths)
         true
       elsif ext == :html && options[:sectionsplit]
         # Special case: Split HTML into sections
@@ -170,16 +170,21 @@ module Metanorma
     # Export Metanorma JSON: the semantic XML parsed into the flavor's
     # metanorma-document model and serialized through the Mirror model
     # (metanorma-mirror, a dependency of metanorma-document), never a
-    # hand-built hash. The flavor comes from the processor.
-    def export_json(output_paths)
+    # hand-built hash. The flavor comes from the processor. The semantic
+    # XML is not necessarily on disk (only when :xml is requested), so it
+    # is taken from memory.
+    def export_json(sem_xml, output_paths)
       require "metanorma/document"
       require "metanorma/mirror"
-      guide = Metanorma::Mirror::Output::Pipeline
-        .new(xml_path: semantic_xml_path(output_paths),
-             flavor: @processor.short.to_s).process
-      File.write(output_paths[:out],
-                 Metanorma::Mirror::Serialization::JsonSerializer
-                   .serialize_pretty(guide.content))
+      Tempfile.create(%w(mn-json .xml)) do |f|
+        f.write(sem_xml.to_s)
+        f.close
+        guide = Metanorma::Mirror::Output::Pipeline
+          .new(xml_path: f.path, flavor: @processor.short.to_s).process
+        File.write(output_paths[:out],
+                   Metanorma::Mirror::Serialization::JsonSerializer
+                     .serialize_pretty(guide.content))
+      end
     rescue LoadError => e
       @log.add_msg(JSON_OUTPUT: { category: "JSON Output",
                                   error: "the json output format requires " \
