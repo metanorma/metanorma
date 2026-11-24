@@ -47,13 +47,36 @@ Liquid extensions::
 The glossarist plugin registers a Liquid block and filters at load time
 (`metanorma-plugin-glossarist/lib/metanorma-plugin-glossarist.rb:48-49`).
 
-Two things in this inventory differ from the issue's table. First,
-`yaml2text`, `json2text` and `data2text` live in the lutaml plugin gem, not
-in a separate data gem (`converter.rb:48-50` names them under
-`Metanorma::Plugin::Lutaml`). Second, there is no `metanorma-plugin-data`,
-`-asciichem` or `-mathml` gem installed to read, so the mappings for those
-rest on the issue text alone and need checking against their sources before
-the API is frozen.
+Three things in this inventory differ from the issue's table.
+
+* `yaml2text`, `json2text` and `data2text` exist in two gems. The lutaml gem
+  carries them and standoc registers those (`converter.rb:48-50`). The
+  separate gem is `metanorma-plugin-datastruct` 0.3.13 (the issue's
+  "metanorma-plugin-data"; no gem of that name exists), which has the same
+  three classes on a shared base
+  (`metanorma-plugin-datastruct/lib/metanorma/plugin/datastruct/yaml2_text_preprocessor.rb:9`,
+  `json2_text_preprocessor.rb:9`, `data2_text_preprocessor.rb:9`,
+  `base_structured_text_preprocessor.rb:17-18`). That base builds a Liquid
+  environment, registers the `keyiterator` tag and the values filter
+  (`base_structured_text_preprocessor.rb:49-55`), renders the template with
+  a local file system (`:158-160`) and warns on render failure (`:172`).
+  Both gems are Asciidoctor preprocessors.
+* `metanorma-plugin-asciichem` 0.1.9 is a treeprocessor plus an inline
+  macro, not a block processor: `ChemTreeprocessor` collects block
+  chemistry and citations (`lib/metanorma/plugin/asciichem/extension.rb:32-35`),
+  and `ChemInlineMacro` renders inline chemistry (`extension.rb:116-122`);
+  its header comment explains that inline macros resolve after
+  treeprocessors, which is why citations are collected in the tree pass
+  (`extension.rb:6-11`). It produces MathML for the formula
+  (`extension.rb:24`).
+* There is no `metanorma-plugin-mathml` gem on rubygems, and no repository
+  of that name in the metanorma organization. The "other small plugins" in
+  the issue's table are, from the organization's repositories,
+  `metanorma-plugin-asyncapi` (one preprocessor,
+  `lib/metanorma/plugin/asyncapi/preprocessor.rb:17`),
+  `metanorma-plugin-openapi`, `metanorma-plugin-glossarist` and
+  `metanorma-plugin-etassia`. `metanorma-plugin-oscal` exists but its
+  repository is empty, so it has nothing to migrate.
 
 Outside plugins, metanorma already has the registry pattern the issue wants
 to reuse:
@@ -223,8 +246,9 @@ tables, figures and model references (`converter.rb:25-42`)
 become figure components through a resolver
 | 1.20
 
-| yaml2text, json2text, data2text (in the lutaml gem)
-| Three preprocessors (`converter.rb:48-50`)
+| yaml2text, json2text, data2text (lutaml gem and metanorma-plugin-datastruct)
+| Three preprocessors in each gem (`converter.rb:48-50`;
+`datastruct/yaml2_text_preprocessor.rb:9`)
 | Data bindings with YAML and JSON loaders
 | 1.20
 
@@ -240,9 +264,10 @@ table, so confirm
 | 1.20
 
 | metanorma-plugin-asciichem
-| Not inspected here
-| Block resolver returning chemistry components; ChemistryML is a model
-serialization
+| A treeprocessor for block chemistry and citations plus an inline macro
+(`extension.rb:32-35`, `116-122`)
+| Block and inline resolvers returning chemistry components; ChemistryML is a
+model serialization
 | 1.20
 
 | metanorma-plugin-plantuml
@@ -251,15 +276,18 @@ serialization
 compiling; deleted when Etassia replaces it
 | 1.20 shim, deleted 1.21
 
-| metanorma-plugin-mathml and other small plugins
-| Not inspected here
-| Resolvers against the same API
+| Small plugins (asyncapi, etassia; a mathml gem does not exist)
+| asyncapi is one preprocessor (`asyncapi/preprocessor.rb:17`); etassia not
+inspected
+| Resolvers against the same API; math rendering stays on the presentation
+engine's math path
 | 1.20
 |===
 
-The glossarist and openapi rows are additions to the issue: both exist and
-both are Asciidoctor extensions that would break at the flip, so the issue's
-"other small plugins" must be taken to include them.
+The glossarist, openapi and asyncapi rows are additions to the issue: all
+are Asciidoctor extensions that would break at the flip, so the issue's
+"other small plugins" must be taken to include them. The etassia plugin is
+named in the sequencing as the plantuml replacement and was not inspected.
 
 == Ordering
 
@@ -294,8 +322,7 @@ check against code that is not yet available:
   `lutaml_diagram`) would naturally ship with the plugin; the proposal here
   is that plugins declare the constructs they can resolve and flavors opt in
   through the syntax table.
-* The asciichem, data and mathml gems must be read before their rows in the
-  mapping are final.
+* The etassia plugin must be read before its row is final.
 * `metanorma-plugin-lutaml` is a hard dependency of metanorma
   (`metanorma.gemspec:37`) and `Compile` calls into it directly
   (`compile.rb:10`). Under a registry that coupling should go; the
