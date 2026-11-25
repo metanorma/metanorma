@@ -6,10 +6,6 @@ require "metanorma-iho"
 # attributes into the PDF converter options, and offer the pdf output the taste
 # declares (metanorma/metanorma#699, #686).
 RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
-  let(:pdf_attrs) do
-    Metanorma::Collection::Util.taste2isodoc_attrs(:iala, :pdf)
-  end
-
   it "is registered as a taste of iho" do
     expect(Metanorma::TasteRegister.instance.aliases[:iala]).to eq :iho
   end
@@ -44,11 +40,6 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
 
   describe "compile driver on the iala taste" do
     let(:dir) { Dir.mktmpdir }
-    let(:file) do
-      File.join(dir, "iala.adoc").tap do |f|
-        File.write(f, "= Title\n:doctype: standard\n\nText\n")
-      end
-    end
     let(:options) { { type: "iala", output_dir: dir } }
     let(:compile) { described_class.new }
     let(:processor) { compile.instance_variable_get(:@processor) }
@@ -56,6 +47,8 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
 
     # the same steps Compile#compile runs before choosing output formats
     before do
+      file = File.join(dir, "iala.adoc")
+      File.write(file, "= Title\n:doctype: standard\n\nText\n")
       compile.process_options!(file, options)
       compile.instance_variable_set(
         :@processor,
@@ -113,6 +106,9 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
     end
 
     describe "pdf converter options" do
+      let(:pdf_attrs) do
+        Metanorma::Collection::Util.taste2isodoc_attrs(:iala, :pdf)
+      end
       let(:captured) { [] }
       let(:converter) { Class.new { def pdf_converter(*); end }.new }
       let(:backend) { Struct.new(:converter).new(converter) }
