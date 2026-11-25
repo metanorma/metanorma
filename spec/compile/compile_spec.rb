@@ -51,6 +51,11 @@ RSpec.describe Metanorma::Compile do
         },
         log: an_instance_of(Metanorma::Utils::Log),
         supplied_type: :iso,
+        # the compile's shared work root (asset store + scratch), created
+        # by init_work_root before the output legs run
+        workdir:
+          a_string_starting_with(File.join(Dir.tmpdir, "metanorma",
+                                           "work-")),
       },
     )
 
