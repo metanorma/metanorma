@@ -52,9 +52,15 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
       end
     end
 
-    it "offers pdf from the iho processor the iala taste resolves to" do
-      expect(compile.send(:effective_output_formats, supplied_type: :iala))
-        .to include(pdf: "pdf")
+    let(:taste_exts) do
+      Metanorma::TasteRegister.get_config(:iala).base_override
+        .value_attributes.output_extensions.split(",").map { |e| e.strip.to_sym }
+    end
+
+    it "offers every extension the iala taste declares, via the iho processor" do
+      formats = compile.send(:effective_output_formats, supplied_type: :iala)
+      expect(taste_exts).to include(:pdf)
+      expect(formats).to include(pdf: "pdf")
     end
   end
 
