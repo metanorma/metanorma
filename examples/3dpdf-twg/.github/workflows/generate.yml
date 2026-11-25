@@ -1,0 +1,62 @@
+# Draft workflow for pdf-association/3dpdf-twg (metanorma/metanorma#683).
+# Copy to .github/workflows/generate.yml in that repository.
+name: generate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: generate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      SOURCE: iso-prc/document.adoc
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache fonts
+        uses: actions/cache@v4
+        with:
+          path: ~/.fontist
+          key: fontist-iso-${{ runner.os }}-${{ hashFiles('iso-prc/document.adoc') }}
+          restore-keys: fontist-iso-${{ runner.os }}-
+
+      - name: Cache gems
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/gem
+            ~/.gem
+          key: gems-metanorma-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: gems-metanorma-${{ runner.os }}-
+
+      - name: Set up metanorma
+        uses: metanorma/actions-mn/setup@main
+
+      - name: Compile iso-prc/document.adoc
+        uses: metanorma/actions-mn/compile@main
+        with:
+          source-path: ${{ env.SOURCE }}
+          flavor: iso
+          formats: xml,html,doc,pdf
+
+      - name: Upload rendered outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: iso-prc-document
+          path: |
+            iso-prc/document.xml
+            iso-prc/document.html
+            iso-prc/document.doc
+            iso-prc/document.pdf
+          if-no-files-found: error
