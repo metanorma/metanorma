@@ -6,7 +6,9 @@ require "metanorma-iho"
 # attributes into the PDF converter options, and offer the pdf output the taste
 # declares (metanorma/metanorma#699, #686).
 RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
-  let(:pdf_attrs) { { fonts: "Carlito;Source Code Pro", toclevels: "3" } }
+  let(:pdf_attrs) do
+    Metanorma::Collection::Util.taste2isodoc_attrs(:iala, :pdf)
+  end
 
   it "is registered as a taste of iho" do
     expect(Metanorma::TasteRegister.instance.aliases[:iala]).to eq :iho
@@ -50,7 +52,7 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
       end
     end
 
-    it "offers pdf through the processor the iala taste resolves to" do
+    it "offers pdf from the iho processor the iala taste resolves to" do
       expect(compile.send(:effective_output_formats, supplied_type: :iala))
         .to include(pdf: "pdf")
     end
@@ -62,11 +64,6 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
         r.instance_variable_set(:@flavor, :iala)
         r.instance_variable_set(:@compile_options, {})
       end
-    end
-
-    before do
-      allow(Metanorma::Collection::Util).to receive(:taste2isodoc_attrs)
-        .with(:iala, :pdf).and_return(pdf_attrs)
     end
 
     describe "backend preparation" do
@@ -97,12 +94,13 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
         expect(captured.first).to eq :iho
       end
 
-      it "includes the taste's toclevels" do
-        expect(captured.last).to include(toclevels: "3")
+      it "includes the taste's fonts" do
+        expect(captured.last[:fonts]).to eq pdf_attrs[:fonts]
       end
 
-      it "includes the taste's fonts" do
-        expect(captured.last[:fonts]).to eq "Carlito;Source Code Pro"
+      it "includes the taste's pdf stylesheet override" do
+        expect(captured.last[:pdfstylesheet_override])
+          .to end_with("iala/iala.xsl")
       end
     end
   end
