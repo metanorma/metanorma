@@ -53,11 +53,37 @@ RSpec.describe Metanorma::Compile::PhaseTimer do
     ).to_stdout
   end
 
-  it "prints under the default log configuration, which excludes :info" do
-    expect(Metanorma.configuration.logs).not_to include(:info)
-    timer = described_class.new(true)
-    expect { timer.time("semantic") { :ok } }
-      .to output(/Timing: semantic: /).to_stdout
+  describe "log routing" do
+    around do |example|
+      saved = Metanorma.configuration.logs.dup
+      example.run
+    ensure
+      Metanorma.configuration.logs = saved
+    end
+
+    it "sends each timing line through Util.log at :info" do
+      allow(Metanorma::Util).to receive(:log)
+      timer = described_class.new(true)
+      timer.time("semantic") { :ok }
+      timer.report
+      expect(Metanorma::Util).to have_received(:log)
+        .with(/Timing: semantic: /, :info)
+      expect(Metanorma::Util).to have_received(:log)
+        .with(/Timing: total: /, :info)
+    end
+
+    it "still prints under the default log configuration" do
+      Metanorma.configuration.logs = %i[warning error fatal]
+      timer = described_class.new(true)
+      expect { timer.time("semantic") { :ok } }
+        .to output(/Timing: semantic: /).to_stdout
+    end
+
+    it "does not touch the log configuration when disabled" do
+      Metanorma.configuration.logs = %i[warning error fatal]
+      described_class.new(false)
+      expect(Metanorma.configuration.logs).not_to include(:info)
+    end
   end
 
   describe "Compile with a minimal ISO document" do

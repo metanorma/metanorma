@@ -4,10 +4,10 @@ module Metanorma
   class Compile
     # Opt-in per-phase wall-clock timing of a compile run, switched on by
     # the METANORMA_PROFILE environment variable or the :profile option.
-    # Each phase prints one line to stdout when it ends; #report adds the
-    # total. Asking for profiling is the opt-in, so the lines bypass the
-    # Metanorma.configuration.logs filter (which excludes :info by
-    # default). Disabled, #time just yields.
+    # Each phase logs one line through Util.log at :info when it ends;
+    # #report adds the total. Asking for profiling is the opt-in, so an
+    # enabled timer adds :info to Metanorma.configuration.logs (which
+    # excludes it by default). Disabled, #time just yields.
     class PhaseTimer
       OFF_VALUES = ["", "0", "false", "no", "off"].freeze
 
@@ -18,6 +18,7 @@ module Metanorma
 
       def initialize(enabled)
         @enabled = enabled
+        enable_info_logs if enabled
         @start = now
         @lock = Mutex.new
       end
@@ -47,7 +48,13 @@ module Metanorma
       private
 
       def log(msg)
-        @lock.synchronize { $stdout.puts(msg) }
+        @lock.synchronize { Util.log(msg, :info) }
+      end
+
+      def enable_info_logs
+        logs = Metanorma.configuration.logs
+        logs.map(&:to_s).include?("info") and return
+        Metanorma.configuration.logs = logs + [:info]
       end
 
       def now
