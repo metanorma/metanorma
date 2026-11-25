@@ -15,7 +15,9 @@ module Metanorma
         ENV["METANORMA_PARALLEL"]&.to_i || DEFAULT_NUM_WORKERS,
       )
       # Install required fonts for all extensions
-      gather_and_install_fonts(source_file, options.dup, extensions)
+      @timer.time("font install") do
+        gather_and_install_fonts(source_file, options.dup, extensions)
+      end
       # Process each extension in order
       process_extensions_in_order(
         source_file, semantic_xml, bibdata, extensions, output_paths, options
@@ -86,9 +88,11 @@ module Metanorma
       isodoc_options = get_isodoc_options(source_file, options, ext)
 
       # Handle special cases first
-      return true if process_ext_special(
-        ext, semantic_xml, bibdata, output_paths, options, isodoc_options
-      )
+      return true if special_ext?(ext, options) && @timer.time(ext) do
+        process_ext_special(
+          ext, semantic_xml, bibdata, output_paths, options, isodoc_options
+        )
+      end
 
       # Otherwise, determine if it uses presentation XML
       if uses_presentation_xml?(ext, options)
@@ -96,10 +100,19 @@ module Metanorma
         process_via_presentation_xml(ext, output_paths, options, isodoc_options)
       else
         # Format can be generated directly from semantic XML
-        process_from_semantic_xml(
-          ext, output_paths, semantic_xml, isodoc_options
-        )
+        @timer.time(ext) do
+          process_from_semantic_xml(
+            ext, output_paths, semantic_xml, isodoc_options
+          )
+        end
       end
+    end
+
+    # Whether process_ext_special handles ext itself
+    def special_ext?(ext, options)
+      %i(rxl mko json).include?(ext) ||
+        (ext == :presentation && options[:passthrough_presentation_xml]) ||
+        (ext == :html && options[:sectionsplit])
     end
 
     # Process special extensions with custom handling
@@ -230,7 +243,9 @@ module Metanorma
     def process_via_presentation_xml(ext, output_paths, options, isodoc_options)
       @queue.schedule(ext, output_paths.dup, options.dup,
                       isodoc_options.dup) do |a, b, c, d|
-                        process_output_from_presentation_xml(a, b, c, d)
+                        @timer.time(a) do
+                          process_output_from_presentation_xml(a, b, c, d)
+                        end
                       end
     end
 
