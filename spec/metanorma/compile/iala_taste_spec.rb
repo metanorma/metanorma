@@ -42,24 +42,50 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
     expect(attrs[:pdfstylesheet_override]).to end_with("iala/iala.xsl")
   end
 
-  describe "effective output formats" do
-    let(:flavor) { described_class.allocate.taste2flavor(:iala).to_sym }
-    let(:compile) do
-      described_class.allocate.tap do |c|
-        c.instance_variable_set(
-          :@processor, Metanorma::Registry.instance.find_processor(flavor)
-        )
+  describe "compile driver on the iala taste" do
+    let(:dir) { Dir.mktmpdir }
+    let(:file) do
+      File.join(dir, "iala.adoc").tap do |f|
+        File.write(f, "= Title\n:doctype: standard\n\nText\n")
       end
     end
+    let(:options) { { type: "iala", output_dir: dir } }
+    let(:compile) { described_class.new }
+    let(:processor) { compile.instance_variable_get(:@processor) }
+    let(:formats) { compile.send(:effective_output_formats, options) }
 
-    it "offers pdf from the iho processor" do
-      formats = compile.send(:effective_output_formats, supplied_type: :iala)
+    # the same steps Compile#compile runs before choosing output formats
+    before do
+      compile.process_options!(file, options)
+      compile.instance_variable_set(
+        :@processor,
+        Metanorma::Registry.instance.find_processor(options[:type].to_sym),
+      )
+    end
+
+    after { FileUtils.rm_rf(dir) }
+
+    it "keeps iala as the supplied type" do
+      expect(options[:supplied_type]).to eq :iala
+    end
+
+    it "picks the iho processor" do
+      expect(processor).to be_a Metanorma::Iho::Processor
+    end
+
+    it "offers pdf among the effective output formats" do
       expect(formats).to include(:pdf)
     end
 
-    it "takes the pdf suffix from the iho processor" do
-      formats = compile.send(:effective_output_formats, supplied_type: :iala)
+    it "takes the pdf suffix from the effective output formats" do
       expect(formats[:pdf]).to eq "pdf"
+    end
+
+    it "offers every output extension the taste declares" do
+      declared = Metanorma::TasteRegister.get_config(:iala)
+        .base_override.value_attributes.output_extensions
+        .split(",").map { |e| e.strip.to_sym }
+      expect(formats.keys).to include(*(declared - [:presentation]))
     end
   end
 
