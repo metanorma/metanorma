@@ -1,3 +1,6 @@
+require "base64"
+require "cgi"
+
 module Metanorma
   class Collection
     class Renderer
@@ -207,13 +210,28 @@ module Metanorma
       # unresolvable ones are left for Stage 2.
       def resolve_svgmap_bare_targets(docxml, docid, ids)
         idx = hotspot_anchor_index
-        docxml.xpath(ns("//svgmap/target/xref")).each do |x|
+        # The target's anchor-type companion xref (the cross-reference
+        # machinery's fallback for an unresolved reference) composes a
+        # dead anchor: this render's root-type stamp, the stage-baked
+        # base, and this render's suffix chain. It names no live id at
+        # this pass, but its stem resolves through the index, so it is
+        # re-keyed to the working address like any bare target -
+        # otherwise Vectory remaps the SVG hotspots onto it and the
+        # companion anchor vanishes at the HTML render, leaving the
+        # hotspots dead (iso-10303#875, annex-D figure hotspots).
+        docxml.xpath(
+          ns("//svgmap/target/xref | //svgmap/target/fmt-xref")
+        ).each do |x|
           ids&.key?(x["target"]) and next
           t = x["target"]
-          rec = idx[t] || idx[hotspot_anchor_base(t, docid)] or next
+          base = hotspot_anchor_base(t, docid)
+          rec = idx[t] || idx[base] ||
+            hotspot_prefix_lookup(idx, base) ||
+            hotspot_tail_lookup(idx, base) or next
           href = hotspot_target_href(rec, docid) or next
           x.name = "link"
           x["target"] = href
+          x.attribute_nodes.each { |at| at.remove unless at.name == "target" }
         end
         resolve_svgmap_erefs_via_resolvers(docxml, docid, ids)
       end
@@ -254,38 +272,46 @@ module Metanorma
         docxml.xpath("//m:svg//m:a[@href] | //m:svg//m:a[@xlink:href]",
                      "m" => SVG_NS, "xlink" => XLINK_NS).each do |a|
           attr = a.attribute("href") ? "href" : "xlink:href"
-          split = hotspot_split_href(a[attr])
-          next unless split
-          page, frag = split
-          if page.nil? && page_ids.key?(frag)
-            # The id exists on this page, but Vectory left the href as a
-            # bare relative name (no #): re-point it as the in-page anchor.
-            a[attr] = "##{frag}" unless a[attr].start_with?("#")
-            next
-          end
-          base = hotspot_anchor_base(frag, docid)
-          # An SVG element id in this document: anchor the hotspot in-page.
-          in_page = if svg_ids.key?(frag)
-            frag
-          else
-            svg_ids.keys.find { |i| i.start_with?("#{base}_") }
-          end
-          if in_page
-            a[attr] = "##{in_page}"
-            next
-          end
-          rec = idx[frag] || idx[base] ||
-            hotspot_prefix_lookup(idx, base)
-          unless rec
-            # Unresolvable bare name: a dead link (relative file or
-            # dangling fragment) is worse than no link; drop the href.
+          v = hotspot_rekey_href(a[attr], idx, page_ids, svg_ids, docid)
+          if v == :drop
             a.remove_attribute(attr)
-            next
+          elsif v && v != a[attr]
+            a[attr] = v
           end
-          href = hotspot_target_href(rec, docid) or next
-          href = "#{page}#{href}" if page && rec[:key] == docid
-          a[attr] = href unless href == a[attr]
         end
+      end
+
+      # Re-key decision for one hotspot href: the rebased address, :drop
+      # for an unresolvable bare name (a dead link is worse than no
+      # link), or nil to keep the value untouched.
+      def hotspot_rekey_href(href, idx, page_ids, svg_ids, docid)
+        split = hotspot_split_href(href)
+        return nil unless split
+
+        page, frag = split
+        if page.nil? && page_ids.key?(frag)
+          # The id exists on this page, but Vectory left the href as a
+          # bare relative name (no #): re-point it as the in-page anchor.
+          return href.start_with?("#") ? nil : "##{frag}"
+        end
+        base = hotspot_anchor_base(frag, docid)
+        # An SVG element id in this document: anchor the hotspot in-page.
+        in_page = if svg_ids.key?(frag)
+          frag
+        else
+          svg_ids.keys.find { |i| i.start_with?("#{base}_") }
+        end
+        return "##{in_page}" if in_page
+
+        rec = idx[frag] || idx[base] ||
+          hotspot_prefix_lookup(idx, base) ||
+          hotspot_tail_lookup(idx, base)
+        unless rec
+          return :drop
+        end
+        new = hotspot_target_href(rec, docid) or return nil
+        new = "#{page}#{new}" if page && rec[:key] == docid
+        new == href ? nil : new
       end
 
       # Split an href into [relative page or nil, fragment]; bare values are
@@ -445,6 +471,34 @@ module Metanorma
 
       def hotspot_sorted_keys(idx)
         @hotspot_sorted_keys ||= idx.keys.select { |k| idx[k] }.sort
+      end
+
+      # The stage renders bake svgmap hotspot hrefs under the staging
+      # anchor convention (<stem>_<stage-suffix>), while the reinflated
+      # page ids carry the member's edition suffix chain
+      # (<stem>_ISO_10303-45_2019_...); the stage suffix matches no id,
+      # and the prefix scan on the full base misses (iso-10303#875: 154
+      # dead figure hotspots on parts 43/45/49). The reinflated split
+      # sections may further prepend this render's random root-type
+      # stamp (<[A-Z]{8}>_) to the baked href, poisoning every stem.
+      # So: strip a leading root-type stamp when present, then strip the
+      # remaining base's trailing tokens one at a time and retry the
+      # prefix scan on the remainder - the schema-qualified stem is
+      # shared by both conventions, and the unique-shortest-match rule
+      # still refuses ambiguous bindings.
+      def hotspot_tail_lookup(idx, base)
+        candidates = [base]
+        if (m = base.match(/\A[A-Z]{8}_(?=.)/))
+          candidates.unshift(m.post_match)
+        end
+        candidates.each do |cand|
+          tokens = cand.split("_")
+          (tokens.size - 1).downto(1) do |cut|
+            rec = hotspot_prefix_lookup(idx, tokens[0...cut].join("_")) and
+              return rec
+          end
+        end
+        nil
       end
     end
   end
