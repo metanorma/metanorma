@@ -200,6 +200,9 @@ module Metanorma
       def copy_isodoc_options_attrs(options, ret)
         ret[:datauriimage] = true if options[:datauriimage]
         ret[:sourcefilename] = options[:filename]
+        # Every output format leg of the compile shares the one work root
+        # (asset store + scratch) created by init_work_root (isodoc#920).
+        ret[:workdir] = options[:workdir]
         # Carry the active taste through to Processor#output, so its taste-aware
         # document_transformers resolve there (metanorma-core#12).
         ret[:supplied_type] = options[:supplied_type]

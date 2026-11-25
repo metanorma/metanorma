@@ -261,7 +261,7 @@ module Metanorma
     # assume we pass in Presentation XML, but we want to recover Semantic XML
     def sectionsplit_convert(input_filename, file, output_filename = nil,
                              opts = {})
-      @isodoc ||= IsoDoc::PresentationXMLConvert.new({})
+      @isodoc ||= IsoDoc::PresentationXMLConvert.new(workdir: @work_root)
       input_filename += ".xml" unless input_filename.match?(/\.xml$/)
       File.exist?(input_filename) or export_output(input_filename, file)
       presxml = File.read(input_filename, encoding: "utf-8")
