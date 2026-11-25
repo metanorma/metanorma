@@ -1,0 +1,329 @@
+= Plugin API design for the Coridoc and Document-model pipeline
+:toc:
+
+This document is the design asked for in metanorma/metanorma#725. It
+describes how the `metanorma-plugin-*` gems move from Asciidoctor
+extensions to registered resolvers and data bindings in the 1.20 pipeline.
+
+Statements about today's behaviour cite files and lines. Statements about
+the new pipeline (Coridoc, the builder, syntax tables) are design and are
+marked as proposed; none of that code exists yet. Line numbers refer to
+metanorma-standoc 3.5.26, metanorma-core 0.2.9 (the `a19-core32` checkout),
+metanorma-plugin-lutaml 0.7.81, metanorma-plugin-glossarist 0.5.12,
+metanorma-plugin-openapi 0.1.3 and metanorma-plugin-plantuml 1.0.17.
+
+== What plugins do today
+
+Every plugin hooks into Asciidoctor. There is no plugin registry in
+metanorma or metanorma-core. A plugin works only because the standoc
+converter lists its classes in one global `Asciidoctor::Extensions.register`
+block (`metanorma-standoc/lib/metanorma/converter/converter.rb:24`). The
+order of that list matters, and standoc comments on it: the monospace
+protection preprocessor has to run after the content-injecting
+preprocessors (`converter.rb:52-57`).
+
+Plugin classes fall into four kinds of Asciidoctor extension:
+
+Preprocessors, which rewrite the source text before parsing::
+`Json2TextPreprocessor`, `Yaml2TextPreprocessor`, `Data2TextPreprocessor`,
+the XMI/UML and XSD preprocessors (`converter.rb:25-30`, `48-51`), and
+`Glossarist::DatasetPreprocessor` (`converter.rb:58`;
+`metanorma-plugin-glossarist/lib/metanorma/plugin/glossarist/dataset_preprocessor.rb:8`).
+The openapi plugin is a single preprocessor
+(`metanorma-plugin-openapi/lib/metanorma/plugin/openapi/preprocessor.rb:18`).
+
+Block and block-macro processors, which build a block from a construct::
+`lutaml_diagram` (`lutaml_diagram_block.rb:6,10`), `lutaml_ea_diagram`,
+`lutaml_gml_dictionary`, `lutaml_enum_table` and the klass table macro
+(`converter.rb:34-42`), and `plantuml` / `plantuml_image`
+(`metanorma-plugin-plantuml/lib/metanorma/plugin/plantuml/block_processor.rb:6-12`,
+`image_block_macro_processor.rb:6,10`).
+
+Inline macros::
+`lutaml_figure`, `lutaml_table` and `lutaml_model_reference`
+(`converter.rb:34-35`; `xmi_model_reference.rb:11-13`).
+
+Liquid extensions::
+The glossarist plugin registers a Liquid block and filters at load time
+(`metanorma-plugin-glossarist/lib/metanorma-plugin-glossarist.rb:48-49`).
+
+Three things in this inventory differ from the issue's table.
+
+* `yaml2text`, `json2text` and `data2text` exist in two gems. The lutaml gem
+  carries them and standoc registers those (`converter.rb:48-50`). The
+  separate gem is `metanorma-plugin-datastruct` 0.3.13 (the issue's
+  "metanorma-plugin-data"; no gem of that name exists), which has the same
+  three classes on a shared base
+  (`metanorma-plugin-datastruct/lib/metanorma/plugin/datastruct/yaml2_text_preprocessor.rb:9`,
+  `json2_text_preprocessor.rb:9`, `data2_text_preprocessor.rb:9`,
+  `base_structured_text_preprocessor.rb:17-18`). That base builds a Liquid
+  environment, registers the `keyiterator` tag and the values filter
+  (`base_structured_text_preprocessor.rb:49-55`), renders the template with
+  a local file system (`:158-160`) and warns on render failure (`:172`).
+  Both gems are Asciidoctor preprocessors.
+* `metanorma-plugin-asciichem` 0.1.9 is a treeprocessor plus an inline
+  macro, not a block processor: `ChemTreeprocessor` collects block
+  chemistry and citations (`lib/metanorma/plugin/asciichem/extension.rb:32-35`),
+  and `ChemInlineMacro` renders inline chemistry (`extension.rb:116-122`);
+  its header comment explains that inline macros resolve after
+  treeprocessors, which is why citations are collected in the tree pass
+  (`extension.rb:6-11`). It produces MathML for the formula
+  (`extension.rb:24`).
+* There is no `metanorma-plugin-mathml` gem on rubygems, and no repository
+  of that name in the metanorma organization. The "other small plugins" in
+  the issue's table are, from the organization's repositories,
+  `metanorma-plugin-asyncapi` (one preprocessor,
+  `lib/metanorma/plugin/asyncapi/preprocessor.rb:17`),
+  `metanorma-plugin-openapi`, `metanorma-plugin-glossarist` and
+  `metanorma-plugin-etassia`. `metanorma-plugin-oscal` exists but its
+  repository is empty, so it has nothing to migrate.
+
+Outside plugins, metanorma already has the registry pattern the issue wants
+to reuse:
+
+* `Metanorma::Registry#register` takes a `Metanorma::Processor` subclass,
+  keys it by its last short name and records aliases for the rest
+  (`metanorma-core/lib/metanorma/registry/registry.rb:115-135`).
+* `Metanorma::Core::Flavor` is one row of a flavor/taste table; a taste is a
+  flavor with a `base_flavor` (`core/flavor.rb:19-60`), and
+  `FlavorRegistry#renderer_for` walks the taste-to-base chain
+  (`core/flavor_registry.rb:34-47`, `80-95`). `Flavors.resolve` loads the
+  flavor's gem on demand (`core/flavors.rb:21-26`).
+* A flavor already contributes declarative, per-format data through
+  `Processor#document_transformers` and the taste-merged
+  `effective_document_transformers` (`processor/processor.rb:69-100`).
+* metanorma itself depends on one plugin directly:
+  `metanorma-plugin-lutaml` is required by `Metanorma::Compile`
+  (`lib/metanorma/compile/compile.rb:10`, `metanorma.gemspec:37`) so that
+  the XMI cache can be cleared per compile (`compile.rb:58-61`).
+* Input is still Asciidoctor end to end: `Processor#input_to_isodoc` calls
+  `Metanorma::Input::Asciidoc`, which calls `Asciidoctor.convert`
+  (`processor/processor.rb:107-110`; `input/asciidoc.rb:36-54`;
+  `compile.rb:217`).
+
+When Asciidoctor is dropped (metanorma#702), the global extension block, the
+preprocessor seam and the tree-processor seam all go. The plugin API has to
+replace each of them.
+
+== Principle
+
+A plugin is an engine adapter plus declarations. If something varies per
+document or per flavor, it is data in a declaration. If it never varies, it
+is engine code inside the plugin. A plugin never patches a parse pipeline
+and never touches presentation.
+
+The API has three extension points (the issue's fourth point is a
+prohibition, covered below).
+
+== Extension point 1: syntax constructs (Coridoc side, proposed)
+
+Coridoc parses AsciiDoc and Markdown into the Coridoc document model. The
+parse is deliberately light on meaning: it keeps structure, styles,
+attributes and macro forms exactly as written, without interpreting them. A
+block with the style `special-note` arrives in the model as a block with
+that style and nothing more.
+
+What the issue calls "syntax constructs" are therefore not new grammar. Per
+the owner's clarification on the issue (2026-11-24), the decision about
+which styles, attributes and macros a flavor recognizes is flavor
+configuration, not parser behaviour:
+
+* The flavor payload carries a syntax table that binds recognized styles,
+  attributes and macros to model components. The issue's example is
+  `admonition_styles: {special-note: admonition(type: special-note)}`.
+* One Coridoc parser serves every flavor. Each flavor recognizes a different
+  vocabulary inside the same structural envelope, so adding `[special-note]`
+  versus `[NOTE]` versus `NOTE:` is a configuration line, not a grammar
+  change or a parser fork.
+* Values bind to model components only. A flavor never writes XML
+  attributes or RNG enums into this table. Schema variation comes from the
+  model definitions and the flavor identity.
+* A style or macro the table does not bind yields an authoring diagnostic
+  such as "style not recognized for this flavor". The diagnostic is
+  generated from the table's declarations.
+* The builder reads the syntax table when it turns the Coridoc model into
+  the Document model. Coridoc stays unaware of flavors beyond the generic
+  structure.
+
+For plugins this means a plugin declares the macro and block names it
+owns (for example `lutaml_diagram`, `plantuml`), each paired with the
+resolver that handles it (next section). Coridoc passes those forms through
+verbatim; the declaration is how the builder knows to hand them to a
+resolver. Plugins stop preprocessing text. This is the point that retires
+every preprocessor listed above.
+
+Where today's inline macros and block macros map: a block macro such as
+`lutaml_ea_diagram::target[attrs]` is a macro form in the Coridoc model; a
+delimited `[lutaml_diagram]` literal block is a styled block whose content
+is kept raw (compare `on_context :literal` and `parse_content_as :raw` at
+`lutaml_diagram_block.rb:11-12`). The declaration must therefore say
+whether the content is kept raw or parsed, as Asciidoctor's
+`parse_content_as` does now.
+
+== Extension point 2: block resolvers (builder side, proposed)
+
+A resolver is an object registered under a construct name. It receives the
+construct (attributes, content and the build context) and returns Document
+model components. This replaces tree processors and the block, block-macro
+and inline-macro processors listed above.
+
+* A resolver receives a typed construct, not an Asciidoctor parent node or
+  reader. Today's `process(parent, target, attrs)` and
+  `process(parent, reader, attrs)` signatures
+  (`lutaml_ea_diagram_block_macro.rb:14`, `plantuml/block_processor.rb:14`)
+  become `resolve(construct, context)`; the return value is model
+  components rather than a created Asciidoctor block.
+* Registration follows the registry pattern already used for flavors:
+  resolvers are discovered through a registry keyed by construct name, in
+  the same shape as `Registry#register` and `FlavorRegistry#register`. A
+  gem registers its resolvers when it is loaded; nothing is added to a
+  global extension block, and load order inside a gem list stops mattering
+  because resolvers do not rewrite shared text.
+* The build context gives a resolver the document attributes, the source
+  directory for relative paths (what plugins now read through
+  `Utils.relative_file_path(document, "")`, `base_structured_text_preprocessor.rb`
+  in the lutaml plugin), and a diagnostics sink.
+* A resolver may only return model components. It may not emit serialized
+  XML. The inline resolvers (figure, table, model reference) return inline
+  model components in the same way.
+* Cross-reference registration, which the lutaml plugin does today with
+  `XmiModelReference.register(document, anchors)` (`xmi_model_reference.rb:31`)
+  and by registering a reference-anchor resolver with the collection
+  renderer (`metanorma-plugin-lutaml.rb:94-101`), moves onto the build
+  context so anchors become part of the model's normal id handling.
+
+The exact Ruby interface (module name, `construct` and `context` classes) is
+to be fixed when the builder extension API lands in metanorma#702; this
+document fixes only the responsibilities above.
+
+== Extension point 3: data bindings (build and render time, proposed)
+
+Several plugins exist to expand a block from an external data file. They do
+it by rewriting source text with Liquid before parsing: `yaml2text`,
+`json2text`, `data2text` (`converter.rb:48-50`), the glossarist dataset
+preprocessor (`dataset_preprocessor.rb`), and the XMI/UML preprocessors.
+Because Asciidoctor is dropped, the text-rewriting step cannot continue.
+
+A data binding is a declaration that names a data source, a loader and a
+Liquid template, and produces model components at build time:
+
+* The data file is loaded into a lutaml-model object (or a plain hash for
+  YAML and JSON), the template is rendered with Liquid, and the result is
+  re-entered through the normal construct path, so the output is built into
+  model components by the same resolvers as hand-written content.
+* This is the pattern of metanorma#444, with metanorma-plugin-lutaml#389
+  as its first slice. The glossarist plugin's Liquid block
+  (`WithGlossaristContext`) and filters are the existing precedent for
+  registering Liquid extensions per plugin.
+* Custom Liquid blocks and filters become part of the binding declaration
+  instead of load-time side effects.
+
+The consequence is that yaml2text, json2text and data2text collapse to one
+data-binding mechanism with different loaders, which is why the issue puts
+them in the same row.
+
+== Presentation is not an extension point
+
+Plugins do not hook presentation. Presentation is driven by the LADL and
+presentation profiles, which key off the model components a resolver or
+binding produced. A plugin that needs a different rendering of its output
+gets it by producing a distinct model component, not by registering a
+presentation hook. Math rendering for the mathml plugin moves to the
+presentation engine's math path for the same reason.
+
+== Per-plugin mapping
+
+This table restates the issue's mapping, adding the current code it replaces.
+
+[cols="2,3,3,1"]
+|===
+| Plugin | Today | Becomes | Target
+
+| metanorma-plugin-lutaml
+| Preprocessors for data, XSD, XMI/UML; block and inline macros for diagrams,
+tables, figures and model references (`converter.rb:25-42`)
+| Data bindings (#389) for the text-expanding parts; `lutaml_uml` figures
+become figure components through a resolver
+| 1.20
+
+| yaml2text, json2text, data2text (lutaml gem and metanorma-plugin-datastruct)
+| Three preprocessors in each gem (`converter.rb:48-50`;
+`datastruct/yaml2_text_preprocessor.rb:9`)
+| Data bindings with YAML and JSON loaders
+| 1.20
+
+| metanorma-plugin-glossarist
+| One preprocessor plus Liquid block and filters
+| Data binding with its Liquid registrations kept; not named in the issue's
+table, so confirm
+| 1.20
+
+| metanorma-plugin-openapi
+| One preprocessor (`preprocessor.rb:18`)
+| Data binding or resolver; not named in the issue's table, so confirm
+| 1.20
+
+| metanorma-plugin-asciichem
+| A treeprocessor for block chemistry and citations plus an inline macro
+(`extension.rb:32-35`, `116-122`)
+| Block and inline resolvers returning chemistry components; ChemistryML is a
+model serialization
+| 1.20
+
+| metanorma-plugin-plantuml
+| Block and block macro (`block_processor.rb`, `image_block_macro_processor.rb`)
+| A minimal resolver wrapping the existing engine so documents keep
+compiling; deleted when Etassia replaces it
+| 1.20 shim, deleted 1.21
+
+| Small plugins (asyncapi, etassia; a mathml gem does not exist)
+| asyncapi is one preprocessor (`asyncapi/preprocessor.rb:17`); etassia not
+inspected
+| Resolvers against the same API; math rendering stays on the presentation
+engine's math path
+| 1.20
+|===
+
+The glossarist, openapi and asyncapi rows are additions to the issue: all
+are Asciidoctor extensions that would break at the flip, so the issue's
+"other small plugins" must be taken to include them. The etassia plugin is
+named in the sequencing as the plantuml replacement and was not inspected.
+
+== Ordering
+
+Today ordering is a hand-maintained list (`converter.rb:24-70`) and some
+preprocessors depend on running before or after others. The new design
+removes the cause: resolvers and bindings act on distinct constructs, not on
+one shared text stream. Where two bindings do need an order (a binding that
+produces content containing another plugin's construct), the order is the
+order of expansion in the build: a binding's output is fed back through
+construct resolution, so nested constructs resolve naturally.
+
+== Sequencing
+
+. Finish this design against the real plugin inventories (this document and
+  the follow-up items below).
+. The builder extension API lands with the builder in metanorma#702.
+. Plugins migrate before the flip. Parity is checked with the metanorma#691
+  harness on plugin-heavy corpora (lutaml-heavy: the ISO TC211 and 10303
+  corpora).
+. The plantuml shim is deleted at 1.21 when Etassia replaces it.
+
+== Open points
+
+These are not settled by this document and need an owner decision or a
+check against code that is not yet available:
+
+* The Ruby interface for resolver registration and the build context, which
+  waits on the builder in metanorma#702.
+* Whether syntax declarations live in each plugin gem or in the flavor
+  payload. The clarification on the issue puts recognized-syntax decisions
+  in flavor configuration, while plugin-owned construct names (`plantuml`,
+  `lutaml_diagram`) would naturally ship with the plugin; the proposal here
+  is that plugins declare the constructs they can resolve and flavors opt in
+  through the syntax table.
+* The etassia plugin must be read before its row is final.
+* `metanorma-plugin-lutaml` is a hard dependency of metanorma
+  (`metanorma.gemspec:37`) and `Compile` calls into it directly
+  (`compile.rb:10`). Under a registry that coupling should go; the
+  per-compile cache clearing becomes a hook the plugin registers.
