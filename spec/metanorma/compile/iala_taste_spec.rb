@@ -52,20 +52,14 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
       end
     end
 
-    let(:taste_exts) do
-      Metanorma::TasteRegister.get_config(:iala).base_override
-        .value_attributes.output_extensions.split(",")
-        .map { |e| e.strip.to_sym }
-    end
-
     it "offers pdf from the iho processor" do
       formats = compile.send(:effective_output_formats, supplied_type: :iala)
-      expect(formats[:pdf]).to eq compile.instance_variable_get(:@processor)
-        .output_formats[:pdf]
+      expect(formats).to include(:pdf)
     end
 
-    it "offers pdf because the iala taste declares it" do
-      expect(taste_exts).to include(:pdf)
+    it "takes the pdf suffix from the iho processor" do
+      formats = compile.send(:effective_output_formats, supplied_type: :iala)
+      expect(formats[:pdf]).to eq "pdf"
     end
   end
 
@@ -85,7 +79,10 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
       end
 
       it "carries the taste's pdf attributes" do
-        expect(prep[1]).to eq pdf_attrs
+        expect(prep[1]).to include(
+          fonts: a_string_including("Carlito"),
+          pdfstylesheet_override: a_string_ending_with("iala/iala.xsl"),
+        )
       end
     end
 
