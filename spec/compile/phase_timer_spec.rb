@@ -35,23 +35,29 @@ RSpec.describe Metanorma::Compile::PhaseTimer do
     end
   end
 
-  it "yields without logging when disabled" do
-    allow(Metanorma::Util).to receive(:log)
+  it "prints nothing when disabled" do
     timer = described_class.new(false)
-    expect(timer.time("x") { 42 }).to eq 42
-    timer.report
-    expect(Metanorma::Util).not_to have_received(:log)
+    expect do
+      expect(timer.time("x") { 42 }).to eq 42
+      timer.report
+    end.not_to output.to_stdout
   end
 
-  it "logs one info line per phase and a total when enabled" do
-    lines = []
-    allow(Metanorma::Util).to receive(:log) { |msg, type| lines << [msg, type] }
+  it "prints one line per phase and a total when enabled" do
     timer = described_class.new(true)
-    expect(timer.time("semantic") { :ok }).to eq :ok
-    timer.report
-    expect(lines.map(&:last)).to eq %i[info info]
-    expect(lines.first.first).to match(/Timing: semantic: \d+\.\d{3}s/)
-    expect(lines.last.first).to match(/Timing: total: \d+\.\d{3}s/)
+    expect do
+      expect(timer.time("semantic") { :ok }).to eq :ok
+      timer.report
+    end.to output(
+      /Timing: semantic: \d+\.\d{3}s\n.*Timing: total: \d+\.\d{3}s\n/m,
+    ).to_stdout
+  end
+
+  it "prints under the default log configuration, which excludes :info" do
+    expect(Metanorma.configuration.logs).not_to include(:info)
+    timer = described_class.new(true)
+    expect { timer.time("semantic") { :ok } }
+      .to output(/Timing: semantic: /).to_stdout
   end
 
   describe "Compile with a minimal ISO document" do
@@ -75,16 +81,19 @@ RSpec.describe Metanorma::Compile::PhaseTimer do
     after { FileUtils.remove_entry(dir) }
 
     def compile_logs(options)
-      lines = []
-      allow(Metanorma::Util).to receive(:log).and_wrap_original do |m, *args|
-        lines << args.first
-        m.call(*args)
+      out = StringIO.new
+      saved = $stdout
+      $stdout = out
+      begin
+        Metanorma::Compile.new.compile(
+          input,
+          { type: "iso", output_dir: dir, install_fonts: false,
+            extension_keys: %i[xml presentation html doc] }.merge(options),
+        )
+      ensure
+        $stdout = saved
       end
-      Metanorma::Compile.new.compile(
-        input, { type: "iso", output_dir: dir, install_fonts: false,
-                 extension_keys: %i[xml presentation html doc] }.merge(options)
-      )
-      lines.grep(/Timing:/)
+      out.string.lines.grep(/Timing:/)
     end
 
     it "logs semantic, presentation, each format and total when on" do
