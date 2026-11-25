@@ -30,18 +30,27 @@ RSpec.describe Metanorma::Compile do # rubocop:disable RSpec/SpecFilePathFormat
     expect(exts).to include("pdf")
   end
 
+  it "carries real pdf attributes from the iala taste data" do
+    attrs = Metanorma::Collection::Util.taste2isodoc_attrs(:iala, :pdf)
+    expect(attrs).to include(fonts: a_string_including("Carlito"))
+  end
+
+  it "overrides the pdf stylesheet with the iala one" do
+    attrs = Metanorma::Collection::Util.taste2isodoc_attrs(:iala, :pdf)
+    expect(attrs[:pdfstylesheet_override]).to end_with("iala/iala.xsl")
+  end
+
   describe "effective output formats" do
-    let(:processor) do
-      Class.new do
-        def output_formats = { xml: "xml", html: "html", pdf: "pdf" }
-      end.new
-    end
+    let(:flavor) { described_class.allocate.taste2flavor(:iala).to_sym }
     let(:compile) do
-      described_class.allocate
-        .tap { |c| c.instance_variable_set(:@processor, processor) }
+      described_class.allocate.tap do |c|
+        c.instance_variable_set(
+          :@processor, Metanorma::Registry.instance.find_processor(flavor)
+        )
+      end
     end
 
-    it "offers pdf" do
+    it "offers pdf through the processor the iala taste resolves to" do
       expect(compile.send(:effective_output_formats, supplied_type: :iala))
         .to include(pdf: "pdf")
     end
