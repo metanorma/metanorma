@@ -1,0 +1,54 @@
+# IALA render-parity catalogue (metanorma-taste#248, metanorma#699).
+#
+# One entry per iala doctype: the fixture rendered through the iala taste to
+# html, against the same content rendered through its iho base doctype.
+# spec/iala_parity_spec.rb checks that every entry's `html` result is what
+# the render actually gives, and that the entries cover the taste's doctypes.
+#
+# `html`: pass = renders without error; fail = raises.
+# `gaps`: features the iho base renders that the iala render does not.
+#         Listed only; fixing them is out of scope for this catalogue.
+standard:
+  base: standard
+  html: pass
+  gaps: []
+recommendation:
+  base: standard
+  html: pass
+  gaps: []
+guideline:
+  base: guideline
+  html: pass
+  gaps: []
+model-course:
+  base: standard
+  html: pass
+  gaps: []
+resolution:
+  base: standard
+  html: pass
+  gaps: []
+general-assembly:
+  base: standard
+  html: pass
+  gaps: []
+manual:
+  base: standard
+  html: pass
+  gaps: []
+advice:
+  base: guideline
+  html: pass
+  gaps: []
+report:
+  base: report
+  html: pass
+  gaps: []
+letter:
+  base: report
+  html: pass
+  gaps: []
+annex:
+  base: standard
+  html: pass
+  gaps: []
