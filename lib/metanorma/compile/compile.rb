@@ -21,6 +21,7 @@ require_relative "output_filename_config"
 require_relative "flavor"
 require_relative "relaton_drop"
 require_relative "render"
+require_relative "phase_timer"
 
 module Metanorma
   class Compile
@@ -49,10 +50,13 @@ module Metanorma
     # @param options [Hash] compilation options
     def compile(filename, options = {})
       process_options!(filename, options)
+      @timer = PhaseTimer.new(PhaseTimer.enabled?(options))
       @processor = @registry.find_processor(options[:type].to_sym)
 
       # Step 1: Generate Semantic XML
-      semantic_result = generate_semantic_xml(filename, options) or return nil
+      semantic_result = @timer.time("semantic") do
+        generate_semantic_xml(filename, options)
+      end or return nil
       source_file, semantic_xml = semantic_result
       # All lutaml macros have expanded by the end of conversion; the
       # plugin's retained XMI graphs (LRU-bounded, gigabytes for large
@@ -75,7 +79,9 @@ module Metanorma
       extensions or return nil
 
       # Step 4: Extract information from Semantic XML if requested
-      extract_information(semantic_xml, bibdata, options)
+      @timer.time("relaton/extract") do
+        extract_information(semantic_xml, bibdata, options)
+      end
 
       # Step 5: Generate output formats from Semantic XML. The output
       # converters each build their own DOMs of the semantic XML;
@@ -87,6 +93,7 @@ module Metanorma
         options
       )
     ensure
+      @timer&.report
       clean_exit(options)
     end
 
