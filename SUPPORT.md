@@ -24,6 +24,8 @@ Published advisories and machine-readable vulnerability feeds for `metanorma/met
 
 - The machine-readable OSV feed is published at [https://cve.ribose.com/feeds/osv/metanorma.json](https://cve.ribose.com/feeds/osv/metanorma.json).
 - The machine-readable GHSA feed is published at [https://cve.ribose.com/feeds/ghsa/metanorma.json](https://cve.ribose.com/feeds/ghsa/metanorma.json).
+- The machine-readable CSAF 2.0 feed is published at [https://cve.ribose.com/feeds/csaf/metanorma.json](https://cve.ribose.com/feeds/csaf/metanorma.json).
+- The machine-readable OpenVEX feed is published at [https://cve.ribose.com/feeds/vex/metanorma.json](https://cve.ribose.com/feeds/vex/metanorma.json).
 
 General bug reports and feature requests that do not involve security vulnerabilities should be filed in the public [GitHub issue tracker](https://github.com/metanorma/metanorma/issues).
 
