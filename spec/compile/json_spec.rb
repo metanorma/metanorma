@@ -131,6 +131,26 @@ RSpec.describe Metanorma::Compile do
     expect(Dir[File.join(out, "*.json")]).to be_empty
   end
 
+  it "removes a JSON left by an earlier run when this run fails early" do
+    stale = File.join(out, "bad.json")
+    File.write(stale, "{\"stale\":true}")
+    File.write(File.join(out, "bad.xml"), "<metanorma")
+
+    run_compile(File.join(out, "bad.xml"), "iso")
+
+    expect(File.exist?(stale)).to be(false)
+  end
+
+  it "keeps a stale file of another format when a JSON run fails early" do
+    html = File.join(out, "bad.html")
+    File.write(html, "<html/>")
+    File.write(File.join(out, "bad.xml"), "<metanorma")
+
+    run_compile(File.join(out, "bad.xml"), "iso")
+
+    expect(File.exist?(html)).to be(true)
+  end
+
   it "reports a SystemStackError from the model walk as a JSON output error" do
     errors = export_json_failing_with(SystemStackError.new("deep"))
 
