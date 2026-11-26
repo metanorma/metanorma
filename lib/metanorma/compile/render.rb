@@ -193,16 +193,20 @@ module Metanorma
         guide.content or
           return json_output_error("metanorma-mirror cannot serialize the " \
                                    "%s document model", flavor)
+        # The parser already bounds the input depth, so JSON's default
+        # nesting limit of 100 only rejects documents the model can hold.
         File.write(output_paths[:out],
-                   Metanorma::Mirror::Serialization::JsonSerializer
-                     .serialize_pretty(guide.content))
+                   JSON.pretty_generate(guide.content.to_hash,
+                                        max_nesting: false))
       end
     rescue LoadError => e
       json_output_error("the json output format requires the " \
                         "metanorma-document gem: %s", e.message)
-    rescue StandardError => e
+    rescue StandardError, SystemStackError => e
       # Mirror (ArgumentError) or the write (Errno::EACCES) failed: record
       # the artifact as failed rather than raise with an empty @errors.
+      # SystemStackError is not a StandardError: the XML adapter can
+      # exhaust the stack on a deeply nested document.
       FileUtils.rm_f(output_paths[:out])
       json_output_error("the json output failed: %s",
                         "#{e.class}: #{e.message}")
