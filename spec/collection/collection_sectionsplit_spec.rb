@@ -14,6 +14,16 @@ end
 INPATH = "spec/fixtures/collection".freeze
 OUTPATH = "spec/fixtures/output".freeze
 
+# isodoc keeps its per-converter scratch ("<work root>/<leg>/files") under
+# the work root, not next to the source, so a pinned work root is the
+# deterministic way to find the sectionsplit scratch dir (cover.html,
+# split XML, manifest yaml).
+SPLIT_WORKDIR = File.join(Dir.tmpdir, "metanorma-spec-sectionsplit").freeze
+
+def sectionsplit_files_dir
+  Dir.glob(File.join(SPLIT_WORKDIR, "*", "files")).first
+end
+
 # rubocop:disable Layout/LineLength
 RSpec.describe Metanorma::Collection do
   it "processes section split HTML" do
@@ -26,7 +36,9 @@ RSpec.describe Metanorma::Collection do
                                    bare: nil,
                                    sectionsplit: "true",
                                    datauriimage: true,
-                                   agree_to_terms: true)
+                                   agree_to_terms: true,
+                                   work_dir: SPLIT_WORKDIR,
+                                   keep_workdir: true)
     f = "spec/fixtures/collection/test_sectionsplit.html_collection"
     expect(File.exist?("#{f}/index.html")).to be true
     index = File.read("#{f}/index.html")
@@ -43,7 +55,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
     expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
-    f = Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files").first
+    f = sectionsplit_files_dir
     expect(File.exist?("#{f}/cover.html")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true
@@ -225,7 +237,9 @@ RSpec.describe Metanorma::Collection do
                                    sectionsplit: "true",
                                    sectionsplit_filename: "file_{basename}_{document-num}_{sectionsplit-num}",
                                    datauriimage: true,
-                                   agree_to_terms: true)
+                                   agree_to_terms: true,
+                                   work_dir: SPLIT_WORKDIR,
+                                   keep_workdir: true)
     f = "spec/fixtures/collection/test_sectionsplit.html_collection"
     expect(File.exist?("#{f}/index.html")).to be true
     index = File.read("#{f}/index.html")
@@ -255,7 +269,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/file_test_sectionsplit_0_10.html")).to be false
 
     expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
-    f = Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files").first
+    f = sectionsplit_files_dir
     expect(File.exist?("#{f}/cover.html")).to be true
 
     expect(File.exist?("#{f}/file_test_sectionsplit_0_0.xml")).to be true
@@ -273,7 +287,7 @@ RSpec.describe Metanorma::Collection do
 
     # Clean up for next test - remove both collection and _files directories
     FileUtils.rm_rf "spec/fixtures/collection/test_sectionsplit.html_collection"
-    FileUtils.rm_rf Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files")
+    FileUtils.rm_rf SPLIT_WORKDIR
   end
 
   it "processes directories for output filename customisation on section split HTML" do
@@ -281,7 +295,7 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf "test_files"
     # Clean up both the collection directory and the _files directory completely
     FileUtils.rm_rf "spec/fixtures/collection/test_sectionsplit.html_collection"
-    FileUtils.rm_rf Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files")
+    FileUtils.rm_rf SPLIT_WORKDIR
     f = "spec/fixtures/collection/test_sectionsplit.html_collection"
     mock_render
     Metanorma::Compile.new.compile("spec/fixtures/collection/test_sectionsplit.xml",
@@ -291,7 +305,9 @@ RSpec.describe Metanorma::Collection do
                                    sectionsplit: "true",
                                    sectionsplit_filename: "outdir/file_{basename}_{document-num}_{sectionsplit-num}",
                                    datauriimage: true,
-                                   agree_to_terms: true)
+                                   agree_to_terms: true,
+                                   work_dir: SPLIT_WORKDIR,
+                                   keep_workdir: true)
     expect(File.exist?("#{f}/index.html")).to be true
     index = File.read("#{f}/index.html")
     expect(index).not_to include '<a href="file_test_sectionsplit_0_1.html">'
@@ -320,7 +336,7 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_10.html")).to be false
 
     expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
-    f = Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files").first
+    f = sectionsplit_files_dir
     expect(File.exist?("#{f}/cover.html")).to be true
 
     expect(File.exist?("#{f}/file_test_sectionsplit_0_0.xml")).to be true

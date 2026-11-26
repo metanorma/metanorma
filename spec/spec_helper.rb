@@ -132,7 +132,7 @@ end
 
 def cleanup_guid(content)
   content
-    .gsub(%r{cid:#{GUID}}o, "cid:_")
+    .gsub(%r{cid:(?:#{GUID}|\h{64})}o, "cid:_")
     .gsub(%r{ semx-id="[^"]*"}o, "")
     .gsub(%r{ id="_#{GUID}"}o, ' id="_"')
     .gsub(%r{ id="_#{GUID}_[^"]+"}o, ' id="_"')
