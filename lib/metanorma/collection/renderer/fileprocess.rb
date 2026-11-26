@@ -243,6 +243,15 @@ module Metanorma
         xml_path = write_member_collection_xml(fname, xml)
         file_compile(xml_path, fname, ident, index)
         FileUtils.rm_f(xml_path)
+        # The member's source text, cross-referenced XML and temp path
+        # are dead the moment the compile wrote its outputs; the
+        # method-scoped locals would otherwise hold the two full
+        # document strings alive until the next job replaces them,
+        # inflating the heap every other worker's marking walks
+        # (metanorma#748).
+        xml = nil
+        file = nil
+        xml_path = nil
       rescue StandardError => e
         record_member_failure(index, ident, ["#{e.class}: #{e.message}"], {})
       end
@@ -416,9 +425,18 @@ module Metanorma
         # An attachment carries both a <uri type="attachment"> (which drives
         # isodoc's fmt-link attachment="true") and the citation uri; the
         # attachment uri goes first. metanorma/iso-10303#208.
-        attachment and dest.previous = "<uri type='attachment'>#{url}</uri>"
-        dest.previous = "<uri type='citation'>#{url}</uri>"
-        bib.replace(newbib)
+        attachment and prepend_uri(dest, "attachment", url)
+        prepend_uri(dest, "citation", url)
+        # The member trees in this renderer are Nokogiri-native, so the
+        # graft takes the facade's native node for that engine (pinned in
+        # dup_bibitem) — the facade boundary, not a lane choice.
+        bib.replace(newbib.native)
+      end
+
+      def prepend_uri(dest, type, url)
+        require "moxml"
+        dest.previous = Moxml.new(:nokogiri)
+          .parse_fragment("<uri type='#{type}'>#{url}</uri>")
       end
 
       def update_bibitem_prep(bib, identifier)
