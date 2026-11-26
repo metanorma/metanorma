@@ -435,8 +435,9 @@ module Metanorma
 
       def prepend_uri(dest, type, url)
         require "moxml"
-        dest.previous = Moxml.new(:nokogiri)
+        frag = Moxml.new(:nokogiri)
           .parse_fragment("<uri type='#{type}'>#{url}</uri>")
+        dest.previous = frag.first
       end
 
       def update_bibitem_prep(bib, identifier)
