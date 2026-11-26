@@ -103,7 +103,11 @@ module Metanorma
 
       def bibitem_string(bibdata)
         require "moxml"
-        b = Moxml.parse(bibdata).root or return nil
+        # Attachment members carry their bibdata as a Nokogiri node
+        # (Document.attachment_bibitem); regular members store the
+        # serialized string. Normalise before the Moxml parse.
+        xml = bibdata.is_a?(String) ? bibdata : bibdata.to_xml
+        b = Moxml.parse(xml).root or return nil
         b.name = "bibitem"
         b["hidden"] = "true"
         b.at("./*[local-name() = 'ext']")&.remove
