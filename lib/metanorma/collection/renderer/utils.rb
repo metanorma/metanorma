@@ -22,7 +22,11 @@ module Metanorma
 
       def hidden_bibitem_xml(docid)
         require "moxml"
-        b = Moxml.parse(@files.get(docid, :bibdata)).root or return ""
+        # Attachment members store their bibdata as a node, regular
+        # members as the serialized string; normalise for Moxml.
+        stored = @files.get(docid, :bibdata)
+        xml = stored.is_a?(String) ? stored : stored.to_xml
+        b = Moxml.parse(xml).root or return ""
         b.name = "bibitem"
         b["hidden"] = "true"
         b.at("./*[local-name() = 'ext']")&.remove
