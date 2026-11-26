@@ -159,7 +159,7 @@ def cleanup_id(content)
     .gsub(%r{<identifier>#{GUID}</identifier>}o, "<identifier>_</identifier>")
     # isodoc 3.7.21 asset store: embedded-image cids are content-hash
     # names; the assertions pin presence, not the hash (isodoc#920).
-    .gsub(%r{cid:[0-9a-f]{8,}\.(png|emf|gif|jpeg|jpg|svg|tiff)}, "cid:_.\1")
+    .gsub(%r{cid:[0-9a-f]{8,}\.(png|emf|gif|jpeg|jpg|svg|tiff)}, "cid:_.\\1")
 end
 
 def mock_pdf
