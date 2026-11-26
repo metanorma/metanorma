@@ -69,11 +69,17 @@ module Metanorma
         @dirname = File.expand_path(File.dirname(file))
         config = case file
                  when /\.xml$/
-                   ::Metanorma::Collection::Config::Config.from_xml(File.read(file))
+                   ::Lutaml::Model::Config.with_adapter(xml: :nokogiri) do
+                     ::Metanorma::Collection::Config::Config
+                       .from_xml(File.read(file))
+                   end
                  when /.ya?ml$/
                    y = YAML.safe_load(File.read(file))
                    pre_parse_model(y)
-                   ::Metanorma::Collection::Config::Config.from_yaml(y.to_yaml)
+                   ::Lutaml::Model::Config.with_adapter(xml: :nokogiri) do
+                     ::Metanorma::Collection::Config::Config
+                       .from_yaml(y.to_yaml)
+                   end
                  end
         new(file: file, config: config)
       end

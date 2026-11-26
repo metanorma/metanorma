@@ -148,7 +148,10 @@ module Metanorma
         currdir = File.dirname(f)
         @collection.class.check_file_existence(f)
         entry.file = nil
-        entry.entry = ::Metanorma::Collection::Config::Config.from_yaml(File.read(f)).manifest
+        entry.entry = ::Lutaml::Model::Config.with_adapter(xml: :nokogiri) do
+          ::Metanorma::Collection::Config::Config
+            .from_yaml(File.read(f)).manifest
+        end
         if currdir != dir
           prefix = Pathname.new(currdir).relative_path_from(Pathname.new(dir))
           update_filepaths(entry.entry, prefix.to_s)
@@ -250,10 +253,13 @@ module Metanorma
 
       def to_xml(builder = nil)
         clean_manifest(@config)
-        if builder
-          builder.parent.add_child(@config.to_xml)
-        else
+        xml = ::Lutaml::Model::Config.with_adapter(xml: :nokogiri) do
           @config.to_xml
+        end
+        if builder
+          builder.parent.add_child(xml)
+        else
+          xml
         end
       end
 
