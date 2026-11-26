@@ -208,7 +208,7 @@ RSpec.describe Metanorma::Collection do
     # isodoc 3.7.21 asset store: the per-document assets dir no longer
     # emits a sidecar cover.html — the section cover renders inline in
     # the first section page (isodoc#920).
-    expect(File.read("spec/fixtures/collection/test_sectionsplit.html_collection/test_sectionsplit.html.0.html"))
+    expect(File.read("#{f}/file_test_sectionsplit_0_0.html"))
       .to include('<div class="title-section">')
 
     expect(File.exist?("#{f}/file_test_sectionsplit_0_0.xml")).to be true
