@@ -96,7 +96,8 @@ RSpec.describe Metanorma::Collection do
       .at("//xmlns:bibitem[@id = 'R1']"))
       .to be_nil
     expect(file2
-      .xpath("//xmlns:bibitem").find { |b| b["id"] =~ /_A\z/ }.to_xml)
+      .xpath("//xmlns:bibitem")
+      .find { |b| b["id"] == "#{m[1]}_A___Clause_4" }.to_xml)
       .to be_xml_equivalent_to <<~OUTPUT
         <bibitem hidden="true" id="#{m[1]}_A___Clause_4" anchor="#{m[1]}_A___Clause_4">
         <title>ISO Title</title>
@@ -104,7 +105,8 @@ RSpec.describe Metanorma::Collection do
         </bibitem>
       OUTPUT
     expect(file2
-      .xpath("//xmlns:bibitem").find { |b| b["id"] =~ /_R1\z/ }.to_xml)
+      .xpath("//xmlns:bibitem")
+      .find { |b| b["id"] == "#{m[1]}_R1___Clause_4" }.to_xml)
       .to be_xml_equivalent_to <<~OUTPUT
         <bibitem hidden="true" id="#{m[1]}_R1___Clause_4" anchor="#{m[1]}_R1___Clause_4">
         <title>ISO Title</title>
