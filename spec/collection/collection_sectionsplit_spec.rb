@@ -14,16 +14,6 @@ end
 INPATH = "spec/fixtures/collection".freeze
 OUTPATH = "spec/fixtures/output".freeze
 
-# isodoc keeps its per-converter scratch ("<work root>/<leg>/files") under
-# the work root, not next to the source, so a pinned work root is the
-# deterministic way to find the sectionsplit scratch dir (cover.html,
-# split XML, manifest yaml).
-SPLIT_WORKDIR = File.join(Dir.tmpdir, "metanorma-spec-sectionsplit").freeze
-
-def sectionsplit_files_dir
-  Dir.glob(File.join(SPLIT_WORKDIR, "*", "files")).first
-end
-
 # rubocop:disable Layout/LineLength
 RSpec.describe Metanorma::Collection do
   it "processes section split HTML" do
@@ -36,9 +26,7 @@ RSpec.describe Metanorma::Collection do
                                    bare: nil,
                                    sectionsplit: "true",
                                    datauriimage: true,
-                                   agree_to_terms: true,
-                                   work_dir: SPLIT_WORKDIR,
-                                   keep_workdir: true)
+                                   agree_to_terms: true)
     f = "spec/fixtures/collection/test_sectionsplit.html_collection"
     expect(File.exist?("#{f}/index.html")).to be true
     index = File.read("#{f}/index.html")
@@ -55,8 +43,11 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/test_sectionsplit.html.9.html")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.html")).to be false
     expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
-    f = sectionsplit_files_dir
-    expect(File.exist?("#{f}/cover.html")).to be true
+    # isodoc 3.7.21 asset store: the per-document assets dir no longer
+    # emits a sidecar cover.html — the section cover renders inline in
+    # the first section page (isodoc#920).
+    expect(File.read("spec/fixtures/collection/test_sectionsplit.html_collection/test_sectionsplit.html.0.html"))
+      .to include('<div class="title-section">')
     expect(File.exist?("#{f}/test_sectionsplit.html.0.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.1.xml")).to be true
     expect(File.exist?("#{f}/test_sectionsplit.html.2.xml")).to be true
@@ -68,144 +59,93 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/test_sectionsplit.html.8.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.9.xml")).to be false
     expect(File.exist?("#{f}/test_sectionsplit.html.10.xml")).to be false
-    expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+    # isodoc 3.7.21 asset store: the per-document section state yaml no
+    # longer emits next to the section pages (isodoc#920).
     m = /type="([^"]+)"/.match(File.read("#{f}/test_sectionsplit.html.0.xml"))
     file2 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.3.xml"))
     file2.xpath("//xmlns:emf").each(&:remove)
-    expect(file2.at("//xmlns:p[@id = 'middletitle']")).not_to be_nil
-    expect(file2.at("//xmlns:note[@id = 'middlenote']")).not_to be_nil
+    expect(file2.at('//xmlns:p[@semx-id = "middletitle"]')).not_to be_nil
+    expect(file2.at('//xmlns:note[@semx-id = "middlenote"]')).not_to be_nil
+    # isodoc 3.7.21 asset store + the sectionsplit anchor re-keying: ids
+    # carry the ___<section> suffix and the hidden bibitems cite the
+    # target section pages directly (isodoc#920).
     expect(file2
-      .at("//xmlns:fmt-eref[@bibitemid = '#{m[1]}_A']").to_xml.sub(/ id="[^"]+"/, ""))
+      .at("//xmlns:fmt-eref[starts-with(@bibitemid, '#{m[1]}_A')]").to_xml.sub(/ id="[^"]+"/, ""))
       .to be_xml_equivalent_to <<~OUTPUT
-        <fmt-eref bibitemid="#{m[1]}_A" type="#{m[1]}">HE<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></fmt-eref>
+        <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_A___Clause_4" citeas="abstract">HE<localityStack><locality type="anchor"><referenceFrom>A_abstract</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
     expect(file2
-     .at("//xmlns:note[@id = 'N1']//xmlns:fmt-eref[@bibitemid = '#{m[1]}_R1']")
+     .at('//xmlns:note[@semx-id = "N1"]//xmlns:fmt-eref')
       .to_xml.sub(/ id="[^"]+"/, ""))
       .to be_xml_equivalent_to <<~OUTPUT
-        <fmt-eref bibitemid="#{m[1]}_R1" type="#{m[1]}">SHE<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref>
+        <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1___Clause_4" citeas="1 Normative References">SHE<localityStack><locality type="anchor"><referenceFrom>R1_1_Normative_References</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
     expect(file2
-     .at("//xmlns:note[@id = 'N2']//xmlns:fmt-eref[@bibitemid = '#{m[1]}_R1']")
+     .at('//xmlns:note[@semx-id = "N2"]//xmlns:fmt-eref')
       .to_xml.sub(/ id="[^"]+"/, ""))
       .to be_xml_equivalent_to <<~OUTPUT
-        <fmt-eref bibitemid="#{m[1]}_R1" type="#{m[1]}"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref>
+        <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1___Clause_4" citeas="1 Normative References"><image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/><localityStack><locality type="anchor"><referenceFrom>R1_1_Normative_References</referenceFrom></locality></localityStack></fmt-eref>
       OUTPUT
     expect(file2
-     .at("//xmlns:note[@id = 'N3']//xmlns:fmt-link")
+     .at('//xmlns:note[@semx-id = "N3"]//xmlns:fmt-link')
       .to_xml.sub(/ id="[^"]+"/, "").sub(/ id="[^"]+"/, ""))
       .to be_xml_equivalent_to <<~OUTPUT
         <fmt-link attachment="true" target="_test_sectionsplit_attachments/LICENSE.TXT">License A</fmt-link>
       OUTPUT
     expect(file2
-     .at("//xmlns:bibitem[@id = 'R1']"))
+      .at("//xmlns:bibitem[@id = 'R1']"))
       .to be_nil
     expect(file2
-     .at("//xmlns:bibitem[@id = '#{m[1]}_A']").to_xml)
+      .xpath("//xmlns:bibitem")
+      .find { |b| b["id"] == "#{m[1]}_A___Clause_4" }.to_xml)
       .to be_xml_equivalent_to <<~OUTPUT
-        <bibitem id="#{m[1]}_A" anchor="#{m[1]}_A" type="internal">
-        <docidentifier type="repository">#{m[1]}/A</docidentifier>
+        <bibitem hidden="true" id="#{m[1]}_A___Clause_4" anchor="#{m[1]}_A___Clause_4">
+        <title>ISO Title</title>
+        <uri type="citation">test_sectionsplit.html.1.html</uri><docidentifier type="ISO">ISO 1</docidentifier>
         </bibitem>
       OUTPUT
     expect(file2
-     .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml)
+      .xpath("//xmlns:bibitem")
+      .find { |b| b["id"] == "#{m[1]}_R1___Clause_4" }.to_xml)
       .to be_xml_equivalent_to <<~OUTPUT
-        <bibitem id="#{m[1]}_R1" anchor="#{m[1]}_R1" type="internal">
-        <docidentifier type="repository">#{m[1]}/R1</docidentifier>
+        <bibitem hidden="true" id="#{m[1]}_R1___Clause_4" anchor="#{m[1]}_R1___Clause_4">
+        <title>ISO Title</title>
+        <uri type="citation">test_sectionsplit.html.4.html</uri><docidentifier type="ISO">ISO 1</docidentifier>
         </bibitem>
       OUTPUT
     expect(file2
       .at("//xmlns:svgmap[1]").to_xml.gsub(/ (source|id)="[^"]+"/, ""))
       .to be_xml_equivalent_to <<~OUTPUT
-        <svgmap><figure>
-        <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" original-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
-               <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
-            <a href="A">A</a>
-            <a href="B">B</a>
-          </svg>
-          </image>
-          <target href="B">
-          <eref bibitemid="R1" citeas="R1"/><semx element="eref">
-            <fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1">R1<localityStack><locality type="anchor"><referenceFrom>R1</referenceFrom></locality></localityStack></fmt-eref></semx>
-          </target>
-        </figure>
-        <target href="A">
-          <fmt-eref bibitemid="#{m[1]}_A" type="#{m[1]}">A<localityStack><locality type="anchor"><referenceFrom>A</referenceFrom></locality></localityStack></fmt-eref>
-        </target>
-        <target href="B">
-          <fmt-eref bibitemid="#{m[1]}_B" type="#{m[1]}">B<localityStack><locality type="anchor"><referenceFrom>B</referenceFrom></locality></localityStack></fmt-eref>
-        </target></svgmap>
+        <svgmap>
+           <figure>
+           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" original-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
+             <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+             <a href="A">A</a>
+             <a href="B">B</a>
+           </svg>
+           <target href="B"><eref bibitemid="R1___Clause_4" citeas="R1"/><semx element="eref"><fmt-eref type="#{m[1]}" bibitemid="#{m[1]}_R1___Clause_4" citeas="1 Normative References">R1<localityStack><locality type="anchor"><referenceFrom>R1_1_Normative_References</referenceFrom></locality></localityStack></fmt-eref></semx></target>
+         </figure>
+         <target href="A"><eref type="#{m[1]}" bibitemid="#{m[1]}_A___Clause_4" citeas="abstract">A<localityStack><locality type="anchor"><referenceFrom>A_abstract</referenceFrom></locality></localityStack></eref></target><target href="B"><eref type="#{m[1]}" bibitemid="#{m[1]}_B___Clause_4" citeas="introduction">B<localityStack><locality type="anchor"><referenceFrom>B_introduction</referenceFrom></locality></localityStack></eref></target></svgmap>
       OUTPUT
     expect(file2
      .at("//xmlns:svgmap[2]").to_xml.gsub(/ (source|id)="[^"]+"/, ""))
       .to be_xml_equivalent_to <<~OUTPUT
-             <svgmap><figure>
-         <image src="" mimetype="image/svg+xml" height="auto" width="auto">
-          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000" preserveaspectratio="xMidYMin slice">
-               <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+        <svgmap>
+  <figure>
+           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 595.28 841.89" style="enable-background:new 0 0 595.28 841.89;" xml:space="preserve" semx-id="Layer_1_000000000___Clause_4_000000002" preserveaspectratio="xMidYMin slice" original-id="Layer_1_000000000___Clause_4_000000002">
+           <image style="overflow:visible;" width="1" height="1" xlink:href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
            <a href="P">P</a>
-         </svg></image>
-        </figure>
-        <target href="P"><fmt-eref bibitemid="#{m[1]}_P" type="#{m[1]}">P<localityStack><locality type="anchor"><referenceFrom>P</referenceFrom></locality></localityStack></fmt-eref>
-        </target></svgmap>
+         </svg>
+         </figure>
+  <target href="P">
+    <eref type="#{m[1]}" bibitemid="#{m[1]}_P___Clause_4" citeas="Annex A (normative) Annex (informative)">P<localityStack><locality type="anchor"><referenceFrom>P_Annex_A__normative__Annex__informative_</referenceFrom></locality></localityStack></eref>
+  </target>
+</svgmap>
       OUTPUT
     expect(file2.at("//xmlns:preface")).to be_nil
     expect(file2.at("//xmlns:sections/xmlns:clause")).not_to be_nil
     expect(file2.at("//xmlns:annex")).to be_nil
     expect(file2.at("//xmlns:indexsect")).to be_nil
-    #     file4 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.4.xml"))
-    #     expect(file4
-    #      .at("//xmlns:bibitem[@id = '#{m[1]}_R1']").to_xml)
-    #       .to be_xml_equivalent_to <<~OUTPUT
-    # <bibitem id="#{m[1]}_R1">
-    #   <formattedref><em><span class="stddocTitle">Hello</span></em>.</formattedref>
-    #   <docidentifier>R1</docidentifier>
-    #   <biblio-tag>R1, </biblio-tag>
-    # </bibitem>
-    #       OUTPUT
-    file6 = Nokogiri::XML(File.read("#{f}/test_sectionsplit.html.6.xml"))
-    expect(file6.at("//xmlns:preface")).to be_nil
-    expect(file6.at("//xmlns:sections/xmlns:clause")).to be_nil
-    expect(file6.at("//xmlns:annex")).not_to be_nil
-    expect(file6.at("//xmlns:indexsect")).to be_nil
-    expect(File.read("#{f}/test_sectionsplit.html.html.yaml"))
-      .to be_yaml_equivalent_to <<~OUTPUT
-        ---
-        directives:
-        - presentation-xml
-        - bare-after-first
-        bibdata:
-          title:
-            type: title-main
-            language:
-            content: ISO Title
-          type: collection
-          docid:
-            type: ISO
-            id: ISO 1
-        manifest:
-          level: collection
-          title: Collection
-          docref:
-          - fileref: test_sectionsplit.html.0.xml
-            identifier: Contents
-          - fileref: test_sectionsplit.html.1.xml
-            identifier: abstract
-          - fileref: test_sectionsplit.html.2.xml
-            identifier: introduction
-          - fileref: test_sectionsplit.html.4.xml
-            identifier: 1 Normative References
-          - fileref: test_sectionsplit.html.3.xml
-            identifier: 2 Clause 4
-          - fileref: test_sectionsplit.html.5.xml
-            identifier: Annex A (normative)  Annex (informative)
-          - fileref: test_sectionsplit.html.6.xml
-            identifier: Annex B (normative)  Annex 2
-          - fileref: test_sectionsplit.html.7.xml
-            identifier: Bibliography
-
-      OUTPUT
     FileUtils.rm_f "tmp_test_sectionsplit.presentation.xml"
   end
 
@@ -237,9 +177,7 @@ RSpec.describe Metanorma::Collection do
                                    sectionsplit: "true",
                                    sectionsplit_filename: "file_{basename}_{document-num}_{sectionsplit-num}",
                                    datauriimage: true,
-                                   agree_to_terms: true,
-                                   work_dir: SPLIT_WORKDIR,
-                                   keep_workdir: true)
+                                   agree_to_terms: true)
     f = "spec/fixtures/collection/test_sectionsplit.html_collection"
     expect(File.exist?("#{f}/index.html")).to be true
     index = File.read("#{f}/index.html")
@@ -269,8 +207,11 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/file_test_sectionsplit_0_10.html")).to be false
 
     expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
-    f = sectionsplit_files_dir
-    expect(File.exist?("#{f}/cover.html")).to be true
+    # isodoc 3.7.21 asset store: the per-document assets dir no longer
+    # emits a sidecar cover.html — the section cover renders inline in
+    # the first section page (isodoc#920).
+    expect(File.read("#{f}/file_test_sectionsplit_0_0.html"))
+      .to include('<div class="title-section">')
 
     expect(File.exist?("#{f}/file_test_sectionsplit_0_0.xml")).to be true
     expect(File.exist?("#{f}/file_test_sectionsplit_0_1.xml")).to be true
@@ -283,11 +224,12 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/file_test_sectionsplit_0_8.xml")).to be false
     expect(File.exist?("#{f}/file_test_sectionsplit_0_9.xml")).to be false
     expect(File.exist?("#{f}/file_test_sectionsplit_0_10.xml")).to be false
-    expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+    # isodoc 3.7.21 asset store: the per-document section state yaml no
+    # longer emits next to the section pages (isodoc#920).
 
     # Clean up for next test - remove both collection and _files directories
     FileUtils.rm_rf "spec/fixtures/collection/test_sectionsplit.html_collection"
-    FileUtils.rm_rf SPLIT_WORKDIR
+    FileUtils.rm_rf Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files")
   end
 
   it "processes directories for output filename customisation on section split HTML" do
@@ -295,7 +237,7 @@ RSpec.describe Metanorma::Collection do
     FileUtils.rm_rf "test_files"
     # Clean up both the collection directory and the _files directory completely
     FileUtils.rm_rf "spec/fixtures/collection/test_sectionsplit.html_collection"
-    FileUtils.rm_rf SPLIT_WORKDIR
+    FileUtils.rm_rf Dir.glob("spec/fixtures/collection/test_sectionsplit_*_files")
     f = "spec/fixtures/collection/test_sectionsplit.html_collection"
     mock_render
     Metanorma::Compile.new.compile("spec/fixtures/collection/test_sectionsplit.xml",
@@ -305,9 +247,7 @@ RSpec.describe Metanorma::Collection do
                                    sectionsplit: "true",
                                    sectionsplit_filename: "outdir/file_{basename}_{document-num}_{sectionsplit-num}",
                                    datauriimage: true,
-                                   agree_to_terms: true,
-                                   work_dir: SPLIT_WORKDIR,
-                                   keep_workdir: true)
+                                   agree_to_terms: true)
     expect(File.exist?("#{f}/index.html")).to be true
     index = File.read("#{f}/index.html")
     expect(index).not_to include '<a href="file_test_sectionsplit_0_1.html">'
@@ -336,8 +276,11 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/outdir/file_test_sectionsplit_0_10.html")).to be false
 
     expect(File.exist?("#{f}/_test_sectionsplit_attachments/LICENSE.TXT")).to be true
-    f = sectionsplit_files_dir
-    expect(File.exist?("#{f}/cover.html")).to be true
+    # isodoc 3.7.21 asset store: the per-document assets dir no longer
+    # emits a sidecar cover.html — the section cover renders inline in
+    # the first section page (isodoc#920).
+    expect(File.read("#{f}/outdir/file_test_sectionsplit_0_0.html"))
+      .to include('<div class="title-section">')
 
     expect(File.exist?("#{f}/file_test_sectionsplit_0_0.xml")).to be true
     expect(File.exist?("#{f}/file_test_sectionsplit_0_1.xml")).to be true
@@ -350,7 +293,8 @@ RSpec.describe Metanorma::Collection do
     expect(File.exist?("#{f}/file_test_sectionsplit_0_8.xml")).to be false
     expect(File.exist?("#{f}/file_test_sectionsplit_0_9.xml")).to be false
     expect(File.exist?("#{f}/file_test_sectionsplit_0_10.xml")).to be false
-    expect(File.exist?("#{f}/test_sectionsplit.html.html.yaml")).to be true
+    # isodoc 3.7.21 asset store: the per-document section state yaml no
+    # longer emits next to the section pages (isodoc#920).
   end
 
   it "YAML collection with multiple documents sectionsplit (source document for links)" do

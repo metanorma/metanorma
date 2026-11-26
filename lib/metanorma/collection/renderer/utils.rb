@@ -12,18 +12,25 @@ module Metanorma
                   path.basename.to_s.gsub(clean_regex, fallback_sym))
       end
 
-      def dup_bibitem(docid, bib)
-        newbib = deep_detached_clone(@files.get(docid, :bibdata))
-        newbib.name = "bibitem"
-        newbib["hidden"] = "true"
-        newbib&.at("./*[local-name() = 'ext']")&.remove
-        newbib["id"] = bib["id"]
-        bib["anchor"] and newbib["anchor"] = bib["anchor"]
-        newbib
+      def dup_bibitem(docid, _bib)
+        # XML handling goes through the Moxml facade. The member trees
+        # in this renderer are Nokogiri-native (fileparse parses them
+        # with it), so the facade is pinned to that engine at this
+        # boundary; the pin disappears when #747 migrates the lane.
+        Moxml.parse(hidden_bibitem_xml(docid), adapter: :nokogiri).root
       end
 
-      def deep_detached_clone(node)
-        Nokogiri::XML(node.to_xml).root
+      def hidden_bibitem_xml(docid)
+        require "moxml"
+        # Attachment members store their bibdata as a node, regular
+        # members as the serialized string; normalise for Moxml.
+        stored = @files.get(docid, :bibdata)
+        xml = stored.is_a?(String) ? stored : stored.to_xml
+        b = Moxml.parse(xml).root or return ""
+        b.name = "bibitem"
+        b["hidden"] = "true"
+        b.at("./*[local-name() = 'ext']")&.remove
+        b.to_xml
       end
 
       def get_bibitem_docid(bib, identifier)
