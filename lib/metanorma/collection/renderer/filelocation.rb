@@ -3,8 +3,13 @@
 module Metanorma
   class Collection
     class Renderer
+      # The member's :outputs is filled in a local hash and published once,
+      # complete. Other members render on the pool (#705) and resolve their
+      # citations to this member through FileLookup#url meanwhile: an
+      # :outputs hash that exists without :html makes that URL the raw .xml
+      # out_path, so a partly filled hash must never be visible.
       def file_compile_formats(filename, identifier, opts, processor)
-        f = @files.get(identifier, :outputs)
+        f = {}
         format = opts[:extension_keys]
         concatenate_presentation?({ format: }) and format << :presentation
         format.each do |e|
