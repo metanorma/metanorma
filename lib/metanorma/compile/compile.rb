@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
+require "digest"
 require "fileutils"
+require "tmpdir"
 require "nokogiri"
 require "htmlentities"
 require "yaml"
@@ -82,12 +84,41 @@ module Metanorma
       # collect this phase's temporaries first so they stack on the
       # live set, not on the converter phase's high-water mark.
       GC.start
+      init_work_root(semantic_xml, options)
       generate_outputs(
         source_file, semantic_xml, bibdata, extensions, output_paths,
         options
       )
     ensure
+      teardown_work_root(options)
       clean_exit(options)
+    end
+
+    # The work root hosts the output converters' shared asset store and
+    # scratch directories for the duration of the build (isodoc#920). It
+    # is keyed by the document's semantic XML, so identical documents
+    # reuse the identical root and parallel documents never collide; the
+    # converters derive no work paths of their own. `work_dir` overrides
+    # the derivation, `keep_workdir` skips the teardown for debugging.
+    def init_work_root(semantic_xml, options)
+      @work_root = options[:work_dir]
+      derived = @work_root.nil?
+      @work_root ||= File.join(
+        Dir.tmpdir, "metanorma",
+        "work-#{Digest::SHA256.hexdigest(semantic_xml.to_s)}",
+      )
+      FileUtils.mkdir_p @work_root
+      # a derived root is shared /tmp real estate like the converters'
+      # scratch; a user-supplied work_dir is left with its own permissions
+      FileUtils.chmod 0o777, @work_root if derived
+      options[:workdir] = @work_root
+      @work_root
+    end
+
+    def teardown_work_root(options)
+      @work_root or return
+      FileUtils.rm_rf @work_root unless options[:keep_workdir]
+      @work_root = nil
     end
 
     def process_options!(filename, options)

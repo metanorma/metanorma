@@ -95,13 +95,14 @@ module Metanorma
       end
 
       # Harness formats available to every flavor, regardless of the
-      # processor's own list. MKO (metanorma-document) is resolved via
-      # Core::Flavors, so it needs nothing from the flavor gems.
-      HARNESS_OUTPUT_FORMATS = { mko: "mko" }.freeze
+      # processor's own list. MKO and JSON (metanorma-document) are
+      # resolved via Core::Flavors, so they need nothing from the flavor
+      # gems.
+      HARNESS_OUTPUT_FORMATS = { mko: "mko", json: "json" }.freeze
 
       # Formats a flavor offers by default: its own list plus
       # taste-contributed document-model formats. The harness formats
-      # (mko) are deliberately absent — they are opt-in via
+      # (mko, json) are deliberately absent — they are opt-in via
       # --extensions, never a surprise default output.
       def default_output_formats(options)
         @processor.output_formats
@@ -199,6 +200,9 @@ module Metanorma
       def copy_isodoc_options_attrs(options, ret)
         ret[:datauriimage] = true if options[:datauriimage]
         ret[:sourcefilename] = options[:filename]
+        # Every output format leg of the compile shares the one work root
+        # (asset store + scratch) created by init_work_root (isodoc#920).
+        ret[:workdir] = options[:workdir]
         # Carry the active taste through to Processor#output, so its taste-aware
         # document_transformers resolve there (metanorma-core#12).
         ret[:supplied_type] = options[:supplied_type]

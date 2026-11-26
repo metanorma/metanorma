@@ -1,0 +1,36 @@
+= IALA parity fixture: report
+:doctype: report
+:docnumber: 1000
+:series: X
+:edition: 1
+:revdate: 2024-01-01
+:language: en
+:status: published
+:no-pdf:
+
+== Scope
+
+Parity fixture for the report doctype, with a <<tab1>> and a <<f1>>
+cross-reference.
+
+[[tab1]]
+.Table caption
+|===
+| Header A | Header B
+
+| a1 | b1
+|===
+
+[[f1]]
+[stem]
+++++
+x = y + 1
+++++
+
+NOTE: A note.
+
+[example]
+An example.
+
+* First
+* Second

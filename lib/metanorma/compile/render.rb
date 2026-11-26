@@ -1,6 +1,6 @@
 module Metanorma
   class Compile
-    NO_FONTIST_FORMATS = %i[xml presentation rxl mko].freeze
+    NO_FONTIST_FORMATS = %i[xml presentation rxl mko json].freeze
 
     # Generate presentation XML from semantic XML
     def generate_presentation_xml(source_file, xml, bibdata, output_paths, opt)
@@ -126,6 +126,10 @@ module Metanorma
         # Harness format: export the MKO bundle from the typed model
         export_mko_bundle(output_paths)
         true
+      elsif ext == :json
+        # Harness format: Metanorma JSON, the serialized document model
+        export_json(sem_xml, output_paths)
+        true
       elsif ext == :html && options[:sectionsplit]
         # Special case: Split HTML into sections
         sectionsplit_convert(
@@ -147,8 +151,7 @@ module Metanorma
       # :xml is the freshly written semantic XML; orig_filename is the
       # adoc SOURCE and is only right when an output_dir kept the
       # semantic XML at the input location.
-      semantic_path = [output_paths[:xml], output_paths[:orig_filename]]
-                       .find { |p1| p1 && File.exist?(p1) && File.extname(p1) != ".adoc" }
+      semantic_path = semantic_xml_path(output_paths)
       presentation = if File.exist?(output_paths[:presentationxml])
                        File.read(output_paths[:presentationxml])
                      end
@@ -162,6 +165,65 @@ module Metanorma
                                  severity: 0 })
       @log.add("MKO_OUTPUT", nil, params: [e.message])
       nil
+    end
+
+    # Export Metanorma JSON: the semantic XML parsed into the flavor's
+    # metanorma-document model and serialized through the Mirror model
+    # (metanorma-mirror, a dependency of metanorma-document), never a
+    # hand-built hash. The flavor comes from the processor. The semantic
+    # XML is not necessarily on disk (only when :xml is requested), so it
+    # is taken from memory.
+    def export_json(sem_xml, output_paths)
+      # A JSON left by an earlier run would misrepresent this input if
+      # serialization fails below.
+      FileUtils.rm_f(output_paths[:out])
+      require "tempfile"
+      require "metanorma/document"
+      require "metanorma/mirror"
+      Tempfile.create(%w(mn-json .xml)) do |f|
+        f.write(sem_xml.to_s)
+        f.close
+        # A processor's short is a symbol, or a list of aliases whose last
+        # entry is the flavor gem's name (cc: %i[csd cc]).
+        flavor = Array(@processor.short).last.to_s
+        guide = Metanorma::Mirror::Output::Pipeline
+          .new(xml_path: f.path, flavor: flavor).process
+        # Mirror yields no content for a model it cannot transform: say so
+        # rather than write a "null" document.
+        guide.content or
+          return json_output_error("metanorma-mirror cannot serialize the " \
+                                   "%s document model", flavor)
+        File.write(output_paths[:out],
+                   Metanorma::Mirror::Serialization::JsonSerializer
+                     .serialize_pretty(guide.content))
+      end
+    rescue LoadError => e
+      json_output_error("the json output format requires the " \
+                        "metanorma-document gem: %s", e.message)
+    rescue StandardError => e
+      # Mirror (ArgumentError) or the write (Errno::EACCES) failed: record
+      # the artifact as failed rather than raise with an empty @errors.
+      FileUtils.rm_f(output_paths[:out])
+      json_output_error("the json output failed: %s",
+                        "#{e.class}: #{e.message}")
+    end
+
+    # No JSON was written, so the failure joins @errors like any missing
+    # artifact (#601) and the CLI exits non-zero.
+    def json_output_error(message, param)
+      @errors << format(message, param)
+      @log.add_msg(JSON_OUTPUT: { category: "JSON Output", error: message,
+                                  severity: 0 })
+      @log.add("JSON_OUTPUT", nil, params: [param])
+      nil
+    end
+
+    # :xml is the freshly written semantic XML; orig_filename is the
+    # adoc SOURCE and is only right when an output_dir kept the
+    # semantic XML at the input location.
+    def semantic_xml_path(output_paths)
+      [output_paths[:xml], output_paths[:orig_filename]]
+        .find { |p1| p1 && File.exist?(p1) && File.extname(p1) != ".adoc" }
     end
 
     # Process format that requires presentation XML
@@ -199,7 +261,7 @@ module Metanorma
     # assume we pass in Presentation XML, but we want to recover Semantic XML
     def sectionsplit_convert(input_filename, file, output_filename = nil,
                              opts = {})
-      @isodoc ||= IsoDoc::PresentationXMLConvert.new({})
+      @isodoc ||= IsoDoc::PresentationXMLConvert.new(workdir: @work_root)
       input_filename += ".xml" unless input_filename.match?(/\.xml$/)
       File.exist?(input_filename) or export_output(input_filename, file)
       presxml = File.read(input_filename, encoding: "utf-8")
