@@ -33,7 +33,6 @@ module Metanorma
           .merge(compile_options_bare_after_first(index))
 
         compile = member_compile(file, opts)
-        @files.set(identifier, :outputs, {})
         file_compile_formats(filename, identifier, opts,
                              member_processor(compile))
         file_compile_verify(identifier, index, compile.errors)
