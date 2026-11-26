@@ -12,12 +12,16 @@ module Metanorma
                   path.basename.to_s.gsub(clean_regex, fallback_sym))
       end
 
-      def dup_bibitem(docid, _bib)
+      def dup_bibitem(docid, bib)
         # XML handling goes through the Moxml facade. The member trees
         # in this renderer are Nokogiri-native (fileparse parses them
         # with it), so the facade is pinned to that engine at this
         # boundary; the pin disappears when #747 migrates the lane.
-        Moxml.parse(hidden_bibitem_xml(docid), adapter: :nokogiri).root
+        newbib = Moxml.parse(hidden_bibitem_xml(docid), adapter: :nokogiri)
+          .root
+        newbib["id"] = bib["id"]
+        bib["anchor"] and newbib["anchor"] = bib["anchor"]
+        newbib
       end
 
       def hidden_bibitem_xml(docid)
