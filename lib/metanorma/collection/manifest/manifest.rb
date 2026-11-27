@@ -227,6 +227,7 @@ module Metanorma
 
       def compile_adoc_file?(file)
         !File.exist?(file.sub(/\.adoc$/, ".xml")) and return true
+        (cs = @collection.change_set) && !cs.changed?(file) and return false
         @collection.directives.detect do |d|
           d.key == "recompile-xml" && d.value == "false"
         end and return false

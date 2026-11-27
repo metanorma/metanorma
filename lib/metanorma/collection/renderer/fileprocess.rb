@@ -209,6 +209,7 @@ module Metanorma
             # other members' sections are rendered by sibling runs over
             # the same store.
             @only_members and !render_member?(ident) and next
+            reuse_member_output?(ident) and next
             jobs << [i, ident]
           end
         end
@@ -312,6 +313,24 @@ module Metanorma
       def render_member?(ident)
         @only_member_keys.include?(ident) ||
           @only_member_keys.include?(@files.get(ident, :parentid))
+      end
+
+      # Change-aware build: an unchanged member keeps its existing output.
+      # A section-split part follows its parent document's sources. A
+      # member is compiled anyway when the output the collection links to
+      # is missing (first build, cleaned output folder), so the index never
+      # points at an absent document.
+      def reuse_member_output?(ident)
+        @change_set or return false
+        src = @files.get(ident, :parentid) || ident
+        ref = @files.get(src, :ref) or return false
+        @change_set.changed?(ref) and return false
+        @files.get(ident, :sectionsplit) or
+          File.exist?(File.join(@outdir, member_link(ident))) or return false
+        ::Metanorma::Util.log("[metanorma] Info: #{ident} unchanged since " \
+                              "#{@change_set.ref}, keeping its output",
+                              :warning)
+        true
       end
 
       # Resume predicate: is this member already compiled and stored for its

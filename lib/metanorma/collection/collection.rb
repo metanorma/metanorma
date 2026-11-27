@@ -2,6 +2,7 @@ require "relaton"
 require "relaton/bib"
 require "metanorma-utils"
 require_relative "util/util"
+require_relative "change_set"
 require_relative "util/disambig_files"
 require_relative "config/bibdata_parser"
 require_relative "config/config"
@@ -25,13 +26,20 @@ module Metanorma
     attr_accessor :directives, :documents, :bibdatas, :coverpage,
                   :coverpage_pdf_portfolio, :dirname,
                   :disambig, :manifest, :bibdata, :compile, :config
+    # Change-aware build (metanorma-cli#495): files changed since the
+    # :changed_since git ref; nil for a normal build.
+    attr_reader :change_set
 
     # @param file [String] path to source file
     # @param config [Metanorma::Collection::Config]
     # @param documents [Hash<String, Metanorma::Collection::Document>]
+    # @param changed_since [String, nil] git ref: unchanged AsciiDoc members
+    #   with an existing XML are not recompiled, and render keeps the output
+    #   of unchanged members
     def initialize(**args)
       @file = args[:file]
       @dirname = File.expand_path(File.dirname(@file)) # feeds @manifest
+      @change_set = ChangeSet.for(args[:changed_since], @dirname) # feeds @manifest
       @documents = args[:documents] || {} # feeds initialize_directives, initialize_docs
       @bibdatas = args[:documents] || {}
       initialize_vars
@@ -143,6 +151,7 @@ module Metanorma
         opts[:format] = @format || [:html]
       opts[:log] = @log
       opts[:flavor] = @flavor
+      opts.key?(:changed_since) or opts[:changed_since] = @change_set
       output_folder(opts)
       cr = ::Metanorma::Collection::Renderer.render self, opts
       clean_exit

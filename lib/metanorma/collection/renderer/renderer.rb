@@ -11,6 +11,7 @@ require_relative "render_word"
 require_relative "navigation"
 require_relative "svg"
 require_relative "../log"
+require_relative "../change_set"
 
 module Metanorma
   class Collection
@@ -111,6 +112,11 @@ module Metanorma
         # identifiers. The manifest still carries every member, so the
         # anchors and cross-reference passes see the whole collection.
         @only_members = options[:only_members]
+        # Change-aware build (metanorma-cli#495): with :changed_since (a git
+        # ref, or a ChangeSet), a member whose sources did not change since
+        # that ref keeps the output it already has in the output folder and
+        # is not compiled again. The default renders every member.
+        @change_set = ChangeSet.for(options[:changed_since], collection.dirname)
         # Isolated/incremental build: preserve unresolved cross-document
         # references as stubs instead of resolving or stripping them, so each
         # member compiles independently and a later reinflation pass relinks.
