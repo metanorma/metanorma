@@ -19,26 +19,35 @@ RSpec.describe Metanorma::Collection::Config::Manifest do
     )
   end
 
+  let(:manifest_yaml) do
+    {
+      "directives" => ["documents-inline"],
+      "bibdata" => {
+        "title" => { "content" => "Coll" },
+        "type" => "collection",
+      },
+      "docref" => [
+        { "fileref" => "documents/p1/document.adoc",
+          "identifier" => "ISO 1", "sectionsplit" => true },
+      ],
+    }.to_yaml
+  end
+
+  subject(:manifest) { described_class.from_yaml(manifest_yaml) }
+
   it "does not configure Lutaml::Model at load time" do
     expect(manifest_source).not_to include("Lutaml::Model::Config.configure")
   end
 
-  it "parses a collection manifest on the default adapter lane" do
-    manifest = described_class.from_yaml(
-      {
-        "directives" => ["documents-inline"],
-        "bibdata" => {
-          "title" => { "content" => "Coll" },
-          "type" => "collection",
-        },
-        "docref" => [
-          { "fileref" => "documents/p1/document.adoc",
-            "identifier" => "ISO 1", "sectionsplit" => true },
-        ],
-      }.to_yaml,
-    )
+  it "parses bibdata on the default adapter lane" do
     expect(manifest.bibdata.title.first.content).to eq("Coll")
+  end
+
+  it "parses docrefs on the default adapter lane" do
     expect(manifest.entry.first.identifier).to eq("ISO 1")
+  end
+
+  it "carries the docref flags through" do
     expect(manifest.entry.first.sectionsplit).to be(true)
   end
 end
