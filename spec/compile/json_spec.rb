@@ -29,7 +29,8 @@ RSpec.describe Metanorma::Compile do
   def compile_json(input, type: "iso")
     log, status = run_compile(input, type)
     expect(status.success?).to be(true), log
-    JSON.parse(File.read(Dir[File.join(out, "*.json")].first))
+    JSON.parse(File.read(Dir[File.join(out, "*.json")].first),
+               max_nesting: false)
   end
 
   def clause_titles(node)
@@ -37,6 +38,27 @@ RSpec.describe Metanorma::Compile do
 
     own = node["type"] == "clause" ? [node.dig("attrs", "title")] : []
     own + Array(node["content"]).flat_map { |child| clause_titles(child) }
+  end
+
+  def export_json_failing_with(error)
+    require "metanorma/mirror"
+    compile = described_class.new
+    processor = instance_double(Metanorma::Processor, short: %i[iso])
+    compile.instance_variable_set(:@processor, processor)
+    pipeline = Metanorma::Mirror::Output::Pipeline
+    allow(pipeline).to receive(:new).and_raise(error)
+    compile.send(:export_json, "<metanorma/>",
+                 out: File.join(out, "x.json"))
+    compile.errors
+  end
+
+  def with_nested_clauses(depth)
+    nested = (1..depth).map do |i|
+      %(<clause id="_nested#{i}" obligation="normative">) \
+        "<title>Level #{i}</title>"
+    end
+    File.read("spec/fixtures/mko/iso-semantic.xml")
+      .sub("</sections>", "#{nested.join}#{'</clause>' * depth}</sections>")
   end
 
   before do
@@ -58,6 +80,15 @@ RSpec.describe Metanorma::Compile do
 
     expect(doc["attrs"]).to include("flavor" => "iso", "type" => "semantic")
     expect(clause_titles(doc)).to include("Scope")
+  end
+
+  it "serializes clauses nested beyond the JSON default nesting limit" do
+    input = File.join(out, "deep.xml")
+    File.write(input, with_nested_clauses(60))
+
+    doc = compile_json(input)
+
+    expect(clause_titles(doc)).to include("Level 1", "Level 60")
   end
 
   it "serializes AsciiDoc input, which writes no XML to disk" do
@@ -98,6 +129,32 @@ RSpec.describe Metanorma::Compile do
     expect(status.exitstatus).to eq(1)
     expect(log).to match(/POOLED: \[.*cannot serialize the generic document/)
     expect(Dir[File.join(out, "*.json")]).to be_empty
+  end
+
+  it "removes a JSON left by an earlier run when this run fails early" do
+    stale = File.join(out, "bad.json")
+    File.write(stale, "{\"stale\":true}")
+    File.write(File.join(out, "bad.xml"), "<metanorma")
+
+    run_compile(File.join(out, "bad.xml"), "iso")
+
+    expect(File.exist?(stale)).to be(false)
+  end
+
+  it "keeps a stale file of another format when a JSON run fails early" do
+    html = File.join(out, "bad.html")
+    File.write(html, "<html/>")
+    File.write(File.join(out, "bad.xml"), "<metanorma")
+
+    run_compile(File.join(out, "bad.xml"), "iso")
+
+    expect(File.exist?(html)).to be(true)
+  end
+
+  it "reports a SystemStackError from the model walk as a JSON output error" do
+    errors = export_json_failing_with(SystemStackError.new("deep"))
+
+    expect(errors).to eq(["the json output failed: SystemStackError: deep"])
   end
 
   it "names the flavor by the last short of a processor with aliases" do

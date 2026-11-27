@@ -53,6 +53,7 @@ module Metanorma
       @retention_probe = ENV["METANORMA_RETENTION_PROBE"] == "1"
       process_options!(filename, options)
       @processor = @registry.find_processor(options[:type].to_sym)
+      remove_stale_json(filename, options)
 
       # Step 1: Generate Semantic XML
       semantic_result = generate_semantic_xml(filename, options) or return nil
@@ -150,6 +151,17 @@ module Metanorma
       validate_options!(options)
       @log.save_to(filename, options[:output_dir])
       options[:log] = @log
+    end
+
+    # A filename template names the JSON from the bibliographic data, which
+    # is unknown until the run has parsed the document, so only the
+    # source-derived name is removed up front.
+    def remove_stale_json(filename, options)
+      Array(options[:extension_keys]).include?(:json) or return
+      options[:filename_template].nil? or return
+      basename = filename.sub(/\.[^.]+$/, "")
+      output = OutputFilename.new(basename, options[:output_dir], @processor)
+      FileUtils.rm_f(output.with_extension("json"))
     end
 
     def clean_exit(options)
