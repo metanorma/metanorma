@@ -6,9 +6,14 @@ require_relative "bibdata"
 module Metanorma
   class Collection
     module Config
-      Lutaml::Model::Config.configure do |config|
-        config.xml_adapter_type = :nokogiri
-      end
+      # No global adapter configuration here: configuring
+      # Lutaml::Model at require time flipped the XML engine for the
+      # whole host process, overriding every consumer's choice and
+      # dragging the nokogiri lane's namespaced-children parsing bug
+      # (lutaml-model#1212, metanorma#749/#745) into every metanorma
+      # run. The Manifest parses on lutaml-model's default resolution -
+      # the moxml facade with the leptris native engine preferred when
+      # present; the host decides the engine.
 
       class Manifest < ::Lutaml::Model::Serializable
         attribute :identifier, :string,
