@@ -20,7 +20,7 @@ RSpec.describe Metanorma::Collection::Config::Manifest do
   end
 
   it "does not configure Lutaml::Model at load time" do
-    expect(manifest_source).not_to match(/Lutaml::Model::Config\.configure/)
+    expect(manifest_source).not_to include("Lutaml::Model::Config.configure")
   end
 
   it "parses a collection manifest on the default adapter lane" do
@@ -35,7 +35,7 @@ RSpec.describe Metanorma::Collection::Config::Manifest do
           { "fileref" => "documents/p1/document.adoc",
             "identifier" => "ISO 1", "sectionsplit" => true },
         ],
-      }.to_yaml
+      }.to_yaml,
     )
     expect(manifest.bibdata.title.first.content).to eq("Coll")
     expect(manifest.entry.first.identifier).to eq("ISO 1")
