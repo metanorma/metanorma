@@ -12,6 +12,8 @@ require "yaml"
 # lutaml-model's default resolution - the moxml facade, leptris engine
 # preferred when present; the host decides the engine.
 RSpec.describe Metanorma::Collection::Config::Manifest do
+  subject(:manifest) { described_class.from_yaml(manifest_yaml) }
+
   let(:manifest_source) do
     File.read(
       File.expand_path("../../../../lib/metanorma/collection/config/" \
@@ -32,8 +34,6 @@ RSpec.describe Metanorma::Collection::Config::Manifest do
       ],
     }.to_yaml
   end
-
-  subject(:manifest) { described_class.from_yaml(manifest_yaml) }
 
   it "does not configure Lutaml::Model at load time" do
     expect(manifest_source).not_to include("Lutaml::Model::Config.configure")
