@@ -86,17 +86,32 @@ module Metanorma
 
       def bibdata_extract(xml)
         anchors = read_anchors(xml)
+        # bibdata is stored as a serialized string, not a node: the
+        # @files index lives for the whole render, and retaining every
+        # member's bibdata element keeps tens of millions of tree slots
+        # alive for the GC marking passes (metanorma#748). The only
+        # consumer round-trips it through a string anyway.
         { anchors: anchors, anchors_lookup: anchors_lookup(anchors),
           ids: read_ids(xml),
-          bibdata: xml.at(ns("//bibdata")),
+          bibdata: xml.at(ns("//bibdata"))&.to_xml,
           document_suffix: xml.root["document_suffix"] }
       end
 
       def bibitem_process(entry)
-        entry[:bibitem] = entry[:bibdata].dup
-        entry[:bibitem].name = "bibitem"
-        entry[:bibitem]["hidden"] = "true"
-        entry[:bibitem].at("./*[local-name() = 'ext']")&.remove
+        entry[:bibitem] = bibitem_string(entry[:bibdata])
+      end
+
+      def bibitem_string(bibdata)
+        require "moxml"
+        # Attachment members carry their bibdata as a Nokogiri node
+        # (Document.attachment_bibitem); regular members store the
+        # serialized string. Normalise before the Moxml parse.
+        xml = bibdata.is_a?(String) ? bibdata : bibdata.to_xml
+        b = Moxml.parse(xml).root or return nil
+        b.name = "bibitem"
+        b["hidden"] = "true"
+        b.at("./*[local-name() = 'ext']")&.remove
+        b.to_xml
       end
 
       # ref is the absolute source file address

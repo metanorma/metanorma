@@ -50,6 +50,7 @@ module Metanorma
     # @param filename [String] path to the input file
     # @param options [Hash] compilation options
     def compile(filename, options = {})
+      @retention_probe = ENV["METANORMA_RETENTION_PROBE"] == "1"
       process_options!(filename, options)
       @processor = @registry.find_processor(options[:type].to_sym)
       remove_stale_json(filename, options)
@@ -57,6 +58,7 @@ module Metanorma
       # Step 1: Generate Semantic XML
       semantic_result = generate_semantic_xml(filename, options) or return nil
       source_file, semantic_xml = semantic_result
+      retention_probe("semantic-generated") if @retention_probe
       # All lutaml macros have expanded by the end of conversion; the
       # plugin's retained XMI graphs (LRU-bounded, gigabytes for large
       # models) are dead weight for every later phase. Flush them.
@@ -70,6 +72,14 @@ module Metanorma
       # phase. Re-root the fragment into its own tiny document so the
       # full DOM is collectable once this parse goes out of scope.
       bibdata = reroot_bibdata(bibdata)
+      # bibdata is re-rooted and `semantic_xml` carries everything the
+      # output phase needs: the full parsed DOM is dead weight from here
+      # to the end of the method, and its live slots are what every GC
+      # marking pass walks (#748). Drop the reference explicitly -
+      # Ruby's method-scoped locals keep it alive through
+      # `generate_outputs` otherwise.
+      xml = nil
+      retention_probe("bibdata-rerooted") if @retention_probe
       output_paths = prepare_output_paths(filename, bibdata, options)
 
       # Step 3: Determine which output formats to generate
@@ -85,14 +95,27 @@ module Metanorma
       # collect this phase's temporaries first so they stack on the
       # live set, not on the converter phase's high-water mark.
       GC.start
+      retention_probe("pre-outputs") if @retention_probe
       init_work_root(semantic_xml, options)
       generate_outputs(
         source_file, semantic_xml, bibdata, extensions, output_paths,
         options
       )
+      retention_probe("outputs-written") if @retention_probe
     ensure
       teardown_work_root(options)
       clean_exit(options)
+    end
+
+    # Stage-boundary retention probe (metanorma#748), enabled with
+    # METANORMA_RETENTION_PROBE=1: one full GC, then the live slot
+    # count and RSS - the numbers that tell which stage pins how much
+    # of the document graph the marking passes walk.
+    def retention_probe(step)
+      GC.start
+      rss = File.read("/proc/self/status")[/VmRSS:\s+(\d+)/, 1] rescue "?"
+      warn format("[retention] %-22s live_slots=%-10d rss_kb=%s",
+                  step, GC.stat[:heap_live_slots], rss)
     end
 
     # The work root hosts the output converters' shared asset store and
