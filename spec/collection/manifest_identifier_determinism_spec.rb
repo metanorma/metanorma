@@ -60,8 +60,8 @@ RSpec.describe Metanorma::Collection::Manifest do
     YAML
 
     expect(manifest.config.entry.first.identifier).to eq("ISO 1")
-    expect(manifest.config.identifier)
-      .not_to match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+    # The parent declares no id: the sentinel is replaced by the
+    # deterministic UUID-v5-shaped digest of the subtree content.
     expect(manifest.config.identifier)
       .to eq(wrap(<<~YAML).config.identifier)
         entry:
