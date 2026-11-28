@@ -1,3 +1,4 @@
+require "digest"
 require "isodoc"
 require "htmlentities"
 require "metanorma-utils"
@@ -370,11 +371,20 @@ module Metanorma
         val[:type] ||= "clause"
         ret[val[:type]] ||= {}
         index = if val[:container] || val[:label].nil? || val[:label].empty?
-                  UUIDTools::UUID.random_create.to_s
+                  anchor_placeholder(key)
                 else val[:label].gsub(%r{<[^>]+>}, "")
                 end
         ret[val[:type]][index] = key
         v = val[:value] and ret[val[:type]][v.gsub(%r{<[^>]+>}, "")] = key
+      end
+
+      # Anchors without an unambiguous locality label are registered
+      # under a placeholder keyed by the SHA-256 of the anchor id,
+      # replacing the random UUIDs previously used: the placeholder only
+      # needs to track the anchor as existing, and is now deterministic
+      # per document
+      def anchor_placeholder(key)
+        Digest::SHA256.hexdigest("metanorma-anchor-placeholder/#{key}")
       end
 
       # Also parse all ids in doc (including ones which won't be xref targets)
