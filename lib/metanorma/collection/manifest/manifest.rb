@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "digest"
 require "metanorma-core"
 
 module Metanorma
@@ -70,6 +71,14 @@ module Metanorma
         config.identifier =
           if no_id && config.file # make file name be id
             @collection.class.resolve_identifier(File.basename(config.file))
+          elsif no_id
+            # The random-UUID attribute default is the "no id supplied"
+            # sentinel; when nothing anchors a real id (no file, no doc
+            # id) the sentinel itself must not leak into collection
+            # output. Derive from the manifest's own content, so
+            # identical manifests carry identical identifiers across
+            # runs (byte-determinism, isodoc#920 acceptance class).
+            @collection.class.resolve_identifier(content_fingerprint_id(config))
           else
             @collection.class.resolve_identifier(config.identifier)
           end
@@ -79,6 +88,30 @@ module Metanorma
         Array(config.entry).each do |f|
           manifest_identifier(f)
         end
+      end
+
+      # Deterministic stand-in identifier for manifests that declare
+      # neither an id nor a file: a UUID (v5-shaped) digest over the raw
+      # distinguishing fields of the subtree. UUID-shaped on purpose —
+      # the sentinel contract is GUID-shaped ("no id supplied"), and
+      # downstream scrubbing and shape checks keep working; the value is
+      # just stable across runs now. Never reads derived identifiers —
+      # nested entries resolve after their parent in the recursion.
+      def content_fingerprint_id(config)
+        bytes = Digest::SHA256.digest(fingerprint(config))[0, 16].bytes
+        bytes[6] = (bytes[6] & 0x0f) | 0x50 # version 5 (name-based)
+        bytes[8] = (bytes[8] & 0x3f) | 0x80 # RFC 4122 variant
+        u = bytes.pack("C*").unpack1("H*")
+        [u[0, 8], u[8, 4], u[12, 4], u[16, 4], u[20, 12]].join("-")
+      end
+
+      def fingerprint(config)
+        [
+          config.id, config.title, config.type, config.url,
+          Array(config.entry).map do |e|
+            [e.id, e.title, e.type, e.url, e.file]
+          end,
+        ].flatten.join(" ")
       end
 
       def populate_id_from_doc(config)
